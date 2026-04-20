@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { margin: 0; background: #000; display: flex; align-items: center; justify-content: center; min-height: 680px; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="680" height="680"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = 680, H = 680, CX = W/2, CY = H/2;
+let t = 0;
+
+const CYAN  = '#00FFE5';
+const CYAN2 = '#00CFFF';
+const MAG   = '#FF2EF7';
+const GOLD  = '#FFB800';
+const GOLD2 = '#FFD966';
+const GOLD3 = '#FF8C00';
+const WHITE = '#FFFFFF';
+
+function hex(h, a=1) {
+  const r=parseInt(h.slice(1,3),16), g=parseInt(h.slice(3,5),16), b=parseInt(h.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+const nodes = [];
+const NUM_NODES = 28;
+for(let i=0;i<NUM_NODES;i++){
+  const angle = Math.random()*Math.PI*2;
+  const dist = 90 + Math.random()*160;
+  nodes.push({
+    angle, dist, baseAngle: angle,
+    speed: (Math.random()-0.5)*0.008*0.67,
+    size: 1.5+Math.random()*3,
+    color: Math.random()<0.5?CYAN:(Math.random()<0.5?MAG:GOLD),
+    pulseOffset: Math.random()*Math.PI*2,
+    connections: []
+  });
+}
+for(let i=0;i<NUM_NODES;i++){
+  for(let j=i+1;j<NUM_NODES;j++){
+    const xi=CX+nodes[i].dist*Math.cos(nodes[i].angle), yi=CY+nodes[i].dist*Math.sin(nodes[i].angle);
+    const xj=CX+nodes[j].dist*Math.cos(nodes[j].angle), yj=CY+nodes[j].dist*Math.sin(nodes[j].angle);
+    if(Math.hypot(xj-xi,yj-yi)<110 && Math.random()<0.45) nodes[i].connections.push(j);
+  }
+}
+
+const synapses = [];
+for(let i=0;i<14;i++) synapses.push({
+  nodeA:Math.floor(Math.random()*NUM_NODES), nodeB:Math.floor(Math.random()*NUM_NODES),
+  progress:Math.random(),
+  speed:(0.004+Math.random()*0.01)*0.67*0.5,
+  color:Math.random()<0.5?CYAN:MAG
+});
+
+const saturnRings = [
+  { rx:190, ry:38, angle:-0.32, dashLen:22, gapLen:8,  color:CYAN,  width:1.4, speed:0.003*0.67 },
+  { rx:220, ry:50, angle:-0.28, dashLen:30, gapLen:12, color:CYAN2, width:0.8, speed:-0.002*0.67 },
+  { rx:255, ry:62, angle:-0.25, dashLen:40, gapLen:18, color:MAG,   width:1.0, speed:0.0015*0.67 },
+  { rx:285, ry:72, angle:-0.22, dashLen:18, gapLen:22, color:GOLD,  width:0.6, speed:-0.004*0.67 },
+  { rx:310, ry:82, angle:-0.20, dashLen:50, gapLen:10, color:CYAN,  width:0.5, speed:0.001*0.67 },
+];
+let saturnOffsets = saturnRings.map(()=>0);
+
+const goldRings = [
+  { r:145, rotX:0,            rotY:0,            rotZ:0,            speedX:0.0006,  speedY:0.0009,  speedZ:0.0004,  color:GOLD,  width:1.6, alpha:0.75 },
+  { r:160, rotX:Math.PI/2,    rotY:0,            rotZ:0,            speedX:-0.0005, speedY:0.0007,  speedZ:0.0006,  color:GOLD2, width:1.2, alpha:0.6  },
+  { r:150, rotX:Math.PI/4,    rotY:Math.PI/3,    rotZ:0,            speedX:0.0004,  speedY:-0.0008, speedZ:0.0007,  color:GOLD3, width:1.0, alpha:0.55 },
+  { r:155, rotX:Math.PI/6,    rotY:Math.PI/2,    rotZ:Math.PI/4,    speedX:-0.0007, speedY:0.0005,  speedZ:-0.0005, color:GOLD,  width:0.8, alpha:0.5  },
+  { r:140, rotX:Math.PI*0.7,  rotY:Math.PI*0.3,  rotZ:Math.PI*0.6,  speedX:0.0005,  speedY:-0.0006, speedZ:0.0008,  color:GOLD2, width:0.7, alpha:0.45 },
+];
+
+function project3D(ax, ay, az, rx, ry, rz){
+  let y1=ay*Math.cos(rx)-az*Math.sin(rx), z1=ay*Math.sin(rx)+az*Math.cos(rx);
+  let x2=ax*Math.cos(ry)+z1*Math.sin(ry), z2=-ax*Math.sin(ry)+z1*Math.cos(ry);
+  let x3=x2*Math.cos(rz)-y1*Math.sin(rz), y3=x2*Math.sin(rz)+y1*Math.cos(rz);
+  return { x:x3, y:y3, z:z2 };
+}
+
+function drawGoldRings(){
+  goldRings.forEach(ring=>{
+    ring.rotX+=ring.speedX; ring.rotY+=ring.speedY; ring.rotZ+=ring.speedZ;
+    const segments=120, points=[];
+    for(let i=0;i<=segments;i++){
+      const a=(i/segments)*Math.PI*2;
+      points.push(project3D(ring.r*Math.cos(a), ring.r*Math.sin(a), 0, ring.rotX, ring.rotY, ring.rotZ));
+    }
+    for(let i=0;i<segments;i++){
+      const p1=points[i], p2=points[i+1];
+      const avgZ=(p1.z+p2.z)*0.5;
+      const depthAlpha=0.25+0.75*((avgZ/ring.r+1)*0.5);
+      const pulse=0.7+0.3*Math.sin(t*0.8+i*0.15);
+      ctx.beginPath();
+      ctx.moveTo(CX+p1.x, CY+p1.y); ctx.lineTo(CX+p2.x, CY+p2.y);
+      ctx.strokeStyle=hex(ring.color, ring.alpha*depthAlpha*pulse);
+      ctx.lineWidth=ring.width*(0.5+0.5*depthAlpha); ctx.stroke();
+    }
+    const topP=project3D(ring.r,0,0,ring.rotX,ring.rotY,ring.rotZ);
+    const g=ctx.createRadialGradient(CX+topP.x,CY+topP.y,0,CX+topP.x,CY+topP.y,6);
+    g.addColorStop(0,hex(GOLD2,0.9)); g.addColorStop(1,hex(GOLD,0));
+    ctx.beginPath(); ctx.arc(CX+topP.x,CY+topP.y,6,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+  });
+}
+
+function drawStars(){
+  if(!drawStars.stars){
+    drawStars.stars=[];
+    for(let i=0;i<200;i++) drawStars.stars.push([Math.random()*W, Math.random()*H, Math.random()*1.2+0.2]);
+  }
+  drawStars.stars.forEach(([x,y,r])=>{
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${0.15+Math.random()*0.1})`; ctx.fill();
+  });
+}
+
+function drawCore(){
+  const pulse=0.85+0.15*Math.sin(t*1.8*0.67);
+  const r=52*pulse;
+  const grad=ctx.createRadialGradient(CX,CY,0,CX,CY,r);
+  grad.addColorStop(0,hex(WHITE,1)); grad.addColorStop(0.15,hex(CYAN,0.95));
+  grad.addColorStop(0.45,hex(CYAN2,0.7)); grad.addColorStop(0.75,'#0028AA'); grad.addColorStop(1,'rgba(0,0,30,0)');
+  ctx.beginPath(); ctx.arc(CX,CY,r,0,Math.PI*2); ctx.fillStyle=grad; ctx.fill();
+  const glowR=90+12*Math.sin(t*1.4*0.67);
+  const glow=ctx.createRadialGradient(CX,CY,r*0.5,CX,CY,glowR);
+  glow.addColorStop(0,hex(CYAN,0.18)); glow.addColorStop(0.5,hex(CYAN2,0.06)); glow.addColorStop(1,'rgba(0,200,255,0)');
+  ctx.beginPath(); ctx.arc(CX,CY,glowR,0,Math.PI*2); ctx.fillStyle=glow; ctx.fill();
+  const innerR=20*pulse;
+  const inner=ctx.createRadialGradient(CX-8,CY-8,0,CX,CY,innerR);
+  inner.addColorStop(0,'rgba(255,255,255,1)'); inner.addColorStop(0.4,hex(CYAN,0.9)); inner.addColorStop(1,'rgba(0,200,255,0)');
+  ctx.beginPath(); ctx.arc(CX,CY,innerR,0,Math.PI*2); ctx.fillStyle=inner; ctx.fill();
+}
+
+function drawSaturnRings(){
+  saturnRings.forEach((ring,i)=>{
+    saturnOffsets[i]+=ring.speed;
+    const totalPerim=Math.PI*(3*(ring.rx+ring.ry)-Math.sqrt((3*ring.rx+ring.ry)*(ring.rx+3*ring.ry)));
+    const unit=ring.dashLen+ring.gapLen;
+    const steps=Math.ceil(totalPerim/unit)*4;
+    ctx.save(); ctx.translate(CX,CY); ctx.rotate(ring.angle);
+    for(let s=0;s<steps;s++){
+      const frac=(s/steps+saturnOffsets[i])%1;
+      if((frac*totalPerim%unit)>ring.dashLen) continue;
+      const a=frac*Math.PI*2, a2=((s+0.5)/steps+saturnOffsets[i])%1*Math.PI*2;
+      const alpha=0.25+0.55*Math.abs(Math.sin(a+t*0.5*0.67));
+      ctx.beginPath(); ctx.moveTo(ring.rx*Math.cos(a),ring.ry*Math.sin(a));
+      ctx.lineTo(ring.rx*Math.cos(a2),ring.ry*Math.sin(a2));
+      ctx.strokeStyle=hex(ring.color,alpha); ctx.lineWidth=ring.width; ctx.stroke();
+    }
+    ctx.restore();
+  });
+}
+
+function drawNeuralNet(){
+  nodes.forEach(n=>{ n.angle=n.baseAngle+n.speed*t*60; });
+  nodes.forEach((n)=>{
+    const nx=CX+n.dist*Math.cos(n.angle), ny=CY+n.dist*Math.sin(n.angle);
+    n.connections.forEach(j=>{
+      const m=nodes[j];
+      ctx.beginPath(); ctx.moveTo(nx,ny);
+      ctx.lineTo(CX+m.dist*Math.cos(m.angle),CY+m.dist*Math.sin(m.angle));
+      ctx.strokeStyle=hex(CYAN,0.08+0.07*Math.sin(t*0.9*0.67+n.pulseOffset));
+      ctx.lineWidth=0.5; ctx.stroke();
+    });
+  });
+  nodes.forEach(n=>{
+    const nx=CX+n.dist*Math.cos(n.angle), ny=CY+n.dist*Math.sin(n.angle);
+    const pulse=0.6+0.4*Math.sin(t*2.2*0.67+n.pulseOffset);
+    const r=n.size*pulse;
+    const g2=ctx.createRadialGradient(nx,ny,0,nx,ny,r*3);
+    g2.addColorStop(0,hex(n.color,0.9)); g2.addColorStop(0.4,hex(n.color,0.3)); g2.addColorStop(1,hex(n.color,0));
+    ctx.beginPath(); ctx.arc(nx,ny,r*3,0,Math.PI*2); ctx.fillStyle=g2; ctx.fill();
+    ctx.beginPath(); ctx.arc(nx,ny,r,0,Math.PI*2); ctx.fillStyle=n.color; ctx.fill();
+  });
+}
+
+function drawSynapses(){
+  synapses.forEach(s=>{
+    s.progress+=s.speed;
+    if(s.progress>1){ s.progress=0; s.nodeA=Math.floor(Math.random()*NUM_NODES); s.nodeB=Math.floor(Math.random()*NUM_NODES); }
+    const a=nodes[s.nodeA], b=nodes[s.nodeB];
+    const ax=CX+a.dist*Math.cos(a.angle), ay=CY+a.dist*Math.sin(a.angle);
+    const bx=CX+b.dist*Math.cos(b.angle), by=CY+b.dist*Math.sin(b.angle);
+    const px=ax+(bx-ax)*s.progress, py=ay+(by-ay)*s.progress;
+    const g=ctx.createRadialGradient(px,py,0,px,py,6);
+    g.addColorStop(0,hex(s.color,1)); g.addColorStop(1,hex(s.color,0));
+    ctx.beginPath(); ctx.arc(px,py,6,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+  });
+}
+
+function drawGeoBands(){
+  [75,100,130,160].forEach((r,i)=>{
+    const segs=12+i*4;
+    for(let s=0;s<segs;s++){
+      const a1=(s/segs)*Math.PI*2+t*(i%2===0?0.004:-0.003)*0.67;
+      const a2=((s+0.45)/segs)*Math.PI*2+t*(i%2===0?0.004:-0.003)*0.67;
+      ctx.beginPath(); ctx.arc(CX,CY,r,a1,a2);
+      ctx.strokeStyle=hex(i%2===0?CYAN:MAG,0.07+0.05*Math.sin(t*1.2*0.67+s+i));
+      ctx.lineWidth=i%2===0?1.5:0.8; ctx.stroke();
+    }
+  });
+}
+
+const streams = Array.from({length:20},(_,i)=>({
+  angle:(i/20)*Math.PI*2, r1:55+Math.random()*10, r2:170+Math.random()*60,
+  pos:Math.random(),
+  speed:(0.005+Math.random()*0.015)*0.67*0.5,
+  orbitSpeed:(Math.random()-0.5)*0.006*0.67,
+  color:[CYAN,MAG,GOLD,CYAN2][Math.floor(Math.random()*4)]
+}));
+
+function drawDataStreams(){
+  streams.forEach(s=>{
+    s.pos+=s.speed; if(s.pos>1) s.pos=0;
+    const angle=s.angle+t*s.orbitSpeed;
+    const x1=CX+s.r1*Math.cos(angle), y1=CY+s.r1*Math.sin(angle);
+    const x2=CX+s.r2*Math.cos(angle), y2=CY+s.r2*Math.sin(angle);
+    const px=x1+(x2-x1)*s.pos, py=y1+(y2-y1)*s.pos;
+    const g=ctx.createRadialGradient(px,py,0,px,py,5);
+    g.addColorStop(0,hex(s.color,0.9)); g.addColorStop(1,hex(s.color,0));
+    ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+  });
+}
+
+function frame(){
+  t+=0.016*0.67;
+  ctx.clearRect(0,0,W,H);
+  const bg=ctx.createRadialGradient(CX,CY,0,CX,CY,W*0.75);
+  bg.addColorStop(0,'#040418'); bg.addColorStop(0.5,'#020210'); bg.addColorStop(1,'#000005');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  drawStars();
+  drawGeoBands();
+  drawNeuralNet();
+  drawDataStreams();
+  drawSaturnRings();
+  drawGoldRings();
+  drawSynapses();
+  drawCore();
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>
