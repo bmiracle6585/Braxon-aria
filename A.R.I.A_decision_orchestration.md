@@ -1,3 +1,20 @@
+## APP-AWARE DECISION OVERRIDE
+
+Before executing any response, ARIA must check if the request involves:
+
+- A project
+- A customer
+- A daily report
+- A ticket
+- A status update
+- Any real-world operational data
+
+IF YES:
+→ Route decision-making through:
+App/aria_runtime_decision_engine.md
+
+This override takes priority over all other decision logic.
+
 # ARIA DECISION ORCHESTRATION
 
 ## PURPOSE

@@ -1,0 +1,207 @@
+Folder PATH listing for volume Windows
+Volume serial number is 128B-7280
+C:.
+|   A.R.I.A_decision_orchestration.md
+|   A.R.I.A_identity.md
+|   A.R.I.A_interaction_rules.md
+|   A.R.I.A_response_modes.md
+|   A.R.I.A_troubleshooting_principles.md
+|   aria_neural_saturn_orbs_slow.html
+|   mobile.aria.html
+|   structure.txt
+|   
++---Customers
+|   \---Verizon
+|           operational_constraints.md
+|           required_inputs.md
+|           
++---Global
+|   |   common_patterns.md
+|   |   Troubleshooting_Principles.md
+|   |   
+|   \---Issues
+|       +---Low RSL
+|       |       alarms.md
+|       |       overview.md
+|       |       steps.md
+|       |       
+|       \---XPD
+|               Overview.md
+|               steps.md
+|               
+\---Manufacturers
+    +---Anritsu
+    |   |   defaults_and_required_values.md
+    |   |   failure_modes.md
+    |   |   installation_architecture.md
+    |   |   knowledge.map.md
+    |   |   navigation_paths.md
+    |   |   operational_insights.md
+    |   |   provisioning_data.md
+    |   |   provisioning_flow_map.md
+    |   |   reboot_triggers.md
+    |   |   
+    |   +---Issues
+    |   |   +---Basic Configuration
+    |   |   +---DTF Fail
+    |   |   \---Return Loss Fail
+    |   \---Manuals
+    |           Anirtsu S820E Manual.pdf
+    |           
+    +---Aviat
+    |   +---Issues
+    |   \---Manuals
+    |       +---CTR
+    |       |   +---Knowledge
+    |       |   |       antenna_alignment_and_xpic_logic.md
+    |       |   |       cable_and_connector_logic.md
+    |       |   |       defaults_and_required_values.md
+    |       |   |       diagnostics_performance_and_traffic_analysis_logic.md
+    |       |   |       failure_modes.md
+    |       |   |       installation_architecture.md
+    |       |   |       ip_configuration_and_network_logic.md
+    |       |   |       navigation_paths.md
+    |       |   |       operational_insights.md
+    |       |   |       provisioining_flow_map.md
+    |       |   |       provisioning_data.md
+    |       |   |       reboot_triggers.md
+    |       |   |       
+    |       |   \---Manuals
+    |       |           CTR 8300 Datasheet.pdf
+    |       |           CTR 8500-8300 Rel 3.16.0 CLI Commands Guide 2022-OCT.pdf
+    |       |           CTR 8500-8300 Rel 3.16.0 Config IP 2022-OCT.pdf
+    |       |           CTR 8500-8300 Rel 3.16.0 Config VLAN 2022-OCT.pdf
+    |       |           CTR 8500-8300 Rel 3.16.0 Installation Guide 2022-OCT.pdf
+    |       |           ODU 600v2 w- CTR 8300-8540 Datasheet ANSI.pdf
+    |       |           
+    |       +---Eclipse
+    |       |   +---Knowledge
+    |       |   |   |   defaults_and_required_values.md
+    |       |   |   |   navigation_paths.md
+    |       |   |   |   operational_insights.md
+    |       |   |   |   provisioning_data.md
+    |       |   |   |   provisioning_flow_map.md
+    |       |   |   |   reboot_triggers.md
+    |       |   |   |   
+    |       |   |   \---Portal
+    |       |   |           circuit_configuration_logic.md
+    |       |   |           common_misconfigurations.md
+    |       |   |           modulation_bandwidth_logic.md
+    |       |   |           networking_configuration_logic.md
+    |       |   |           networking_troubleshooting_patterns.md
+    |       |   |           node_protection_logic.md
+    |       |   |           plugin_configuration_logic.md
+    |       |   |           plugin_parameters_reference.md
+    |       |   |           portal.conections.md
+    |       |   |           portal.overview.md
+    |       |   |           portal_authentication.md
+    |       |   |           portal_startup.md
+    |       |   |           protection_modes.md
+    |       |   |           provisioining_flow_map.md
+    |       |   |           rf_configuration_rules.md
+    |       |   |           troubleshooting_execution_logic.md
+    |       |   |           
+    |       |   \---Manuals
+    |       |           DS-A-ECL_2025JUL07.pdf
+    |       |           DS-A-IRU600_2025OCT16.pdf
+    |       |           Eclipse Rel 10.03 Reference Guide January 2026.pdf
+    |       |           Eclipse Rel 10.03 User Guide April 2026.pdf
+    |       |           ODU 600v2 w- RAC 70 Datasheet ANSI.pdf
+    |       |           ODU600v2 Tuning Guide2.xlsx
+    |       |           
+    |       \---WTM
+    |           +---Knowledge
+    |           |       defaults_and_required_values.md
+    |           |       failure_modes.md
+    |           |       navigation_paths.md
+    |           |       operational_insights.md
+    |           |       provisioning_data.md
+    |           |       provisioning_flow_map.md
+    |           |       reboot_triggers.md
+    |           |       wtm_decision_engine_logic.md
+    |           |       
+    |           \---Manuals
+    |                   DS-A_WTM4000_USG_2026JAN27.pdf
+    |                   DS-A_WTM4800_USG_2026JAN27.pdf
+    |                   
+    +---Nokia
+    |   +---Issues
+    |   |   +---Auto-Local
+    |   |   |   +---Radio_RSL
+    |   |   |   |       alarms.md
+    |   |   |   |       overview.md
+    |   |   |   |       steps.md
+    |   |   |   |       
+    |   |   |   \---Tower_RSL
+    |   |   |           alarms.md
+    |   |   |           overview.md
+    |   |   |           steps.md
+    |   |   |           
+    |   |   +---Login Issues
+    |   |   |       alarms.md
+    |   |   |       overview.md
+    |   |   |       steps.md
+    |   |   |       
+    |   |   +---Low RSL
+    |   |   |   +---Radio_RSL
+    |   |   |   |       alarms.md
+    |   |   |   |       overview.md
+    |   |   |   |       steps.md
+    |   |   |   |       
+    |   |   |   \---Tower_RSL
+    |   |   |           alarms.md
+    |   |   |           overview.md
+    |   |   |           steps.md
+    |   |   |           
+    |   |   \---XPD Issues
+    |   |       +---Radio_XPD
+    |   |       |       alarms.md
+    |   |       |       overview.md
+    |   |       |       steps.md
+    |   |       |       
+    |   |       \---Tower_XPD
+    |   |               alarms.md
+    |   |               overview.md
+    |   |               steps.md
+    |   |               
+    |   +---Knowledge
+    |   |       alarm_foundation.md
+    |   |       defaults_and_required_values.md
+    |   |       installation_architecture.md
+    |   |       navigation_paths.md
+    |   |       operational_insights.md
+    |   |       provisioning_data.md
+    |   |       provisioning_flow_map.md
+    |   |       reboot_triggers.md
+    |   |       
+    |   +---Manuals
+    |   |       3DB19284AUAATQZZA01_Vol1_Wavence_25_Software_Installation_and_NE_Upgrade_Manual.pdf
+    |   |       3DB19287AUAATQZZA01_Vol1_Wavence_25_WebCT_User_Manual.pdf
+    |   |       3DB19291AUAATQZZA01_Vol1_Wavence_25_Alarm_Clearing_User_Manual.pdf
+    |   |       3DB19353ATAATQZZA01_Vol1_Wavence_25_TMN_Networking_Guide.pdf
+    |   |       3DB19885AEAATQZZA01_Vol1_Wavence_25_UBT-I_Standalone_SA_User_Manual.pdf
+    |   |       3DB28458AAAATNZZA08_Vol1_Wavence_UBT-S_UBT-T_Quick_Start_Guide.pdf
+    |   |       3DB28459ABAATNZZA08_Vol1_Wavence_UBT-m_80GHz_Quick_Start_Guide.pdf
+    |   |       3DB29363AAAARJZZA08_Vol1_Wavence_Network_Interface_Module_NIM_Quick_Start_Guide.pdf
+    |   |       9500MPR_Nokia-VzW_Wavence CorEvo Basic Provisioning_W19 ICS02_v1.pdf
+    |   |       
+    |   \---Notes
+    \---Viavi and JDSU
+        +---Issues
+        +---Knowledge
+        |       defaults_and_required_values.md
+        |       failure_modes.md
+        |       installation_architecture.md
+        |       knowledge_map.md
+        |       navigation_paths.md
+        |       operational_insights.md
+        |       provisioining_flow_map.md
+        |       provisioning_data.md
+        |       reboot_triggers.md
+        |       
+        \---Manuals
+                t-berd-mts-5800-ethernet-layer-2-traffic-generation-quick-references-en.pdf
+                t-berd-mts-5800-ethernet-rfc-2544-layer-2-traffic-quick-references-en.pdf
+                TB 5800 10GE LAN Layer II Test.pdf
+                TB5800 electrical L2 loopback.pdf
+                
