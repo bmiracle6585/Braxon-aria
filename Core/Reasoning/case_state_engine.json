@@ -1,0 +1,687 @@
+{
+  "specification": "ARIA_CASE_STATE_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines the authoritative living state of an active A.R.I.A. diagnostic case and how that state changes as context, evidence, hypotheses, probabilities, actions, findings, corrections, and validation evolve.",
+
+  "core_principle": {
+    "statement": "A diagnostic case is a versioned technical state machine, not a transcript. Conversation, documents, screenshots, measurements, actions, and historical experience contribute to the case, but the authoritative current case state shall be represented explicitly and independently of conversational order.",
+    "rules": [
+      "The current case state shall represent what ARIA presently knows, suspects, has eliminated, has confirmed, has requested, and is waiting for.",
+      "Conversation history shall not serve as the authoritative case database.",
+      "Every material state change shall be attributable to an event.",
+      "Previous states shall remain reconstructable.",
+      "ARIA shall reason from current state rather than repeatedly rereading the complete case transcript.",
+      "State transitions shall preserve uncertainty.",
+      "A hypothesis is not a finding.",
+      "A corrective action is not proof of root cause.",
+      "A successful validation is not automatically proof that every causal assumption was correct."
+    ]
+  },
+
+  "case_lifecycle_states": [
+    "CREATED",
+    "CONTEXT_RESOLUTION",
+    "INITIAL_ASSESSMENT",
+    "ACTIVE_DIAGNOSIS",
+    "AWAITING_EVIDENCE",
+    "AWAITING_ACTION",
+    "CORRECTIVE_ACTION",
+    "VALIDATION",
+    "MONITORING",
+    "RESOLVED",
+    "CLOSED",
+    "ESCALATED",
+    "SUSPENDED",
+    "REOPENED"
+  ],
+
+  "case_record": {
+    "required_fields": [
+      "case_id",
+      "case_type",
+      "created_at",
+      "created_by",
+      "current_lifecycle_state",
+      "current_state_version",
+      "context_id",
+      "working_memory_id",
+      "diagnostic_confidence",
+      "resolution_confidence",
+      "last_material_update_at"
+    ],
+
+    "optional_fields": [
+      "organization_id",
+      "customer_id",
+      "project_id",
+      "site_id",
+      "path_id",
+      "primary_user_id",
+      "assigned_user_ids",
+      "team_id",
+      "parent_case_id",
+      "related_case_ids",
+      "recurrence_of_case_id",
+      "escalation_target",
+      "priority",
+      "service_impact",
+      "safety_classification"
+    ]
+  },
+
+  "case_state": {
+    "required_sections": [
+      "CONTEXT",
+      "REPORTED_PROBLEM",
+      "NORMALIZED_SYMPTOMS",
+      "ACTIVE_EVIDENCE",
+      "ACTIVE_HYPOTHESES",
+      "PROBABILITY_STATE",
+      "RULED_OUT_HYPOTHESES",
+      "CONFIRMED_FINDINGS",
+      "COMPLETED_ACTIONS",
+      "PENDING_ACTIONS",
+      "REQUESTED_EVIDENCE",
+      "UNRESOLVED_QUESTIONS",
+      "CONTRADICTIONS",
+      "RECENT_CHANGES",
+      "CORRECTIVE_ACTIONS",
+      "VALIDATION_STATE",
+      "CURRENT_ROUTE",
+      "CASE_CONSTRAINTS"
+    ]
+  },
+
+  "state_version": {
+    "append_only": true,
+
+    "required_fields": [
+      "state_version_id",
+      "case_id",
+      "version_number",
+      "created_at",
+      "trigger_event_id",
+      "previous_state_version_id",
+      "material_changes",
+      "state_hash"
+    ],
+
+    "rules": [
+      "Material state changes shall produce a new version.",
+      "Previous versions shall not be overwritten.",
+      "Nonmaterial presentation changes need not produce a diagnostic state version.",
+      "State versions shall be reproducible from the event history when practical."
+    ]
+  },
+
+  "case_event_model": {
+    "append_only": true,
+
+    "event_types": [
+      "CASE_CREATED",
+      "USER_MESSAGE_RECEIVED",
+      "CONTEXT_RESOLVED",
+      "CONTEXT_CHANGED",
+      "SYMPTOM_ADDED",
+      "SYMPTOM_UPDATED",
+      "EVIDENCE_RECEIVED",
+      "EVIDENCE_VALIDATED",
+      "EVIDENCE_INVALIDATED",
+      "EVIDENCE_SUPERSEDED",
+      "CONTRADICTION_DETECTED",
+      "HYPOTHESIS_GENERATED",
+      "HYPOTHESIS_UPDATED",
+      "HYPOTHESIS_RULED_OUT",
+      "HYPOTHESIS_CONFIRMED",
+      "PROBABILITY_RECALCULATED",
+      "ACTION_REQUESTED",
+      "ACTION_STARTED",
+      "ACTION_COMPLETED",
+      "ACTION_FAILED",
+      "ACTION_SKIPPED",
+      "FINDING_CONFIRMED",
+      "CORRECTIVE_ACTION_PROPOSED",
+      "CORRECTIVE_ACTION_STARTED",
+      "CORRECTIVE_ACTION_COMPLETED",
+      "VALIDATION_REQUESTED",
+      "VALIDATION_COMPLETED",
+      "RESOLUTION_PROPOSED",
+      "CASE_RESOLVED",
+      "CASE_CLOSED",
+      "CASE_REOPENED",
+      "CASE_ESCALATED",
+      "CASE_SUSPENDED"
+    ],
+
+    "required_fields": [
+      "event_id",
+      "case_id",
+      "event_type",
+      "created_at",
+      "actor_type",
+      "actor_id",
+      "payload",
+      "provenance"
+    ]
+  },
+
+  "actor_types": [
+    "USER",
+    "ARIA",
+    "SYSTEM",
+    "EQUIPMENT",
+    "INTEGRATION",
+    "ADMINISTRATOR"
+  ],
+
+  "reported_problem": {
+    "description": "Preserves the problem as originally reported separately from ARIA's normalized technical interpretation.",
+
+    "required_fields": [
+      "raw_report",
+      "reporter_id",
+      "reported_at"
+    ],
+
+    "optional_fields": [
+      "reported_severity",
+      "reported_service_impact",
+      "reported_recent_change"
+    ],
+
+    "rules": [
+      "The original problem statement shall remain available.",
+      "ARIA may normalize terminology without replacing the original report.",
+      "The reporter's proposed diagnosis shall remain distinguishable from the reported symptom."
+    ]
+  },
+
+  "symptom_state": {
+    "statuses": [
+      "REPORTED",
+      "OBSERVED",
+      "VALIDATED",
+      "NOT_REPRODUCED",
+      "RESOLVED",
+      "UNKNOWN"
+    ],
+
+    "required_fields": [
+      "symptom_id",
+      "symptom_type",
+      "status",
+      "confidence",
+      "source_evidence_ids"
+    ],
+
+    "rules": [
+      "Symptoms may exist before their cause is known.",
+      "A symptom may disappear without the root cause being proven.",
+      "Multiple symptoms may belong to one failure or multiple simultaneous failures."
+    ]
+  },
+
+  "hypothesis_state": {
+    "statuses": [
+      "CANDIDATE",
+      "ACTIVE",
+      "WEAKENED",
+      "LEADING",
+      "RULED_OUT",
+      "CONFIRMED",
+      "DEFERRED"
+    ],
+
+    "required_fields": [
+      "hypothesis_id",
+      "failure_mode_id",
+      "status",
+      "current_probability",
+      "probability_confidence",
+      "supporting_evidence_ids",
+      "contradicting_evidence_ids",
+      "last_updated_at"
+    ],
+
+    "rules": [
+      "Probability and hypothesis status shall remain separate.",
+      "A leading hypothesis is not a confirmed diagnosis.",
+      "Ruled-out hypotheses remain part of case history.",
+      "A ruled-out hypothesis may be reactivated only when new evidence or context justifies doing so."
+    ]
+  },
+
+  "finding_state": {
+    "description": "Confirmed findings represent technical conditions sufficiently supported by evidence.",
+
+    "required_fields": [
+      "finding_id",
+      "finding_type",
+      "statement",
+      "confidence",
+      "supporting_evidence_ids",
+      "confirmed_at"
+    ],
+
+    "rules": [
+      "Findings shall be narrower than unsupported causal conclusions.",
+      "A finding may establish a condition without establishing why the condition exists.",
+      "Findings may become inputs to further hypotheses."
+    ]
+  },
+
+  "action_state": {
+    "statuses": [
+      "PROPOSED",
+      "REQUESTED",
+      "ACKNOWLEDGED",
+      "IN_PROGRESS",
+      "COMPLETED",
+      "FAILED",
+      "SKIPPED",
+      "BLOCKED",
+      "CANCELLED"
+    ],
+
+    "required_fields": [
+      "action_instance_id",
+      "action_id",
+      "status",
+      "requested_at",
+      "requested_from",
+      "diagnostic_purpose",
+      "target_hypothesis_ids"
+    ],
+
+    "optional_fields": [
+      "started_at",
+      "completed_at",
+      "result",
+      "result_evidence_ids",
+      "failure_reason",
+      "skip_reason",
+      "blocked_reason"
+    ],
+
+    "rules": [
+      "ARIA shall distinguish requesting an action from the action actually being completed.",
+      "An action shall not be treated as completed merely because instructions were provided.",
+      "Action results shall become evidence through the Evidence Engine.",
+      "Skipped and failed actions remain part of route history."
+    ]
+  },
+
+  "pending_state": {
+    "categories": [
+      "WAITING_FOR_USER_RESPONSE",
+      "WAITING_FOR_SCREENSHOT",
+      "WAITING_FOR_MEASUREMENT",
+      "WAITING_FOR_CONFIGURATION",
+      "WAITING_FOR_PHYSICAL_ACTION",
+      "WAITING_FOR_REMOTE_ACTION",
+      "WAITING_FOR_EQUIPMENT",
+      "WAITING_FOR_ACCESS",
+      "WAITING_FOR_WEATHER",
+      "WAITING_FOR_CUSTOMER",
+      "WAITING_FOR_VALIDATION",
+      "WAITING_FOR_EXTERNAL_SYSTEM"
+    ],
+
+    "rules": [
+      "ARIA shall know exactly what the case is waiting for.",
+      "Pending items shall identify who or what is expected to satisfy them.",
+      "Satisfied pending items shall transition rather than simply disappear from history."
+    ]
+  },
+
+  "contradiction_state": {
+    "statuses": [
+      "OPEN",
+      "INVESTIGATING",
+      "RECONCILED",
+      "SUPERSEDED",
+      "UNRESOLVED"
+    ],
+
+    "required_fields": [
+      "contradiction_id",
+      "evidence_ids",
+      "status",
+      "materiality",
+      "detected_at"
+    ],
+
+    "rules": [
+      "Material unresolved contradictions shall remain visible to reasoning.",
+      "A contradiction shall not be removed merely because one side is inconvenient to the leading hypothesis."
+    ]
+  },
+
+  "corrective_action_state": {
+    "statuses": [
+      "PROPOSED",
+      "AUTHORIZED",
+      "IN_PROGRESS",
+      "COMPLETED",
+      "FAILED",
+      "REVERSED"
+    ],
+
+    "required_fields": [
+      "corrective_action_id",
+      "action_type",
+      "target_condition",
+      "status",
+      "causal_hypothesis_ids"
+    ],
+
+    "rules": [
+      "Corrective actions shall be distinguished from diagnostic actions.",
+      "Performing a correction does not prove the suspected cause.",
+      "The state before correction shall remain available for comparison.",
+      "Multiple simultaneous corrections shall reduce causal attribution confidence unless independently controlled."
+    ]
+  },
+
+  "validation_state": {
+    "statuses": [
+      "NOT_STARTED",
+      "PLANNED",
+      "IN_PROGRESS",
+      "PASSED",
+      "PARTIALLY_PASSED",
+      "FAILED",
+      "INCONCLUSIVE",
+      "MONITORING_REQUIRED"
+    ],
+
+    "required_fields": [
+      "status",
+      "validation_criteria",
+      "validation_actions",
+      "validation_evidence_ids"
+    ],
+
+    "rules": [
+      "Resolution requires explicit validation criteria.",
+      "The disappearance of one symptom may not satisfy all validation requirements.",
+      "Validation shall compare the post-correction state against applicable expected state.",
+      "Failed validation shall return the case to active reasoning from the new state rather than restart the case."
+    ]
+  },
+
+  "resolution_model": {
+    "required_dimensions": [
+      "SYMPTOM_RESOLUTION",
+      "ROOT_CAUSE_CONFIDENCE",
+      "CORRECTION_EFFECTIVENESS",
+      "VALIDATION_CONFIDENCE",
+      "RECURRENCE_RISK",
+      "UNRESOLVED_CONTRADICTIONS"
+    ],
+
+    "resolution_states": [
+      "UNRESOLVED",
+      "PARTIALLY_RESOLVED",
+      "OPERATIONALLY_RESOLVED",
+      "CAUSALLY_RESOLVED",
+      "VALIDATED_RESOLUTION"
+    ],
+
+    "rules": [
+      "Operational resolution and causal resolution are distinct.",
+      "A case may be operationally resolved when service is restored even if exact root cause remains uncertain.",
+      "A case shall not be represented as causally resolved without sufficient evidence.",
+      "Learning eligibility shall depend on the actual resolution state."
+    ]
+  },
+
+  "state_transition_policy": {
+    "rules": [
+      "State transitions shall be triggered by events rather than arbitrary language-model narrative.",
+      "A transition may trigger context, probability, routing, evidence, memory, or learning recalculation.",
+      "Invalid transitions shall be rejected by deterministic services.",
+      "The language model may propose a state transition but shall not silently mutate authoritative state.",
+      "State changes shall be atomic where multiple dependent updates must remain consistent."
+    ]
+  },
+
+  "rerouting_policy": {
+    "triggers": [
+      "NEW_VALID_EVIDENCE",
+      "ACTION_RESULT",
+      "CONTEXT_CHANGE",
+      "HYPOTHESIS_CHANGE",
+      "PROBABILITY_CHANGE",
+      "CONTRADICTION",
+      "CORRECTIVE_ACTION_RESULT",
+      "VALIDATION_FAILURE"
+    ],
+
+    "rule": "Rerouting shall begin from the newest authoritative state and shall preserve completed diagnostic work."
+  },
+
+  "loop_prevention": {
+    "enabled": true,
+
+    "controls": [
+      "COMPLETED_ACTION_HISTORY",
+      "SEMANTIC_ACTION_EQUIVALENCE",
+      "RULED_OUT_HYPOTHESES",
+      "VALIDATED_FINDINGS",
+      "REPEAT_ACTION_REASON",
+      "STATE_VERSION_COMPARISON"
+    ],
+
+    "rules": [
+      "ARIA shall not repeatedly request materially equivalent actions without justification.",
+      "If the state has not materially changed, repeating the same reasoning path shall receive a strong penalty.",
+      "A repeated action may become valid after a technical state change.",
+      "The system shall distinguish rerouting from backtracking."
+    ]
+  },
+
+  "case_reopening": {
+    "valid_reasons": [
+      "SYMPTOM_RECURRED",
+      "VALIDATION_FAILED",
+      "NEW_EVIDENCE",
+      "PREVIOUS_EVIDENCE_INVALIDATED",
+      "ROOT_CAUSE_CHALLENGED",
+      "RELATED_FAILURE_DISCOVERED"
+    ],
+
+    "rules": [
+      "Reopening shall preserve the previous resolution state.",
+      "A reopened case shall create new state versions rather than rewriting the original resolution.",
+      "Recurrence shall be visible to the Learning Engine."
+    ]
+  },
+
+  "case_branching": {
+    "enabled": true,
+
+    "description": "A case may branch when evidence indicates multiple independent technical problems.",
+
+    "rules": [
+      "Independent failures may become child cases when separation improves reasoning clarity.",
+      "Shared evidence may remain linked to multiple cases.",
+      "Branching shall not duplicate evidence as independent observations.",
+      "Parent and child relationships shall remain explicit."
+    ]
+  },
+
+  "case_merge": {
+    "enabled": true,
+
+    "description": "Cases discovered to represent the same underlying incident may be linked or merged logically.",
+
+    "rules": [
+      "Original case identifiers and histories shall remain preserved.",
+      "Merged cases shall not inflate learning counts.",
+      "Evidence provenance shall remain unchanged."
+    ]
+  },
+
+  "case_state_summary": {
+    "description": "Produces a compact current-state representation for working memory and model context.",
+
+    "required_output": [
+      "WHAT_IS_HAPPENING",
+      "WHAT_IS_CONFIRMED",
+      "WHAT_IS_SUSPECTED",
+      "WHAT_HAS_BEEN_RULED_OUT",
+      "WHAT_HAS_ALREADY_BEEN_DONE",
+      "WHAT_CHANGED",
+      "WHAT_IS_UNKNOWN",
+      "WHAT_ARIA_IS_WAITING_FOR",
+      "WHAT_ARIA_RECOMMENDS_NEXT",
+      "WHY"
+    ]
+  },
+
+  "example": {
+    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+
+    "state_version": 7,
+
+    "reported_problem": "Main is approximately -44 dBm and Diversity is approximately -63 dBm.",
+
+    "confirmed_findings": [
+      "Main/Diversity RSL imbalance exists",
+      "Measured delta is approximately 19 dB"
+    ],
+
+    "active_hypotheses": [
+      {
+        "failure_mode": "RF_ROUTING_ERROR",
+        "probability": 0.61
+      },
+      {
+        "failure_mode": "CONFIGURATION_ERROR",
+        "probability": 0.19
+      },
+      {
+        "failure_mode": "RADIO_FAILURE",
+        "probability": 0.11
+      },
+      {
+        "failure_mode": "ALIGNMENT_ERROR",
+        "probability": 0.06
+      },
+      {
+        "failure_mode": "OTHER",
+        "probability": 0.03
+      }
+    ],
+
+    "completed_actions": [
+      "Reviewed configuration screenshot"
+    ],
+
+    "ruled_out_hypotheses": [
+      "Incorrect configured frequency"
+    ],
+
+    "pending_action": "Verify physical Main/Diversity RF routing",
+
+    "waiting_for": "Technician physical inspection",
+
+    "current_route_reason": "Configuration evidence reduced configuration probability and increased the relative value of physical RF routing inspection.",
+
+    "interpretation": "ARIA does not need to reread the entire conversation to continue. The current case state explicitly records where diagnosis presently stands."
+  },
+
+  "engine_interfaces": {
+    "context_engine": "Publishes the current multidimensional technical context.",
+    "evidence_engine": "Adds, validates, supersedes, contradicts, and invalidates evidence.",
+    "hypothesis_engine": "Maintains candidate and active hypotheses.",
+    "probability_engine": "Maintains probability state.",
+    "routing_engine": "Maintains requested, completed, blocked, and candidate actions.",
+    "memory_engine": "Builds working memory from current state and retrieves historical context.",
+    "learning_engine": "Consumes validated completed case history after appropriate lifecycle transitions."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "CASE-RULE-001",
+      "rule": "A case is an evolving technical state, not a chat transcript."
+    },
+    {
+      "rule_id": "CASE-RULE-002",
+      "rule": "Conversation may modify case state only through attributable events."
+    },
+    {
+      "rule_id": "CASE-RULE-003",
+      "rule": "Current state shall remain independently reconstructable from conversational wording."
+    },
+    {
+      "rule_id": "CASE-RULE-004",
+      "rule": "Every material state change shall preserve the previous state."
+    },
+    {
+      "rule_id": "CASE-RULE-005",
+      "rule": "Reported problems, symptoms, hypotheses, findings, diagnoses, corrections, and validation are distinct objects."
+    },
+    {
+      "rule_id": "CASE-RULE-006",
+      "rule": "The leading hypothesis shall never be represented as confirmed solely because it has the highest probability."
+    },
+    {
+      "rule_id": "CASE-RULE-007",
+      "rule": "Corrective action success shall not automatically prove the proposed root cause."
+    },
+    {
+      "rule_id": "CASE-RULE-008",
+      "rule": "ARIA shall explicitly represent what the case is waiting for."
+    },
+    {
+      "rule_id": "CASE-RULE-009",
+      "rule": "ARIA shall preserve completed work so rerouting does not become unnecessary backtracking."
+    },
+    {
+      "rule_id": "CASE-RULE-010",
+      "rule": "Failed actions and failed validation shall become part of the new state rather than erase previous reasoning."
+    },
+    {
+      "rule_id": "CASE-RULE-011",
+      "rule": "Operational resolution and causal resolution shall remain distinguishable."
+    },
+    {
+      "rule_id": "CASE-RULE-012",
+      "rule": "A case may remain useful even when exact root cause is never proven."
+    },
+    {
+      "rule_id": "CASE-RULE-013",
+      "rule": "Material contradictions shall remain active until reconciled, superseded, invalidated, or explicitly left unresolved."
+    },
+    {
+      "rule_id": "CASE-RULE-014",
+      "rule": "Case state shall support multiple simultaneous hypotheses and multiple simultaneous failures."
+    },
+    {
+      "rule_id": "CASE-RULE-015",
+      "rule": "A reopened case shall extend history rather than rewrite it."
+    },
+    {
+      "rule_id": "CASE-RULE-016",
+      "rule": "Branching and merging shall preserve evidence provenance and prevent duplicate learning."
+    },
+    {
+      "rule_id": "CASE-RULE-017",
+      "rule": "The language model may propose state changes but deterministic ARIA services shall own authoritative state transitions."
+    },
+    {
+      "rule_id": "CASE-RULE-018",
+      "rule": "Working memory shall be generated from authoritative case state rather than treated as authoritative storage."
+    },
+    {
+      "rule_id": "CASE-RULE-019",
+      "rule": "Case state shall preserve enough information to explain why ARIA is recommending the current next action."
+    },
+    {
+      "rule_id": "CASE-RULE-020",
+      "rule": "ARIA shall always continue diagnosis from the newest validated state rather than blindly restart a troubleshooting sequence."
+    }
+  ]
+}
