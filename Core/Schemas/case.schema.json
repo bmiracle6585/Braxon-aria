@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aria.braxon.ai/schemas/case.schema.json",
-  "title": "A.R.I.A. Experience Case",
-  "description": "Machine-readable validation schema for diagnostic and operational cases stored within the A.R.I.A. Experience Ledger.",
+  "title": "A.R.I.A. Diagnostic Case",
+  "description": "Machine-readable validation schema for an A.R.I.A. diagnostic or operational case. A case represents an investigation or work episode and remains distinct from validated Experience Ledger records that may later be derived from it.",
   "type": "object",
   "additionalProperties": false,
 
@@ -17,9 +17,7 @@
 
   "properties": {
     "case_id": {
-      "type": "string",
-      "pattern": "^EXP-[0-9]{6,}$",
-      "description": "Permanent Experience Ledger case identifier."
+      "$ref": "#/$defs/case_id"
     },
 
     "case_type": {
@@ -60,61 +58,74 @@
       "type": ["string", "null"]
     },
 
+    "context_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/context_id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Canonical context object associated with this case when one has been materialized."
+    },
+
     "context": {
       "type": "object",
+      "description": "Case-local context references used for efficient reasoning and retrieval. Canonical concepts remain independently addressable entities.",
       "additionalProperties": false,
 
       "properties": {
-        "manufacturer_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "manufacturer_ids": {
+          "$ref": "#/$defs/manufacturer_id_array"
         },
 
-        "product_family_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_family_ids": {
+          "$ref": "#/$defs/product_family_id_array"
         },
 
-        "product_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_ids": {
+          "$ref": "#/$defs/product_id_array"
         },
 
-        "product_variant_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_variant_ids": {
+          "$ref": "#/$defs/product_variant_id_array"
         },
 
-        "hardware_revision_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "hardware_revision_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "firmware_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "firmware_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "frequency_band_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "frequency_band_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "configuration_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "configuration_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "topology_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "topology_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "scope_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "scope_ids": {
+          "$ref": "#/$defs/scope_id_array"
         },
 
-        "project_phase_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "project_phase_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "environment_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "environment_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "customer_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "customer_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
         "site_a": {
@@ -143,13 +154,13 @@
       "default": []
     },
 
-    "symptom_entity_ids": {
-      "$ref": "#/$defs/entity_id_array"
+    "symptom_ids": {
+      "$ref": "#/$defs/symptom_id_array"
     },
 
     "reported_problem": {
       "type": ["string", "null"],
-      "description": "Problem as initially reported, preserved separately from the final diagnosis."
+      "description": "Problem as initially reported, preserved separately from ARIA's hypotheses and final diagnosis."
     },
 
     "initial_conditions": {
@@ -159,8 +170,7 @@
     "evidence_ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
+        "$ref": "#/$defs/evidence_id"
       },
       "uniqueItems": true,
       "default": []
@@ -169,8 +179,7 @@
     "hypothesis_ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^HYP-[0-9]{6,}$"
+        "$ref": "#/$defs/hypothesis_id"
       },
       "uniqueItems": true,
       "default": []
@@ -179,8 +188,7 @@
     "route_step_ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^RTE-[0-9]{6,}$"
+        "$ref": "#/$defs/route_step_id"
       },
       "uniqueItems": true,
       "default": []
@@ -189,8 +197,17 @@
     "event_ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^EVT-[0-9]{6,}$"
+        "$ref": "#/$defs/event_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "action_ids": {
+      "type": "array",
+      "description": "Canonical Action entities associated with the case, including diagnostic, verification, and corrective actions.",
+      "items": {
+        "$ref": "#/$defs/action_id"
       },
       "uniqueItems": true,
       "default": []
@@ -201,17 +218,23 @@
       "additionalProperties": false,
 
       "properties": {
-        "primary_cause_entity_id": {
-          "type": ["string", "null"],
-          "pattern": "^ENT-[0-9]{6,}$"
+        "primary_cause_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/typed_entity_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
-        "contributing_cause_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "contributing_cause_ids": {
+          "$ref": "#/$defs/generic_typed_id_array"
         },
 
-        "failure_mode_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "failure_mode_ids": {
+          "$ref": "#/$defs/failure_mode_id_array"
         },
 
         "diagnosis_text": {
@@ -219,9 +242,14 @@
         },
 
         "confidence": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "confirmed": {
@@ -233,19 +261,39 @@
           "type": ["string", "null"]
         },
 
+        "confirmation_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
         "confirmed_at": {
           "type": ["string", "null"],
           "format": "date-time"
         },
 
         "confirmed_by": {
-          "type": ["string", "null"]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
 
     "corrective_actions": {
       "type": "array",
+      "description": "Case-local summaries of corrective actions. action_id references the canonical Action entity and remains the authoritative identity.",
       "items": {
         "$ref": "#/$defs/corrective_action"
       },
@@ -257,8 +305,8 @@
       "additionalProperties": false,
 
       "properties": {
-        "outcome_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "outcome_ids": {
+          "$ref": "#/$defs/outcome_id_array"
         },
 
         "resolution_status": {
@@ -287,8 +335,27 @@
           "type": ["string", "null"]
         },
 
+        "validation_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
         "validated_by": {
-          "type": ["string", "null"]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "validated_at": {
@@ -300,7 +367,7 @@
 
     "learning": {
       "type": "object",
-      "description": "Derived learning state. Canonical knowledge promotion remains governed separately.",
+      "description": "Learning eligibility and derivation state. A diagnostic case does not itself constitute an Experience Ledger record. Experience records may be derived only when the applicable learning and validation requirements are satisfied.",
       "additionalProperties": false,
 
       "properties": {
@@ -324,8 +391,17 @@
         "generated_claim_ids": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^CLM-[0-9]{6,}$"
+            "$ref": "#/$defs/claim_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "derived_experience_ids": {
+          "type": "array",
+          "description": "Validated Experience Ledger records derived from this case. These are separate entities from the case itself.",
+          "items": {
+            "$ref": "#/$defs/experience_id"
           },
           "uniqueItems": true,
           "default": []
@@ -333,9 +409,9 @@
 
         "similar_case_ids": {
           "type": "array",
+          "description": "Other diagnostic cases considered materially comparable during learning or historical analysis.",
           "items": {
-            "type": "string",
-            "pattern": "^EXP-[0-9]{6,}$"
+            "$ref": "#/$defs/case_id"
           },
           "uniqueItems": true,
           "default": []
@@ -401,11 +477,31 @@
     },
 
     "created_by": {
-      "type": ["string", "null"]
+      "anyOf": [
+        {
+          "$ref": "#/$defs/user_id"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "updated_by": {
-      "type": ["string", "null"]
+      "anyOf": [
+        {
+          "$ref": "#/$defs/user_id"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "metadata": {
@@ -415,14 +511,205 @@
   },
 
   "$defs": {
-    "entity_id_array": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "case_id": {
+      "type": "string",
+      "pattern": "^case_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "context_id": {
+      "type": "string",
+      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^hyp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "route_step_id": {
+      "type": "string",
+      "pattern": "^rstep_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "event_id": {
+      "type": "string",
+      "pattern": "^evt_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "action_id": {
+      "type": "string",
+      "pattern": "^act_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "claim_id": {
+      "type": "string",
+      "pattern": "^claim_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "experience_id": {
+      "type": "string",
+      "pattern": "^exp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "user_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "manufacturer_id": {
+      "type": "string",
+      "pattern": "^mfr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_family_id": {
+      "type": "string",
+      "pattern": "^pfam_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_id": {
+      "type": "string",
+      "pattern": "^prod_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_variant_id": {
+      "type": "string",
+      "pattern": "^pvar_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "scope_id": {
+      "type": "string",
+      "pattern": "^scope_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "symptom_id": {
+      "type": "string",
+      "pattern": "^sym_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "failure_mode_id": {
+      "type": "string",
+      "pattern": "^fm_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "outcome_id": {
+      "type": "string",
+      "pattern": "^out_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "typed_entity_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "generic_typed_id_array": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^ENT-[0-9]{6,}$"
+        "$ref": "#/$defs/typed_entity_id"
       },
       "uniqueItems": true,
       "default": []
+    },
+
+    "manufacturer_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/manufacturer_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_family_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_family_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_variant_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_variant_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "scope_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scope_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "symptom_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/symptom_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "failure_mode_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/failure_mode_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "outcome_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/outcome_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "basis"
+      ],
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
 
     "participant": {
@@ -430,14 +717,13 @@
       "additionalProperties": false,
 
       "required": [
-        "person_entity_id",
+        "user_id",
         "roles"
       ],
 
       "properties": {
-        "person_entity_id": {
-          "type": "string",
-          "description": "Stable identifier for the participating person."
+        "user_id": {
+          "$ref": "#/$defs/user_id"
         },
 
         "roles": {
@@ -475,13 +761,18 @@
 
       "properties": {
         "action_id": {
-          "type": "string",
-          "pattern": "^ACT-[0-9]{6,}$"
+          "$ref": "#/$defs/action_id"
         },
 
-        "corrective_action_entity_id": {
-          "type": ["string", "null"],
-          "pattern": "^ENT-[0-9]{6,}$"
+        "corrective_action_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/typed_entity_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "description": {
@@ -489,7 +780,17 @@
         },
 
         "performed_by": {
-          "type": ["string", "null"]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "performed_at": {
@@ -504,8 +805,7 @@
         "resulting_evidence_ids": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^EVD-[0-9]{6,}$"
+            "$ref": "#/$defs/evidence_id"
           },
           "uniqueItems": true,
           "default": []
