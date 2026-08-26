@@ -1,0 +1,593 @@
+{
+  "specification": "ARIA_VALIDATION_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines how A.R.I.A. determines whether a diagnosis, corrective action, configuration, installation, technical state, or case resolution has been sufficiently validated before accepting the result or allowing the case to contribute authoritative learning.",
+
+  "core_principle": {
+    "statement": "A corrective action is not a validated resolution. ARIA shall define expected post-action outcomes before validation, compare observed results against those expectations, distinguish operational recovery from causal proof, and preserve residual uncertainty.",
+    "rules": [
+      "Validation criteria should be defined before evaluating the result whenever practical.",
+      "A successful action does not automatically prove the suspected root cause.",
+      "The disappearance of a symptom does not automatically prove complete resolution.",
+      "Validation shall use evidence appropriate to the technical condition being validated.",
+      "Validation strength shall reflect evidence quality, independence, applicability, duration, and completeness.",
+      "Failed validation shall become new evidence and return the case to active reasoning.",
+      "Validation shall never rewrite unsuccessful diagnostic history.",
+      "Learning eligibility shall depend on what was actually validated."
+    ]
+  },
+
+  "validation_targets": [
+    "SYMPTOM",
+    "FINDING",
+    "HYPOTHESIS",
+    "ROOT_CAUSE",
+    "CONFIGURATION",
+    "INSTALLATION",
+    "CORRECTIVE_ACTION",
+    "TECHNICAL_STATE",
+    "SERVICE_RESTORATION",
+    "PERFORMANCE",
+    "ACCEPTANCE_CRITERIA",
+    "CASE_RESOLUTION"
+  ],
+
+  "validation_record": {
+    "required_fields": [
+      "validation_id",
+      "case_id",
+      "target_type",
+      "target_id",
+      "validation_type",
+      "validation_status",
+      "criteria",
+      "expected_outcomes",
+      "observed_outcomes",
+      "supporting_evidence_ids",
+      "validation_confidence",
+      "started_at",
+      "updated_at"
+    ],
+
+    "optional_fields": [
+      "performed_by",
+      "validated_by",
+      "comparison_baseline_ids",
+      "contradicting_evidence_ids",
+      "monitoring_window",
+      "monitoring_started_at",
+      "monitoring_completed_at",
+      "failure_reason",
+      "residual_uncertainty",
+      "learning_restrictions"
+    ]
+  },
+
+  "validation_types": [
+    {
+      "name": "DIRECT_REMEASUREMENT",
+      "description": "Repeat an applicable measurement after an intervention and compare the result against expected state."
+    },
+    {
+      "name": "BEFORE_AFTER_COMPARISON",
+      "description": "Compare validated technical state before and after a controlled change."
+    },
+    {
+      "name": "CONFIGURATION_VERIFICATION",
+      "description": "Verify that applicable configuration values match intended technical requirements."
+    },
+    {
+      "name": "PHYSICAL_VERIFICATION",
+      "description": "Verify physical installation, routing, connection, orientation, component, or mechanical state."
+    },
+    {
+      "name": "FUNCTIONAL_TEST",
+      "description": "Verify that the affected system performs its required function."
+    },
+    {
+      "name": "PERFORMANCE_TEST",
+      "description": "Verify performance against engineering, manufacturer, customer, or project criteria."
+    },
+    {
+      "name": "CROSS_ENDPOINT_VALIDATION",
+      "description": "Verify corresponding technical state from both ends of a path or system."
+    },
+    {
+      "name": "INDEPENDENT_MEASUREMENT",
+      "description": "Validate a condition using an independent source or measurement method."
+    },
+    {
+      "name": "CONTROLLED_INTERVENTION",
+      "description": "Change one sufficiently isolated variable and evaluate whether the predicted result occurs."
+    },
+    {
+      "name": "REVERSAL_TEST",
+      "description": "Where safe and justified, reverse a controlled change to test whether the original condition returns."
+    },
+    {
+      "name": "MONITORED_STABILITY",
+      "description": "Observe the technical state over a defined period to establish durability."
+    },
+    {
+      "name": "ACCEPTANCE_VALIDATION",
+      "description": "Compare final state against applicable acceptance requirements."
+    }
+  ],
+
+  "validation_statuses": [
+    "NOT_STARTED",
+    "PLANNED",
+    "IN_PROGRESS",
+    "PASSED",
+    "PARTIALLY_PASSED",
+    "FAILED",
+    "INCONCLUSIVE",
+    "MONITORING_REQUIRED",
+    "EXPIRED",
+    "SUPERSEDED"
+  ],
+
+  "validation_plan": {
+    "required_fields": [
+      "target",
+      "precondition",
+      "validation_actions",
+      "expected_success_state",
+      "expected_failure_state",
+      "required_evidence",
+      "success_threshold",
+      "failure_threshold"
+    ],
+
+    "rules": [
+      "ARIA should know what result would constitute success before observing the result.",
+      "Thresholds shall be quantitative when technically appropriate.",
+      "Qualitative criteria shall be explicit when quantitative criteria are unavailable.",
+      "Validation plans shall reflect applicable manufacturer, engineering, customer, project, and safety requirements."
+    ]
+  },
+
+  "expected_outcome_model": {
+    "required_fields": [
+      "expected_outcome_id",
+      "validation_id",
+      "condition",
+      "expected_result",
+      "tolerance",
+      "importance"
+    ],
+
+    "importance_levels": [
+      "REQUIRED",
+      "HIGH",
+      "MODERATE",
+      "SUPPORTING"
+    ],
+
+    "rules": [
+      "Required outcomes must normally be satisfied for full validation.",
+      "Supporting outcomes may increase confidence without being independently sufficient.",
+      "Unexpected improvement shall still be investigated when it contradicts the predicted mechanism."
+    ]
+  },
+
+  "validation_confidence": {
+    "range": {
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+
+    "candidate_factors": [
+      "EVIDENCE_QUALITY",
+      "DIRECTNESS",
+      "INDEPENDENCE",
+      "CRITERIA_COMPLETENESS",
+      "EXPECTED_OUTCOME_MATCH",
+      "MEASUREMENT_QUALITY",
+      "CONTROL_OF_VARIABLES",
+      "CROSS_ENDPOINT_AGREEMENT",
+      "TEMPORAL_STABILITY",
+      "REPEATABILITY"
+    ],
+
+    "rules": [
+      "Validation confidence shall preserve component factors.",
+      "A single weak validation method shall not receive artificial confidence from repeated copies of the same evidence.",
+      "Validation confidence may increase through independent corroboration.",
+      "Confidence shall remain bounded by material unresolved contradictions."
+    ]
+  },
+
+  "symptom_validation": {
+    "description": "Determines whether the originally reported or observed symptom remains present.",
+
+    "rules": [
+      "The original symptom shall be explicitly reevaluated after corrective action.",
+      "If multiple symptoms existed, each material symptom shall be evaluated.",
+      "Symptom disappearance may establish operational improvement without proving exact root cause."
+    ]
+  },
+
+  "root_cause_validation": {
+    "description": "Determines whether evidence sufficiently establishes the causal mechanism responsible for the failure.",
+
+    "strong_indicators": [
+      "CONTROLLED_SINGLE_VARIABLE_CHANGE",
+      "PREDICTED_BEFORE_AFTER_RESPONSE",
+      "REPRODUCIBLE_FAILURE_REMOVAL",
+      "INDEPENDENT_CORROBORATING_EVIDENCE",
+      "DIRECT_OBSERVATION_OF_FAILURE_MECHANISM"
+    ],
+
+    "weak_indicators": [
+      "SYMPTOM_DISAPPEARED_AFTER_MULTIPLE_CHANGES",
+      "COMPONENT_REPLACED_AND_SERVICE_RETURNED",
+      "HISTORICAL_FREQUENCY_ONLY",
+      "TECHNICIAN_ASSUMPTION",
+      "LEADING_HYPOTHESIS_ONLY"
+    ],
+
+    "rules": [
+      "Root-cause validation requires stronger evidence than symptom resolution.",
+      "Multiple simultaneous interventions shall reduce causal confidence.",
+      "Historical probability may support but shall not independently validate root cause.",
+      "A successful replacement may implicate the replaced subsystem without proving the exact failed mechanism."
+    ]
+  },
+
+  "corrective_action_validation": {
+    "description": "Determines whether a corrective action produced the intended technical effect.",
+
+    "required_questions": [
+      "Was the intended action actually completed?",
+      "Did the targeted technical state change?",
+      "Did the affected symptom improve?",
+      "Did required performance return?",
+      "Were new problems introduced?",
+      "Did the improvement persist?"
+    ],
+
+    "rules": [
+      "Action completion and action effectiveness shall be separately recorded.",
+      "An ineffective corrective action is diagnostically useful evidence.",
+      "A partially effective correction may indicate multiple simultaneous failure mechanisms."
+    ]
+  },
+
+  "configuration_validation": {
+    "rules": [
+      "Configured values shall be compared against the applicable intended state.",
+      "Configuration presence does not prove configuration effectiveness.",
+      "Dependencies between configuration parameters shall be evaluated where applicable.",
+      "Both endpoints shall be considered when configuration relationships span the path."
+    ]
+  },
+
+  "physical_validation": {
+    "rules": [
+      "Visual confirmation may validate visible installation state.",
+      "Hidden mating, internal electrical state, or RF performance may require additional evidence.",
+      "Component identity and port identity shall be confirmed when technically material.",
+      "Physical validation shall preserve endpoint and RF-chain context."
+    ]
+  },
+
+  "cross_endpoint_validation": {
+    "enabled": true,
+
+    "description": "Microwave systems frequently require validation across both endpoints rather than evaluating one radio in isolation.",
+
+    "rules": [
+      "ARIA shall identify when a technical condition depends on both endpoints.",
+      "Near-end improvement shall not automatically establish far-end correctness.",
+      "Transmit and receive relationships shall preserve directionality.",
+      "Main and Diversity paths shall remain distinguishable.",
+      "Cross-endpoint disagreement shall trigger investigation rather than averaging."
+    ]
+  },
+
+  "baseline_comparison": {
+    "baseline_types": [
+      "PRE_FAILURE_STATE",
+      "PRE_CORRECTION_STATE",
+      "ENGINEERED_EXPECTATION",
+      "MANUFACTURER_EXPECTATION",
+      "CUSTOMER_ACCEPTANCE_CRITERIA",
+      "PEER_CHANNEL",
+      "PARALLEL_RF_CHAIN",
+      "FAR_ENDPOINT",
+      "HISTORICAL_STABLE_STATE"
+    ],
+
+    "rules": [
+      "The selected baseline shall be technically applicable.",
+      "A historical baseline shall not automatically remain valid after topology or configuration changes.",
+      "Engineered expectation and observed historical performance shall remain distinguishable."
+    ]
+  },
+
+  "tolerance_handling": {
+    "description": "Validation shall account for technically meaningful tolerances rather than requiring exact equality.",
+
+    "rules": [
+      "Tolerance shall be derived from applicable engineering, manufacturer, customer, measurement, or statistical criteria.",
+      "Measurement uncertainty shall be considered.",
+      "A value barely inside a threshold may justify monitoring when other evidence remains concerning.",
+      "ARIA shall not invent numerical tolerances when no justified threshold exists."
+    ]
+  },
+
+  "stability_validation": {
+    "enabled": true,
+
+    "monitoring_classes": [
+      "IMMEDIATE",
+      "SHORT_TERM",
+      "EXTENDED",
+      "CONDITION_DEPENDENT"
+    ],
+
+    "rules": [
+      "Some corrections may be validated immediately.",
+      "Intermittent or environmentally dependent failures may require monitoring.",
+      "A case may be operationally restored while remaining in monitoring state.",
+      "Monitoring duration shall reflect the failure mechanism and recurrence risk rather than arbitrary time."
+    ]
+  },
+
+  "regression_check": {
+    "enabled": true,
+
+    "description": "Validation shall determine whether corrective work introduced new technical problems.",
+
+    "candidate_checks": [
+      "new alarms",
+      "new performance degradation",
+      "loss of redundancy",
+      "incorrect path routing",
+      "unexpected configuration changes",
+      "service impact",
+      "new Main/Diversity imbalance"
+    ]
+  },
+
+  "multi_change_caution": {
+    "description": "When multiple variables change before validation, ARIA shall reduce confidence in causal attribution.",
+
+    "example": {
+      "changes": [
+        "Flex twist replaced",
+        "OCM connection reseated",
+        "Radio rebooted"
+      ],
+      "result": "Diversity RSL improved by 18 dB",
+      "valid_conclusion": "The intervention set restored Diversity performance.",
+      "invalid_conclusion": "The flex twist was definitely defective."
+    }
+  },
+
+  "failed_validation": {
+    "process": [
+      "PRESERVE_VALIDATION_RESULT",
+      "CREATE_NEW_EVIDENCE",
+      "UPDATE_CASE_STATE",
+      "REEVALUATE_HYPOTHESES",
+      "RECALCULATE_PROBABILITIES",
+      "UPDATE_ROUTE_COSTS",
+      "REROUTE_FROM_CURRENT_STATE"
+    ],
+
+    "rules": [
+      "Failed validation shall not restart the case.",
+      "The failed corrective action shall remain part of the diagnostic history.",
+      "The failure itself may strongly weaken the causal hypothesis that justified the action.",
+      "Unexpected outcomes may generate new hypotheses."
+    ]
+  },
+
+  "partial_validation": {
+    "examples": [
+      "RSL normalized but BER remains abnormal.",
+      "Main path passes while Diversity remains degraded.",
+      "Service restored but intermittent alarms continue.",
+      "Configuration corrected but engineered performance is not achieved."
+    ],
+
+    "rules": [
+      "Partial success shall not be collapsed into PASS.",
+      "Remaining abnormal conditions shall return to active reasoning.",
+      "Successfully validated portions shall remain preserved and need not be unnecessarily retested."
+    ]
+  },
+
+  "resolution_gate": {
+    "description": "Controls whether a case may transition into a resolved state.",
+
+    "minimum_requirements": [
+      "MATERIAL_SYMPTOMS_EVALUATED",
+      "REQUIRED_VALIDATION_CRITERIA_EVALUATED",
+      "CORRECTIVE_ACTION_OUTCOME_RECORDED",
+      "RESIDUAL_ABNORMALITIES_RECORDED",
+      "UNRESOLVED_CONTRADICTIONS_ASSESSED",
+      "RESOLUTION_CONFIDENCE_CALCULATED"
+    ],
+
+    "rules": [
+      "A case may be operationally resolved without being causally resolved.",
+      "ARIA shall state the actual resolution level.",
+      "Cases with unresolved material service impact shall not be represented as fully resolved.",
+      "Resolution shall be controlled by deterministic state-transition rules."
+    ]
+  },
+
+  "learning_gate": {
+    "description": "Determines what aspects of a case may teach the Learning Engine.",
+
+    "outcomes": [
+      "FULL_LEARNING",
+      "CAUSAL_LEARNING_RESTRICTED",
+      "ROUTE_LEARNING_ONLY",
+      "EVIDENCE_LEARNING_ONLY",
+      "USER_LEARNING_ONLY",
+      "NO_LEARNING"
+    ],
+
+    "rules": [
+      "Validated symptom resolution alone does not authorize full causal learning.",
+      "Root-cause learning requires sufficient causal validation.",
+      "Route learning may remain valid when root cause is unresolved.",
+      "Learning restrictions shall be attached to the completed case."
+    ]
+  },
+
+  "example": {
+    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+
+    "before": {
+      "main_rsl": "-44.2 dBm",
+      "diversity_rsl": "-63.1 dBm",
+      "delta": "18.9 dB"
+    },
+
+    "hypothesis": "Incorrect Diversity RF routing",
+
+    "corrective_action": "Correct Diversity RF routing",
+
+    "predicted_outcome": {
+      "diversity_rsl": "Move materially toward expected engineered level",
+      "main_diversity_delta": "Reduce substantially",
+      "new_alarms": "None"
+    },
+
+    "after": {
+      "main_rsl": "-44.4 dBm",
+      "diversity_rsl": "-45.1 dBm",
+      "delta": "0.7 dB",
+      "new_alarms": "None"
+    },
+
+    "validation": {
+      "symptom_resolution": "PASSED",
+      "performance_validation": "PASSED",
+      "corrective_action_effectiveness": "PASSED",
+      "root_cause_validation": "HIGH_CONFIDENCE",
+      "overall_validation_confidence": 0.97
+    },
+
+    "interpretation": "The predicted technical response occurred after a targeted correction, strongly supporting the routing-error diagnosis and allowing appropriately weighted causal learning."
+  },
+
+  "counterexample": {
+    "case": "RSL discrepancy after RF-chain intervention",
+
+    "changes": [
+      "Flex twist replaced",
+      "OCM reseated",
+      "Radio rebooted"
+    ],
+
+    "result": "RSL normalized",
+
+    "validation": {
+      "symptom_resolution": "PASSED",
+      "corrective_action_effectiveness": "PASSED",
+      "exact_root_cause": "INCONCLUSIVE"
+    },
+
+    "learning_result": "Do not teach ARIA that the flex twist was definitively defective. The intervention set may contribute route and subsystem-level experience."
+  },
+
+  "engine_interfaces": {
+    "case_state_engine": "Controls validation lifecycle and resolution state.",
+    "evidence_engine": "Provides validation evidence and evidence quality.",
+    "context_engine": "Determines applicable technical context and criteria.",
+    "knowledge_graph": "Provides expected states, relationships, procedures, and requirements.",
+    "probability_engine": "Receives probability effects from validation outcomes.",
+    "routing_engine": "Receives failed or partial validation as new routing state.",
+    "memory_engine": "Provides applicable baselines and historical comparison.",
+    "learning_engine": "Receives validation strength and learning restrictions."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "VAL-RULE-001",
+      "rule": "A corrective action is not a validated resolution."
+    },
+    {
+      "rule_id": "VAL-RULE-002",
+      "rule": "ARIA shall define expected outcomes before evaluating corrective success whenever practical."
+    },
+    {
+      "rule_id": "VAL-RULE-003",
+      "rule": "Symptom resolution and root-cause validation are separate conclusions."
+    },
+    {
+      "rule_id": "VAL-RULE-004",
+      "rule": "Multiple simultaneous changes shall reduce exact causal attribution confidence."
+    },
+    {
+      "rule_id": "VAL-RULE-005",
+      "rule": "Validation shall use evidence appropriate to the condition being tested."
+    },
+    {
+      "rule_id": "VAL-RULE-006",
+      "rule": "Validation evidence shall preserve provenance."
+    },
+    {
+      "rule_id": "VAL-RULE-007",
+      "rule": "Repeated copies of the same validation evidence shall not create independent corroboration."
+    },
+    {
+      "rule_id": "VAL-RULE-008",
+      "rule": "Failed validation is diagnostic evidence, not wasted work."
+    },
+    {
+      "rule_id": "VAL-RULE-009",
+      "rule": "Failed validation shall trigger rerouting from the current state rather than restart."
+    },
+    {
+      "rule_id": "VAL-RULE-010",
+      "rule": "Partial validation shall preserve successful findings while continuing diagnosis of unresolved conditions."
+    },
+    {
+      "rule_id": "VAL-RULE-011",
+      "rule": "Applicable tolerance and measurement uncertainty shall be considered when evaluating technical success."
+    },
+    {
+      "rule_id": "VAL-RULE-012",
+      "rule": "ARIA shall not invent acceptance criteria or technical tolerances."
+    },
+    {
+      "rule_id": "VAL-RULE-013",
+      "rule": "Cross-endpoint systems shall be validated across all technically necessary endpoints."
+    },
+    {
+      "rule_id": "VAL-RULE-014",
+      "rule": "Immediate improvement may require continued monitoring when recurrence risk remains material."
+    },
+    {
+      "rule_id": "VAL-RULE-015",
+      "rule": "A case shall record the level of resolution actually achieved rather than force every closure into complete causal certainty."
+    },
+    {
+      "rule_id": "VAL-RULE-016",
+      "rule": "Learning authorization shall reflect validation strength."
+    },
+    {
+      "rule_id": "VAL-RULE-017",
+      "rule": "The language model may propose validation criteria, but authoritative validation state shall be controlled by structured ARIA services."
+    },
+    {
+      "rule_id": "VAL-RULE-018",
+      "rule": "Successful validation shall not erase contradictory evidence; material contradictions must be reconciled or preserved."
+    },
+    {
+      "rule_id": "VAL-RULE-019",
+      "rule": "Validation shall check for unintended regression where technically applicable."
+    },
+    {
+      "rule_id": "VAL-RULE-020",
+      "rule": "ARIA shall prefer validated technical resolution over conversational agreement that the problem appears fixed."
+    }
+  ]
+}
