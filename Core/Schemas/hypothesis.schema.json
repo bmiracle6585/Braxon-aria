@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aria.braxon.ai/schemas/hypothesis.schema.json",
   "title": "A.R.I.A. Diagnostic Hypothesis",
-  "description": "Machine-readable schema for a candidate explanation being evaluated within an A.R.I.A. diagnostic case.",
+  "description": "Machine-readable validation schema for a case-specific candidate explanation being evaluated within an A.R.I.A. diagnostic case. A hypothesis represents a possible explanation, condition, cause, or failure mode and maintains its probability, confidence, evidence relationships, historical priors, state transitions, and validation history without conflating probability with confidence.",
   "type": "object",
   "additionalProperties": false,
 
@@ -12,26 +12,24 @@
     "hypothesis_entity_id",
     "status",
     "current_probability",
+    "probability_confidence",
     "created_at",
     "updated_at"
   ],
 
   "properties": {
     "hypothesis_id": {
-      "type": "string",
-      "pattern": "^HYP-[0-9]{6,}$",
-      "description": "Permanent identifier for this case-specific hypothesis."
+      "$ref": "#/$defs/hypothesis_id"
     },
 
     "case_id": {
-      "type": "string",
-      "pattern": "^EXP-[0-9]{6,}$"
+      "$ref": "#/$defs/case_id",
+      "description": "Diagnostic case in which this hypothesis is being evaluated."
     },
 
     "hypothesis_entity_id": {
-      "type": "string",
-      "pattern": "^ENT-[0-9]{6,}$",
-      "description": "Canonical failure mode, cause, condition, or other entity being evaluated."
+      "$ref": "#/$defs/typed_entity_id",
+      "description": "Canonical failure mode, cause, condition, or other technical entity being evaluated. This is distinct from the case-specific hypothesis_id."
     },
 
     "status": {
@@ -51,26 +49,24 @@
       "type": ["number", "null"],
       "minimum": 0,
       "maximum": 1,
-      "description": "Probability assigned when the hypothesis first entered the active case."
+      "description": "Probability assigned when the hypothesis first entered the active hypothesis set."
     },
 
     "current_probability": {
       "type": "number",
       "minimum": 0,
       "maximum": 1,
-      "description": "Current case-specific probability after applicable evidence and priors have been evaluated."
+      "description": "Current case-specific probability that this hypothesis explains the relevant condition, after applicable priors and evidence have been evaluated."
     },
 
     "probability_confidence": {
-      "type": ["number", "null"],
-      "minimum": 0,
-      "maximum": 1,
-      "description": "Confidence in the quality of the current probability estimate."
+      "$ref": "#/$defs/confidence",
+      "description": "Confidence in the quality of the current probability estimate. This is distinct from the probability itself."
     },
 
     "prior": {
       "type": ["object", "null"],
-      "description": "Structured record of the prior information used when initializing or recalculating this hypothesis.",
+      "description": "Structured record of the prior information used when initializing or recalculating this hypothesis. Priors influence probability but do not constitute current-case evidence.",
       "additionalProperties": false,
 
       "properties": {
@@ -82,7 +78,15 @@
           "$ref": "#/$defs/probability_component"
         },
 
+        "product_family_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
         "product_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "product_variant_prior": {
           "$ref": "#/$defs/probability_component"
         },
 
@@ -108,18 +112,29 @@
           "maximum": 1
         },
 
+        "combined_prior_confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
         "method": {
           "type": ["string", "null"],
-          "description": "Identifier for the method used to combine available priors."
+          "description": "Identifier for the method used by the Probability Engine to combine applicable prior components."
         }
       }
     },
 
-    "supporting_relationship_ids": {
+    "relationship_ids": {
       "type": "array",
+      "description": "Canonical relationship records involving this hypothesis. Relationship records are authoritative for support, contradiction, causality, and other graph semantics.",
       "items": {
-        "type": "string",
-        "pattern": "^REL-[0-9]{6,}$"
+        "$ref": "#/$defs/relationship_id"
       },
       "uniqueItems": true,
       "default": []
@@ -127,9 +142,9 @@
 
     "supporting_evidence_ids": {
       "type": "array",
+      "description": "Convenience index of active evidence currently supporting this hypothesis. Canonical relationship records remain authoritative for support semantics and strength.",
       "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
+        "$ref": "#/$defs/evidence_id"
       },
       "uniqueItems": true,
       "default": []
@@ -137,22 +152,20 @@
 
     "contradicting_evidence_ids": {
       "type": "array",
+      "description": "Convenience index of active evidence currently contradicting this hypothesis. Canonical relationship records remain authoritative for contradiction semantics and strength.",
       "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
+        "$ref": "#/$defs/evidence_id"
       },
       "uniqueItems": true,
       "default": []
     },
 
-    "required_evidence_ids": {
+    "evaluation_requirements": {
       "type": "array",
-      "description": "Evidence still required to adequately evaluate this hypothesis when known.",
+      "description": "Observations, tests, information, or actions still required to adequately evaluate this hypothesis. Requirements that have not yet produced evidence do not receive evidence IDs.",
       "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
+        "$ref": "#/$defs/evaluation_requirement"
       },
-      "uniqueItems": true,
       "default": []
     },
 
@@ -165,61 +178,100 @@
       "default": []
     },
 
+    "context_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/context_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+
     "context": {
       "type": "object",
+      "description": "Case-local context relevant to evaluation of this hypothesis.",
       "additionalProperties": false,
 
       "properties": {
-        "manufacturer_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "manufacturer_ids": {
+          "$ref": "#/$defs/manufacturer_id_array"
         },
 
-        "product_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_family_ids": {
+          "$ref": "#/$defs/product_family_id_array"
         },
 
-        "product_variant_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_ids": {
+          "$ref": "#/$defs/product_id_array"
         },
 
-        "configuration_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_variant_ids": {
+          "$ref": "#/$defs/product_variant_id_array"
         },
 
-        "topology_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "configuration_ids": {
+          "$ref": "#/$defs/typed_entity_id_array"
         },
 
-        "scope_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "topology_ids": {
+          "$ref": "#/$defs/typed_entity_id_array"
         },
 
-        "symptom_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "scope_ids": {
+          "$ref": "#/$defs/scope_id_array"
+        },
+
+        "symptom_ids": {
+          "$ref": "#/$defs/symptom_id_array"
         }
       }
     },
 
-    "similar_case_ids": {
-      "type": "array",
-      "description": "Historical cases materially contributing to this hypothesis evaluation.",
-      "items": {
-        "type": "string",
-        "pattern": "^EXP-[0-9]{6,}$"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
+    "historical_basis": {
+      "type": "object",
+      "description": "Validated historical information materially contributing to the hypothesis prior or evaluation. Historical information remains distinct from evidence observed in the active case.",
+      "additionalProperties": false,
 
-    "sample_size": {
-      "type": ["integer", "null"],
-      "minimum": 0,
-      "description": "Number of sufficiently comparable historical cases contributing to the empirical prior."
+      "properties": {
+        "experience_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/experience_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "similar_case_ids": {
+          "type": "array",
+          "description": "Diagnostic cases considered comparable for analysis or explanation. Inclusion here does not automatically make a case eligible for statistical learning.",
+          "items": {
+            "$ref": "#/$defs/case_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "sample_size": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "Number of sufficiently comparable validated observations contributing to the empirical historical basis."
+        },
+
+        "context_match": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Degree to which the historical experience set matches the active context."
+        }
+      }
     },
 
     "explanation": {
       "type": ["string", "null"],
-      "description": "Human-readable explanation of why the hypothesis currently has its assigned probability."
+      "description": "Human-readable explanation of why the hypothesis currently has its assigned probability and confidence."
     },
 
     "elimination": {
@@ -239,8 +291,16 @@
         "evidence_ids": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^EVD-[0-9]{6,}$"
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "relationship_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/relationship_id"
           },
           "uniqueItems": true,
           "default": []
@@ -249,6 +309,20 @@
         "eliminated_at": {
           "type": ["string", "null"],
           "format": "date-time"
+        },
+
+        "eliminated_by": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -270,8 +344,16 @@
         "evidence_ids": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^EVD-[0-9]{6,}$"
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "relationship_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/relationship_id"
           },
           "uniqueItems": true,
           "default": []
@@ -280,8 +362,42 @@
         "confirmed_at": {
           "type": ["string", "null"],
           "format": "date-time"
+        },
+
+        "confirmed_by": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
+    },
+
+    "supersedes_hypothesis_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hypothesis_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "superseded_by_hypothesis_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hypothesis_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "created_at": {
@@ -295,11 +411,31 @@
     },
 
     "created_by": {
-      "type": ["string", "null"]
+      "anyOf": [
+        {
+          "$ref": "#/$defs/user_id"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "updated_by": {
-      "type": ["string", "null"]
+      "anyOf": [
+        {
+          "$ref": "#/$defs/user_id"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "metadata": {
@@ -309,14 +445,158 @@
   },
 
   "$defs": {
-    "entity_id_array": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^case_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "context_id": {
+      "type": "string",
+      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^hyp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^rel_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "experience_id": {
+      "type": "string",
+      "pattern": "^exp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "user_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "manufacturer_id": {
+      "type": "string",
+      "pattern": "^mfr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_family_id": {
+      "type": "string",
+      "pattern": "^pfam_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_id": {
+      "type": "string",
+      "pattern": "^prod_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_variant_id": {
+      "type": "string",
+      "pattern": "^pvar_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "scope_id": {
+      "type": "string",
+      "pattern": "^scope_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "symptom_id": {
+      "type": "string",
+      "pattern": "^sym_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "typed_entity_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "typed_entity_id_array": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^ENT-[0-9]{6,}$"
+        "$ref": "#/$defs/typed_entity_id"
       },
       "uniqueItems": true,
       "default": []
+    },
+
+    "manufacturer_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/manufacturer_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_family_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_family_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_variant_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_variant_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "scope_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scope_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "symptom_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/symptom_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "basis"
+      ],
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
 
     "probability_component": {
@@ -331,9 +611,14 @@
         },
 
         "confidence": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "sample_size": {
@@ -341,14 +626,91 @@
           "minimum": 0
         },
 
-        "source_case_ids": {
+        "source_experience_ids": {
           "type": "array",
+          "description": "Validated Experience Ledger records supporting this prior component.",
           "items": {
-            "type": "string",
-            "pattern": "^EXP-[0-9]{6,}$"
+            "$ref": "#/$defs/experience_id"
           },
           "uniqueItems": true,
           "default": []
+        },
+
+        "source_case_ids": {
+          "type": "array",
+          "description": "Diagnostic cases used for traceability or comparison. Statistical weighting should only use cases meeting the applicable learning-validation requirements.",
+          "items": {
+            "$ref": "#/$defs/case_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "method": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "evaluation_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "requirement_type",
+        "description",
+        "status"
+      ],
+
+      "properties": {
+        "requirement_type": {
+          "type": "string",
+          "enum": [
+            "OBSERVATION",
+            "MEASUREMENT",
+            "TEST",
+            "CONFIGURATION_REVIEW",
+            "DOCUMENT_REVIEW",
+            "PHYSICAL_INSPECTION",
+            "ACTION",
+            "INFORMATION",
+            "OTHER"
+          ]
+        },
+
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "status": {
+          "type": "string",
+          "enum": [
+            "REQUIRED",
+            "REQUESTED",
+            "IN_PROGRESS",
+            "SATISFIED",
+            "WAIVED",
+            "NOT_APPLICABLE"
+          ]
+        },
+
+        "action_id": {
+          "type": ["string", "null"],
+          "pattern": "^act_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+
+        "resulting_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "reason": {
+          "type": ["string", "null"]
         }
       }
     },
@@ -376,11 +738,41 @@
           "maximum": 1
         },
 
+        "previous_confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "new_confidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
         "trigger_evidence_ids": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^EVD-[0-9]{6,}$"
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "trigger_relationship_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/relationship_id"
           },
           "uniqueItems": true,
           "default": []
@@ -388,7 +780,7 @@
 
         "trigger_event_id": {
           "type": ["string", "null"],
-          "pattern": "^EVT-[0-9]{6,}$"
+          "pattern": "^evt_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         },
 
         "reason": {
