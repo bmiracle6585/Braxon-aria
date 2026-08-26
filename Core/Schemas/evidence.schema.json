@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aria.braxon.ai/schemas/evidence.schema.json",
   "title": "A.R.I.A. Case Evidence",
-  "description": "Machine-readable validation schema for observations, measurements, test results, artifacts, configuration data, and other evidence associated with an active or historical A.R.I.A. case.",
+  "description": "Machine-readable validation schema for observations, measurements, test results, artifacts, configuration data, documentary information, and other evidence associated with an active or historical A.R.I.A. diagnostic case. Evidence remains distinct from interpretation and inference, retains provenance, and references the canonical entities to which it applies.",
   "type": "object",
   "additionalProperties": false,
 
@@ -11,6 +11,7 @@
     "case_id",
     "evidence_type",
     "status",
+    "provenance",
     "observed_at",
     "created_at",
     "updated_at"
@@ -18,15 +19,12 @@
 
   "properties": {
     "evidence_id": {
-      "type": "string",
-      "pattern": "^EVD-[0-9]{6,}$",
-      "description": "Permanent identifier for this evidence record."
+      "$ref": "#/$defs/evidence_id"
     },
 
     "case_id": {
-      "type": "string",
-      "pattern": "^EXP-[0-9]{6,}$",
-      "description": "Experience Ledger case to which this evidence belongs."
+      "$ref": "#/$defs/case_id",
+      "description": "Diagnostic case to which this evidence belongs. A diagnostic case is distinct from an Experience Ledger record."
     },
 
     "evidence_type": {
@@ -67,22 +65,28 @@
 
     "observation": {
       "type": ["string", "null"],
-      "description": "Human-readable statement describing what was directly observed or recorded."
+      "description": "Human-readable statement describing what was directly observed, measured, recorded, or supplied by the originating source."
     },
 
     "interpretation": {
       "type": ["string", "null"],
-      "description": "Interpretation of the observation. This shall remain distinguishable from the observation itself."
+      "description": "Interpretation of the observation. Interpretation shall remain distinguishable from the underlying observation and shall not acquire the authority of the source evidence."
     },
 
-    "measurement_entity_id": {
-      "type": ["string", "null"],
-      "pattern": "^ENT-[0-9]{6,}$",
-      "description": "Canonical measurement entity represented by this evidence."
+    "measurement_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/measurement_id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Canonical measurement concept represented by this evidence when applicable."
     },
 
     "value": {
-      "description": "Observed value. May be numeric, textual, boolean, or null depending upon the evidence type.",
+      "description": "Observed value. May be numeric, textual, boolean, or null depending on evidence type.",
       "type": [
         "number",
         "string",
@@ -91,14 +95,20 @@
       ]
     },
 
-    "unit_entity_id": {
-      "type": ["string", "null"],
-      "pattern": "^ENT-[0-9]{6,}$",
-      "description": "Canonical unit entity when the evidence contains a measurable value."
+    "unit_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/unit_id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Canonical unit associated with the observed value when applicable."
     },
 
     "expected_value": {
-      "description": "Expected, engineered, configured, or reference value when applicable.",
+      "description": "Expected, engineered, configured, required, or reference value when applicable.",
       "type": [
         "number",
         "string",
@@ -107,9 +117,15 @@
       ]
     },
 
-    "expected_unit_entity_id": {
-      "type": ["string", "null"],
-      "pattern": "^ENT-[0-9]{6,}$"
+    "expected_unit_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/unit_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "comparison": {
@@ -153,53 +169,69 @@
     },
 
     "subject_entity_ids": {
-      "$ref": "#/$defs/entity_id_array"
+      "$ref": "#/$defs/typed_entity_id_array",
+      "description": "Canonical entities directly described, measured, observed, or otherwise represented by this evidence."
+    },
+
+    "context_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/context_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "context": {
       "type": "object",
-      "description": "Technical context associated with this evidence.",
+      "description": "Evidence-local technical context. These references assist reasoning without duplicating canonical knowledge entities.",
       "additionalProperties": false,
 
       "properties": {
-        "manufacturer_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "manufacturer_ids": {
+          "$ref": "#/$defs/manufacturer_id_array"
         },
 
-        "product_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_family_ids": {
+          "$ref": "#/$defs/product_family_id_array"
         },
 
-        "product_variant_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_ids": {
+          "$ref": "#/$defs/product_id_array"
         },
 
-        "hardware_revision_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "product_variant_ids": {
+          "$ref": "#/$defs/product_variant_id_array"
         },
 
-        "firmware_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "hardware_revision_ids": {
+          "$ref": "#/$defs/typed_entity_id_array"
         },
 
-        "frequency_band_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "firmware_ids": {
+          "$ref": "#/$defs/typed_entity_id_array"
         },
 
-        "configuration_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "frequency_band_ids": {
+          "$ref": "#/$defs/typed_entity_id_array"
         },
 
-        "topology_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "configuration_ids": {
+          "$ref": "#/$defs/typed_entity_id_array"
         },
 
-        "scope_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "topology_ids": {
+          "$ref": "#/$defs/typed_entity_id_array"
         },
 
-        "symptom_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        "scope_ids": {
+          "$ref": "#/$defs/scope_id_array"
+        },
+
+        "symptom_ids": {
+          "$ref": "#/$defs/symptom_id_array"
         },
 
         "site": {
@@ -215,13 +247,46 @@
 
     "observer": {
       "type": ["object", "null"],
-      "description": "Person or system responsible for the observation.",
+      "description": "Person or system responsible for the underlying observation.",
       "additionalProperties": false,
 
       "properties": {
-        "person_entity_id": {
-          "type": ["string", "null"],
-          "description": "Stable person identifier when available."
+        "user_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "role": {
+          "type": ["string", "null"]
+        },
+
+        "system_identifier": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "reporter": {
+      "type": ["object", "null"],
+      "description": "Person or system that supplied the evidence to ARIA when different from the original observer.",
+      "additionalProperties": false,
+
+      "properties": {
+        "user_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "role": {
@@ -259,9 +324,26 @@
       "additionalProperties": false,
 
       "properties": {
-        "tool_entity_id": {
-          "type": ["string", "null"],
-          "pattern": "^ENT-[0-9]{6,}$"
+        "tool_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/tool_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "manufacturer_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/manufacturer_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "manufacturer": {
@@ -296,12 +378,19 @@
 
     "artifact": {
       "type": ["object", "null"],
-      "description": "Artifact supporting the evidence.",
+      "description": "Artifact supporting or containing the evidence.",
       "additionalProperties": false,
 
       "properties": {
         "artifact_id": {
-          "type": ["string", "null"]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/artifact_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "storage_location": {
@@ -323,34 +412,76 @@
       }
     },
 
+    "provenance": {
+      "$ref": "#/$defs/provenance",
+      "description": "Required lineage information identifying where this evidence came from and whether it is primary, copied, transformed, derived, inferred, aggregated, or summarized."
+    },
+
     "reliability": {
       "type": "object",
-      "description": "Structured assessment of evidence reliability.",
+      "description": "Structured assessment of evidence reliability. Reliability concerns trust in this evidence record and remains distinct from hypothesis probability.",
       "additionalProperties": false,
 
       "properties": {
         "observation_confidence": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "measurement_confidence": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "context_confidence": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "overall_confidence": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1
+          "anyOf": [
+            {
+              "$ref": "#/$defs/confidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "independence": {
+          "type": "string",
+          "enum": [
+            "INDEPENDENT",
+            "PARTIALLY_INDEPENDENT",
+            "DEPENDENT",
+            "SAME_SOURCE",
+            "UNKNOWN"
+          ],
+          "default": "UNKNOWN"
+        },
+
+        "independence_group_id": {
+          "type": ["string", "null"],
+          "description": "Stable grouping identifier for evidence records that originate from the same underlying observation or source."
         },
 
         "independently_verified": {
@@ -372,7 +503,17 @@
         },
 
         "verified_by": {
-          "type": ["string", "null"]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/user_id"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
 
         "verified_at": {
@@ -390,11 +531,21 @@
       }
     },
 
+    "supporting_relationship_ids": {
+      "type": "array",
+      "description": "Canonical relationship records expressing how this evidence supports claims, hypotheses, or other entities. Relationship records are authoritative for relationship semantics.",
+      "items": {
+        "$ref": "#/$defs/relationship_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
     "supports_hypothesis_ids": {
       "type": "array",
+      "description": "Convenience index of hypotheses currently supported by this evidence. Canonical relationship records remain authoritative for support semantics and strength.",
       "items": {
-        "type": "string",
-        "pattern": "^HYP-[0-9]{6,}$"
+        "$ref": "#/$defs/hypothesis_id"
       },
       "uniqueItems": true,
       "default": []
@@ -402,9 +553,19 @@
 
     "contradicts_hypothesis_ids": {
       "type": "array",
+      "description": "Convenience index of hypotheses currently contradicted by this evidence. Canonical relationship records remain authoritative for contradiction semantics and strength.",
       "items": {
-        "type": "string",
-        "pattern": "^HYP-[0-9]{6,}$"
+        "$ref": "#/$defs/hypothesis_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "derived_from_evidence_ids": {
+      "type": "array",
+      "description": "Evidence records materially used to derive this evidence. Derived evidence does not become independent merely because it is stored as a separate record.",
+      "items": {
+        "$ref": "#/$defs/evidence_id"
       },
       "uniqueItems": true,
       "default": []
@@ -413,26 +574,33 @@
     "supersedes_evidence_ids": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
+        "$ref": "#/$defs/evidence_id"
       },
       "uniqueItems": true,
       "default": []
     },
 
     "superseded_by_evidence_id": {
-      "type": ["string", "null"],
-      "pattern": "^EVD-[0-9]{6,}$"
+      "anyOf": [
+        {
+          "$ref": "#/$defs/evidence_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "observed_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "Time the underlying condition was observed or measured."
     },
 
     "received_at": {
       "type": ["string", "null"],
-      "format": "date-time"
+      "format": "date-time",
+      "description": "Time ARIA received the evidence when different from observation time."
     },
 
     "created_at": {
@@ -446,11 +614,31 @@
     },
 
     "created_by": {
-      "type": ["string", "null"]
+      "anyOf": [
+        {
+          "$ref": "#/$defs/user_id"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "updated_by": {
-      "type": ["string", "null"]
+      "anyOf": [
+        {
+          "$ref": "#/$defs/user_id"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
 
     "metadata": {
@@ -461,14 +649,282 @@
   },
 
   "$defs": {
-    "entity_id_array": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^case_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "context_id": {
+      "type": "string",
+      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^hyp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^rel_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "user_id": {
+      "type": "string",
+      "pattern": "^usr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "manufacturer_id": {
+      "type": "string",
+      "pattern": "^mfr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_family_id": {
+      "type": "string",
+      "pattern": "^pfam_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_id": {
+      "type": "string",
+      "pattern": "^prod_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "product_variant_id": {
+      "type": "string",
+      "pattern": "^pvar_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "scope_id": {
+      "type": "string",
+      "pattern": "^scope_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "symptom_id": {
+      "type": "string",
+      "pattern": "^sym_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "measurement_id": {
+      "type": "string",
+      "pattern": "^meas_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "unit_id": {
+      "type": "string",
+      "pattern": "^unit_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "tool_id": {
+      "type": "string",
+      "pattern": "^tool_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^artifact_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "source_id": {
+      "type": "string",
+      "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "typed_entity_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "typed_entity_id_array": {
       "type": "array",
       "items": {
-        "type": "string",
-        "pattern": "^ENT-[0-9]{6,}$"
+        "$ref": "#/$defs/typed_entity_id"
       },
       "uniqueItems": true,
       "default": []
+    },
+
+    "manufacturer_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/manufacturer_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_family_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_family_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "product_variant_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_variant_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "scope_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scope_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "symptom_id_array": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/symptom_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "basis"
+      ],
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "source_type",
+        "lineage_type"
+      ],
+
+      "properties": {
+        "source_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/source_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "MANUFACTURER_DOCUMENT",
+            "MANUFACTURER_SUPPORT",
+            "ENGINEERING_DOCUMENT",
+            "ENGINEERING_APPROVAL",
+            "STANDARD",
+            "CUSTOMER_DOCUMENT",
+            "PROJECT_DOCUMENT",
+            "DESIGN_DOCUMENT",
+            "CONFIGURATION_EXPORT",
+            "EQUIPMENT_TELEMETRY",
+            "DIRECT_MEASUREMENT",
+            "TEST_EQUIPMENT_OUTPUT",
+            "ALARM",
+            "LOG",
+            "SCREENSHOT",
+            "PHOTO",
+            "VIDEO",
+            "USER_STATEMENT",
+            "USER_OBSERVATION",
+            "USER_INTERPRETATION",
+            "TECHNICIAN_ACTION_RESULT",
+            "HISTORICAL_CASE",
+            "EXPERIENCE_LEDGER",
+            "EXTERNAL_SYSTEM",
+            "ARIA_DERIVATION",
+            "ARIA_INFERENCE",
+            "ARIA_SUMMARY",
+            "ARIA_CALCULATION",
+            "ARIA_PATTERN",
+            "UNKNOWN_SOURCE"
+          ]
+        },
+
+        "lineage_type": {
+          "type": "string",
+          "enum": [
+            "PRIMARY",
+            "COPIED",
+            "TRANSFORMED",
+            "DERIVED",
+            "INFERRED",
+            "AGGREGATED",
+            "SUMMARIZED"
+          ]
+        },
+
+        "parent_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "original_source_reference": {
+          "type": ["string", "null"]
+        },
+
+        "acquired_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "integrity_status": {
+          "type": "string",
+          "enum": [
+            "VERIFIED",
+            "HASH_VERIFIED",
+            "PARTIALLY_VERIFIED",
+            "UNVERIFIED",
+            "ALTERED",
+            "CORRUPTED",
+            "INCOMPLETE",
+            "UNKNOWN"
+          ],
+          "default": "UNKNOWN"
+        }
+      }
     }
   }
 }
