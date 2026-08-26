@@ -1,45 +1,43 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aria.braxon.ai/schemas/relationship.schema.json",
-  "title": "A.R.I.A. Canonical Relationship",
-  "description": "Machine-readable validation schema for relationships between canonical entities in the A.R.I.A. Knowledge Graph.",
+  "$id": "https://aria.braxon.ai/schemas/relationships.schema.json",
+  "title": "A.R.I.A. Canonical Semantic Relationship",
+  "description": "Machine-readable validation schema for a first-class semantic relationship between canonical A.R.I.A. entities. Relationship records use rel_<UUID> identity and are distinct from persisted reusable Knowledge Graph edges, which use ke_<UUID> identity.",
+
   "type": "object",
   "additionalProperties": false,
 
   "required": [
     "relationship_id",
-    "source_entity_id",
     "relationship_type",
+    "source_entity_id",
     "target_entity_id",
-    "status",
-    "validation_state",
-    "created_at",
-    "updated_at"
+    "created_at"
   ],
 
   "properties": {
     "relationship_id": {
-      "type": "string",
-      "pattern": "^REL-[0-9]{6,}$",
-      "description": "Permanent canonical relationship identifier."
-    },
-
-    "source_entity_id": {
-      "type": "string",
-      "pattern": "^ENT-[0-9]{6,}$",
-      "description": "Canonical entity from which the directed relationship originates."
+      "$ref": "#/$defs/relationship_identifier"
     },
 
     "relationship_type": {
       "type": "string",
       "minLength": 1,
-      "description": "Approved relationship type from the A.R.I.A. relationship-type registry."
+      "description": "Canonical relationship type defined by Core/Registries/relationship_types.json."
+    },
+
+    "source_entity_id": {
+      "$ref": "#/$defs/canonical_identifier"
     },
 
     "target_entity_id": {
-      "type": "string",
-      "pattern": "^ENT-[0-9]{6,}$",
-      "description": "Canonical entity targeted by the relationship."
+      "$ref": "#/$defs/canonical_identifier"
+    },
+
+    "directed": {
+      "type": "boolean",
+      "default": true,
+      "description": "Indicates whether the stored relationship is directed. Canonical directionality is governed by the relationship-type registry."
     },
 
     "status": {
@@ -50,7 +48,9 @@
         "DEPRECATED",
         "SUPERSEDED",
         "REJECTED"
-      ]
+      ],
+      "default": "ACTIVE",
+      "description": "Lifecycle state of the relationship assertion."
     },
 
     "validation_state": {
@@ -61,113 +61,149 @@
         "VALIDATED",
         "DISPUTED",
         "REJECTED"
-      ]
-    },
-
-    "relationship_strength": {
-      "type": ["number", "null"],
-      "minimum": 0,
-      "maximum": 1,
-      "description": "Optional normalized strength of the relationship itself. This is not current-case probability."
+      ],
+      "default": "UNREVIEWED",
+      "description": "Validation state of the asserted relationship. Lifecycle status and validation state remain separate."
     },
 
     "confidence": {
-      "type": ["number", "null"],
+      "oneOf": [
+        {
+          "$ref": "#/$defs/confidence"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Trust in the validity or support of this relationship assertion. Confidence is not hypothesis probability."
+    },
+
+    "provenance": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/provenance"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Lineage describing where the relationship assertion originated and how it was derived."
+    },
+
+    "context_id": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/context_identifier"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional canonical context constraining applicability of this relationship."
+    },
+
+    "relationship_strength": {
+      "type": [
+        "number",
+        "null"
+      ],
       "minimum": 0,
       "maximum": 1,
-      "description": "Confidence that this canonical relationship is valid within its defined applicability."
+      "default": null,
+      "description": "Optional normalized strength of an association where meaningful. This is neither relationship confidence nor current-case hypothesis probability."
     },
 
     "deterministic": {
       "type": "boolean",
       "default": false,
-      "description": "Indicates whether the relationship represents an established deterministic fact rather than a probabilistic association."
+      "description": "True when the assertion represents an established deterministic technical fact rather than a probabilistic or conditional association."
     },
 
-    "conditions": {
+    "condition_entity_ids": {
       "type": "array",
-      "description": "Canonical entities representing conditions required for this relationship to apply.",
       "items": {
-        "type": "string",
-        "pattern": "^ENT-[0-9]{6,}$"
+        "$ref": "#/$defs/canonical_identifier"
       },
       "uniqueItems": true,
-      "default": []
+      "default": [],
+      "description": "Canonical entities representing conditions that must hold for the relationship to apply."
     },
 
-    "context": {
-      "type": "object",
-      "description": "Structured applicability constraints for the relationship.",
-      "additionalProperties": false,
+    "supporting_evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_identifier"
+      },
+      "uniqueItems": true,
+      "default": [],
+      "description": "Case evidence records that materially support this relationship assertion when applicable."
+    },
 
-      "properties": {
-        "manufacturer_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+    "contradicting_evidence_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_identifier"
+      },
+      "uniqueItems": true,
+      "default": [],
+      "description": "Case evidence records that materially contradict this relationship assertion when applicable."
+    },
+
+    "knowledge_edge_id": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/knowledge_edge_identifier"
         },
-
-        "product_family_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "product_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "product_variant_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "hardware_revision_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "firmware_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "frequency_band_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "configuration_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "topology_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "scope_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "project_phase_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "environment_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
-        },
-
-        "customer_entity_ids": {
-          "$ref": "#/$defs/entity_id_array"
+        {
+          "type": "null"
         }
-      }
+      ],
+      "default": null,
+      "description": "Optional reference to a reusable persisted Knowledge Graph edge informing or corresponding to this relationship. The relationship and Knowledge Graph edge remain distinct records."
     },
 
-    "effective_at": {
-      "type": ["string", "null"],
-      "format": "date-time"
+    "valid_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null,
+      "description": "Beginning of the period during which this relationship assertion is applicable."
     },
 
-    "expires_at": {
-      "type": ["string", "null"],
-      "format": "date-time"
+    "valid_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null,
+      "description": "End of the relationship's applicability period. Null means no known end."
     },
 
-    "superseded_by": {
-      "type": ["string", "null"],
-      "pattern": "^REL-[0-9]{6,}$"
+    "superseded_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
+    },
+
+    "superseded_by_relationship_id": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/relationship_identifier"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
 
     "created_at": {
@@ -176,34 +212,170 @@
     },
 
     "updated_at": {
-      "type": "string",
-      "format": "date-time"
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
     },
 
     "created_by": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
     },
 
     "updated_by": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
     },
 
     "metadata": {
       "type": "object",
-      "description": "Controlled extensibility for relationship-type-specific metadata.",
-      "additionalProperties": true
+      "additionalProperties": true,
+      "default": {},
+      "description": "Controlled extensibility for relationship-specific metadata that does not justify changing canonical relationship semantics."
     }
   },
 
   "$defs": {
-    "entity_id_array": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^ENT-[0-9]{6,}$"
-      },
-      "uniqueItems": true,
-      "default": []
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+
+    "relationship_identifier": {
+      "type": "string",
+      "pattern": "^rel_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "description": "Canonical first-class relationship identifier using rel_<UUID>."
+    },
+
+    "knowledge_edge_identifier": {
+      "type": "string",
+      "pattern": "^ke_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "description": "Canonical persisted Knowledge Graph edge identifier using ke_<UUID>."
+    },
+
+    "context_identifier": {
+      "type": "string",
+      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "evidence_identifier": {
+      "type": "string",
+      "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "canonical_identifier": {
+      "type": "string",
+      "pattern": "^(ent|evt|case|ctx|evd|hyp|act|exp|usr|mfr|pfam|prod|pvar|scope|sym|fm|meas|unit|tool|src|rel|kn|ke|claim|rstep|out|artifact)_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "description": "Canonical typed A.R.I.A. identifier."
+    },
+
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "value",
+        "basis"
+      ],
+
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "source_type",
+        "lineage_type"
+      ],
+
+      "properties": {
+        "source_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+
+        "source_type": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "lineage_type": {
+          "type": "string",
+          "enum": [
+            "PRIMARY",
+            "COPIED",
+            "TRANSFORMED",
+            "DERIVED",
+            "INFERRED",
+            "AGGREGATED",
+            "SUMMARIZED"
+          ]
+        },
+
+        "parent_entity_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/canonical_identifier"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "original_source_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        },
+
+        "acquired_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "default": null
+        },
+
+        "integrity_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        }
+      }
     }
   }
 }
