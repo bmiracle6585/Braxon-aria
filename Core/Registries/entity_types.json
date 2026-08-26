@@ -1,0 +1,352 @@
+{
+  "registry": "ARIA_ENTITY_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical entity classes permitted within the A.R.I.A. Knowledge Graph.",
+
+  "entity_types": [
+    {
+      "type": "MANUFACTURER",
+      "category": "ORGANIZATION",
+      "description": "Manufacturer of telecommunications equipment, software, tools, or supporting systems.",
+      "examples": [
+        "Nokia",
+        "Aviat",
+        "Ceragon",
+        "Ericsson"
+      ]
+    },
+
+    {
+      "type": "CUSTOMER",
+      "category": "ORGANIZATION",
+      "description": "Customer, carrier, contractor, or other organization relevant to technical or operational context."
+    },
+
+    {
+      "type": "PERSON",
+      "category": "ACTOR",
+      "description": "Individual participating in operational, technical, diagnostic, or historical experience."
+    },
+
+    {
+      "type": "ROLE",
+      "category": "ACTOR",
+      "description": "Functional role performed by a person or system."
+    },
+
+    {
+      "type": "PRODUCT_FAMILY",
+      "category": "EQUIPMENT",
+      "description": "Manufacturer-defined or technically meaningful family of related products.",
+      "examples": [
+        "Wavence"
+      ]
+    },
+
+    {
+      "type": "PRODUCT",
+      "category": "EQUIPMENT",
+      "description": "Canonical telecommunications product or equipment platform.",
+      "examples": [
+        "UBT-T",
+        "UBT-S"
+      ]
+    },
+
+    {
+      "type": "PRODUCT_VARIANT",
+      "category": "EQUIPMENT",
+      "description": "Distinct variant of a canonical product requiring independent technical applicability.",
+      "examples": [
+        "UBT-T 18 GHz"
+      ]
+    },
+
+    {
+      "type": "HARDWARE_REVISION",
+      "category": "EQUIPMENT",
+      "description": "Hardware revision or generation affecting technical applicability."
+    },
+
+    {
+      "type": "COMPONENT",
+      "category": "EQUIPMENT",
+      "description": "Physical component forming part of a larger telecommunications system.",
+      "examples": [
+        "AIM",
+        "OCM",
+        "Flex Twist",
+        "Waveguide"
+      ]
+    },
+
+    {
+      "type": "INTERFACE",
+      "category": "EQUIPMENT",
+      "description": "Physical or logical connection interface."
+    },
+
+    {
+      "type": "PORT",
+      "category": "EQUIPMENT",
+      "description": "Specific physical or logical equipment port.",
+      "examples": [
+        "Main",
+        "Diversity"
+      ]
+    },
+
+    {
+      "type": "ANTENNA",
+      "category": "RF",
+      "description": "Microwave or telecommunications antenna."
+    },
+
+    {
+      "type": "RADIO",
+      "category": "RF",
+      "description": "Radio-frequency telecommunications equipment."
+    },
+
+    {
+      "type": "RF_CHAIN_COMPONENT",
+      "category": "RF",
+      "description": "Component participating in an RF signal path."
+    },
+
+    {
+      "type": "FREQUENCY_BAND",
+      "category": "RF",
+      "description": "Frequency band or range relevant to telecommunications operation.",
+      "examples": [
+        "6 GHz",
+        "11 GHz",
+        "18 GHz",
+        "23 GHz"
+      ]
+    },
+
+    {
+      "type": "POLARIZATION",
+      "category": "RF",
+      "description": "RF polarization state or configuration."
+    },
+
+    {
+      "type": "CHANNEL",
+      "category": "RF",
+      "description": "Frequency channel or channel assignment."
+    },
+
+    {
+      "type": "MODULATION",
+      "category": "RF",
+      "description": "Modulation mode, modulation order, or adaptive modulation state."
+    },
+
+    {
+      "type": "TOPOLOGY",
+      "category": "ARCHITECTURE",
+      "description": "Network, radio, protection, or equipment topology.",
+      "examples": [
+        "1+0",
+        "2+0",
+        "2+0 Diversity",
+        "1+1 HSB"
+      ]
+    },
+
+    {
+      "type": "CONFIGURATION",
+      "category": "CONFIGURATION",
+      "description": "Canonical configuration state, mode, option, or technical setting."
+    },
+
+    {
+      "type": "CONFIGURATION_PARAMETER",
+      "category": "CONFIGURATION",
+      "description": "Individual configurable parameter."
+    },
+
+    {
+      "type": "CONFIGURATION_VALUE",
+      "category": "CONFIGURATION",
+      "description": "Canonical value applicable to a configuration parameter."
+    },
+
+    {
+      "type": "FIRMWARE",
+      "category": "SOFTWARE",
+      "description": "Firmware release or firmware family."
+    },
+
+    {
+      "type": "SOFTWARE",
+      "category": "SOFTWARE",
+      "description": "Software application, management system, or software platform."
+    },
+
+    {
+      "type": "SOFTWARE_VERSION",
+      "category": "SOFTWARE",
+      "description": "Specific software version or release."
+    },
+
+    {
+      "type": "SYMPTOM",
+      "category": "DIAGNOSTIC",
+      "description": "Observable problem or abnormal condition initiating or contributing to diagnosis.",
+      "examples": [
+        "Low RSL",
+        "RSL Discrepancy",
+        "Link Down",
+        "High BER"
+      ]
+    },
+
+    {
+      "type": "FAILURE_MODE",
+      "category": "DIAGNOSTIC",
+      "description": "Technical manner in which a component, configuration, or system can fail."
+    },
+
+    {
+      "type": "ROOT_CAUSE",
+      "category": "DIAGNOSTIC",
+      "description": "Canonical underlying cause capable of producing one or more symptoms or failure modes.",
+      "examples": [
+        "Incorrect Configuration",
+        "Incorrect Flex Routing",
+        "Antenna Misalignment"
+      ]
+    },
+
+    {
+      "type": "CONTRIBUTING_CAUSE",
+      "category": "DIAGNOSTIC",
+      "description": "Condition contributing to a failure without necessarily representing the primary root cause."
+    },
+
+    {
+      "type": "ALARM",
+      "category": "DIAGNOSTIC",
+      "description": "Canonical equipment or system alarm."
+    },
+
+    {
+      "type": "TEST",
+      "category": "DIAGNOSTIC",
+      "description": "Diagnostic test capable of producing evidence."
+    },
+
+    {
+      "type": "PROCEDURE",
+      "category": "ACTION",
+      "description": "Defined technical or operational procedure."
+    },
+
+    {
+      "type": "CORRECTIVE_ACTION",
+      "category": "ACTION",
+      "description": "Action intended to correct a confirmed or suspected technical problem."
+    },
+
+    {
+      "type": "MEASUREMENT",
+      "category": "MEASUREMENT",
+      "description": "Canonical measurable technical quantity.",
+      "examples": [
+        "RSL",
+        "Transmit Power",
+        "BER",
+        "SNR"
+      ]
+    },
+
+    {
+      "type": "UNIT",
+      "category": "MEASUREMENT",
+      "description": "Canonical unit of measurement.",
+      "examples": [
+        "dBm",
+        "dB",
+        "MHz",
+        "GHz"
+      ]
+    },
+
+    {
+      "type": "THRESHOLD",
+      "category": "MEASUREMENT",
+      "description": "Technical threshold, tolerance, limit, or boundary."
+    },
+
+    {
+      "type": "TOOL",
+      "category": "RESOURCE",
+      "description": "Physical diagnostic, installation, test, or measurement tool.",
+      "examples": [
+        "Anritsu Site Master"
+      ]
+    },
+
+    {
+      "type": "ENVIRONMENTAL_CONDITION",
+      "category": "ENVIRONMENT",
+      "description": "Environmental condition capable of affecting installation, operation, measurement, or diagnosis.",
+      "examples": [
+        "Heavy Rain",
+        "High Wind",
+        "Ice"
+      ]
+    },
+
+    {
+      "type": "OBSTRUCTION",
+      "category": "ENVIRONMENT",
+      "description": "Physical obstruction affecting line of sight, Fresnel clearance, installation, or RF propagation."
+    },
+
+    {
+      "type": "SCOPE",
+      "category": "OPERATIONAL",
+      "description": "Type or scope of technical work.",
+      "examples": [
+        "Installation",
+        "Commissioning",
+        "Troubleshooting",
+        "Maintenance"
+      ]
+    },
+
+    {
+      "type": "PROJECT_PHASE",
+      "category": "OPERATIONAL",
+      "description": "Project or deployment lifecycle phase."
+    },
+
+    {
+      "type": "STANDARD",
+      "category": "KNOWLEDGE",
+      "description": "Engineering, regulatory, customer, manufacturer, or internal technical standard."
+    },
+
+    {
+      "type": "REQUIREMENT",
+      "category": "KNOWLEDGE",
+      "description": "Canonical technical, operational, safety, regulatory, or customer requirement."
+    },
+
+    {
+      "type": "CONSTRAINT",
+      "category": "KNOWLEDGE",
+      "description": "Condition limiting valid configurations, actions, designs, or procedures."
+    },
+
+    {
+      "type": "CONCEPT",
+      "category": "KNOWLEDGE",
+      "description": "Technical concept that does not belong to a more specific canonical entity type."
+    }
+  ]
+}
