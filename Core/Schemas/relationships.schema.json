@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/relationship.schema.json",
+  "title": "A.R.I.A. Canonical Relationship",
+  "description": "Machine-readable validation schema for relationships between canonical entities in the A.R.I.A. Knowledge Graph.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "relationship_id",
+    "source_entity_id",
+    "relationship_type",
+    "target_entity_id",
+    "status",
+    "validation_state",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^REL-[0-9]{6,}$",
+      "description": "Permanent canonical relationship identifier."
+    },
+
+    "source_entity_id": {
+      "type": "string",
+      "pattern": "^ENT-[0-9]{6,}$",
+      "description": "Canonical entity from which the directed relationship originates."
+    },
+
+    "relationship_type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Approved relationship type from the A.R.I.A. relationship-type registry."
+    },
+
+    "target_entity_id": {
+      "type": "string",
+      "pattern": "^ENT-[0-9]{6,}$",
+      "description": "Canonical entity targeted by the relationship."
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "ACTIVE",
+        "DEPRECATED",
+        "SUPERSEDED",
+        "REJECTED"
+      ]
+    },
+
+    "validation_state": {
+      "type": "string",
+      "enum": [
+        "UNREVIEWED",
+        "REVIEWED",
+        "VALIDATED",
+        "DISPUTED",
+        "REJECTED"
+      ]
+    },
+
+    "relationship_strength": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Optional normalized strength of the relationship itself. This is not current-case probability."
+    },
+
+    "confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence that this canonical relationship is valid within its defined applicability."
+    },
+
+    "deterministic": {
+      "type": "boolean",
+      "default": false,
+      "description": "Indicates whether the relationship represents an established deterministic fact rather than a probabilistic association."
+    },
+
+    "conditions": {
+      "type": "array",
+      "description": "Canonical entities representing conditions required for this relationship to apply.",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "context": {
+      "type": "object",
+      "description": "Structured applicability constraints for the relationship.",
+      "additionalProperties": false,
+
+      "properties": {
+        "manufacturer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_family_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_variant_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "hardware_revision_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "firmware_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "frequency_band_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "configuration_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "topology_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "scope_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "project_phase_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "environment_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "customer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        }
+      }
+    },
+
+    "effective_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "superseded_by": {
+      "type": ["string", "null"],
+      "pattern": "^REL-[0-9]{6,}$"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Controlled extensibility for relationship-type-specific metadata.",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "entity_id_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    }
+  }
+}
