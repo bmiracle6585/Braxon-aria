@@ -1,0 +1,570 @@
+{
+  "specification": "ARIA_REASONING_CYCLE",
+  "version": "0.1.0",
+  "description": "Defines the canonical iterative reasoning cycle used by A.R.I.A. to transform observations into structured evidence, hypotheses, diagnostic actions, updated beliefs, validated diagnoses, resolutions, and learned experience.",
+
+  "core_principle": {
+    "statement": "ARIA reasons by continuously updating a structured representation of the current technical state. She shall reroute from new knowledge rather than restart or blindly follow predetermined troubleshooting trees.",
+    "cycle": [
+      "OBSERVE",
+      "INTERPRET",
+      "CONTEXTUALIZE",
+      "GENERATE_HYPOTHESES",
+      "ESTIMATE_PRIORS",
+      "EVALUATE_EVIDENCE",
+      "CALCULATE_POSTERIORS",
+      "SELECT_NEXT_HOP",
+      "EXECUTE_OR_REQUEST",
+      "OBSERVE_RESULT",
+      "UPDATE_STATE",
+      "REROUTE",
+      "CONFIRM_DIAGNOSIS",
+      "SELECT_CORRECTION",
+      "VALIDATE",
+      "LEARN"
+    ]
+  },
+
+  "reasoning_state": {
+    "required_fields": [
+      "case_id",
+      "case_state",
+      "context",
+      "observations",
+      "symptoms",
+      "evidence",
+      "active_hypotheses",
+      "ruled_out_hypotheses",
+      "confirmed_findings",
+      "completed_actions",
+      "pending_actions",
+      "unresolved_questions",
+      "constraints",
+      "probability_state",
+      "confidence_state",
+      "route_history"
+    ]
+  },
+
+  "phases": [
+    {
+      "id": "RC-001",
+      "name": "OBSERVE",
+      "purpose": "Receive raw information without prematurely assigning cause.",
+      "inputs": [
+        "user_message",
+        "measurement",
+        "screenshot",
+        "photo",
+        "configuration",
+        "alarm",
+        "log",
+        "document",
+        "system_data",
+        "historical_case"
+      ],
+      "outputs": [
+        "raw_observations"
+      ],
+      "rules": [
+        "Preserve raw information whenever practical.",
+        "Do not convert an observation directly into a confirmed diagnosis.",
+        "Distinguish reported information from directly observed information."
+      ]
+    },
+
+    {
+      "id": "RC-002",
+      "name": "INTERPRET",
+      "purpose": "Convert raw observations into normalized technical meaning.",
+      "inputs": [
+        "raw_observations"
+      ],
+      "outputs": [
+        "normalized_measurements",
+        "canonical_symptoms",
+        "candidate_context",
+        "candidate_evidence"
+      ],
+      "rules": [
+        "Preserve linkage between interpreted information and its source.",
+        "Record extraction confidence when interpretation is uncertain.",
+        "Do not silently invent missing values."
+      ]
+    },
+
+    {
+      "id": "RC-003",
+      "name": "CONTEXTUALIZE",
+      "purpose": "Determine the technical environment in which the observations must be interpreted.",
+      "inputs": [
+        "candidate_context",
+        "existing_case_context",
+        "knowledge_graph",
+        "experience_ledger"
+      ],
+      "outputs": [
+        "resolved_context",
+        "missing_context",
+        "context_match_state"
+      ],
+      "rules": [
+        "Resolve known entities to canonical graph entities.",
+        "Represent unknown context explicitly.",
+        "Request missing context only when obtaining it is expected to materially improve reasoning."
+      ]
+    },
+
+    {
+      "id": "RC-004",
+      "name": "GENERATE_HYPOTHESES",
+      "purpose": "Generate technically plausible explanations for the observed symptoms.",
+      "inputs": [
+        "canonical_symptoms",
+        "resolved_context",
+        "knowledge_graph",
+        "applicable_failure_modes",
+        "historical_experience"
+      ],
+      "outputs": [
+        "candidate_hypotheses"
+      ],
+      "rules": [
+        "Generate multiple plausible hypotheses when warranted.",
+        "Include an unknown or unmodeled explanation when the known hypothesis set may be incomplete.",
+        "Do not generate manufacturer-specific hypotheses unless applicable context supports them.",
+        "Multiple simultaneous failure modes are permitted."
+      ]
+    },
+
+    {
+      "id": "RC-005",
+      "name": "ESTIMATE_PRIORS",
+      "purpose": "Estimate starting probability for candidate hypotheses before fully applying current case evidence.",
+      "inputs": [
+        "candidate_hypotheses",
+        "general_experience",
+        "contextual_experience",
+        "user_history",
+        "product_history",
+        "manufacturer_history",
+        "scope_history"
+      ],
+      "outputs": [
+        "prior_probabilities"
+      ],
+      "rules": [
+        "Historical frequency may influence priors.",
+        "More contextually similar historical cases may receive greater weight.",
+        "Small samples shall be regularized to prevent extreme priors.",
+        "User history may modify priors but shall not establish diagnosis.",
+        "Unknown probability mass shall be preserved when appropriate."
+      ]
+    },
+
+    {
+      "id": "RC-006",
+      "name": "EVALUATE_EVIDENCE",
+      "purpose": "Determine how current evidence supports, weakens, contradicts, or fails to affect each active hypothesis.",
+      "inputs": [
+        "evidence",
+        "candidate_hypotheses",
+        "evidence_quality",
+        "context"
+      ],
+      "outputs": [
+        "evidence_hypothesis_effects"
+      ],
+      "rules": [
+        "Evaluate evidence separately against each relevant hypothesis.",
+        "Consider source reliability, applicability, freshness, independence, provenance, and directness.",
+        "Do not count duplicated evidence as independent corroboration.",
+        "Preserve contradictory evidence.",
+        "Validated current evidence may outweigh historical expectation."
+      ]
+    },
+
+    {
+      "id": "RC-007",
+      "name": "CALCULATE_POSTERIORS",
+      "purpose": "Update hypothesis probabilities using current evidence.",
+      "inputs": [
+        "prior_probabilities",
+        "evidence_hypothesis_effects",
+        "probability_model"
+      ],
+      "outputs": [
+        "posterior_probabilities",
+        "diagnostic_confidence",
+        "evidence_completeness"
+      ],
+      "rules": [
+        "Probability changes must be attributable to evidence or contextual changes.",
+        "Do not increase probability merely because ARIA previously suggested a hypothesis.",
+        "Do not force probabilities to sum to one when hypotheses can coexist.",
+        "Preserve unknown probability mass when appropriate."
+      ]
+    },
+
+    {
+      "id": "RC-008",
+      "name": "GENERATE_CANDIDATE_ACTIONS",
+      "purpose": "Identify technically valid actions capable of advancing diagnosis.",
+      "inputs": [
+        "active_hypotheses",
+        "posterior_probabilities",
+        "missing_evidence",
+        "knowledge_graph",
+        "action_registry",
+        "case_constraints"
+      ],
+      "outputs": [
+        "candidate_actions"
+      ],
+      "rules": [
+        "Candidate actions should target uncertainty that materially affects diagnosis.",
+        "Prefer actions applicable to multiple competing hypotheses when they provide strong discrimination.",
+        "Do not propose technically incompatible actions.",
+        "Respect safety, authorization, access, and service-impact constraints."
+      ]
+    },
+
+    {
+      "id": "RC-009",
+      "name": "SCORE_CANDIDATE_ACTIONS",
+      "purpose": "Estimate the diagnostic utility of each candidate next action.",
+      "inputs": [
+        "candidate_actions",
+        "posterior_probabilities",
+        "historical_action_performance",
+        "user_context",
+        "operational_constraints"
+      ],
+      "outputs": [
+        "action_scores"
+      ],
+      "scoring_dimensions": [
+        "EXPECTED_INFORMATION_GAIN",
+        "EXPECTED_PROBABILITY_REDUCTION",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "TIME_COST",
+        "EXECUTION_COST",
+        "PHYSICAL_EFFORT",
+        "INVASIVENESS",
+        "SERVICE_IMPACT",
+        "SAFETY_RISK",
+        "REVERSIBILITY",
+        "USER_CAPABILITY",
+        "EVIDENCE_AVAILABILITY",
+        "HISTORICAL_SUCCESS",
+        "CONTEXT_APPLICABILITY"
+      ],
+      "rules": [
+        "Highest hypothesis probability does not automatically determine the next action.",
+        "Low-cost high-information actions should generally outrank invasive actions when diagnostic value is comparable.",
+        "A lower-probability hypothesis may justify testing first when the test is inexpensive and highly discriminating.",
+        "Action scoring shall remain explainable."
+      ]
+    },
+
+    {
+      "id": "RC-010",
+      "name": "SELECT_NEXT_HOP",
+      "purpose": "Select the action with the highest justified diagnostic utility for the current state.",
+      "inputs": [
+        "action_scores",
+        "case_constraints",
+        "route_history"
+      ],
+      "outputs": [
+        "selected_action",
+        "route_confidence",
+        "selection_reason"
+      ],
+      "rules": [
+        "Select one primary next hop unless parallel actions are independently useful and operationally appropriate.",
+        "Record why the action was selected.",
+        "Do not repeat an action without a technically meaningful reason.",
+        "Previously unsuccessful routes shall influence future route selection."
+      ]
+    },
+
+    {
+      "id": "RC-011",
+      "name": "EXECUTE_OR_REQUEST",
+      "purpose": "Translate the selected diagnostic action into an executable system action or clear human request.",
+      "inputs": [
+        "selected_action",
+        "user_context",
+        "case_context"
+      ],
+      "outputs": [
+        "action_request",
+        "expected_result_types",
+        "expected_discriminating_outcomes"
+      ],
+      "rules": [
+        "Explain what is needed with sufficient technical precision.",
+        "When useful, explain why the action is being requested.",
+        "Do not falsely imply that an action is authorized merely because ARIA recommends it.",
+        "Record the expected diagnostic value before the result is known."
+      ]
+    },
+
+    {
+      "id": "RC-012",
+      "name": "OBSERVE_RESULT",
+      "purpose": "Receive and classify the result of the selected action.",
+      "inputs": [
+        "action_result",
+        "new_evidence"
+      ],
+      "outputs": [
+        "action_outcome",
+        "resulting_evidence"
+      ],
+      "rules": [
+        "Record what actually happened rather than what was predicted.",
+        "Distinguish action completion from diagnostic outcome.",
+        "Preserve unexpected results."
+      ]
+    },
+
+    {
+      "id": "RC-013",
+      "name": "UPDATE_STATE",
+      "purpose": "Integrate new evidence and outcomes into the authoritative case state.",
+      "inputs": [
+        "resulting_evidence",
+        "action_outcome",
+        "current_reasoning_state"
+      ],
+      "outputs": [
+        "updated_reasoning_state"
+      ],
+      "rules": [
+        "Append new evidence and outcomes without erasing historical state.",
+        "Update affected hypotheses.",
+        "Preserve ruled-out hypotheses and their supporting rationale.",
+        "Record unresolved contradictions.",
+        "Record state changes with timestamps and reasons."
+      ]
+    },
+
+    {
+      "id": "RC-014",
+      "name": "REROUTE",
+      "purpose": "Determine the appropriate continuation from the newly updated technical state.",
+      "inputs": [
+        "updated_reasoning_state"
+      ],
+      "outputs": [
+        "next_reasoning_phase"
+      ],
+      "possible_routes": [
+        "REQUEST_MORE_CONTEXT",
+        "GATHER_MORE_EVIDENCE",
+        "REGENERATE_HYPOTHESES",
+        "RECALCULATE_PROBABILITIES",
+        "SELECT_NEW_ACTION",
+        "ENTER_ISOLATION",
+        "ENTER_PROVISIONAL_DIAGNOSIS",
+        "CONFIRM_DIAGNOSIS",
+        "ESCALATE"
+      ],
+      "rules": [
+        "Reroute from the current state rather than restarting the original troubleshooting sequence.",
+        "Do not reactivate ruled-out hypotheses unless new evidence materially undermines the basis for ruling them out.",
+        "Unexpected evidence may generate new hypotheses.",
+        "The topology of the diagnostic graph may change as evidence accumulates."
+      ]
+    },
+
+    {
+      "id": "RC-015",
+      "name": "CONFIRM_DIAGNOSIS",
+      "purpose": "Determine whether available evidence satisfies the applicable standard for diagnosis.",
+      "inputs": [
+        "posterior_probabilities",
+        "diagnostic_confidence",
+        "evidence_quality",
+        "evidence_completeness",
+        "contradictory_evidence"
+      ],
+      "outputs": [
+        "diagnosis_state",
+        "confirmed_failure_modes",
+        "causal_confidence"
+      ],
+      "rules": [
+        "High probability alone shall not establish confirmation.",
+        "Material contradictory evidence must be addressed.",
+        "Confirmation thresholds may depend on the risk of the proposed corrective action.",
+        "ARIA may retain a provisional diagnosis when confirmation is not justified."
+      ]
+    },
+
+    {
+      "id": "RC-016",
+      "name": "SELECT_CORRECTION",
+      "purpose": "Select an appropriate corrective action for a sufficiently supported diagnosis.",
+      "inputs": [
+        "confirmed_failure_modes",
+        "knowledge_graph",
+        "corrective_actions",
+        "constraints"
+      ],
+      "outputs": [
+        "selected_corrective_action",
+        "expected_corrective_result"
+      ],
+      "rules": [
+        "Correct the established failure rather than merely suppressing the symptom when practical.",
+        "Prefer lower-risk effective corrective actions.",
+        "Record what technical change is expected if the diagnosis is correct."
+      ]
+    },
+
+    {
+      "id": "RC-017",
+      "name": "VALIDATE",
+      "purpose": "Determine whether the corrective action produced the expected technical result and resolved the original condition.",
+      "inputs": [
+        "pre_action_state",
+        "post_action_evidence",
+        "original_symptoms",
+        "expected_corrective_result"
+      ],
+      "outputs": [
+        "validation_outcome",
+        "resolution_confidence"
+      ],
+      "rules": [
+        "Compare before and after conditions.",
+        "Validate against the original symptom and applicable technical baseline.",
+        "Do not equate temporary improvement with stable resolution.",
+        "Failed validation shall become new diagnostic evidence."
+      ]
+    },
+
+    {
+      "id": "RC-018",
+      "name": "LEARN",
+      "purpose": "Determine whether and how the completed case should modify ARIA's future experience.",
+      "inputs": [
+        "complete_case_history",
+        "diagnostic_confidence",
+        "causal_confidence",
+        "resolution_confidence",
+        "evidence_quality",
+        "context_completeness",
+        "route_history"
+      ],
+      "outputs": [
+        "learning_confidence",
+        "learning_disposition",
+        "experience_ledger_updates",
+        "route_performance_updates"
+      ],
+      "rules": [
+        "Learning weight shall reflect case quality.",
+        "Validated cases may influence future priors.",
+        "Unsuccessful actions may still provide useful route-performance learning.",
+        "Do not convert one case into a universal technical rule.",
+        "Preserve context with learned experience.",
+        "User-specific learning shall remain associated with the applicable user while shared technical learning may contribute to broader experience."
+      ]
+    }
+  ],
+
+  "route_memory": {
+    "required_fields": [
+      "route_step_id",
+      "timestamp",
+      "reasoning_phase",
+      "case_state_before",
+      "active_hypotheses_before",
+      "probabilities_before",
+      "selected_action",
+      "selection_reason",
+      "expected_information_gain",
+      "expected_outcomes",
+      "actual_outcome",
+      "evidence_received",
+      "probabilities_after",
+      "case_state_after"
+    ],
+    "policy": "Route history is append-only and shall support reconstruction of why ARIA made each diagnostic decision."
+  },
+
+  "anti_loop_policy": {
+    "description": "ARIA shall detect unproductive diagnostic loops and avoid repeating equivalent actions without new justification.",
+    "rules": [
+      "An action previously completed with valid evidence shall not be repeated solely because it remains associated with a high-probability hypothesis.",
+      "A repeated action requires new evidence, changed context, questionable prior evidence, elapsed-time relevance, or another explicit technical justification.",
+      "Equivalent actions expressed differently shall be recognized as potentially duplicate diagnostic work.",
+      "Repeated failure to reduce uncertainty shall decrease the route utility of similar actions.",
+      "When no available action materially improves the diagnostic state, ARIA shall seek missing context, generate alternative hypotheses, or escalate."
+    ]
+  },
+
+  "unknown_handling": {
+    "rules": [
+      "Unknown is a valid reasoning state.",
+      "ARIA shall not fabricate a diagnosis to eliminate uncertainty.",
+      "ARIA shall preserve unknown probability mass when candidate hypotheses are incomplete.",
+      "ARIA shall explicitly identify information that would most efficiently reduce important uncertainty.",
+      "When uncertainty cannot be reasonably reduced, escalation is preferable to unsupported certainty."
+    ]
+  },
+
+  "learning_separation": {
+    "global_technical_learning": "Technical patterns that are sufficiently validated and broadly applicable may contribute to shared ARIA experience.",
+    "contextual_learning": "Patterns specific to manufacturers, products, variants, topologies, scopes, customers, environments, or other contexts shall preserve those contextual relationships.",
+    "user_learning": "User-specific diagnostic history, evidence reliability patterns, communication tendencies, and action-performance history shall remain linked to the applicable user.",
+    "case_memory": "Individual case history remains immutable source experience and shall not be replaced by aggregated learned statistics."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "RC-RULE-001",
+      "rule": "ARIA shall reason from evidence and structured technical state rather than from conversational fluency."
+    },
+    {
+      "rule_id": "RC-RULE-002",
+      "rule": "The language model may assist with interpretation, hypothesis generation, explanation, and communication but shall not independently control authoritative probability, case state, evidence state, or learning records."
+    },
+    {
+      "rule_id": "RC-RULE-003",
+      "rule": "Every material probability change should be traceable to evidence, context, historical prior adjustment, or an explicit model operation."
+    },
+    {
+      "rule_id": "RC-RULE-004",
+      "rule": "Every selected diagnostic next hop should be explainable from the reasoning state existing at the time of selection."
+    },
+    {
+      "rule_id": "RC-RULE-005",
+      "rule": "ARIA shall optimize diagnostic progress rather than merely maximize the probability of the hypothesis being tested."
+    },
+    {
+      "rule_id": "RC-RULE-006",
+      "rule": "Negative and unexpected results are valuable evidence and shall alter future routing when diagnostically relevant."
+    },
+    {
+      "rule_id": "RC-RULE-007",
+      "rule": "ARIA shall distinguish what she knows, what she infers, what she suspects, what she has ruled out, and what remains unknown."
+    },
+    {
+      "rule_id": "RC-RULE-008",
+      "rule": "ARIA shall not hide uncertainty for the purpose of sounding authoritative."
+    },
+    {
+      "rule_id": "RC-RULE-009",
+      "rule": "Reasoning history shall be preserved so that diagnoses and recommendations can be audited, evaluated, and learned from."
+    },
+    {
+      "rule_id": "RC-RULE-010",
+      "rule": "The objective of the reasoning cycle is not to traverse a predetermined troubleshooting tree. The objective is to continually select the most useful next transition through the diagnostic knowledge graph."
+    }
+  ]
+}
