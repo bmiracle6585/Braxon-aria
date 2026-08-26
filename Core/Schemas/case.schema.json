@@ -1,0 +1,516 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/case.schema.json",
+  "title": "A.R.I.A. Experience Case",
+  "description": "Machine-readable validation schema for diagnostic and operational cases stored within the A.R.I.A. Experience Ledger.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "case_id",
+    "case_type",
+    "status",
+    "opened_at",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^EXP-[0-9]{6,}$",
+      "description": "Permanent Experience Ledger case identifier."
+    },
+
+    "case_type": {
+      "type": "string",
+      "enum": [
+        "TROUBLESHOOTING",
+        "COMMISSIONING",
+        "INSTALLATION",
+        "ALIGNMENT",
+        "CONFIGURATION",
+        "DESIGN",
+        "MAINTENANCE",
+        "VALIDATION",
+        "TRAINING",
+        "OTHER"
+      ]
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "ACTIVE",
+        "WAITING",
+        "RESOLVED",
+        "CLOSED",
+        "REOPENED",
+        "INVALIDATED"
+      ]
+    },
+
+    "title": {
+      "type": ["string", "null"],
+      "maxLength": 500
+    },
+
+    "summary": {
+      "type": ["string", "null"]
+    },
+
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "manufacturer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_family_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_variant_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "hardware_revision_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "firmware_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "frequency_band_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "configuration_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "topology_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "scope_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "project_phase_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "environment_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "customer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "site_a": {
+          "type": ["string", "null"]
+        },
+
+        "site_b": {
+          "type": ["string", "null"]
+        },
+
+        "project_identifier": {
+          "type": ["string", "null"]
+        },
+
+        "link_identifier": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "participants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/participant"
+      },
+      "default": []
+    },
+
+    "symptom_entity_ids": {
+      "$ref": "#/$defs/entity_id_array"
+    },
+
+    "reported_problem": {
+      "type": ["string", "null"],
+      "description": "Problem as initially reported, preserved separately from the final diagnosis."
+    },
+
+    "initial_conditions": {
+      "type": ["string", "null"]
+    },
+
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "hypothesis_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^HYP-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "route_step_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^RTE-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "diagnosis": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "primary_cause_entity_id": {
+          "type": ["string", "null"],
+          "pattern": "^ENT-[0-9]{6,}$"
+        },
+
+        "contributing_cause_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "failure_mode_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "diagnosis_text": {
+          "type": ["string", "null"]
+        },
+
+        "confidence": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "confirmed": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "confirmation_method": {
+          "type": ["string", "null"]
+        },
+
+        "confirmed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "confirmed_by": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "corrective_actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/corrective_action"
+      },
+      "default": []
+    },
+
+    "outcome": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "outcome_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "resolution_status": {
+          "type": ["string", "null"],
+          "enum": [
+            "RESOLVED",
+            "PARTIALLY_RESOLVED",
+            "UNRESOLVED",
+            "NO_FAULT_FOUND",
+            "ESCALATED",
+            "INVALID_CASE",
+            null
+          ]
+        },
+
+        "resolution_text": {
+          "type": ["string", "null"]
+        },
+
+        "validated": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "validation_method": {
+          "type": ["string", "null"]
+        },
+
+        "validated_by": {
+          "type": ["string", "null"]
+        },
+
+        "validated_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "learning": {
+      "type": "object",
+      "description": "Derived learning state. Canonical knowledge promotion remains governed separately.",
+      "additionalProperties": false,
+
+      "properties": {
+        "eligible_for_learning": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "learning_status": {
+          "type": "string",
+          "enum": [
+            "NOT_EVALUATED",
+            "INELIGIBLE",
+            "ELIGIBLE",
+            "PROCESSED",
+            "REQUIRES_REVIEW"
+          ],
+          "default": "NOT_EVALUATED"
+        },
+
+        "generated_claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CLM-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "similar_case_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EXP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "resolution_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "time_to_resolution_seconds": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "diagnostic_steps": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "tests_performed": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "hypotheses_considered": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "route_changes": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        }
+      }
+    },
+
+    "opened_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "resolved_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "closed_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "entity_id_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "participant": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "person_entity_id",
+        "roles"
+      ],
+
+      "properties": {
+        "person_entity_id": {
+          "type": "string",
+          "description": "Stable identifier for the participating person."
+        },
+
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "REPORTER",
+              "OBSERVER",
+              "INSTALLER",
+              "CONFIGURATOR",
+              "ALIGNER",
+              "TESTER",
+              "TROUBLESHOOTER",
+              "DIAGNOSTICIAN",
+              "CORRECTIVE_ACTION_PERFORMER",
+              "VALIDATOR",
+              "SUPERVISOR",
+              "OTHER"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        }
+      }
+    },
+
+    "corrective_action": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "action_id"
+      ],
+
+      "properties": {
+        "action_id": {
+          "type": "string",
+          "pattern": "^ACT-[0-9]{6,}$"
+        },
+
+        "corrective_action_entity_id": {
+          "type": ["string", "null"],
+          "pattern": "^ENT-[0-9]{6,}$"
+        },
+
+        "description": {
+          "type": ["string", "null"]
+        },
+
+        "performed_by": {
+          "type": ["string", "null"]
+        },
+
+        "performed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "successful": {
+          "type": ["boolean", "null"]
+        },
+
+        "resulting_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EVD-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    }
+  }
+}
