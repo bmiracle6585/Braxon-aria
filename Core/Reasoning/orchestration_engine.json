@@ -1,0 +1,771 @@
+{
+  "specification": "ARIA_ORCHESTRATION_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines how A.R.I.A. coordinates specialized reasoning engines into one continuous diagnostic process. The Orchestration Engine determines which services execute, in what order, what events trigger reevaluation, when reasoning may stop, and how authoritative state remains synchronized without turning ARIA into a rigid troubleshooting workflow.",
+
+  "core_principle": {
+    "statement": "ARIA shall operate as an event-driven reasoning system. Specialized engines contribute different reasoning functions, while orchestration continuously evaluates the authoritative case state and invokes only the services required by the current technical event.",
+    "rules": [
+      "No individual reasoning engine represents ARIA's complete intelligence.",
+      "The Case State Engine is the authoritative representation of the active diagnostic state.",
+      "Orchestration shall be event-driven rather than dependent on a fixed troubleshooting sequence.",
+      "Not every event requires every engine to execute.",
+      "Material state changes shall trigger only the reevaluations affected by that change.",
+      "Reasoning shall continue from the newest authoritative state.",
+      "Completed diagnostic work shall remain preserved.",
+      "The language model shall participate in interpretation, candidate generation, communication, and synthesis without becoming the authoritative state machine.",
+      "Deterministic services shall enforce technical constraints, state transitions, persistence, and safety gates.",
+      "Orchestration shall remain modular so engines may evolve independently."
+    ]
+  },
+
+  "authoritative_components": {
+    "case_state": "CASE_STATE_ENGINE",
+    "technical_context": "CONTEXT_ENGINE",
+    "technical_knowledge": "KNOWLEDGE_GRAPH",
+    "historical_experience": "EXPERIENCE_LEDGER",
+    "persistent_memory": "MEMORY_ENGINE",
+    "evidence_state": "EVIDENCE_ENGINE",
+    "hypothesis_state": "HYPOTHESIS_ENGINE",
+    "probability_state": "PROBABILITY_ENGINE",
+    "uncertainty_state": "UNCERTAINTY_ENGINE",
+    "action_selection": "DECISION_ENGINE",
+    "route_state": "ROUTING_ENGINE",
+    "resolution_validation": "VALIDATION_ENGINE",
+    "learning": "LEARNING_ENGINE"
+  },
+
+  "engine_registry": [
+    {
+      "engine": "CONTEXT_ENGINE",
+      "responsibility": "Resolve the multidimensional technical environment in which reasoning occurs."
+    },
+    {
+      "engine": "MEMORY_ENGINE",
+      "responsibility": "Retrieve and assemble relevant persistent knowledge, experience, user overlays, and case history."
+    },
+    {
+      "engine": "EVIDENCE_ENGINE",
+      "responsibility": "Classify, validate, score, relate, contradict, supersede, and preserve evidence."
+    },
+    {
+      "engine": "HYPOTHESIS_ENGINE",
+      "responsibility": "Generate and maintain technically plausible candidate failure modes."
+    },
+    {
+      "engine": "PROBABILITY_ENGINE",
+      "responsibility": "Calculate and update relative likelihoods using priors, evidence, context, and experience."
+    },
+    {
+      "engine": "UNCERTAINTY_ENGINE",
+      "responsibility": "Represent confidence, missing information, contradictions, assumptions, and uncertainty-reduction opportunities."
+    },
+    {
+      "engine": "DECISION_ENGINE",
+      "responsibility": "Select the most valuable next diagnostic decision."
+    },
+    {
+      "engine": "ROUTING_ENGINE",
+      "responsibility": "Maintain route history, candidate next hops, route costs, and rerouting behavior."
+    },
+    {
+      "engine": "VALIDATION_ENGINE",
+      "responsibility": "Determine whether technical conclusions and resolutions have been sufficiently validated."
+    },
+    {
+      "engine": "LEARNING_ENGINE",
+      "responsibility": "Convert validated experience into appropriately scoped future intelligence."
+    },
+    {
+      "engine": "CASE_STATE_ENGINE",
+      "responsibility": "Maintain the authoritative versioned representation of the current case."
+    }
+  ],
+
+  "execution_modes": [
+    {
+      "name": "INITIALIZATION",
+      "description": "Establish a new case and produce the first usable reasoning state."
+    },
+    {
+      "name": "INCREMENTAL_UPDATE",
+      "description": "Process a new event against an existing case."
+    },
+    {
+      "name": "REROUTE",
+      "description": "Recompute the best next hop after a material state change."
+    },
+    {
+      "name": "VALIDATION",
+      "description": "Evaluate whether an intervention or proposed resolution produced the expected state."
+    },
+    {
+      "name": "LEARNING",
+      "description": "Process eligible completed case experience."
+    },
+    {
+      "name": "RECONSTRUCTION",
+      "description": "Reconstruct an earlier reasoning state for audit, review, or debugging."
+    }
+  ],
+
+  "initialization_pipeline": [
+    "CREATE_CASE",
+    "CAPTURE_REPORTED_PROBLEM",
+    "RESOLVE_INITIAL_CONTEXT",
+    "RETRIEVE_INITIAL_MEMORY",
+    "NORMALIZE_INITIAL_SYMPTOMS",
+    "REGISTER_INITIAL_EVIDENCE",
+    "GENERATE_INITIAL_HYPOTHESES",
+    "CALCULATE_INITIAL_PRIORS",
+    "ASSESS_INITIAL_UNCERTAINTY",
+    "GENERATE_CANDIDATE_ACTIONS",
+    "SELECT_NEXT_DECISION",
+    "PUBLISH_CASE_STATE",
+    "ASSEMBLE_RESPONSE_CONTEXT",
+    "GENERATE_USER_RESPONSE"
+  ],
+
+  "incremental_pipeline": [
+    "RECEIVE_EVENT",
+    "CLASSIFY_EVENT",
+    "VALIDATE_EVENT",
+    "IDENTIFY_AFFECTED_STATE",
+    "RUN_REQUIRED_ENGINES",
+    "APPLY_STATE_TRANSITIONS",
+    "RECALCULATE_DEPENDENCIES",
+    "DETERMINE_IF_REROUTE_REQUIRED",
+    "SELECT_NEXT_DECISION_IF_REQUIRED",
+    "PUBLISH_NEW_CASE_STATE",
+    "ASSEMBLE_RESPONSE_CONTEXT",
+    "GENERATE_USER_RESPONSE"
+  ],
+
+  "event_classes": [
+    "USER_STATEMENT",
+    "USER_QUESTION",
+    "USER_CORRECTION",
+    "MEASUREMENT",
+    "SCREENSHOT",
+    "DOCUMENT",
+    "CONFIGURATION_EXPORT",
+    "ALARM",
+    "LOG",
+    "PHOTO",
+    "VIDEO",
+    "EQUIPMENT_TELEMETRY",
+    "ACTION_RESULT",
+    "CORRECTIVE_ACTION_RESULT",
+    "VALIDATION_RESULT",
+    "CONTEXT_CHANGE",
+    "EXTERNAL_SYSTEM_EVENT",
+    "ADMINISTRATIVE_EVENT"
+  ],
+
+  "event_routing": {
+    "USER_STATEMENT": [
+      "CONTEXT_ENGINE",
+      "EVIDENCE_ENGINE",
+      "CASE_STATE_ENGINE"
+    ],
+    "USER_CORRECTION": [
+      "EVIDENCE_ENGINE",
+      "CONTEXT_ENGINE",
+      "CASE_STATE_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE"
+    ],
+    "MEASUREMENT": [
+      "EVIDENCE_ENGINE",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE",
+      "DECISION_ENGINE",
+      "ROUTING_ENGINE"
+    ],
+    "SCREENSHOT": [
+      "EVIDENCE_ENGINE",
+      "CONTEXT_ENGINE",
+      "MEMORY_ENGINE",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE"
+    ],
+    "CONFIGURATION_EXPORT": [
+      "EVIDENCE_ENGINE",
+      "CONTEXT_ENGINE",
+      "KNOWLEDGE_GRAPH",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE"
+    ],
+    "ACTION_RESULT": [
+      "EVIDENCE_ENGINE",
+      "CASE_STATE_ENGINE",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE",
+      "DECISION_ENGINE",
+      "ROUTING_ENGINE"
+    ],
+    "CORRECTIVE_ACTION_RESULT": [
+      "EVIDENCE_ENGINE",
+      "CASE_STATE_ENGINE",
+      "VALIDATION_ENGINE",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE"
+    ],
+    "VALIDATION_RESULT": [
+      "VALIDATION_ENGINE",
+      "CASE_STATE_ENGINE",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE",
+      "DECISION_ENGINE",
+      "LEARNING_ENGINE"
+    ],
+    "CONTEXT_CHANGE": [
+      "CONTEXT_ENGINE",
+      "MEMORY_ENGINE",
+      "EVIDENCE_ENGINE",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE",
+      "DECISION_ENGINE",
+      "ROUTING_ENGINE"
+    ]
+  },
+
+  "dependency_graph": {
+    "CONTEXT_ENGINE": [
+      "MEMORY_ENGINE",
+      "EVIDENCE_ENGINE",
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "DECISION_ENGINE"
+    ],
+    "MEMORY_ENGINE": [
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "DECISION_ENGINE"
+    ],
+    "EVIDENCE_ENGINE": [
+      "HYPOTHESIS_ENGINE",
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE",
+      "VALIDATION_ENGINE"
+    ],
+    "HYPOTHESIS_ENGINE": [
+      "PROBABILITY_ENGINE",
+      "UNCERTAINTY_ENGINE",
+      "DECISION_ENGINE"
+    ],
+    "PROBABILITY_ENGINE": [
+      "UNCERTAINTY_ENGINE",
+      "DECISION_ENGINE",
+      "ROUTING_ENGINE"
+    ],
+    "UNCERTAINTY_ENGINE": [
+      "DECISION_ENGINE",
+      "ROUTING_ENGINE"
+    ],
+    "DECISION_ENGINE": [
+      "ROUTING_ENGINE",
+      "CASE_STATE_ENGINE"
+    ],
+    "VALIDATION_ENGINE": [
+      "CASE_STATE_ENGINE",
+      "LEARNING_ENGINE"
+    ]
+  },
+
+  "selective_execution": {
+    "description": "ARIA shall avoid recomputing the entire reasoning system after every event.",
+
+    "examples": [
+      {
+        "event": "User provides current weather",
+        "likely_engines": [
+          "CONTEXT_ENGINE",
+          "EVIDENCE_ENGINE",
+          "PROBABILITY_ENGINE",
+          "DECISION_ENGINE"
+        ]
+      },
+      {
+        "event": "User asks ARIA to repeat the last instruction",
+        "likely_engines": [
+          "MEMORY_ENGINE"
+        ]
+      },
+      {
+        "event": "Validated configuration screenshot arrives",
+        "likely_engines": [
+          "EVIDENCE_ENGINE",
+          "CONTEXT_ENGINE",
+          "HYPOTHESIS_ENGINE",
+          "PROBABILITY_ENGINE",
+          "UNCERTAINTY_ENGINE",
+          "DECISION_ENGINE",
+          "ROUTING_ENGINE"
+        ]
+      }
+    ],
+
+    "rule": "Only engines whose inputs or downstream dependencies materially changed should normally execute."
+  },
+
+  "reasoning_cycle": {
+    "description": "Defines the normal active diagnostic cycle.",
+
+    "cycle": [
+      "OBSERVE",
+      "INTERPRET",
+      "UPDATE_STATE",
+      "GENERATE_OR_UPDATE_HYPOTHESES",
+      "RECALCULATE_PROBABILITY",
+      "ASSESS_UNCERTAINTY",
+      "EVALUATE_NEXT_HOPS",
+      "SELECT_ACTION",
+      "COMMUNICATE",
+      "WAIT_FOR_EVENT"
+    ],
+
+    "rule": "The cycle resumes from the resulting state when a new event arrives."
+  },
+
+  "state_change_detection": {
+    "material_changes": [
+      "NEW_VALID_EVIDENCE",
+      "EVIDENCE_INVALIDATED",
+      "CONTEXT_CHANGED",
+      "HYPOTHESIS_ADDED",
+      "HYPOTHESIS_REMOVED",
+      "HYPOTHESIS_RULED_OUT",
+      "MATERIAL_PROBABILITY_SHIFT",
+      "MATERIAL_UNCERTAINTY_SHIFT",
+      "ACTION_COMPLETED",
+      "CORRECTIVE_ACTION_COMPLETED",
+      "VALIDATION_RESULT",
+      "CONTRADICTION_DETECTED",
+      "CONTRADICTION_RESOLVED"
+    ],
+
+    "nonmaterial_examples": [
+      "User asks ARIA to rephrase an explanation",
+      "Formatting preference changes",
+      "Repeated acknowledgment without new technical information"
+    ]
+  },
+
+  "transaction_model": {
+    "description": "Material updates involving dependent state shall be processed consistently.",
+
+    "conceptual_process": [
+      "BEGIN_REASONING_TRANSACTION",
+      "READ_CURRENT_STATE_VERSION",
+      "PROCESS_EVENT",
+      "CALCULATE_PROPOSED_UPDATES",
+      "VALIDATE_TRANSITIONS",
+      "WRITE_EVENT",
+      "WRITE_NEW_STATE_VERSION",
+      "COMMIT",
+      "PUBLISH_STATE_CHANGE"
+    ],
+
+    "rules": [
+      "Partial state mutation shall be avoided.",
+      "If required deterministic validation fails, the authoritative state shall not be partially committed.",
+      "The triggering event shall remain traceable to the resulting state version."
+    ]
+  },
+
+  "concurrency_control": {
+    "enabled": true,
+
+    "description": "Protects case state when multiple users, integrations, or equipment events arrive close together.",
+
+    "rules": [
+      "Every reasoning transaction shall identify the state version it read.",
+      "Conflicting writes shall be detected.",
+      "Concurrent events may be serialized or reconciled before publishing a new authoritative state.",
+      "ARIA shall not silently overwrite newer case state with reasoning based on an older version."
+    ]
+  },
+
+  "idempotency": {
+    "enabled": true,
+
+    "rules": [
+      "Duplicate external events shall not create duplicate evidence or actions.",
+      "Events should carry stable identifiers when available.",
+      "Reprocessing the same event should produce the same authoritative result where deterministic inputs remain unchanged."
+    ]
+  },
+
+  "model_interface": {
+    "description": "Defines how the language model participates in orchestration.",
+
+    "model_may": [
+      "Interpret natural language",
+      "Extract candidate entities",
+      "Extract candidate symptoms",
+      "Identify candidate evidence",
+      "Generate candidate hypotheses",
+      "Generate candidate actions",
+      "Summarize retrieved knowledge",
+      "Explain reasoning",
+      "Generate conversational responses"
+    ],
+
+    "model_may_not_authoritatively": [
+      "Write canonical knowledge without governance",
+      "Alter historical evidence",
+      "Change probabilities without the probability service",
+      "Mark hypotheses confirmed without supporting state transitions",
+      "Mark cases resolved without validation gates",
+      "Create learning events without learning eligibility",
+      "Bypass safety constraints",
+      "Overwrite case history"
+    ]
+  },
+
+  "reasoning_request": {
+    "required_fields": [
+      "case_id",
+      "state_version_id",
+      "trigger_event_id",
+      "requested_operation",
+      "context_packet"
+    ]
+  },
+
+  "reasoning_response": {
+    "required_fields": [
+      "case_id",
+      "source_state_version_id",
+      "proposed_state_changes",
+      "proposed_hypotheses",
+      "proposed_actions",
+      "reasoning_summary",
+      "confidence_metadata"
+    ],
+
+    "rule": "Language-model reasoning output shall be treated as a proposal until accepted by applicable structured services."
+  },
+
+  "context_packet_assembly": {
+    "sources": [
+      "CURRENT_CASE_STATE",
+      "CURRENT_CONTEXT",
+      "ACTIVE_EVIDENCE",
+      "ACTIVE_HYPOTHESES",
+      "PROBABILITY_STATE",
+      "UNCERTAINTY_STATE",
+      "RELEVANT_CANONICAL_KNOWLEDGE",
+      "RELEVANT_EXPERIENCE",
+      "USER_OVERLAY",
+      "RECENT_ROUTE_HISTORY",
+      "CURRENT_TASK"
+    ],
+
+    "rules": [
+      "The context packet shall be operation-specific.",
+      "Only diagnostically useful information should normally enter model context.",
+      "Source authority and provenance shall remain represented.",
+      "Large raw sources should be retrieved only when required."
+    ]
+  },
+
+  "fast_path": {
+    "description": "Allows ARIA to answer simple technical or conversational requests without running the full diagnostic cycle.",
+
+    "examples": [
+      "What was the last RSL I gave you?",
+      "Repeat the next step.",
+      "What radio are we working on?",
+      "Explain what cross polarization means."
+    ],
+
+    "rules": [
+      "Fast-path responses may use existing authoritative state and memory.",
+      "Fast-path execution shall not mutate diagnostic state unless new technical information is introduced.",
+      "Simple retrieval should not unnecessarily invoke probability or routing services."
+    ]
+  },
+
+  "deep_reasoning_path": {
+    "triggers": [
+      "NEW_COMPLEX_EVIDENCE",
+      "MULTIPLE_COMPETING_HYPOTHESES",
+      "MATERIAL_CONTRADICTION",
+      "HIGH_IMPACT_DECISION",
+      "FAILED_CORRECTIVE_ACTION",
+      "FAILED_VALIDATION",
+      "MAJOR_CONTEXT_CHANGE",
+      "LOW_CONFIDENCE_HIGH_CONSEQUENCE_STATE"
+    ],
+
+    "rules": [
+      "Deep reasoning may retrieve additional knowledge and historical cases.",
+      "Deep reasoning may evaluate broader hypothesis sets.",
+      "Deep reasoning may use more compute than routine interactions.",
+      "Compute escalation shall be proportional to diagnostic need."
+    ]
+  },
+
+  "compute_tiering": {
+    "description": "ARIA shall be capable of operating economically on modest hardware by escalating computational effort only when justified.",
+
+    "tiers": [
+      {
+        "name": "TIER_0_STRUCTURED",
+        "description": "Database lookup, deterministic rules, graph traversal, simple calculations, and cached state."
+      },
+      {
+        "name": "TIER_1_LIGHT_MODEL",
+        "description": "Routine language understanding, extraction, summarization, and conversational response."
+      },
+      {
+        "name": "TIER_2_REASONING_MODEL",
+        "description": "Complex hypothesis generation, synthesis, contradiction analysis, or difficult technical reasoning."
+      },
+      {
+        "name": "TIER_3_EXTERNAL_OR_HUMAN_ESCALATION",
+        "description": "Manufacturer support, engineering review, specialist model, or human expert."
+      }
+    ],
+
+    "rules": [
+      "ARIA shall use the lowest computational tier capable of safely performing the operation.",
+      "Simple structured work shall not consume GPU inference unnecessarily.",
+      "Complexity may escalate compute tier dynamically.",
+      "Future hardware upgrades shall improve latency and capacity without requiring redesign of the reasoning architecture."
+    ]
+  },
+
+  "latency_policy": {
+    "description": "ARIA should remain responsive while deeper operations occur.",
+
+    "rules": [
+      "Routine interactions should use cached authoritative state whenever possible.",
+      "Independent retrieval operations may execute concurrently.",
+      "Expensive retrieval shall be scoped before execution.",
+      "Model invocation shall occur after relevant context has been narrowed.",
+      "Repeated retrieval results may be cached when validity permits."
+    ]
+  },
+
+  "failure_handling": {
+    "engine_failure_policy": [
+      "RECORD_FAILURE",
+      "PRESERVE_CURRENT_AUTHORITATIVE_STATE",
+      "IDENTIFY_AFFECTED_OPERATION",
+      "RETRY_IF_SAFE",
+      "FALL_BACK_IF_AVAILABLE",
+      "ESCALATE_IF_REQUIRED"
+    ],
+
+    "rules": [
+      "Failure of one engine shall not corrupt authoritative case state.",
+      "ARIA shall not fabricate a result when a required service fails.",
+      "Degraded operation shall be distinguishable from normal operation."
+    ]
+  },
+
+  "loop_protection": {
+    "controls": [
+      "STATE_VERSION",
+      "COMPLETED_ACTION_HISTORY",
+      "ACTION_EQUIVALENCE",
+      "REASONING_SIGNATURE",
+      "REPETITION_COUNT",
+      "NO_NEW_INFORMATION_DETECTION"
+    ],
+
+    "rules": [
+      "ARIA shall detect repeated reasoning that produces no material state change.",
+      "Repeated equivalent model proposals shall not create repeated user requests.",
+      "A diagnostic loop shall trigger rerouting, broadened retrieval, or escalation."
+    ]
+  },
+
+  "reasoning_signature": {
+    "description": "Compact signature representing the material reasoning state for loop detection.",
+
+    "candidate_fields": [
+      "context_signature",
+      "active_hypothesis_ids",
+      "probability_bucket_signature",
+      "material_evidence_ids",
+      "ruled_out_hypothesis_ids",
+      "completed_action_classes",
+      "unresolved_uncertainty_ids"
+    ]
+  },
+
+  "resolution_orchestration": {
+    "pipeline": [
+      "CORRECTIVE_ACTION_COMPLETED",
+      "VALIDATION_PLAN_EXECUTED",
+      "VALIDATION_EVIDENCE_PROCESSED",
+      "RESOLUTION_STATE_CALCULATED",
+      "RESIDUAL_UNCERTAINTY_ASSESSED",
+      "RESOLUTION_GATE_EVALUATED",
+      "CASE_STATE_UPDATED",
+      "LEARNING_ELIGIBILITY_EVALUATED"
+    ]
+  },
+
+  "learning_orchestration": {
+    "pipeline": [
+      "CASE_REACHES_ELIGIBLE_STATE",
+      "VALIDATION_STRENGTH_READ",
+      "LEARNING_ELIGIBILITY_CALCULATED",
+      "DUPLICATE_DEPENDENCY_CHECK",
+      "ATTRIBUTION_CHECK",
+      "LEARNING_EVENTS_CREATED",
+      "EXPERIENCE_LEDGER_UPDATED",
+      "AGGREGATES_REFRESHED",
+      "CANDIDATE_KNOWLEDGE_CLAIMS_GENERATED_IF_APPLICABLE"
+    ],
+
+    "rule": "Learning shall occur after validation and eligibility assessment rather than directly from raw conversation."
+  },
+
+  "auditability": {
+    "required_capabilities": [
+      "Identify the event that triggered each reasoning cycle.",
+      "Identify which engines executed.",
+      "Identify which state version each engine read.",
+      "Identify which state changes were produced.",
+      "Identify which model and model version participated.",
+      "Identify retrieved knowledge and experience used.",
+      "Identify the selected decision and alternatives.",
+      "Reconstruct the reasoning state before and after a material event."
+    ]
+  },
+
+  "example": {
+    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+
+    "state_17": {
+      "configuration_error": 0.31,
+      "rf_routing_error": 0.48,
+      "radio_failure": 0.14,
+      "other": 0.07
+    },
+
+    "decision": "Request Radio A and Radio B configuration.",
+
+    "event": {
+      "type": "CONFIGURATION_EXPORT",
+      "result": "Configuration validated correct."
+    },
+
+    "orchestration": [
+      "Evidence Engine validates configuration evidence.",
+      "Case State Engine records configuration as confirmed correct.",
+      "Hypothesis Engine weakens configuration-error hypothesis.",
+      "Probability Engine recalculates the hypothesis distribution.",
+      "Uncertainty Engine removes configuration uncertainty.",
+      "Decision Engine reevaluates candidate actions.",
+      "Routing Engine selects physical Main/Diversity routing verification as the new next hop.",
+      "Case State Engine publishes State 18.",
+      "Memory Engine assembles the compact response context.",
+      "Language model explains the next action to the technician."
+    ],
+
+    "state_18": {
+      "configuration_error": 0.02,
+      "rf_routing_error": 0.69,
+      "radio_failure": 0.19,
+      "other": 0.10
+    },
+
+    "interpretation": "ARIA did not rerun a predetermined troubleshooting tree. One event changed only the portions of the reasoning graph affected by that evidence and produced a new best next hop."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "ORCH-RULE-001",
+      "rule": "ARIA shall operate as an event-driven reasoning system rather than a static troubleshooting workflow."
+    },
+    {
+      "rule_id": "ORCH-RULE-002",
+      "rule": "The authoritative case state shall coordinate reasoning across specialized engines."
+    },
+    {
+      "rule_id": "ORCH-RULE-003",
+      "rule": "Not every event shall trigger every engine."
+    },
+    {
+      "rule_id": "ORCH-RULE-004",
+      "rule": "Only materially affected reasoning dependencies should normally be recomputed."
+    },
+    {
+      "rule_id": "ORCH-RULE-005",
+      "rule": "ARIA shall continue reasoning from the newest authoritative state."
+    },
+    {
+      "rule_id": "ORCH-RULE-006",
+      "rule": "The language model shall not be the authoritative state machine."
+    },
+    {
+      "rule_id": "ORCH-RULE-007",
+      "rule": "Language-model reasoning outputs shall be treated as proposals until accepted by applicable structured services."
+    },
+    {
+      "rule_id": "ORCH-RULE-008",
+      "rule": "Deterministic services shall control state transitions, safety gates, persistence, and authoritative calculations."
+    },
+    {
+      "rule_id": "ORCH-RULE-009",
+      "rule": "Material reasoning updates shall be transactional."
+    },
+    {
+      "rule_id": "ORCH-RULE-010",
+      "rule": "Concurrent events shall not silently overwrite newer diagnostic state."
+    },
+    {
+      "rule_id": "ORCH-RULE-011",
+      "rule": "Duplicate events shall not produce duplicate authoritative evidence or learning."
+    },
+    {
+      "rule_id": "ORCH-RULE-012",
+      "rule": "Simple requests shall use fast paths rather than unnecessarily invoking the complete reasoning system."
+    },
+    {
+      "rule_id": "ORCH-RULE-013",
+      "rule": "Compute effort shall scale with diagnostic complexity and consequence."
+    },
+    {
+      "rule_id": "ORCH-RULE-014",
+      "rule": "Structured deterministic operations shall not require GPU inference when equivalent reliable computation is available."
+    },
+    {
+      "rule_id": "ORCH-RULE-015",
+      "rule": "A reasoning-service failure shall not corrupt the last valid authoritative state."
+    },
+    {
+      "rule_id": "ORCH-RULE-016",
+      "rule": "ARIA shall detect diagnostic loops and respond through rerouting, broadened retrieval, or escalation."
+    },
+    {
+      "rule_id": "ORCH-RULE-017",
+      "rule": "Validation shall precede authoritative learning from a completed case."
+    },
+    {
+      "rule_id": "ORCH-RULE-018",
+      "rule": "Reasoning execution shall remain auditable and reconstructable."
+    },
+    {
+      "rule_id": "ORCH-RULE-019",
+      "rule": "Individual engines shall remain modular so they can evolve without redesigning ARIA's entire intelligence architecture."
+    },
+    {
+      "rule_id": "ORCH-RULE-020",
+      "rule": "ARIA shall behave as one coherent intelligence even though her reasoning is produced by many specialized systems."
+    }
+  ]
+}
