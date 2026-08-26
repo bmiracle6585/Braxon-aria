@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/claim.schema.json",
+  "title": "A.R.I.A. Knowledge Claim",
+  "description": "Machine-readable validation schema for claims extracted, entered, inferred, or derived from A.R.I.A. knowledge sources.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "claim_id",
+    "claim_type",
+    "normalized_claim",
+    "origin_type",
+    "validation_state",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "pattern": "^CLM-[0-9]{6,}$",
+      "description": "Permanent identifier for this knowledge claim."
+    },
+
+    "claim_type": {
+      "type": "string",
+      "enum": [
+        "ENTITY_ASSERTION",
+        "RELATIONSHIP_ASSERTION",
+        "PROPERTY_ASSERTION",
+        "REQUIREMENT",
+        "CONSTRAINT",
+        "PROCEDURAL_ASSERTION",
+        "OBSERVATIONAL_ASSERTION",
+        "STATISTICAL_ASSERTION",
+        "INFERRED_ASSERTION"
+      ]
+    },
+
+    "origin_type": {
+      "type": "string",
+      "enum": [
+        "SOURCE",
+        "EXPERIENCE",
+        "HUMAN",
+        "SYSTEM_INFERENCE",
+        "MODEL_PROPOSED"
+      ],
+      "description": "The general origin of the claim."
+    },
+
+    "source_id": {
+      "type": ["string", "null"],
+      "pattern": "^SRC-[0-9]{6,}$",
+      "description": "Source record from which this claim originated when applicable."
+    },
+
+    "source_location": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "page": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+
+        "section": {
+          "type": ["string", "null"]
+        },
+
+        "chapter": {
+          "type": ["string", "null"]
+        },
+
+        "paragraph": {
+          "type": ["string", "null"]
+        },
+
+        "table": {
+          "type": ["string", "null"]
+        },
+
+        "figure": {
+          "type": ["string", "null"]
+        },
+
+        "sheet": {
+          "type": ["string", "null"]
+        },
+
+        "cell_range": {
+          "type": ["string", "null"]
+        },
+
+        "timestamp": {
+          "type": ["string", "null"]
+        },
+
+        "locator": {
+          "type": ["string", "null"],
+          "description": "Fallback source-specific locator when another structured location field is insufficient."
+        }
+      }
+    },
+
+    "original_content": {
+      "type": ["string", "null"],
+      "description": "Relevant original source content from which the claim was derived, subject to applicable storage and licensing rules."
+    },
+
+    "normalized_claim": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A.R.I.A.'s normalized technical interpretation of the claim."
+    },
+
+    "subject_entity_ids": {
+      "$ref": "#/$defs/entity_id_array"
+    },
+
+    "object_entity_ids": {
+      "$ref": "#/$defs/entity_id_array"
+    },
+
+    "relationship_ids": {
+      "type": "array",
+      "description": "Canonical relationships supported, contradicted, or otherwise associated with this claim.",
+      "items": {
+        "type": "string",
+        "pattern": "^REL-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "experience_case_ids": {
+      "type": "array",
+      "description": "Experience Ledger cases supporting an experience-derived claim.",
+      "items": {
+        "type": "string",
+        "pattern": "^EXP-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "claim_relation": {
+      "type": "string",
+      "enum": [
+        "SUPPORTS",
+        "CONTRADICTS",
+        "QUALIFIES",
+        "SUPERSEDES",
+        "PROPOSES",
+        "UNRESOLVED"
+      ],
+      "default": "PROPOSES",
+      "description": "How this claim relates to the canonical knowledge objects it references."
+    },
+
+    "extraction_method": {
+      "type": ["string", "null"],
+      "enum": [
+        "HUMAN_ENTERED",
+        "RULE_BASED_EXTRACTION",
+        "TABLE_EXTRACTION",
+        "STRUCTURED_IMPORT",
+        "MODEL_EXTRACTION",
+        "LEGACY_MIGRATION",
+        "EXPERIENCE_DERIVED",
+        "SYSTEM_INFERENCE",
+        null
+      ]
+    },
+
+    "extraction_confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence that the source material was interpreted correctly. This is not confidence that the technical claim itself is true."
+    },
+
+    "technical_confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Current confidence in the technical validity of the claim."
+    },
+
+    "validation_state": {
+      "type": "string",
+      "enum": [
+        "UNREVIEWED",
+        "UNDER_REVIEW",
+        "VALIDATED",
+        "DISPUTED",
+        "REJECTED",
+        "SUPERSEDED"
+      ]
+    },
+
+    "review_required": {
+      "type": "boolean",
+      "default": true
+    },
+
+    "review_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^REV-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "applicability": {
+      "type": "object",
+      "description": "Known technical context in which the claim applies.",
+      "additionalProperties": false,
+
+      "properties": {
+        "manufacturer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_family_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_variant_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "hardware_revision_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "firmware_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "frequency_band_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "configuration_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "topology_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "scope_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        }
+      }
+    },
+
+    "effective_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "supersedes_claim_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^CLM-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "superseded_by_claim_id": {
+      "type": ["string", "null"],
+      "pattern": "^CLM-[0-9]{6,}$"
+    },
+
+    "inference_dependencies": {
+      "type": "object",
+      "description": "Dependencies used when this claim was produced through inference.",
+      "additionalProperties": false,
+
+      "properties": {
+        "claim_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CLM-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "relationship_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^REL-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EVD-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "model_provenance": {
+      "type": ["object", "null"],
+      "description": "Model lineage when a language model participated in producing the claim.",
+      "additionalProperties": false,
+
+      "properties": {
+        "model_identifier": {
+          "type": ["string", "null"]
+        },
+
+        "model_version": {
+          "type": ["string", "null"]
+        },
+
+        "process_identifier": {
+          "type": ["string", "null"]
+        },
+
+        "generated_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Controlled extensibility for claim-specific metadata.",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "entity_id_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    }
+  }
+}
