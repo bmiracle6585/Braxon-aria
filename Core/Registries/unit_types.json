@@ -1,0 +1,455 @@
+{
+  "registry": "ARIA_UNIT_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical units used by A.R.I.A. for microwave backhaul measurements, calculations, comparisons, and evidence.",
+
+  "units": [
+    {
+      "unit": "dBm",
+      "canonical_name": "Decibel-Milliwatt",
+      "symbol": "dBm",
+      "category": "ABSOLUTE_POWER",
+      "quantity": "POWER",
+      "scale_type": "LOGARITHMIC_ABSOLUTE",
+      "description": "Absolute power level referenced to 1 milliwatt.",
+      "convertible_to": [
+        "mW",
+        "W"
+      ],
+      "notes": "dBm represents absolute power and must not be treated as equivalent to dB."
+    },
+
+    {
+      "unit": "dB",
+      "canonical_name": "Decibel",
+      "symbol": "dB",
+      "category": "RELATIVE_RATIO",
+      "quantity": "RATIO",
+      "scale_type": "LOGARITHMIC_RELATIVE",
+      "description": "Logarithmic representation of a relative ratio, gain, loss, margin, or difference.",
+      "convertible_to": [],
+      "notes": "dB is relative and has no absolute power reference."
+    },
+
+    {
+      "unit": "W",
+      "canonical_name": "Watt",
+      "symbol": "W",
+      "category": "POWER",
+      "quantity": "POWER",
+      "scale_type": "LINEAR",
+      "description": "SI unit of power.",
+      "convertible_to": [
+        "mW",
+        "dBm"
+      ]
+    },
+
+    {
+      "unit": "mW",
+      "canonical_name": "Milliwatt",
+      "symbol": "mW",
+      "category": "POWER",
+      "quantity": "POWER",
+      "scale_type": "LINEAR",
+      "description": "One thousandth of a watt.",
+      "convertible_to": [
+        "W",
+        "dBm"
+      ]
+    },
+
+    {
+      "unit": "Hz",
+      "canonical_name": "Hertz",
+      "symbol": "Hz",
+      "category": "FREQUENCY",
+      "quantity": "FREQUENCY",
+      "scale_type": "LINEAR",
+      "base_unit": true,
+      "conversion_to_base": {
+        "multiplier": 1
+      }
+    },
+
+    {
+      "unit": "kHz",
+      "canonical_name": "Kilohertz",
+      "symbol": "kHz",
+      "category": "FREQUENCY",
+      "quantity": "FREQUENCY",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "Hz",
+        "multiplier": 1000
+      }
+    },
+
+    {
+      "unit": "MHz",
+      "canonical_name": "Megahertz",
+      "symbol": "MHz",
+      "category": "FREQUENCY",
+      "quantity": "FREQUENCY",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "Hz",
+        "multiplier": 1000000
+      }
+    },
+
+    {
+      "unit": "GHz",
+      "canonical_name": "Gigahertz",
+      "symbol": "GHz",
+      "category": "FREQUENCY",
+      "quantity": "FREQUENCY",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "Hz",
+        "multiplier": 1000000000
+      }
+    },
+
+    {
+      "unit": "bps",
+      "canonical_name": "Bits per Second",
+      "symbol": "bps",
+      "category": "DATA_RATE",
+      "quantity": "DATA_RATE",
+      "scale_type": "LINEAR",
+      "base_unit": true,
+      "conversion_to_base": {
+        "multiplier": 1
+      }
+    },
+
+    {
+      "unit": "kbps",
+      "canonical_name": "Kilobits per Second",
+      "symbol": "kbps",
+      "category": "DATA_RATE",
+      "quantity": "DATA_RATE",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "bps",
+        "multiplier": 1000
+      }
+    },
+
+    {
+      "unit": "Mbps",
+      "canonical_name": "Megabits per Second",
+      "symbol": "Mbps",
+      "category": "DATA_RATE",
+      "quantity": "DATA_RATE",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "bps",
+        "multiplier": 1000000
+      }
+    },
+
+    {
+      "unit": "Gbps",
+      "canonical_name": "Gigabits per Second",
+      "symbol": "Gbps",
+      "category": "DATA_RATE",
+      "quantity": "DATA_RATE",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "bps",
+        "multiplier": 1000000000
+      }
+    },
+
+    {
+      "unit": "s",
+      "canonical_name": "Second",
+      "symbol": "s",
+      "category": "TIME",
+      "quantity": "TIME",
+      "scale_type": "LINEAR",
+      "base_unit": true,
+      "conversion_to_base": {
+        "multiplier": 1
+      }
+    },
+
+    {
+      "unit": "ms",
+      "canonical_name": "Millisecond",
+      "symbol": "ms",
+      "category": "TIME",
+      "quantity": "TIME",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "s",
+        "multiplier": 0.001
+      }
+    },
+
+    {
+      "unit": "us",
+      "canonical_name": "Microsecond",
+      "symbol": "us",
+      "category": "TIME",
+      "quantity": "TIME",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "s",
+        "multiplier": 0.000001
+      }
+    },
+
+    {
+      "unit": "m",
+      "canonical_name": "Meter",
+      "symbol": "m",
+      "category": "DISTANCE",
+      "quantity": "LENGTH",
+      "scale_type": "LINEAR",
+      "base_unit": true,
+      "conversion_to_base": {
+        "multiplier": 1
+      }
+    },
+
+    {
+      "unit": "km",
+      "canonical_name": "Kilometer",
+      "symbol": "km",
+      "category": "DISTANCE",
+      "quantity": "LENGTH",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "m",
+        "multiplier": 1000
+      }
+    },
+
+    {
+      "unit": "ft",
+      "canonical_name": "Foot",
+      "symbol": "ft",
+      "category": "DISTANCE",
+      "quantity": "LENGTH",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "m",
+        "multiplier": 0.3048
+      }
+    },
+
+    {
+      "unit": "mi",
+      "canonical_name": "Mile",
+      "symbol": "mi",
+      "category": "DISTANCE",
+      "quantity": "LENGTH",
+      "scale_type": "LINEAR",
+      "conversion_to_base": {
+        "unit": "m",
+        "multiplier": 1609.344
+      }
+    },
+
+    {
+      "unit": "DEGREES",
+      "canonical_name": "Degree",
+      "symbol": "°",
+      "category": "ANGLE",
+      "quantity": "ANGLE",
+      "scale_type": "CIRCULAR",
+      "description": "Angular measurement where one full rotation equals 360 degrees.",
+      "normalization": {
+        "minimum": 0,
+        "maximum_exclusive": 360
+      }
+    },
+
+    {
+      "unit": "PERCENT",
+      "canonical_name": "Percent",
+      "symbol": "%",
+      "category": "DIMENSIONLESS",
+      "quantity": "PERCENTAGE",
+      "scale_type": "LINEAR",
+      "description": "Dimensionless value expressed per one hundred.",
+      "conversion_to_ratio": {
+        "multiplier": 0.01
+      }
+    },
+
+    {
+      "unit": "RATIO",
+      "canonical_name": "Ratio",
+      "symbol": null,
+      "category": "DIMENSIONLESS",
+      "quantity": "RATIO",
+      "scale_type": "LINEAR",
+      "description": "Dimensionless numerical ratio."
+    },
+
+    {
+      "unit": "COUNT",
+      "canonical_name": "Count",
+      "symbol": null,
+      "category": "DIMENSIONLESS",
+      "quantity": "COUNT",
+      "scale_type": "DISCRETE",
+      "description": "Integer count of occurrences or events."
+    },
+
+    {
+      "unit": "V",
+      "canonical_name": "Volt",
+      "symbol": "V",
+      "category": "ELECTRICAL",
+      "quantity": "VOLTAGE",
+      "scale_type": "LINEAR"
+    },
+
+    {
+      "unit": "A",
+      "canonical_name": "Ampere",
+      "symbol": "A",
+      "category": "ELECTRICAL",
+      "quantity": "CURRENT",
+      "scale_type": "LINEAR"
+    },
+
+    {
+      "unit": "C",
+      "canonical_name": "Degrees Celsius",
+      "symbol": "°C",
+      "category": "TEMPERATURE",
+      "quantity": "TEMPERATURE",
+      "scale_type": "OFFSET_LINEAR",
+      "description": "Temperature expressed on the Celsius scale."
+    },
+
+    {
+      "unit": "F",
+      "canonical_name": "Degrees Fahrenheit",
+      "symbol": "°F",
+      "category": "TEMPERATURE",
+      "quantity": "TEMPERATURE",
+      "scale_type": "OFFSET_LINEAR",
+      "description": "Temperature expressed on the Fahrenheit scale."
+    },
+
+    {
+      "unit": "mph",
+      "canonical_name": "Miles per Hour",
+      "symbol": "mph",
+      "category": "SPEED",
+      "quantity": "SPEED",
+      "scale_type": "LINEAR",
+      "conversion_to_si": {
+        "unit": "m/s",
+        "multiplier": 0.44704
+      }
+    },
+
+    {
+      "unit": "m/s",
+      "canonical_name": "Meters per Second",
+      "symbol": "m/s",
+      "category": "SPEED",
+      "quantity": "SPEED",
+      "scale_type": "LINEAR"
+    },
+
+    {
+      "unit": "mm/h",
+      "canonical_name": "Millimeters per Hour",
+      "symbol": "mm/h",
+      "category": "PRECIPITATION_RATE",
+      "quantity": "PRECIPITATION_RATE",
+      "scale_type": "LINEAR"
+    }
+  ],
+
+  "special_conversions": [
+    {
+      "from": "dBm",
+      "to": "mW",
+      "formula": "10^(dBm/10)",
+      "description": "Convert absolute logarithmic power in dBm to milliwatts."
+    },
+
+    {
+      "from": "mW",
+      "to": "dBm",
+      "formula": "10*log10(mW)",
+      "constraints": [
+        "mW > 0"
+      ]
+    },
+
+    {
+      "from": "dBm",
+      "to": "W",
+      "formula": "10^((dBm-30)/10)"
+    },
+
+    {
+      "from": "W",
+      "to": "dBm",
+      "formula": "10*log10(W)+30",
+      "constraints": [
+        "W > 0"
+      ]
+    },
+
+    {
+      "from": "C",
+      "to": "F",
+      "formula": "(C*9/5)+32"
+    },
+
+    {
+      "from": "F",
+      "to": "C",
+      "formula": "(F-32)*5/9"
+    }
+  ],
+
+  "semantic_rules": [
+    {
+      "rule_id": "UNIT-RULE-001",
+      "rule": "dBm represents absolute power. dB represents a relative ratio, gain, loss, margin, or difference. They shall never be treated as interchangeable units."
+    },
+
+    {
+      "rule_id": "UNIT-RULE-002",
+      "rule": "Subtracting two dBm power levels produces a difference expressed in dB, not dBm."
+    },
+
+    {
+      "rule_id": "UNIT-RULE-003",
+      "rule": "For negative dBm values, the numerically greater value represents greater absolute power. For example, -50 dBm is stronger than -70 dBm."
+    },
+
+    {
+      "rule_id": "UNIT-RULE-004",
+      "rule": "Unit conversion shall not change the underlying physical quantity represented by the measurement."
+    },
+
+    {
+      "rule_id": "UNIT-RULE-005",
+      "rule": "Comparisons between measurements shall be performed only when their physical quantities are compatible or an explicit transformation defines the comparison."
+    },
+
+    {
+      "rule_id": "UNIT-RULE-006",
+      "rule": "Angular differences shall account for circular wraparound. For example, the smallest difference between 359 degrees and 1 degree is 2 degrees, not 358 degrees."
+    },
+
+    {
+      "rule_id": "UNIT-RULE-007",
+      "rule": "Percentage and ratio representations shall be normalized before mathematical comparison when they use different scales."
+    }
+  ]
+}
