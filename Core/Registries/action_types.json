@@ -1,0 +1,666 @@
+{
+  "registry": "ARIA_ACTION_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical diagnostic, inspection, verification, measurement, testing, and corrective actions available to A.R.I.A. during microwave backhaul reasoning.",
+
+  "action_types": [
+    {
+      "id": "ACT-RF-001",
+      "name": "CHECK_RSL",
+      "canonical_name": "Check RSL",
+      "category": "MEASUREMENT",
+      "description": "Obtain the current received signal level for the applicable radio or RF path.",
+      "expected_outputs": ["RSL"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-002",
+      "name": "COMPARE_RSL_TO_EXPECTED",
+      "canonical_name": "Compare RSL to Expected",
+      "category": "COMPARISON",
+      "description": "Compare measured RSL against the applicable engineered, expected, historical, or reference RSL.",
+      "expected_outputs": ["RSL", "RSL_DELTA"],
+      "comparison_mode": "ACTUAL_VS_EXPECTED",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-003",
+      "name": "COMPARE_MAIN_DIVERSITY_RSL",
+      "canonical_name": "Compare Main and Diversity RSL",
+      "category": "COMPARISON",
+      "description": "Compare corresponding Main and Diversity receive levels.",
+      "expected_outputs": ["RSL", "RSL_DELTA"],
+      "comparison_mode": "MAIN_VS_DIVERSITY",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-004",
+      "name": "COMPARE_LOCAL_REMOTE_RSL",
+      "canonical_name": "Compare Local and Remote RSL",
+      "category": "COMPARISON",
+      "description": "Compare corresponding receive levels between opposite microwave endpoints.",
+      "expected_outputs": ["RSL", "RSL_DELTA"],
+      "comparison_mode": "LOCAL_VS_REMOTE",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-005",
+      "name": "CHECK_TX_POWER",
+      "canonical_name": "Check Transmit Power",
+      "category": "MEASUREMENT",
+      "description": "Obtain current transmit power for the applicable radio or RF path.",
+      "expected_outputs": ["TX_POWER"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-006",
+      "name": "COMPARE_TX_POWER",
+      "canonical_name": "Compare Transmit Power",
+      "category": "COMPARISON",
+      "description": "Compare actual transmit power against configured, expected, design, or opposite-end values.",
+      "expected_outputs": ["TX_POWER"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-007",
+      "name": "CHECK_SNR",
+      "canonical_name": "Check SNR",
+      "category": "MEASUREMENT",
+      "description": "Obtain current signal-to-noise ratio.",
+      "expected_outputs": ["SNR"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-008",
+      "name": "CHECK_SINR",
+      "canonical_name": "Check SINR",
+      "category": "MEASUREMENT",
+      "description": "Obtain current signal-to-interference-plus-noise ratio.",
+      "expected_outputs": ["SINR"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-009",
+      "name": "CHECK_XPD",
+      "canonical_name": "Check Cross-Polarization Discrimination",
+      "category": "MEASUREMENT",
+      "description": "Obtain or calculate cross-polarization discrimination.",
+      "expected_outputs": ["XPD"],
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-RF-010",
+      "name": "CHECK_MODULATION",
+      "canonical_name": "Check Modulation",
+      "category": "MEASUREMENT",
+      "description": "Obtain current modulation or adaptive modulation state.",
+      "expected_outputs": ["MODULATION_ORDER", "ACM_STATE"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-RF-011",
+      "name": "CHECK_ERROR_PERFORMANCE",
+      "canonical_name": "Check Error Performance",
+      "category": "MEASUREMENT",
+      "description": "Review available BER, errored seconds, severely errored seconds, unavailable seconds, packet errors, or related performance metrics.",
+      "expected_outputs": ["BER", "PER", "ES", "SES", "UAS"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-001",
+      "name": "REVIEW_CONFIGURATION",
+      "canonical_name": "Review Configuration",
+      "category": "VERIFICATION",
+      "description": "Review relevant equipment configuration against the applicable expected technical state.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-002",
+      "name": "VERIFY_FREQUENCY",
+      "canonical_name": "Verify Frequency Configuration",
+      "category": "VERIFICATION",
+      "description": "Verify configured transmit and receive frequencies against the applicable design and corresponding endpoint.",
+      "expected_outputs": ["FREQUENCY"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-003",
+      "name": "VERIFY_CHANNEL_BANDWIDTH",
+      "canonical_name": "Verify Channel Bandwidth",
+      "category": "VERIFICATION",
+      "description": "Verify channel bandwidth against design and corresponding endpoint configuration.",
+      "expected_outputs": ["CHANNEL_BANDWIDTH"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-004",
+      "name": "VERIFY_TX_POWER_CONFIGURATION",
+      "canonical_name": "Verify Transmit Power Configuration",
+      "category": "VERIFICATION",
+      "description": "Verify configured transmit power and applicable power limits.",
+      "expected_outputs": ["TX_POWER"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-005",
+      "name": "VERIFY_ATPC_CONFIGURATION",
+      "canonical_name": "Verify ATPC Configuration",
+      "category": "VERIFICATION",
+      "description": "Verify ATPC state, target, limits, and associated parameters.",
+      "expected_outputs": ["ATPC_POWER", "ATPC_TARGET"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-006",
+      "name": "VERIFY_MODULATION_CONFIGURATION",
+      "canonical_name": "Verify Modulation Configuration",
+      "category": "VERIFICATION",
+      "description": "Verify modulation, ACM, coding, and related capacity settings.",
+      "expected_outputs": ["MODULATION_ORDER", "ACM_STATE"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-007",
+      "name": "VERIFY_TOPOLOGY",
+      "canonical_name": "Verify Topology Configuration",
+      "category": "VERIFICATION",
+      "description": "Verify configured radio topology, protection arrangement, diversity arrangement, or aggregation architecture.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-008",
+      "name": "COMPARE_ENDPOINT_CONFIGURATIONS",
+      "canonical_name": "Compare Endpoint Configurations",
+      "category": "COMPARISON",
+      "description": "Compare corresponding configuration values between both microwave endpoints.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-CONFIG-009",
+      "name": "COMPARE_CONFIGURATION_TO_DESIGN",
+      "canonical_name": "Compare Configuration to Design",
+      "category": "COMPARISON",
+      "description": "Compare current equipment configuration with applicable engineering or commissioning design data.",
+      "comparison_mode": "ACTUAL_VS_DESIGN",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-001",
+      "name": "INSPECT_RF_CHAIN",
+      "canonical_name": "Inspect RF Chain",
+      "category": "INSPECTION",
+      "description": "Physically inspect the applicable RF path and its components from radio through antenna interface.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-002",
+      "name": "VERIFY_RF_ROUTING",
+      "canonical_name": "Verify RF Routing",
+      "category": "INSPECTION",
+      "description": "Verify that RF components and paths are routed to the correct ports and corresponding equipment.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-003",
+      "name": "VERIFY_MAIN_DIVERSITY_ROUTING",
+      "canonical_name": "Verify Main/Diversity Routing",
+      "category": "INSPECTION",
+      "description": "Verify physical Main and Diversity RF routing against the required architecture.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-004",
+      "name": "INSPECT_RF_CONNECTIONS",
+      "canonical_name": "Inspect RF Connections",
+      "category": "INSPECTION",
+      "description": "Inspect applicable RF connections for seating, engagement, torque, damage, contamination, moisture, and mechanical condition.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-005",
+      "name": "VERIFY_COMPONENT_MATING",
+      "canonical_name": "Verify Component Mating",
+      "category": "INSPECTION",
+      "description": "Verify that applicable RF components are correctly oriented, seated, engaged, and mated.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-006",
+      "name": "INSPECT_WAVEGUIDE",
+      "canonical_name": "Inspect Waveguide",
+      "category": "INSPECTION",
+      "description": "Inspect waveguide or equivalent RF transmission medium for damage, deformation, contamination, water ingress, and installation defects.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-007",
+      "name": "VERIFY_INSTALLED_HARDWARE",
+      "canonical_name": "Verify Installed Hardware",
+      "category": "INSPECTION",
+      "description": "Verify installed equipment and components against required design, bill of material, product, frequency band, and compatibility requirements.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PHYSICAL-008",
+      "name": "VERIFY_COMPONENT_ORIENTATION",
+      "canonical_name": "Verify Component Orientation",
+      "category": "INSPECTION",
+      "description": "Verify physical orientation of applicable components against installation requirements.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-ALIGN-001",
+      "name": "VERIFY_AZIMUTH",
+      "canonical_name": "Verify Antenna Azimuth",
+      "category": "ALIGNMENT",
+      "description": "Compare actual antenna azimuth with applicable path design.",
+      "expected_outputs": ["AZIMUTH"],
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-ALIGN-002",
+      "name": "VERIFY_ELEVATION",
+      "canonical_name": "Verify Antenna Elevation",
+      "category": "ALIGNMENT",
+      "description": "Compare actual antenna elevation with applicable path design.",
+      "expected_outputs": ["ELEVATION_ANGLE"],
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-ALIGN-003",
+      "name": "VERIFY_POLARIZATION",
+      "canonical_name": "Verify Antenna Polarization",
+      "category": "ALIGNMENT",
+      "description": "Verify installed polarization and polarization orientation against applicable design.",
+      "expected_outputs": ["POLARIZATION_ANGLE"],
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-ALIGN-004",
+      "name": "PERFORM_ANTENNA_ALIGNMENT",
+      "canonical_name": "Perform Antenna Alignment",
+      "category": "CORRECTIVE_ACTION",
+      "description": "Physically adjust antenna pointing to optimize the applicable microwave path according to approved procedure.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-PATH-001",
+      "name": "INSPECT_LINE_OF_SIGHT",
+      "canonical_name": "Inspect Line of Sight",
+      "category": "INSPECTION",
+      "description": "Inspect the physical microwave path for obstructions or changed path conditions.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-PATH-002",
+      "name": "VERIFY_FRESNEL_CLEARANCE",
+      "canonical_name": "Verify Fresnel Clearance",
+      "category": "CALCULATION",
+      "description": "Evaluate applicable Fresnel-zone clearance against path requirements.",
+      "expected_outputs": ["FRESNEL_CLEARANCE"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-PATH-003",
+      "name": "VERIFY_PATH_DESIGN",
+      "canonical_name": "Verify Path Design",
+      "category": "VERIFICATION",
+      "description": "Review path engineering data including endpoints, distance, antenna heights, frequencies, azimuths, elevations, and applicable propagation assumptions.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-PATH-004",
+      "name": "VERIFY_ANTENNA_HEIGHT",
+      "canonical_name": "Verify Antenna Height",
+      "category": "INSPECTION",
+      "description": "Compare installed antenna height against applicable path design.",
+      "expected_outputs": ["ANTENNA_HEIGHT"],
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-INTERFERENCE-001",
+      "name": "CHECK_FOR_INTERFERENCE",
+      "canonical_name": "Check for RF Interference",
+      "category": "TEST",
+      "description": "Evaluate available RF measurements, spectrum information, alarms, or other evidence for interference.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-ENV-001",
+      "name": "CHECK_WEATHER_CONDITIONS",
+      "canonical_name": "Check Weather Conditions",
+      "category": "CONTEXT",
+      "description": "Review relevant current or historical weather conditions for correlation with observed RF behavior.",
+      "expected_outputs": ["PRECIPITATION_RATE", "WIND_SPEED", "TEMPERATURE"],
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-POWER-001",
+      "name": "CHECK_INPUT_VOLTAGE",
+      "canonical_name": "Check Input Voltage",
+      "category": "MEASUREMENT",
+      "description": "Measure or obtain equipment input voltage.",
+      "expected_outputs": ["VOLTAGE"],
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-POWER-002",
+      "name": "INSPECT_POWER_CONNECTIONS",
+      "canonical_name": "Inspect Power Connections",
+      "category": "INSPECTION",
+      "description": "Inspect equipment power wiring, connectors, polarity, terminations, and associated physical connections.",
+      "invasiveness": "LOW"
+    },
+
+    {
+      "id": "ACT-SOFTWARE-001",
+      "name": "VERIFY_FIRMWARE_VERSION",
+      "canonical_name": "Verify Firmware Version",
+      "category": "VERIFICATION",
+      "description": "Identify installed firmware and compare it with applicable compatibility or release requirements.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-SOFTWARE-002",
+      "name": "REVIEW_ACTIVE_ALARMS",
+      "canonical_name": "Review Active Alarms",
+      "category": "INSPECTION",
+      "description": "Review current equipment alarms and relevant alarm history.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-TEST-001",
+      "name": "SWAP_RADIO",
+      "canonical_name": "Swap Radio",
+      "category": "ISOLATION_TEST",
+      "description": "Replace or exchange a suspected radio with a known-good or alternate unit to determine whether the fault follows the radio.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-TEST-002",
+      "name": "SWAP_RF_COMPONENT",
+      "canonical_name": "Swap RF Component",
+      "category": "ISOLATION_TEST",
+      "description": "Replace or exchange a suspected RF component with a known-good or alternate component to determine whether the fault follows the component.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-TEST-003",
+      "name": "SWAP_MAIN_DIVERSITY_PATH",
+      "canonical_name": "Swap Main/Diversity Path",
+      "category": "ISOLATION_TEST",
+      "description": "Perform an approved controlled swap of Main and Diversity path elements to determine whether a symptom follows a physical or logical path.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-TEST-004",
+      "name": "REBOOT_EQUIPMENT",
+      "canonical_name": "Reboot Equipment",
+      "category": "ISOLATION_TEST",
+      "description": "Perform an approved equipment restart when diagnostically justified.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-CORRECT-001",
+      "name": "CORRECT_CONFIGURATION",
+      "canonical_name": "Correct Configuration",
+      "category": "CORRECTIVE_ACTION",
+      "description": "Modify confirmed incorrect configuration to the validated required state.",
+      "invasiveness": "MEDIUM",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-CORRECT-002",
+      "name": "CORRECT_RF_ROUTING",
+      "canonical_name": "Correct RF Routing",
+      "category": "CORRECTIVE_ACTION",
+      "description": "Correct confirmed improper physical RF routing.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-CORRECT-003",
+      "name": "RESEAT_RF_CONNECTION",
+      "canonical_name": "Reseat RF Connection",
+      "category": "CORRECTIVE_ACTION",
+      "description": "Correctly reseat, secure, or remate a confirmed suspect RF connection according to applicable procedure.",
+      "invasiveness": "MEDIUM",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-CORRECT-004",
+      "name": "REPLACE_RADIO",
+      "canonical_name": "Replace Radio",
+      "category": "CORRECTIVE_ACTION",
+      "description": "Replace a confirmed failed or unsuitable radio.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-CORRECT-005",
+      "name": "REPLACE_RF_COMPONENT",
+      "canonical_name": "Replace RF Component",
+      "category": "CORRECTIVE_ACTION",
+      "description": "Replace a confirmed failed, damaged, incompatible, or unsuitable RF component.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-CORRECT-006",
+      "name": "CORRECT_POLARIZATION",
+      "canonical_name": "Correct Polarization",
+      "category": "CORRECTIVE_ACTION",
+      "description": "Correct confirmed antenna or RF-path polarization error according to applicable design.",
+      "invasiveness": "HIGH",
+      "service_impact_possible": true
+    },
+
+    {
+      "id": "ACT-VALIDATE-001",
+      "name": "RECHECK_RSL",
+      "canonical_name": "Recheck RSL",
+      "category": "VALIDATION",
+      "description": "Obtain RSL after a test or corrective action and compare against the previous and expected condition.",
+      "expected_outputs": ["RSL", "RSL_DELTA"],
+      "comparison_mode": "BEFORE_VS_AFTER",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-VALIDATE-002",
+      "name": "RECHECK_ERROR_PERFORMANCE",
+      "canonical_name": "Recheck Error Performance",
+      "category": "VALIDATION",
+      "description": "Review error-performance measurements after a test or corrective action.",
+      "expected_outputs": ["BER", "PER", "ES", "SES", "UAS"],
+      "comparison_mode": "BEFORE_VS_AFTER",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-VALIDATE-003",
+      "name": "VERIFY_LINK_STABILITY",
+      "canonical_name": "Verify Link Stability",
+      "category": "VALIDATION",
+      "description": "Observe the link for sufficient time and evidence to establish that the corrected condition remains stable.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-VALIDATE-004",
+      "name": "VERIFY_RESOLUTION",
+      "canonical_name": "Verify Resolution",
+      "category": "VALIDATION",
+      "description": "Confirm that the original symptoms have been eliminated or returned to acceptable condition following corrective action.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-INFO-001",
+      "name": "REQUEST_SCREENSHOT",
+      "canonical_name": "Request Screenshot",
+      "category": "INFORMATION_GATHERING",
+      "description": "Request a screenshot containing technical information required to evaluate the current case.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-INFO-002",
+      "name": "REQUEST_PHOTO",
+      "canonical_name": "Request Photo",
+      "category": "INFORMATION_GATHERING",
+      "description": "Request a photograph of equipment, connections, installation, antenna, path, or another physical condition.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-INFO-003",
+      "name": "REQUEST_CONFIGURATION",
+      "canonical_name": "Request Configuration",
+      "category": "INFORMATION_GATHERING",
+      "description": "Request relevant configuration values, export, file, or screenshots.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-INFO-004",
+      "name": "REQUEST_MEASUREMENT",
+      "canonical_name": "Request Measurement",
+      "category": "INFORMATION_GATHERING",
+      "description": "Request a specific technical measurement required to advance diagnosis.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-INFO-005",
+      "name": "REQUEST_CLARIFICATION",
+      "canonical_name": "Request Clarification",
+      "category": "INFORMATION_GATHERING",
+      "description": "Request clarification when existing information is ambiguous, incomplete, contradictory, or insufficiently precise.",
+      "invasiveness": "NONE"
+    },
+
+    {
+      "id": "ACT-ESCALATE-001",
+      "name": "ESCALATE_FOR_SPECIALIST_REVIEW",
+      "canonical_name": "Escalate for Specialist Review",
+      "category": "ESCALATION",
+      "description": "Escalate the case when available evidence, permissions, safety constraints, or ARIA confidence do not justify continued autonomous diagnostic direction.",
+      "invasiveness": "NONE"
+    }
+  ],
+
+  "invasiveness_levels": {
+    "NONE": "Read-only observation, calculation, comparison, or information gathering with no expected physical or service impact.",
+    "LOW": "Inspection or measurement with minimal expected system impact.",
+    "MEDIUM": "Action modifies system state or physical condition but is generally limited in scope.",
+    "HIGH": "Action can materially alter equipment state, RF path, configuration, service, or physical installation."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "ACT-RULE-001",
+      "rule": "An action being registered means ARIA may reason about the action. It does not independently authorize ARIA or a user to perform the action."
+    },
+
+    {
+      "rule_id": "ACT-RULE-002",
+      "rule": "ARIA shall prefer evidence-gathering actions that efficiently discriminate between competing hypotheses before recommending invasive corrective actions when practical."
+    },
+
+    {
+      "rule_id": "ACT-RULE-003",
+      "rule": "Corrective actions should follow sufficient evidence supporting the suspected failure unless immediate action is required by an applicable safety, operational, or restoration procedure."
+    },
+
+    {
+      "rule_id": "ACT-RULE-004",
+      "rule": "After a corrective action, ARIA shall seek validation evidence demonstrating whether the original symptom changed as predicted."
+    },
+
+    {
+      "rule_id": "ACT-RULE-005",
+      "rule": "Failure of an action to produce its predicted result constitutes new evidence and shall trigger probability recalculation rather than automatic repetition or backtracking."
+    },
+
+    {
+      "rule_id": "ACT-RULE-006",
+      "rule": "ARIA shall preserve the distinction between diagnostic actions, isolation tests, corrective actions, and validation actions."
+    },
+
+    {
+      "rule_id": "ACT-RULE-007",
+      "rule": "Manufacturer-specific procedures shall attach to canonical actions through the Knowledge Graph rather than creating duplicate action types unless the action is technically distinct."
+    },
+
+    {
+      "rule_id": "ACT-RULE-008",
+      "rule": "Routing priority shall not be based solely on failure probability. Expected information gain, action cost, execution time, invasiveness, service impact, safety, available evidence, user history, and context may alter the preferred next action."
+    },
+
+    {
+      "rule_id": "ACT-RULE-009",
+      "rule": "ARIA shall not treat completion of an action as proof of diagnosis. The result produced by the action is the evidence used for subsequent reasoning."
+    },
+
+    {
+      "rule_id": "ACT-RULE-010",
+      "rule": "When a requested action cannot be performed, ARIA should seek an alternate evidence path rather than simply restarting the previous diagnostic route."
+    }
+  ]
+}
