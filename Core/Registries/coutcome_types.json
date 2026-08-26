@@ -1,0 +1,498 @@
+{
+  "registry": "ARIA_OUTCOME_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical outcomes produced by diagnostic actions, tests, corrective actions, validation steps, and completed A.R.I.A. cases.",
+
+  "outcome_types": [
+    {
+      "id": "OUT-DIAG-001",
+      "name": "HYPOTHESIS_SUPPORTED",
+      "canonical_name": "Hypothesis Supported",
+      "category": "DIAGNOSTIC",
+      "description": "New evidence materially increases support for a hypothesis without yet establishing confirmation.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-DIAG-002",
+      "name": "HYPOTHESIS_WEAKENED",
+      "canonical_name": "Hypothesis Weakened",
+      "category": "DIAGNOSTIC",
+      "description": "New evidence materially decreases support for a hypothesis without conclusively ruling it out.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-DIAG-003",
+      "name": "HYPOTHESIS_CONFIRMED",
+      "canonical_name": "Hypothesis Confirmed",
+      "category": "DIAGNOSTIC",
+      "description": "Available evidence is sufficient to establish the hypothesis as the confirmed diagnosis or failure condition under the applicable confidence policy.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-DIAG-004",
+      "name": "HYPOTHESIS_RULED_OUT",
+      "canonical_name": "Hypothesis Ruled Out",
+      "category": "DIAGNOSTIC",
+      "description": "Available evidence is sufficient to remove the hypothesis from active consideration for the current diagnostic state.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-DIAG-005",
+      "name": "HYPOTHESIS_UNCHANGED",
+      "canonical_name": "Hypothesis Unchanged",
+      "category": "DIAGNOSTIC",
+      "description": "The resulting evidence does not materially change support for the hypothesis.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-TEST-001",
+      "name": "TEST_POSITIVE",
+      "canonical_name": "Positive Test Result",
+      "category": "TEST",
+      "description": "A diagnostic test produced the defined positive condition.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-TEST-002",
+      "name": "TEST_NEGATIVE",
+      "canonical_name": "Negative Test Result",
+      "category": "TEST",
+      "description": "A diagnostic test did not produce the defined positive condition.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-TEST-003",
+      "name": "TEST_INCONCLUSIVE",
+      "canonical_name": "Inconclusive Test Result",
+      "category": "TEST",
+      "description": "The test was performed but the result does not sufficiently discriminate between relevant hypotheses.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-TEST-004",
+      "name": "FAULT_FOLLOWED_COMPONENT",
+      "canonical_name": "Fault Followed Component",
+      "category": "ISOLATION",
+      "description": "During a controlled component substitution or swap, the abnormal condition moved with the tested component.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-TEST-005",
+      "name": "FAULT_DID_NOT_FOLLOW_COMPONENT",
+      "canonical_name": "Fault Did Not Follow Component",
+      "category": "ISOLATION",
+      "description": "During a controlled component substitution or swap, the abnormal condition did not move with the tested component.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-TEST-006",
+      "name": "FAULT_FOLLOWED_PATH",
+      "canonical_name": "Fault Followed Path",
+      "category": "ISOLATION",
+      "description": "During a controlled path change or swap, the abnormal condition moved with the tested physical or logical path.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-TEST-007",
+      "name": "FAULT_DID_NOT_FOLLOW_PATH",
+      "canonical_name": "Fault Did Not Follow Path",
+      "category": "ISOLATION",
+      "description": "During a controlled path change or swap, the abnormal condition did not move with the tested physical or logical path.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-001",
+      "name": "ACTION_COMPLETED",
+      "canonical_name": "Action Completed",
+      "category": "EXECUTION",
+      "description": "The requested or selected action was successfully performed.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-002",
+      "name": "ACTION_PARTIALLY_COMPLETED",
+      "canonical_name": "Action Partially Completed",
+      "category": "EXECUTION",
+      "description": "Only part of the requested or selected action could be completed.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-003",
+      "name": "ACTION_NOT_PERFORMED",
+      "canonical_name": "Action Not Performed",
+      "category": "EXECUTION",
+      "description": "The requested or selected action was not performed.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-004",
+      "name": "ACTION_UNABLE_TO_PERFORM",
+      "canonical_name": "Unable to Perform Action",
+      "category": "EXECUTION",
+      "description": "The action could not be performed because of access, equipment, permissions, safety, environmental, operational, or other constraints.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-005",
+      "name": "ACTION_REFUSED",
+      "canonical_name": "Action Refused",
+      "category": "EXECUTION",
+      "description": "The person responsible for execution explicitly declined to perform the requested action.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-006",
+      "name": "ACTION_DEFERRED",
+      "canonical_name": "Action Deferred",
+      "category": "EXECUTION",
+      "description": "The action was intentionally postponed for later execution.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-007",
+      "name": "ACTION_BLOCKED_BY_SAFETY",
+      "canonical_name": "Action Blocked by Safety Constraint",
+      "category": "EXECUTION",
+      "description": "The action was not performed because an applicable safety requirement or condition prevented execution.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-ACTION-008",
+      "name": "ACTION_BLOCKED_BY_SERVICE_IMPACT",
+      "canonical_name": "Action Blocked by Service Impact",
+      "category": "EXECUTION",
+      "description": "The action was not performed because the expected or possible service impact was not acceptable or authorized.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-OBS-001",
+      "name": "CONDITION_IMPROVED",
+      "canonical_name": "Condition Improved",
+      "category": "OBSERVED_EFFECT",
+      "description": "The relevant technical condition improved after an action or over the observation interval but has not necessarily returned to acceptable condition.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-OBS-002",
+      "name": "CONDITION_UNCHANGED",
+      "canonical_name": "Condition Unchanged",
+      "category": "OBSERVED_EFFECT",
+      "description": "No material change was observed in the relevant technical condition.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-OBS-003",
+      "name": "CONDITION_WORSENED",
+      "canonical_name": "Condition Worsened",
+      "category": "OBSERVED_EFFECT",
+      "description": "The relevant technical condition became materially worse.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-OBS-004",
+      "name": "SYMPTOM_ELIMINATED",
+      "canonical_name": "Symptom Eliminated",
+      "category": "OBSERVED_EFFECT",
+      "description": "A previously observed symptom is no longer present following an action or change.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-OBS-005",
+      "name": "SYMPTOM_PERSISTS",
+      "canonical_name": "Symptom Persists",
+      "category": "OBSERVED_EFFECT",
+      "description": "The original symptom remains present after the relevant action, test, or observation period.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-OBS-006",
+      "name": "NEW_SYMPTOM_OBSERVED",
+      "canonical_name": "New Symptom Observed",
+      "category": "OBSERVED_EFFECT",
+      "description": "A previously unrecorded symptom appeared during diagnosis, testing, or corrective work.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-REPAIR-001",
+      "name": "CORRECTION_SUCCESSFUL",
+      "canonical_name": "Correction Successful",
+      "category": "CORRECTIVE_RESULT",
+      "description": "A corrective action produced the predicted technical correction and subsequent validation supports success.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-REPAIR-002",
+      "name": "CORRECTION_PARTIALLY_SUCCESSFUL",
+      "canonical_name": "Correction Partially Successful",
+      "category": "CORRECTIVE_RESULT",
+      "description": "A corrective action improved the condition but did not fully restore the required technical state.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-REPAIR-003",
+      "name": "CORRECTION_UNSUCCESSFUL",
+      "canonical_name": "Correction Unsuccessful",
+      "category": "CORRECTIVE_RESULT",
+      "description": "A corrective action failed to produce the predicted technical improvement or resolution.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-VALIDATE-001",
+      "name": "VALIDATION_PASSED",
+      "canonical_name": "Validation Passed",
+      "category": "VALIDATION",
+      "description": "Post-action validation satisfies the applicable success criteria.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-VALIDATE-002",
+      "name": "VALIDATION_FAILED",
+      "canonical_name": "Validation Failed",
+      "category": "VALIDATION",
+      "description": "Post-action validation does not satisfy the applicable success criteria.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-VALIDATE-003",
+      "name": "VALIDATION_INCOMPLETE",
+      "canonical_name": "Validation Incomplete",
+      "category": "VALIDATION",
+      "description": "Available post-action evidence is insufficient to determine whether the applicable success criteria were satisfied.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-CASE-001",
+      "name": "CASE_RESOLVED",
+      "canonical_name": "Case Resolved",
+      "category": "CASE",
+      "description": "The reported technical problem has been resolved and sufficient validation supports closure.",
+      "terminal": true
+    },
+
+    {
+      "id": "OUT-CASE-002",
+      "name": "CASE_PARTIALLY_RESOLVED",
+      "canonical_name": "Case Partially Resolved",
+      "category": "CASE",
+      "description": "A meaningful portion of the technical problem was corrected but one or more relevant conditions remain unresolved.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-CASE-003",
+      "name": "CASE_UNRESOLVED",
+      "canonical_name": "Case Unresolved",
+      "category": "CASE",
+      "description": "The case ended or paused without resolving the reported technical problem.",
+      "terminal": true
+    },
+
+    {
+      "id": "OUT-CASE-004",
+      "name": "CASE_ESCALATED",
+      "canonical_name": "Case Escalated",
+      "category": "CASE",
+      "description": "Further resolution responsibility was transferred or escalated because continued diagnosis required additional authority, expertise, access, resources, or information.",
+      "terminal": true
+    },
+
+    {
+      "id": "OUT-CASE-005",
+      "name": "CASE_ABANDONED",
+      "canonical_name": "Case Abandoned",
+      "category": "CASE",
+      "description": "Diagnostic work stopped without resolution or formal escalation.",
+      "terminal": true
+    },
+
+    {
+      "id": "OUT-CASE-006",
+      "name": "CASE_DUPLICATE",
+      "canonical_name": "Duplicate Case",
+      "category": "CASE",
+      "description": "The case was determined to represent the same underlying incident as another recorded case.",
+      "terminal": true
+    },
+
+    {
+      "id": "OUT-CASE-007",
+      "name": "NO_FAULT_FOUND",
+      "canonical_name": "No Fault Found",
+      "category": "CASE",
+      "description": "Sufficient investigation was performed but the reported abnormal condition could not be reproduced or validated.",
+      "terminal": true
+    },
+
+    {
+      "id": "OUT-CASE-008",
+      "name": "EXTERNAL_CAUSE",
+      "canonical_name": "External Cause",
+      "category": "CASE",
+      "description": "The reported condition was determined to originate outside the microwave system or diagnostic responsibility represented by the case.",
+      "terminal": true
+    },
+
+    {
+      "id": "OUT-CASE-009",
+      "name": "CASE_REOPENED",
+      "canonical_name": "Case Reopened",
+      "category": "CASE_LIFECYCLE",
+      "description": "A previously resolved or closed case became active again because the original or materially related condition returned.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-CASE-010",
+      "name": "RECURRENCE_CONFIRMED",
+      "canonical_name": "Recurrence Confirmed",
+      "category": "CASE_LIFECYCLE",
+      "description": "A previously resolved technical condition has been confirmed to have recurred.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-LEARN-001",
+      "name": "LEARNING_ELIGIBLE",
+      "canonical_name": "Learning Eligible",
+      "category": "LEARNING",
+      "description": "Case evidence and outcome quality are sufficient for the case to contribute to ARIA's learned diagnostic experience.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-LEARN-002",
+      "name": "LEARNING_RESTRICTED",
+      "canonical_name": "Learning Restricted",
+      "category": "LEARNING",
+      "description": "The case may contribute only limited learning because diagnosis, evidence quality, applicability, validation, or outcome certainty is incomplete.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-LEARN-003",
+      "name": "LEARNING_EXCLUDED",
+      "canonical_name": "Learning Excluded",
+      "category": "LEARNING",
+      "description": "The case shall not modify learned diagnostic probability or route-performance statistics.",
+      "terminal": false
+    },
+
+    {
+      "id": "OUT-UNKNOWN-001",
+      "name": "OUTCOME_UNKNOWN",
+      "canonical_name": "Outcome Unknown",
+      "category": "UNKNOWN",
+      "description": "Available information is insufficient to classify the outcome.",
+      "terminal": false
+    }
+  ],
+
+  "semantic_rules": [
+    {
+      "rule_id": "OUT-RULE-001",
+      "rule": "Completion of an action and technical success of an action are separate outcomes. ACTION_COMPLETED shall not imply CORRECTION_SUCCESSFUL."
+    },
+
+    {
+      "rule_id": "OUT-RULE-002",
+      "rule": "Improvement does not independently establish resolution. CONDITION_IMPROVED shall remain distinct from SYMPTOM_ELIMINATED, VALIDATION_PASSED, and CASE_RESOLVED."
+    },
+
+    {
+      "rule_id": "OUT-RULE-003",
+      "rule": "A hypothesis may be supported or weakened without being confirmed or ruled out."
+    },
+
+    {
+      "rule_id": "OUT-RULE-004",
+      "rule": "A corrective action that produces no predicted change shall generate new diagnostic evidence and shall trigger reevaluation of affected hypotheses."
+    },
+
+    {
+      "rule_id": "OUT-RULE-005",
+      "rule": "A corrective action producing the predicted change may support causation, but ARIA shall consider whether the action changed multiple variables before assigning causal confidence."
+    },
+
+    {
+      "rule_id": "OUT-RULE-006",
+      "rule": "A case shall not be marked CASE_RESOLVED solely because a corrective action was performed. Resolution requires sufficient validation that the reported condition is corrected."
+    },
+
+    {
+      "rule_id": "OUT-RULE-007",
+      "rule": "Inconclusive, incomplete, unavailable, refused, or blocked actions shall not be interpreted as negative diagnostic results unless the missing result itself has established diagnostic significance."
+    },
+
+    {
+      "rule_id": "OUT-RULE-008",
+      "rule": "ARIA shall distinguish between a hypothesis being ruled out by evidence and a hypothesis merely becoming less probable."
+    },
+
+    {
+      "rule_id": "OUT-RULE-009",
+      "rule": "Historical learning shall distinguish successful diagnostic routes from merely completed diagnostic routes."
+    },
+
+    {
+      "rule_id": "OUT-RULE-010",
+      "rule": "Cases with uncertain root cause or insufficient validation shall not contribute to learned causal probability with the same weight as validated resolved cases."
+    },
+
+    {
+      "rule_id": "OUT-RULE-011",
+      "rule": "A reopened or recurrent case shall retain linkage to the prior case and its previous diagnosis, corrective action, validation, and elapsed time to recurrence."
+    },
+
+    {
+      "rule_id": "OUT-RULE-012",
+      "rule": "Learning eligibility shall be evaluated separately from case closure. A closed case is not automatically a trustworthy learning example."
+    },
+
+    {
+      "rule_id": "OUT-RULE-013",
+      "rule": "Isolation-test outcomes shall identify the controlled variable and shall not be generalized to unrelated components, products, or contexts without supporting evidence."
+    },
+
+    {
+      "rule_id": "OUT-RULE-014",
+      "rule": "ARIA shall preserve unsuccessful diagnostic actions because failed routes contain information useful for future route optimization."
+    },
+
+    {
+      "rule_id": "OUT-RULE-015",
+      "rule": "Outcome classifications shall describe what actually occurred rather than what ARIA predicted would occur."
+    }
+  ]
+}
