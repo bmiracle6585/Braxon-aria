@@ -1,959 +1,598 @@
 {
-  "specification": "ARIA_ENTITY_CONTRACTS",
-  "version": "0.1.0",
-  "description": "Defines the canonical identifiers, shared object contracts, relationship conventions, provenance requirements, temporal rules, confidence representation, and interoperability requirements used across A.R.I.A. services.",
+  "schema_version": "1.1.0",
+  "schema_name": "ARIA Canonical Entity Contracts",
+  "description": "Canonical interoperability contracts for A.R.I.A. entities. These contracts define identity, provenance, temporal semantics, confidence, probability, relationships, knowledge graph edges, and shared behavior across cognition, reasoning, knowledge, experience, and learning systems.",
 
-  "core_principle": {
-    "statement": "Every ARIA engine may reason differently, but all engines shall exchange information through stable canonical contracts. Shared concepts shall have one authoritative semantic meaning regardless of which service creates, reads, modifies, or references them.",
-    "rules": [
-      "Canonical identifiers shall be globally unique within their entity class.",
-      "Shared entities shall not be independently redefined by individual engines.",
-      "Relationships shall reference canonical identifiers rather than duplicated embedded objects whenever practical.",
-      "Provenance shall travel with technical information.",
-      "Confidence shall remain distinguishable from probability.",
-      "Unknown values shall remain distinguishable from null, false, zero, and not applicable.",
-      "Historical records shall preserve temporal context.",
-      "Entity contracts shall be extensible without requiring destructive schema redesign.",
-      "Manufacturers, products, users, scopes, technologies, and future domains shall be added through entities and relationships rather than hard-coded directory depth.",
-      "Backward compatibility shall be preserved whenever practical."
-    ]
+  "principles": {
+    "canonical_identity": "Every persisted first-class entity has one stable canonical identifier.",
+    "typed_identity": "Identifiers use a canonical entity prefix followed by a globally unique UUID.",
+    "preferred_uuid": "UUIDv7",
+    "case_experience_separation": "A diagnostic case represents an investigation or work episode. An experience record represents validated learning derived from one or more qualifying cases or observations. A case is not itself an experience record.",
+    "observation_interpretation_separation": "Observed information remains distinguishable from interpretation, inference, hypothesis, and conclusion.",
+    "probability_confidence_separation": "Probability represents estimated likelihood. Confidence represents trust in the quality or support of an estimate, observation, relationship, or conclusion.",
+    "provenance_required": "Technical information must retain sufficient provenance to explain where it came from and how it was transformed.",
+    "relationship_explicitness": "Semantic relationships are represented explicitly. Reverse relationships are never assumed unless explicitly defined.",
+    "knowledge_reuse": "Canonical technical concepts are created once and reused. Manufacturer-, product-, scope-, team-, and user-specific applicability is expressed through context, relationships, and experience overlays rather than duplicating canonical knowledge.",
+    "validated_learning": "Historical interactions do not automatically become learned experience. Learning eligibility requires sufficient validation under the Learning Engine."
   },
 
   "identifier_contract": {
     "format": "<entity_prefix>_<uuid>",
-
     "preferred_uuid": "UUIDv7",
-
-    "entity_prefixes": {
-      "case": "case",
+    "case_sensitive": true,
+    "prefixes": {
+      "entity": "ent",
       "event": "evt",
-      "state_version": "state",
+      "case": "case",
       "context": "ctx",
       "evidence": "evd",
       "hypothesis": "hyp",
-      "failure_mode": "fm",
       "action": "act",
-      "action_instance": "acti",
-      "decision": "dec",
-      "route": "route",
-      "route_edge": "edge",
-      "finding": "find",
-      "validation": "val",
-      "uncertainty": "unc",
-      "learning_event": "learn",
       "experience": "exp",
-      "memory": "mem",
-      "knowledge_node": "kn",
-      "knowledge_edge": "ke",
       "user": "usr",
-      "organization": "org",
-      "customer": "cust",
-      "project": "proj",
-      "site": "site",
-      "path": "path",
       "manufacturer": "mfr",
       "product_family": "pfam",
       "product": "prod",
       "product_variant": "pvar",
-      "technology": "tech",
       "scope": "scope",
-      "component": "comp",
+      "symptom": "sym",
+      "failure_mode": "fm",
       "measurement": "meas",
-      "source": "src"
+      "unit": "unit",
+      "tool": "tool",
+      "source": "src",
+      "relationship": "rel",
+      "knowledge_node": "kn",
+      "knowledge_edge": "ke",
+      "claim": "claim",
+      "route_step": "rstep",
+      "outcome": "out",
+      "artifact": "artifact"
     },
-
-    "rules": [
-      "Human-readable names shall never serve as primary identifiers.",
-      "Renaming an entity shall not change its identifier.",
-      "Manufacturer part numbers and external IDs shall be aliases rather than canonical ARIA IDs.",
-      "Deleted or retired identifiers shall not be reused."
-    ]
+    "examples": {
+      "case": "case_018f3f2e-7b12-7a11-9c5f-9b2e2efb1c31",
+      "evidence": "evd_018f3f31-112a-7b23-a447-5f9ecdd6c821",
+      "hypothesis": "hyp_018f3f34-82e9-70b8-bd37-1f3849e94872",
+      "experience": "exp_018f3f39-c2de-7fa3-8e8b-2c47d4970d18",
+      "relationship": "rel_018f3f3c-7f63-77f1-a9cc-61216e6f4179",
+      "knowledge_edge": "ke_018f3f40-59b1-7c22-a718-51fd083b9952"
+    }
   },
 
-  "base_entity": {
-    "required_fields": [
+  "base_entity_contract": {
+    "description": "Minimum shared contract for canonical persisted entities.",
+    "required": [
       "id",
       "entity_type",
-      "schema_version",
       "created_at",
-      "updated_at",
-      "status"
+      "updated_at"
     ],
-
-    "optional_fields": [
-      "display_name",
-      "description",
-      "aliases",
-      "metadata",
-      "tags",
-      "created_by",
-      "updated_by"
-    ]
-  },
-
-  "status_contract": {
-    "common_statuses": [
-      "ACTIVE",
-      "INACTIVE",
-      "DRAFT",
-      "VALIDATED",
-      "SUPERSEDED",
-      "DEPRECATED",
-      "RETIRED",
-      "ARCHIVED"
-    ],
-
-    "rule": "Domain-specific status values may extend common statuses but shall not silently redefine them."
-  },
-
-  "unknown_value_contract": {
-    "states": [
-      "KNOWN",
-      "UNKNOWN",
-      "NOT_PROVIDED",
-      "NOT_OBSERVED",
-      "NOT_MEASURED",
-      "NOT_APPLICABLE",
-      "UNAVAILABLE",
-      "WITHHELD",
-      "UNRESOLVED"
-    ],
-
-    "rules": [
-      "UNKNOWN shall not be represented as zero.",
-      "UNKNOWN shall not be represented as false.",
-      "NOT_APPLICABLE shall remain distinct from UNKNOWN.",
-      "NOT_OBSERVED shall remain distinct from confirmed absence.",
-      "Engines shall preserve unknown-state semantics during serialization and retrieval."
-    ]
+    "properties": {
+      "id": {
+        "type": "canonical_typed_identifier"
+      },
+      "entity_type": {
+        "type": "string",
+        "description": "Canonical entity classification."
+      },
+      "created_at": {
+        "type": "datetime"
+      },
+      "updated_at": {
+        "type": "datetime"
+      },
+      "created_by": {
+        "type": "nullable_actor_reference"
+      },
+      "updated_by": {
+        "type": "nullable_actor_reference"
+      },
+      "metadata": {
+        "type": "object",
+        "additional_properties": true
+      }
+    }
   },
 
   "temporal_contract": {
-    "timestamp_standard": "ISO-8601 UTC",
-
-    "common_fields": [
-      "created_at",
-      "updated_at",
-      "observed_at",
-      "effective_from",
-      "effective_until",
-      "superseded_at"
-    ],
-
-    "rules": [
-      "Observation time and record creation time shall remain distinguishable.",
-      "Historical technical information shall preserve when it was true or observed.",
-      "Current applicability shall not be inferred solely from record modification time.",
-      "Time-sensitive technical relationships may define effective intervals."
-    ]
+    "description": "Shared temporal semantics for entities whose truth, applicability, or validity can change over time.",
+    "properties": {
+      "valid_from": {
+        "type": "nullable_datetime",
+        "description": "Beginning of the period during which the represented fact or relationship is considered applicable."
+      },
+      "valid_to": {
+        "type": "nullable_datetime",
+        "description": "End of the applicability period. Null means no known end."
+      },
+      "observed_at": {
+        "type": "nullable_datetime",
+        "description": "Time the underlying condition was actually observed."
+      },
+      "recorded_at": {
+        "type": "nullable_datetime",
+        "description": "Time the information was recorded by ARIA or another source."
+      },
+      "superseded_at": {
+        "type": "nullable_datetime"
+      }
+    }
   },
 
   "confidence_contract": {
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "object": {
-      "required_fields": [
-        "value",
-        "basis"
-      ],
-
-      "optional_fields": [
-        "sample_size",
-        "calibration_class",
-        "source_confidence",
-        "context_confidence",
-        "updated_at"
-      ]
-    },
-
-    "rules": [
-      "Confidence shall represent trust in a claim, interpretation, probability, or decision.",
-      "Confidence shall not be substituted for probability.",
-      "Confidence values shall retain their basis when practical."
-    ]
+    "description": "Confidence represents trust in the quality, support, or reliability of information. Confidence is not probability.",
+    "required": [
+      "value",
+      "basis"
+    ],
+    "properties": {
+      "value": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "basis": {
+        "type": "string",
+        "description": "Human-readable or machine-generated explanation of why this confidence value is appropriate."
+      }
+    }
   },
 
   "probability_contract": {
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "object": {
-      "required_fields": [
-        "value",
-        "model_version"
-      ],
-
-      "optional_fields": [
-        "prior",
-        "likelihood_effects",
-        "normalization_group",
-        "sample_size",
-        "calibration_metadata",
-        "updated_at"
-      ]
-    },
-
-    "rules": [
-      "Probability represents relative or absolute likelihood according to the applicable model.",
-      "Probability shall not independently imply certainty.",
-      "Competing normalized hypotheses shall identify their normalization group."
-    ]
+    "description": "Probability represents estimated likelihood of a hypothesis or mutually competing state within a defined reasoning context.",
+    "required": [
+      "value"
+    ],
+    "properties": {
+      "value": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "confidence": {
+        "type": "confidence_contract_or_null"
+      },
+      "method": {
+        "type": "nullable_string"
+      },
+      "sample_size": {
+        "type": "nullable_nonnegative_integer"
+      },
+      "calculated_at": {
+        "type": "nullable_datetime"
+      }
+    }
   },
 
   "provenance_contract": {
-    "required_fields": [
+    "description": "Shared lineage contract for technical information.",
+    "required": [
       "source_type",
-      "source_id",
-      "acquired_at"
+      "lineage_type"
     ],
-
-    "optional_fields": [
-      "original_source_id",
-      "author_id",
-      "user_id",
-      "system_id",
-      "document_id",
-      "page",
-      "section",
-      "line_reference",
-      "file_hash",
-      "content_hash",
-      "observation_method",
-      "transformation_history"
-    ],
-
-    "source_types": [
-      "USER_STATEMENT",
-      "USER_OBSERVATION",
-      "DIRECT_MEASUREMENT",
-      "EQUIPMENT_TELEMETRY",
-      "SCREENSHOT",
-      "PHOTO",
-      "VIDEO",
-      "CONFIGURATION_EXPORT",
-      "LOG",
-      "ALARM",
-      "MANUFACTURER_DOCUMENT",
-      "ENGINEERING_DOCUMENT",
-      "STANDARD",
-      "PROJECT_DOCUMENT",
-      "CUSTOMER_DOCUMENT",
-      "ARIA_DERIVATION",
-      "EXTERNAL_SYSTEM",
-      "HISTORICAL_CASE"
-    ],
-
-    "rules": [
-      "Derived information shall reference the information from which it was derived.",
-      "Copying information between systems shall not create independent provenance.",
-      "Original source lineage shall remain recoverable whenever practical."
-    ]
+    "properties": {
+      "source_id": {
+        "type": "nullable_source_identifier"
+      },
+      "source_type": {
+        "type": "string"
+      },
+      "lineage_type": {
+        "type": "string",
+        "allowed_values": [
+          "PRIMARY",
+          "COPIED",
+          "TRANSFORMED",
+          "DERIVED",
+          "INFERRED",
+          "AGGREGATED",
+          "SUMMARIZED"
+        ]
+      },
+      "parent_entity_ids": {
+        "type": "array_of_canonical_identifiers",
+        "unique": true
+      },
+      "original_source_reference": {
+        "type": "nullable_string"
+      },
+      "acquired_at": {
+        "type": "nullable_datetime"
+      },
+      "integrity_status": {
+        "type": "nullable_string"
+      }
+    }
   },
 
   "relationship_contract": {
-    "required_fields": [
+    "description": "Canonical contract for a first-class semantic relationship between canonical entities. A relationship may be case-specific, evidentiary, experiential, operational, or broadly semantic. Relationship records are distinct from persisted knowledge graph edges.",
+    "required": [
       "relationship_id",
       "relationship_type",
       "source_entity_id",
       "target_entity_id",
       "created_at"
     ],
-
-    "optional_fields": [
-      "directionality",
-      "confidence",
-      "provenance",
-      "context_constraints",
-      "effective_from",
-      "effective_until",
-      "metadata"
-    ],
-
-    "directionality": [
-      "DIRECTED",
-      "BIDIRECTIONAL",
-      "UNDIRECTED"
-    ],
-
-    "rules": [
-      "Relationships shall be first-class objects when they contain technical meaning.",
-      "A relationship may carry context, confidence, provenance, and temporal applicability.",
-      "Reverse relationships shall not be assumed unless defined by semantics.",
-      "New relationship types may be added without reorganizing physical directories."
-    ]
-  },
-
-  "user_entity": {
-    "required_fields": [
-      "user_id",
-      "status"
-    ],
-
-    "optional_fields": [
-      "display_name",
-      "organization_ids",
-      "role_ids",
-      "skill_profile_id",
-      "experience_overlay_id",
-      "communication_profile_id"
-    ],
-
-    "rules": [
-      "User identity shall remain separate from user experience history.",
-      "User-specific learning shall reference the canonical user_id.",
-      "User overlays shall modify reasoning context without duplicating the global knowledge graph."
-    ]
-  },
-
-  "manufacturer_entity": {
-    "required_fields": [
-      "manufacturer_id",
-      "canonical_name",
-      "status"
-    ],
-
-    "optional_fields": [
-      "aliases",
-      "website",
-      "documentation_source_ids",
-      "metadata"
-    ],
-
-    "example": {
-      "manufacturer_id": "mfr_019c...",
-      "canonical_name": "Nokia",
-      "aliases": [
-        "NOKIA"
-      ]
-    }
-  },
-
-  "product_family_entity": {
-    "required_fields": [
-      "product_family_id",
-      "manufacturer_id",
-      "canonical_name"
-    ],
-
-    "optional_fields": [
-      "aliases",
-      "technology_ids",
-      "metadata"
-    ],
-
-    "example": {
-      "canonical_name": "Wavence",
-      "manufacturer_id": "mfr_019c..."
-    }
-  },
-
-  "product_entity": {
-    "required_fields": [
-      "product_id",
-      "manufacturer_id",
-      "canonical_name"
-    ],
-
-    "optional_fields": [
-      "product_family_id",
-      "aliases",
-      "part_numbers",
-      "technology_ids",
-      "component_ids",
-      "variant_ids",
-      "documentation_source_ids",
-      "metadata"
-    ],
-
-    "rules": [
-      "Products shall reference manufacturers rather than exist inside manufacturer-specific reasoning trees.",
-      "Products may participate in unlimited scopes and relationships.",
-      "Adding a new product shall not require creating a new reasoning engine."
-    ]
-  },
-
-  "product_variant_entity": {
-    "required_fields": [
-      "product_variant_id",
-      "product_id",
-      "canonical_name"
-    ],
-
-    "optional_fields": [
-      "frequency_band",
-      "hardware_revision",
-      "software_family",
-      "part_numbers",
-      "attributes",
-      "documentation_source_ids"
-    ],
-
-    "example": {
-      "canonical_name": "UBT-T 18 GHz",
-      "attributes": {
-        "frequency_band": "18 GHz"
+    "properties": {
+      "relationship_id": {
+        "type": "relationship_identifier",
+        "prefix": "rel"
+      },
+      "relationship_type": {
+        "type": "registry_relationship_type"
+      },
+      "source_entity_id": {
+        "type": "canonical_typed_identifier"
+      },
+      "target_entity_id": {
+        "type": "canonical_typed_identifier"
+      },
+      "directed": {
+        "type": "boolean",
+        "default": true
+      },
+      "confidence": {
+        "type": "confidence_contract_or_null"
+      },
+      "provenance": {
+        "type": "provenance_contract_or_null"
+      },
+      "context_id": {
+        "type": "nullable_context_identifier"
+      },
+      "valid_from": {
+        "type": "nullable_datetime"
+      },
+      "valid_to": {
+        "type": "nullable_datetime"
+      },
+      "created_at": {
+        "type": "datetime"
+      },
+      "updated_at": {
+        "type": "nullable_datetime"
+      },
+      "created_by": {
+        "type": "nullable_actor_reference"
+      },
+      "metadata": {
+        "type": "object",
+        "additional_properties": true
       }
-    }
-  },
-
-  "technology_entity": {
-    "required_fields": [
-      "technology_id",
-      "canonical_name"
-    ],
-
-    "examples": [
-      "MICROWAVE",
-      "SPACE_DIVERSITY",
-      "XPIC",
-      "ETHERNET",
-      "MPLS",
-      "RF",
-      "DC_POWER"
-    ],
-
-    "rule": "Technology is an orthogonal dimension and shall not be encoded solely through manufacturer or product hierarchy."
-  },
-
-  "scope_entity": {
-    "required_fields": [
-      "scope_id",
-      "canonical_name"
-    ],
-
-    "examples": [
-      "INSTALLATION",
-      "COMMISSIONING",
-      "TROUBLESHOOTING",
-      "ALIGNMENT",
-      "ACCEPTANCE",
-      "MAINTENANCE",
-      "UPGRADE"
-    ],
-
-    "rule": "The same technical concept may participate in multiple scopes without duplication."
-  },
-
-  "failure_mode_entity": {
-    "required_fields": [
-      "failure_mode_id",
-      "canonical_name",
-      "status"
-    ],
-
-    "optional_fields": [
-      "description",
-      "symptom_ids",
-      "cause_relationship_ids",
-      "applicable_context_constraints",
-      "diagnostic_action_ids",
-      "validation_action_ids"
-    ],
-
-    "examples": [
-      "CONFIGURATION_ERROR",
-      "RF_ROUTING_ERROR",
-      "ALIGNMENT_ERROR",
-      "TRANSCEIVER_FAILURE",
-      "BLOCKED_LINE_OF_SIGHT",
-      "CROSS_POLARIZATION",
-      "WEATHER_DEGRADATION"
-    ],
-
-    "rule": "Failure modes shall exist independently of manufacturer-specific implementations unless the failure mechanism is truly manufacturer-specific."
-  },
-
-  "evidence_entity": {
-    "required_fields": [
-      "evidence_id",
-      "case_id",
-      "evidence_type",
-      "content_reference",
-      "provenance",
-      "confidence",
-      "status",
-      "observed_at"
-    ],
-
-    "optional_fields": [
-      "context_id",
-      "measurement_id",
-      "supports",
-      "contradicts",
-      "supersedes",
-      "derived_from",
-      "quality_metadata"
-    ]
-  },
-
-  "measurement_entity": {
-    "required_fields": [
-      "measurement_id",
-      "measurement_type",
-      "value",
-      "unit",
-      "observed_at",
-      "provenance"
-    ],
-
-    "optional_fields": [
-      "component_id",
-      "site_id",
-      "path_id",
-      "direction",
-      "channel",
-      "instrument",
-      "measurement_uncertainty",
-      "conditions"
-    ],
-
+    },
     "rules": [
-      "Values and units shall be stored separately.",
-      "Directionality shall be explicit when technically relevant.",
-      "Measurement context shall remain attached to the measurement."
-    ]
-  },
-
-  "hypothesis_entity": {
-    "required_fields": [
-      "hypothesis_id",
-      "case_id",
-      "failure_mode_id",
-      "status",
-      "probability",
-      "confidence"
-    ],
-
-    "optional_fields": [
-      "supporting_evidence_ids",
-      "contradicting_evidence_ids",
-      "context_constraints",
-      "generated_at",
-      "updated_at"
-    ]
-  },
-
-  "action_entity": {
-    "required_fields": [
-      "action_id",
-      "canonical_name",
-      "action_type"
-    ],
-
-    "optional_fields": [
-      "description",
-      "applicable_context_constraints",
-      "expected_evidence_types",
-      "risk_class",
-      "service_impact",
-      "reversibility",
-      "estimated_time",
-      "prerequisite_action_ids"
-    ],
-
-    "rule": "An action definition is distinct from an action instance performed within a case."
-  },
-
-  "action_instance_entity": {
-    "required_fields": [
-      "action_instance_id",
-      "case_id",
-      "action_id",
-      "status",
-      "requested_at"
-    ],
-
-    "optional_fields": [
-      "requested_from_user_id",
-      "started_at",
-      "completed_at",
-      "result_evidence_ids",
-      "result_summary",
-      "failure_reason"
-    ]
-  },
-
-  "case_entity": {
-    "required_fields": [
-      "case_id",
-      "case_type",
-      "current_state_version_id",
-      "current_lifecycle_state",
-      "created_at"
-    ],
-
-    "optional_fields": [
-      "organization_id",
-      "customer_id",
-      "project_id",
-      "site_ids",
-      "path_ids",
-      "primary_user_id",
-      "related_case_ids",
-      "parent_case_id"
-    ]
-  },
-
-  "state_version_entity": {
-    "required_fields": [
-      "state_version_id",
-      "case_id",
-      "version_number",
-      "previous_state_version_id",
-      "trigger_event_id",
-      "created_at",
-      "state_hash"
-    ],
-
-    "rule": "State versions are immutable after commit."
-  },
-
-  "event_entity": {
-    "required_fields": [
-      "event_id",
-      "case_id",
-      "event_type",
-      "actor_type",
-      "created_at",
-      "payload",
-      "provenance"
-    ],
-
-    "optional_fields": [
-      "actor_id",
-      "external_event_id",
-      "idempotency_key"
-    ],
-
-    "rule": "Events are append-only."
-  },
-
-  "validation_entity": {
-    "required_fields": [
-      "validation_id",
-      "case_id",
-      "target_type",
-      "target_id",
-      "validation_status",
-      "validation_confidence"
-    ],
-
-    "optional_fields": [
-      "criteria",
-      "expected_outcomes",
-      "observed_outcomes",
-      "supporting_evidence_ids",
-      "contradicting_evidence_ids"
-    ]
-  },
-
-  "experience_entity": {
-    "required_fields": [
-      "experience_id",
-      "case_id",
-      "experience_type",
-      "scope_signature",
-      "validation_strength",
-      "created_at"
-    ],
-
-    "optional_fields": [
-      "user_id",
-      "manufacturer_id",
-      "product_id",
-      "product_variant_id",
-      "technology_ids",
-      "scope_ids",
-      "failure_mode_id",
-      "action_id",
-      "outcome",
-      "weight",
-      "learning_restrictions"
-    ],
-
-    "rule": "Experience shall be multidimensionally scoped rather than stored as duplicated user-specific copies of the global knowledge graph."
-  },
-
-  "context_signature": {
-    "description": "A compact multidimensional description of the technical environment applicable to an observation, hypothesis, action, experience, or knowledge relationship.",
-
-    "candidate_dimensions": [
-      "organization_id",
-      "customer_id",
-      "manufacturer_id",
-      "product_family_id",
-      "product_id",
-      "product_variant_id",
-      "technology_ids",
-      "scope_ids",
-      "site_id",
-      "path_id",
-      "component_ids",
-      "frequency_band",
-      "software_version",
-      "hardware_revision",
-      "topology",
-      "environmental_conditions",
-      "user_id"
-    ],
-
-    "rules": [
-      "Dimensions may be absent when unknown or irrelevant.",
-      "Context matching shall not require every dimension to match.",
-      "More specific context may inherit applicable broader knowledge.",
-      "Context specificity shall be considered when ranking retrieved information."
+      "A reverse relationship must not be inferred solely because a forward relationship exists.",
+      "Relationship direction and semantics are determined by the canonical relationship type definition.",
+      "Relationship confidence describes trust in the asserted relationship and does not represent hypothesis probability.",
+      "Relationships may connect evidence, hypotheses, actions, cases, experiences, users, technical entities, sources, and other canonical entities.",
+      "Case-specific support and contradiction semantics should be represented by relationship records when relationship strength, provenance, temporal applicability, or auditability is material."
     ]
   },
 
   "knowledge_node_contract": {
-    "required_fields": [
+    "description": "Canonical node persisted in the reusable technical knowledge graph.",
+    "required": [
       "knowledge_node_id",
-      "node_type",
-      "canonical_name",
-      "status"
+      "canonical_entity_id",
+      "created_at"
     ],
-
-    "optional_fields": [
-      "description",
-      "aliases",
-      "attributes",
-      "provenance",
-      "confidence",
-      "context_constraints"
-    ]
+    "properties": {
+      "knowledge_node_id": {
+        "type": "knowledge_node_identifier",
+        "prefix": "kn"
+      },
+      "canonical_entity_id": {
+        "type": "canonical_typed_identifier",
+        "description": "Canonical technical concept represented by this graph node."
+      },
+      "created_at": {
+        "type": "datetime"
+      },
+      "updated_at": {
+        "type": "nullable_datetime"
+      },
+      "metadata": {
+        "type": "object",
+        "additional_properties": true
+      }
+    }
   },
 
   "knowledge_edge_contract": {
-    "required_fields": [
+    "description": "Persisted edge within ARIA's reusable technical knowledge graph. A knowledge edge is distinct from a general relationship record. Knowledge edges represent graph structure and reusable technical knowledge rather than transient case-specific reasoning state.",
+    "required": [
       "knowledge_edge_id",
       "relationship_type",
       "source_node_id",
-      "target_node_id"
+      "target_node_id",
+      "created_at"
     ],
-
-    "optional_fields": [
-      "directionality",
-      "weight",
-      "confidence",
-      "provenance",
-      "context_constraints",
-      "effective_from",
-      "effective_until"
-    ],
-
-    "rule": "Knowledge edges carry meaning and may be traversed across multiple conceptual dimensions."
-  },
-
-  "anti_duplication_policy": {
-    "description": "Prevents the directory and knowledge model from reproducing the same technical concept in every manufacturer, product, user, and troubleshooting branch.",
-
-    "example": {
-      "concept": "RSL_DEGRADATION",
-
-      "incorrect_model": [
-        "General/RSL_Degradation",
-        "Nokia/RSL_Degradation",
-        "Aviat/RSL_Degradation",
-        "Alignment/RSL_Degradation",
-        "Clayton/RSL_Degradation"
-      ],
-
-      "correct_model": {
-        "canonical_concept": "RSL_DEGRADATION",
-        "relationships": [
-          "APPLIES_TO Nokia",
-          "APPLIES_TO Aviat",
-          "MAY_BE_CAUSED_BY Alignment Error",
-          "MAY_BE_CAUSED_BY RF Routing Error",
-          "OBSERVED_IN user-specific experience"
-        ]
+    "properties": {
+      "knowledge_edge_id": {
+        "type": "knowledge_edge_identifier",
+        "prefix": "ke"
+      },
+      "relationship_type": {
+        "type": "registry_relationship_type"
+      },
+      "source_node_id": {
+        "type": "knowledge_node_identifier"
+      },
+      "target_node_id": {
+        "type": "knowledge_node_identifier"
+      },
+      "source_entity_id": {
+        "type": "nullable_canonical_typed_identifier",
+        "description": "Optional denormalized reference to the canonical entity represented by the source node."
+      },
+      "target_entity_id": {
+        "type": "nullable_canonical_typed_identifier",
+        "description": "Optional denormalized reference to the canonical entity represented by the target node."
+      },
+      "confidence": {
+        "type": "confidence_contract_or_null"
+      },
+      "provenance": {
+        "type": "provenance_contract_or_null"
+      },
+      "valid_from": {
+        "type": "nullable_datetime"
+      },
+      "valid_to": {
+        "type": "nullable_datetime"
+      },
+      "created_at": {
+        "type": "datetime"
+      },
+      "updated_at": {
+        "type": "nullable_datetime"
+      },
+      "metadata": {
+        "type": "object",
+        "additional_properties": true
       }
     },
-
     "rules": [
-      "Create the concept once.",
-      "Represent applicability through relationships.",
-      "Manufacturer-specific behavior shall extend the canonical concept rather than duplicate it.",
-      "User-specific history shall reference canonical concepts rather than copy them.",
-      "Scope-specific procedures shall reference shared technical entities."
+      "Knowledge graph edges represent reusable technical knowledge and graph topology.",
+      "A knowledge edge does not automatically create a case-specific relationship record.",
+      "A case-specific relationship may reference or be informed by knowledge graph information without duplicating the underlying canonical technical entities.",
+      "User-specific experience must not require duplication of the canonical knowledge graph."
     ]
   },
 
-  "growth_policy": {
-    "description": "Defines how ARIA absorbs future manufacturers, products, technologies, and scopes.",
-
-    "example_new_product": {
-      "steps": [
-        "Create or reference manufacturer entity.",
-        "Create product family if required.",
-        "Create product entity.",
-        "Create variants where technically meaningful.",
-        "Attach applicable technologies.",
-        "Attach documentation provenance.",
-        "Create relationships to existing concepts.",
-        "Add only genuinely new technical concepts.",
-        "Do not create a new reasoning hierarchy."
-      ]
-    },
-
-    "rule": "Adding products expands the graph; it shall not deepen an ever-growing directory tree."
-  },
-
-  "serialization_contract": {
-    "primary_format": "JSON",
-
+  "case_contract": {
+    "description": "A diagnostic or operational investigation. A case is not an Experience Ledger record.",
+    "identity_prefix": "case",
+    "required": [
+      "case_id",
+      "status",
+      "opened_at",
+      "created_at",
+      "updated_at"
+    ],
     "rules": [
-      "API payloads shall include schema_version.",
-      "Unknown fields should be tolerated when safe to support forward compatibility.",
-      "Breaking semantic changes require a new major schema version.",
-      "Identifiers shall remain stable across serialization formats."
+      "Cases may contain or reference evidence, hypotheses, actions, events, context, outcomes, and reasoning history.",
+      "An unresolved or unvalidated case must not automatically influence validated experience statistics.",
+      "One or more Experience Ledger records may later be derived from a qualifying case."
     ]
   },
 
-  "schema_evolution": {
-    "versioning": "SEMANTIC_VERSIONING",
-
+  "evidence_contract": {
+    "description": "Observed, measured, supplied, recorded, or derived information used during reasoning.",
+    "identity_prefix": "evd",
+    "required": [
+      "evidence_id",
+      "case_id",
+      "evidence_type",
+      "status",
+      "provenance",
+      "observed_at",
+      "created_at",
+      "updated_at"
+    ],
     "rules": [
-      "Additive optional fields normally constitute backward-compatible changes.",
-      "Changing the meaning of an existing field is a breaking change.",
-      "Removing required fields is a breaking change.",
-      "Migration logic shall preserve historical records.",
-      "Historical entities shall remain interpretable according to the schema version under which they were created."
+      "Observation must remain distinguishable from interpretation.",
+      "Derived evidence retains lineage to its parent evidence.",
+      "Multiple representations of the same underlying source must not automatically be treated as independent confirmation.",
+      "Evidence reliability and hypothesis probability are separate concepts."
     ]
   },
 
-  "contract_validation": {
-    "required_checks": [
-      "REQUIRED_FIELDS_PRESENT",
-      "VALID_ENTITY_TYPE",
-      "VALID_IDENTIFIER_CLASS",
-      "VALID_REFERENCES",
-      "VALID_ENUM_VALUES",
-      "VALID_TIMESTAMP_FORMAT",
-      "VALID_CONFIDENCE_RANGE",
-      "VALID_PROBABILITY_RANGE",
-      "VALID_SCHEMA_VERSION"
+  "hypothesis_contract": {
+    "description": "Case-specific candidate explanation evaluated by ARIA.",
+    "identity_prefix": "hyp",
+    "required": [
+      "hypothesis_id",
+      "case_id",
+      "hypothesis_entity_id",
+      "status",
+      "current_probability",
+      "created_at",
+      "updated_at"
     ],
-
-    "rule": "Invalid inter-engine payloads shall be rejected before authoritative state mutation."
+    "rules": [
+      "A hypothesis instance is distinct from the canonical technical entity it evaluates.",
+      "Historical priors are not current-case evidence.",
+      "Probability changes must remain auditable.",
+      "Confidence in a probability estimate remains distinct from the probability value.",
+      "Requirements for evidence that does not yet exist must not be represented as evidence IDs."
+    ]
   },
 
-  "example_graph": {
-    "entities": [
-      "Nokia",
-      "Wavence",
-      "UBT-T",
-      "UBT-T 18 GHz",
-      "Space Diversity",
-      "RSL Degradation",
-      "RF Routing Error",
-      "Cross Polarization",
-      "Main Port",
-      "Diversity Port",
-      "Clayton"
+  "action_contract": {
+    "description": "A diagnostic, verification, corrective, operational, or information-gathering action.",
+    "identity_prefix": "act",
+    "required": [
+      "action_id",
+      "case_id",
+      "action_type",
+      "status",
+      "created_at"
     ],
-
-    "relationships": [
-      "Nokia MANUFACTURES UBT-T",
-      "UBT-T MEMBER_OF Wavence",
-      "UBT-T 18 GHz VARIANT_OF UBT-T",
-      "UBT-T SUPPORTS Space Diversity",
-      "RF Routing Error MAY_CAUSE RSL Degradation",
-      "Cross Polarization MAY_CAUSE RSL Degradation",
-      "Space Diversity USES Main Port",
-      "Space Diversity USES Diversity Port",
-      "Clayton HAS_EXPERIENCE_WITH UBT-T",
-      "Clayton HAS_EXPERIENCE_WITH RF Routing Error"
-    ],
-
-    "interpretation": "The graph can grow in every direction without requiring Nokia/UBT/UBT-T/18GHz/troubleshooting/RSL directories or duplicated user-specific knowledge trees."
+    "properties": {
+      "action_id": {
+        "type": "action_identifier"
+      },
+      "case_id": {
+        "type": "case_identifier"
+      },
+      "action_type": {
+        "type": "registry_action_type"
+      },
+      "status": {
+        "type": "string"
+      },
+      "performed_by": {
+        "type": "nullable_actor_reference"
+      },
+      "performed_at": {
+        "type": "nullable_datetime"
+      },
+      "resulting_evidence_ids": {
+        "type": "array_of_evidence_identifiers"
+      },
+      "created_at": {
+        "type": "datetime"
+      },
+      "updated_at": {
+        "type": "nullable_datetime"
+      }
+    }
   },
 
-  "semantic_rules": [
+  "experience_contract": {
+    "description": "Validated historical learning derived from qualifying cases, outcomes, actions, and observations. Experience is distinct from the diagnostic case that produced it.",
+    "identity_prefix": "exp",
+    "required": [
+      "experience_id",
+      "experience_type",
+      "validation_status",
+      "created_at",
+      "updated_at"
+    ],
+    "properties": {
+      "experience_id": {
+        "type": "experience_identifier"
+      },
+      "experience_type": {
+        "type": "string"
+      },
+      "source_case_ids": {
+        "type": "array_of_case_identifiers"
+      },
+      "user_ids": {
+        "type": "array_of_user_identifiers"
+      },
+      "context_id": {
+        "type": "nullable_context_identifier"
+      },
+      "subject_entity_ids": {
+        "type": "array_of_canonical_identifiers"
+      },
+      "validation_status": {
+        "type": "string"
+      },
+      "confidence": {
+        "type": "confidence_contract_or_null"
+      },
+      "provenance": {
+        "type": "provenance_contract_or_null"
+      },
+      "created_at": {
+        "type": "datetime"
+      },
+      "updated_at": {
+        "type": "datetime"
+      }
+    },
+    "rules": [
+      "Experience must be derived only from sufficiently validated information.",
+      "User-specific experience references canonical technical entities rather than duplicating them.",
+      "Experience may influence priors and decision strategy but does not alter canonical technical truth.",
+      "Experience statistics must preserve the context under which the experience was observed."
+    ]
+  },
+
+  "user_experience_overlay_contract": {
+    "description": "User-specific historical overlay used to personalize ARIA's priors and diagnostic strategy without duplicating canonical technical knowledge.",
+    "required": [
+      "user_id",
+      "experience_ids"
+    ],
+    "properties": {
+      "user_id": {
+        "type": "user_identifier"
+      },
+      "experience_ids": {
+        "type": "array_of_experience_identifiers"
+      },
+      "context_filters": {
+        "type": "object"
+      },
+      "derived_statistics": {
+        "type": "object"
+      },
+      "updated_at": {
+        "type": "nullable_datetime"
+      }
+    },
+    "rules": [
+      "User-specific statistics must be computed from validated experience appropriate to the active context.",
+      "Insufficient user-specific sample size should cause progressive widening to team, product, manufacturer, scope, or domain experience as defined by the Probability Engine.",
+      "User history must not be represented as an intrinsic property of the technical entity.",
+      "ARIA must preserve the distinction between a user's historical tendency and the evidence present in the current case."
+    ]
+  },
+
+  "interoperability_rules": [
     {
-      "rule_id": "CONTRACT-RULE-001",
-      "rule": "Shared ARIA concepts shall have one canonical semantic definition."
+      "rule_id": "IR-001",
+      "rule": "Canonical IDs are never recycled."
     },
     {
-      "rule_id": "CONTRACT-RULE-002",
-      "rule": "Canonical identifiers shall remain stable when names, locations, or relationships change."
+      "rule_id": "IR-002",
+      "rule": "A diagnostic case uses the case_ prefix and must not use the exp_ prefix."
     },
     {
-      "rule_id": "CONTRACT-RULE-003",
-      "rule": "Human-readable names shall not serve as authoritative identity."
+      "rule_id": "IR-003",
+      "rule": "An Experience Ledger record uses the exp_ prefix and must remain independently addressable from its source case."
     },
     {
-      "rule_id": "CONTRACT-RULE-004",
-      "rule": "Provenance shall remain attached to technical information across engine boundaries."
+      "rule_id": "IR-004",
+      "rule": "Evidence uses the evd_ prefix and must retain provenance."
     },
     {
-      "rule_id": "CONTRACT-RULE-005",
-      "rule": "Probability and confidence shall remain separate contract types."
+      "rule_id": "IR-005",
+      "rule": "Hypotheses use the hyp_ prefix and are case-specific instances evaluating canonical technical entities."
     },
     {
-      "rule_id": "CONTRACT-RULE-006",
-      "rule": "Unknown, absent, false, zero, and not applicable shall remain semantically distinct."
+      "rule_id": "IR-006",
+      "rule": "General semantic relationships use the rel_ prefix."
     },
     {
-      "rule_id": "CONTRACT-RULE-007",
-      "rule": "Observation time and record creation time shall remain distinct."
+      "rule_id": "IR-007",
+      "rule": "Persisted reusable knowledge graph edges use the ke_ prefix and are distinct from general rel_ relationship records."
     },
     {
-      "rule_id": "CONTRACT-RULE-008",
-      "rule": "Relationships containing technical meaning shall be represented explicitly."
+      "rule_id": "IR-008",
+      "rule": "Canonical technical concepts are not duplicated merely to express manufacturer, scope, team, user, or case applicability."
     },
     {
-      "rule_id": "CONTRACT-RULE-009",
-      "rule": "Products shall be graph entities rather than directory structures."
+      "rule_id": "IR-009",
+      "rule": "Confidence and probability must not be treated as interchangeable values."
     },
     {
-      "rule_id": "CONTRACT-RULE-010",
-      "rule": "Technologies and scopes shall remain orthogonal dimensions."
+      "rule_id": "IR-010",
+      "rule": "A reverse semantic relationship is not implied unless explicitly defined by the relationship registry or represented as a separate relationship."
     },
     {
-      "rule_id": "CONTRACT-RULE-011",
-      "rule": "Failure modes shall be canonical concepts rather than duplicated manufacturer-specific labels unless technically unique."
+      "rule_id": "IR-011",
+      "rule": "Historical experience may influence diagnostic priors but must not override contradictory direct evidence from the active case."
     },
     {
-      "rule_id": "CONTRACT-RULE-012",
-      "rule": "User-specific experience shall reference global canonical concepts rather than duplicate the knowledge graph."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-013",
-      "rule": "Adding a manufacturer or product shall expand relationships rather than require new reasoning architecture."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-014",
-      "rule": "Context shall be multidimensional rather than encoded through directory depth."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-015",
-      "rule": "More-specific context may inherit applicable broader knowledge."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-016",
-      "rule": "Action definitions and performed action instances shall remain distinct."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-017",
-      "rule": "Historical state versions and events shall remain immutable."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-018",
-      "rule": "Inter-engine payloads shall be schema validated before authoritative state mutation."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-019",
-      "rule": "Schema evolution shall preserve historical interpretability."
-    },
-    {
-      "rule_id": "CONTRACT-RULE-020",
-      "rule": "ARIA's information architecture shall grow as an interconnected graph rather than an increasingly deep tree."
+      "rule_id": "IR-012",
+      "rule": "Unvalidated cases must not automatically contribute to validated user, team, product, manufacturer, or domain experience statistics."
     }
   ]
 }
