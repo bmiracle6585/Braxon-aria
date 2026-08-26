@@ -1,0 +1,701 @@
+{
+  "specification": "ARIA_PROVENANCE_SCHEMA",
+  "version": "0.1.0",
+  "description": "Defines the canonical provenance, lineage, authority, derivation, transformation, citation, supersession, and source-integrity model used by A.R.I.A. Every material technical claim must remain traceable to its origin and must remain distinguishable from inference, historical experience, user statements, measurements, and authoritative documentation.",
+
+  "core_principle": {
+    "statement": "ARIA shall never allow the origin of technical information to disappear. Facts, observations, measurements, interpretations, derived conclusions, historical experience, and ARIA-generated reasoning shall retain sufficient lineage to determine where the information came from and how it became part of the current reasoning state.",
+    "rules": [
+      "Material technical information shall have provenance.",
+      "ARIA-generated inference shall never masquerade as source material.",
+      "Repeated copies of one source shall remain one underlying provenance lineage.",
+      "Transformation shall not create independent authority.",
+      "Authority and confidence are separate properties.",
+      "A highly authoritative source may still be inapplicable to the current context.",
+      "A low-authority source may still contain correct direct evidence.",
+      "Current direct evidence may conflict with authoritative documentation without silently replacing it.",
+      "Superseded information shall remain historically traceable.",
+      "Canonical knowledge promotion shall require sufficient provenance."
+    ]
+  },
+
+  "provenance_record": {
+    "required_fields": [
+      "provenance_id",
+      "source_type",
+      "source_id",
+      "acquired_at",
+      "lineage_type",
+      "integrity_status"
+    ],
+    "optional_fields": [
+      "original_source_id",
+      "parent_provenance_ids",
+      "author_id",
+      "user_id",
+      "organization_id",
+      "manufacturer_id",
+      "document_id",
+      "document_version",
+      "page",
+      "section",
+      "table",
+      "figure",
+      "line_reference",
+      "file_name",
+      "file_hash",
+      "content_hash",
+      "external_reference",
+      "observation_method",
+      "measurement_method",
+      "instrument_id",
+      "transformation_ids",
+      "authority_class",
+      "source_confidence",
+      "context_constraints",
+      "effective_from",
+      "effective_until",
+      "metadata"
+    ]
+  },
+
+  "source_types": [
+    "MANUFACTURER_DOCUMENT",
+    "MANUFACTURER_SUPPORT",
+    "ENGINEERING_DOCUMENT",
+    "ENGINEERING_APPROVAL",
+    "STANDARD",
+    "CUSTOMER_DOCUMENT",
+    "PROJECT_DOCUMENT",
+    "DESIGN_DOCUMENT",
+    "CONFIGURATION_EXPORT",
+    "EQUIPMENT_TELEMETRY",
+    "DIRECT_MEASUREMENT",
+    "TEST_EQUIPMENT_OUTPUT",
+    "ALARM",
+    "LOG",
+    "SCREENSHOT",
+    "PHOTO",
+    "VIDEO",
+    "USER_STATEMENT",
+    "USER_OBSERVATION",
+    "USER_INTERPRETATION",
+    "TECHNICIAN_ACTION_RESULT",
+    "HISTORICAL_CASE",
+    "EXPERIENCE_LEDGER",
+    "EXTERNAL_SYSTEM",
+    "ARIA_DERIVATION",
+    "ARIA_INFERENCE",
+    "ARIA_SUMMARY",
+    "ARIA_CALCULATION",
+    "ARIA_PATTERN",
+    "UNKNOWN_SOURCE"
+  ],
+
+  "lineage_types": [
+    {
+      "name": "PRIMARY",
+      "description": "Information obtained directly from its originating source or observation."
+    },
+    {
+      "name": "COPIED",
+      "description": "Information reproduced from another identifiable source without material interpretation."
+    },
+    {
+      "name": "TRANSFORMED",
+      "description": "Information altered in representation while preserving underlying meaning."
+    },
+    {
+      "name": "DERIVED",
+      "description": "Information calculated or logically derived from one or more source records."
+    },
+    {
+      "name": "INFERRED",
+      "description": "Information inferred through reasoning rather than directly stated or measured."
+    },
+    {
+      "name": "AGGREGATED",
+      "description": "Information produced from multiple source observations or records."
+    },
+    {
+      "name": "SUMMARIZED",
+      "description": "Information compressed from one or more sources."
+    }
+  ],
+
+  "authority_classes": [
+    {
+      "name": "AUTHORITATIVE_STANDARD",
+      "description": "Applicable governing standard, regulatory requirement, or formally controlling specification."
+    },
+    {
+      "name": "AUTHORITATIVE_MANUFACTURER",
+      "description": "Applicable manufacturer technical documentation or validated manufacturer instruction."
+    },
+    {
+      "name": "AUTHORITATIVE_ENGINEERING",
+      "description": "Approved engineering documentation or instruction controlling the applicable implementation."
+    },
+    {
+      "name": "AUTHORITATIVE_CUSTOMER",
+      "description": "Applicable customer requirement controlling the scope or implementation."
+    },
+    {
+      "name": "DIRECT_MACHINE_EVIDENCE",
+      "description": "Direct telemetry, configuration, alarm, or system-generated evidence."
+    },
+    {
+      "name": "DIRECT_MEASUREMENT",
+      "description": "Direct measurement obtained through an identifiable measurement process."
+    },
+    {
+      "name": "DIRECT_VISUAL_EVIDENCE",
+      "description": "Photo, video, screenshot, or direct visual observation."
+    },
+    {
+      "name": "FIRSTHAND_HUMAN_OBSERVATION",
+      "description": "A person's direct observation of the technical state."
+    },
+    {
+      "name": "HISTORICAL_VALIDATED_EXPERIENCE",
+      "description": "Validated historical case experience."
+    },
+    {
+      "name": "SECONDHAND_REPORT",
+      "description": "Information repeated by a person who did not directly observe the original condition."
+    },
+    {
+      "name": "ARIA_DERIVED",
+      "description": "Information calculated from known source information."
+    },
+    {
+      "name": "ARIA_INFERRED",
+      "description": "Information inferred by ARIA's reasoning system."
+    },
+    {
+      "name": "UNVERIFIED",
+      "description": "Information whose origin or reliability has not been sufficiently established."
+    }
+  ],
+
+  "authority_policy": {
+    "rules": [
+      "Authority shall describe the nature of the source, not guarantee correctness.",
+      "Applicability shall be evaluated separately from authority.",
+      "Manufacturer documentation for a different product revision shall not automatically override direct evidence from the active product.",
+      "Current approved engineering may control implementation even when manufacturer documentation permits multiple configurations.",
+      "Direct measurement may establish actual observed behavior without rewriting canonical design requirements.",
+      "Historical experience shall influence probability but shall not override deterministic applicable requirements.",
+      "ARIA inference shall never be promoted to authoritative status merely because ARIA has repeated it."
+    ]
+  },
+
+  "source_confidence": {
+    "range": {
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "factors": [
+      "SOURCE_IDENTITY",
+      "SOURCE_AUTHENTICITY",
+      "OBSERVATION_DIRECTNESS",
+      "MEASUREMENT_QUALITY",
+      "INSTRUMENT_QUALITY",
+      "TEMPORAL_RELEVANCE",
+      "CONTEXT_APPLICABILITY",
+      "INTERNAL_CONSISTENCY",
+      "CORROBORATION",
+      "TRANSFORMATION_COUNT"
+    ],
+    "rule": "Source confidence represents trust in the specific information record and shall remain separate from source authority."
+  },
+
+  "integrity_statuses": [
+    "VERIFIED",
+    "HASH_VERIFIED",
+    "PARTIALLY_VERIFIED",
+    "UNVERIFIED",
+    "ALTERED",
+    "CORRUPTED",
+    "INCOMPLETE",
+    "UNKNOWN"
+  ],
+
+  "document_provenance": {
+    "required_when_available": [
+      "document_id",
+      "document_version",
+      "file_name",
+      "file_hash",
+      "page",
+      "section"
+    ],
+    "optional_fields": [
+      "publication_date",
+      "revision_date",
+      "manufacturer_id",
+      "product_ids",
+      "product_variant_ids",
+      "effective_from",
+      "effective_until"
+    ],
+    "rules": [
+      "A statement extracted from a document shall retain a reference to that document.",
+      "Page and section references should be preserved when available.",
+      "Document revision shall be preserved.",
+      "Replacing a document with a newer revision shall not erase knowledge of the older revision.",
+      "Extracted text shall not become a new authoritative source independent of the original document."
+    ]
+  },
+
+  "measurement_provenance": {
+    "required_fields": [
+      "measurement_method",
+      "observed_at"
+    ],
+    "optional_fields": [
+      "instrument_id",
+      "instrument_model",
+      "instrument_serial",
+      "calibration_status",
+      "calibration_date",
+      "operator_user_id",
+      "measurement_location",
+      "measurement_uncertainty",
+      "environmental_conditions"
+    ],
+    "rules": [
+      "Measured values shall remain distinguishable from manually reported values.",
+      "Instrument identity should be preserved when available.",
+      "Measurement uncertainty should be retained when technically material.",
+      "A user typing a value from a meter is not identical provenance to direct machine ingestion from that meter."
+    ]
+  },
+
+  "human_provenance": {
+    "source_classes": [
+      "DIRECT_OBSERVER",
+      "ACTION_PERFORMER",
+      "REPORTER",
+      "INTERPRETER",
+      "SECONDHAND_REPORTER"
+    ],
+    "rules": [
+      "Who observed something shall remain distinguishable from who reported it to ARIA.",
+      "Who performed an action shall remain distinguishable from who described the result.",
+      "User interpretation shall remain distinguishable from direct observation.",
+      "User history may influence expected reliability but shall not silently alter the original statement."
+    ]
+  },
+
+  "aria_provenance": {
+    "types": [
+      "ARIA_DERIVATION",
+      "ARIA_INFERENCE",
+      "ARIA_SUMMARY",
+      "ARIA_CALCULATION",
+      "ARIA_PATTERN"
+    ],
+    "required_fields": [
+      "model_or_engine",
+      "generated_at",
+      "input_provenance_ids"
+    ],
+    "optional_fields": [
+      "model_version",
+      "engine_version",
+      "prompt_version",
+      "reasoning_operation",
+      "confidence",
+      "calculation_method"
+    ],
+    "rules": [
+      "ARIA-generated information shall explicitly identify itself as generated.",
+      "ARIA shall preserve the provenance of material inputs used to generate derived information.",
+      "ARIA summaries shall not acquire the authority of the summarized sources.",
+      "ARIA inference shall remain distinguishable from direct evidence.",
+      "ARIA calculations shall preserve their input measurements."
+    ]
+  },
+
+  "derivation_chain": {
+    "description": "Defines how ARIA preserves lineage through multiple transformations.",
+    "example": [
+      {
+        "record": "Radio telemetry",
+        "lineage": "PRIMARY"
+      },
+      {
+        "record": "Normalized RSL measurement",
+        "lineage": "TRANSFORMED"
+      },
+      {
+        "record": "Calculated RSL delta",
+        "lineage": "DERIVED"
+      },
+      {
+        "record": "Possible RF-chain imbalance",
+        "lineage": "INFERRED"
+      },
+      {
+        "record": "Case summary",
+        "lineage": "SUMMARIZED"
+      }
+    ],
+    "rule": "Every stage shall remain traceable to the primary evidence."
+  },
+
+  "copy_detection": {
+    "signals": [
+      "CONTENT_HASH_MATCH",
+      "FILE_HASH_MATCH",
+      "EXPLICIT_SOURCE_REFERENCE",
+      "IDENTICAL_MEASUREMENT_AND_TIMESTAMP",
+      "KNOWN_FORWARDING_CHAIN",
+      "DERIVATION_REFERENCE"
+    ],
+    "rules": [
+      "Copied information shall not count as independent corroboration.",
+      "An email repeating a ticket value shall not become a second measurement.",
+      "A screenshot of a report may preserve the report as its underlying information source.",
+      "ARIA shall attempt to identify common provenance before increasing confidence through corroboration."
+    ]
+  },
+
+  "independence_model": {
+    "states": [
+      "INDEPENDENT",
+      "PARTIALLY_INDEPENDENT",
+      "DEPENDENT",
+      "SAME_SOURCE",
+      "UNKNOWN"
+    ],
+    "rules": [
+      "Evidence independence shall be evaluated separately from agreement.",
+      "Two independent measurements agreeing may materially increase confidence.",
+      "Ten copies of one measurement shall not be treated as ten independent observations.",
+      "Unknown independence shall not automatically be treated as independent."
+    ]
+  },
+
+  "transformation_record": {
+    "required_fields": [
+      "transformation_id",
+      "transformation_type",
+      "performed_at",
+      "input_ids",
+      "output_ids"
+    ],
+    "optional_fields": [
+      "performed_by",
+      "engine_version",
+      "parameters",
+      "lossy",
+      "notes"
+    ],
+    "transformation_types": [
+      "NORMALIZATION",
+      "UNIT_CONVERSION",
+      "EXTRACTION",
+      "OCR",
+      "TRANSCRIPTION",
+      "PARSING",
+      "CALCULATION",
+      "AGGREGATION",
+      "SUMMARIZATION",
+      "CLASSIFICATION",
+      "ENTITY_RESOLUTION",
+      "FORMAT_CONVERSION"
+    ]
+  },
+
+  "lossy_transformation_policy": {
+    "rules": [
+      "Lossy transformations shall be identified.",
+      "Original source material shall remain accessible when practical.",
+      "Summaries shall not replace original technical evidence.",
+      "OCR or transcription uncertainty shall remain represented when material.",
+      "Canonical knowledge shall not rely exclusively on lossy transformation when the original source is available."
+    ]
+  },
+
+  "citation_contract": {
+    "required_fields": [
+      "source_id"
+    ],
+    "optional_fields": [
+      "document_id",
+      "page",
+      "section",
+      "figure",
+      "table",
+      "line_reference",
+      "timestamp_reference",
+      "content_fragment_hash"
+    ],
+    "rule": "ARIA shall be able to identify the supporting source location for material technical claims when the source permits it."
+  },
+
+  "claim_provenance": {
+    "required_fields": [
+      "claim_id",
+      "claim_type",
+      "provenance_ids"
+    ],
+    "optional_fields": [
+      "supporting_provenance_ids",
+      "contradicting_provenance_ids",
+      "confidence",
+      "authority_class",
+      "context_constraints"
+    ],
+    "rules": [
+      "One claim may have multiple sources.",
+      "Supporting and contradicting provenance may coexist.",
+      "A claim shall not discard contradicting source lineage merely because one interpretation currently leads."
+    ]
+  },
+
+  "supersession_policy": {
+    "rules": [
+      "Newer information shall not automatically supersede older information.",
+      "Supersession requires semantic overlap and greater current applicability or authority.",
+      "Superseded information shall remain retrievable historically.",
+      "Historical cases shall evaluate sources according to what was available at that time when reconstructing reasoning.",
+      "A superseding record shall reference the record it supersedes."
+    ]
+  },
+
+  "temporal_provenance": {
+    "fields": [
+      "created_at",
+      "acquired_at",
+      "observed_at",
+      "published_at",
+      "effective_from",
+      "effective_until",
+      "superseded_at"
+    ],
+    "rules": [
+      "ARIA shall distinguish when information was created from when the underlying condition was observed.",
+      "ARIA shall distinguish document publication date from technical effective date.",
+      "Late-arriving evidence shall retain its original observation time."
+    ]
+  },
+
+  "canonical_knowledge_promotion": {
+    "minimum_requirements": [
+      "IDENTIFIABLE_PROVENANCE",
+      "CONTEXT_APPLICABILITY",
+      "SUFFICIENT_AUTHORITY_OR_VALIDATED_EVIDENCE",
+      "CONTRADICTION_REVIEW",
+      "DUPLICATION_REVIEW",
+      "SEMANTIC_NORMALIZATION"
+    ],
+    "rules": [
+      "Raw conversation shall not directly become canonical technical knowledge.",
+      "ARIA inference alone shall not become canonical knowledge.",
+      "Repeated field experience may create candidate knowledge but requires appropriate validation or governance.",
+      "Manufacturer documentation may create authoritative knowledge when product and revision applicability are established."
+    ]
+  },
+
+  "experience_provenance": {
+    "required_fields": [
+      "case_id",
+      "validation_id",
+      "source_event_ids"
+    ],
+    "optional_fields": [
+      "user_id",
+      "action_instance_ids",
+      "evidence_ids",
+      "resolution_id",
+      "context_signature"
+    ],
+    "rules": [
+      "Experience ledger entries shall trace back to actual validated cases.",
+      "Aggregated experience shall retain the contributing experience IDs.",
+      "Deleting an aggregate shall not delete its underlying case provenance.",
+      "Experience derived from unresolved cases shall be marked accordingly and shall not receive validated weighting."
+    ]
+  },
+
+  "source_conflict_example": {
+    "sources": [
+      {
+        "source": "Nokia manual",
+        "authority": "AUTHORITATIVE_MANUFACTURER",
+        "claim": "Expected Main/Diversity implementation."
+      },
+      {
+        "source": "Current configuration export",
+        "authority": "DIRECT_MACHINE_EVIDENCE",
+        "claim": "Current deployed configuration differs."
+      },
+      {
+        "source": "Technician statement",
+        "authority": "FIRSTHAND_HUMAN_OBSERVATION",
+        "claim": "Configuration was changed yesterday."
+      }
+    ],
+    "interpretation": "ARIA shall preserve all three sources. The manual describes intended behavior, the configuration export describes current machine state, and the technician statement provides possible causal history. They answer different questions and shall not overwrite one another."
+  },
+
+  "provenance_graph_example": {
+    "chain": [
+      "Nokia Technical Manual",
+      "EXTRACTED_FROM -> UBT-T Main/Diversity requirement",
+      "APPLIES_TO -> UBT-T",
+      "SUPPORTS -> Expected routing model"
+    ],
+    "case_chain": [
+      "Radio configuration export",
+      "PRODUCES -> Configuration evidence",
+      "SUPPORTS -> Configuration correct"
+    ],
+    "reasoning_chain": [
+      "Expected routing model + Configuration evidence",
+      "INPUT_TO -> ARIA inference",
+      "ARIA inference -> RF routing remains leading hypothesis"
+    ],
+    "rule": "The final inference shall never be represented as though Nokia directly stated that RF routing is the cause of the current case."
+  },
+
+  "anti_contamination_policy": {
+    "description": "Prevents ARIA's own reasoning from recursively becoming false authority.",
+    "rules": [
+      "ARIA summaries shall not be re-ingested as independent technical sources.",
+      "ARIA-generated explanations shall not count as corroboration of the evidence used to create them.",
+      "A previous ARIA diagnosis shall be treated as historical inference unless independently validated.",
+      "Repeated retrieval of the same ARIA-generated claim shall not increase confidence.",
+      "Canonical knowledge shall identify whether any part originated from ARIA inference.",
+      "Model-generated text shall never silently become manufacturer knowledge."
+    ]
+  },
+
+  "audit_requirements": {
+    "required_capabilities": [
+      "Trace a claim to its original sources.",
+      "Trace an inference to its material inputs.",
+      "Identify transformations applied to a source.",
+      "Identify whether evidence sources are independent.",
+      "Identify source authority.",
+      "Identify source confidence.",
+      "Identify applicable document revision.",
+      "Identify superseded sources.",
+      "Reconstruct what information was available at a historical reasoning state."
+    ]
+  },
+
+  "example": {
+    "question": "Why does ARIA believe the Main/Diversity routing is wrong?",
+    "answer_structure": {
+      "current_hypothesis": "RF_ROUTING_ERROR",
+      "probability": 0.74,
+      "support": [
+        {
+          "source": "Current RSL measurements",
+          "type": "DIRECT_MEASUREMENT"
+        },
+        {
+          "source": "Validated Radio A and Radio B configuration",
+          "type": "CONFIGURATION_EXPORT"
+        },
+        {
+          "source": "Nokia UBT-T Space Diversity technical requirement",
+          "type": "MANUFACTURER_DOCUMENT"
+        }
+      ],
+      "historical_influence": {
+        "source": "Validated comparable cases",
+        "type": "EXPERIENCE_LEDGER"
+      },
+      "aria_inference": "Observed RSL behavior combined with validated configuration increases the relative likelihood of a physical RF routing problem."
+    },
+    "interpretation": "ARIA can explain not only what she thinks, but exactly which parts came from measurements, Nokia, historical experience, and her own inference."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "PROV-RULE-001",
+      "rule": "Material technical information shall retain identifiable provenance."
+    },
+    {
+      "rule_id": "PROV-RULE-002",
+      "rule": "ARIA-generated inference shall remain distinguishable from source evidence."
+    },
+    {
+      "rule_id": "PROV-RULE-003",
+      "rule": "Transformation shall not create independent authority."
+    },
+    {
+      "rule_id": "PROV-RULE-004",
+      "rule": "Copied information shall not count as independent corroboration."
+    },
+    {
+      "rule_id": "PROV-RULE-005",
+      "rule": "Source authority and source confidence shall remain separate."
+    },
+    {
+      "rule_id": "PROV-RULE-006",
+      "rule": "Source authority and contextual applicability shall remain separate."
+    },
+    {
+      "rule_id": "PROV-RULE-007",
+      "rule": "Direct evidence may establish observed state without rewriting normative technical requirements."
+    },
+    {
+      "rule_id": "PROV-RULE-008",
+      "rule": "Historical experience shall not overwrite authoritative deterministic knowledge."
+    },
+    {
+      "rule_id": "PROV-RULE-009",
+      "rule": "ARIA inference shall not become authoritative through repetition."
+    },
+    {
+      "rule_id": "PROV-RULE-010",
+      "rule": "Original source lineage shall remain recoverable through derived information."
+    },
+    {
+      "rule_id": "PROV-RULE-011",
+      "rule": "Observation time shall remain distinct from ingestion time."
+    },
+    {
+      "rule_id": "PROV-RULE-012",
+      "rule": "Document revision and applicability shall be preserved."
+    },
+    {
+      "rule_id": "PROV-RULE-013",
+      "rule": "Supersession shall preserve historical information."
+    },
+    {
+      "rule_id": "PROV-RULE-014",
+      "rule": "Contradicting provenance shall not be deleted merely because one interpretation currently leads."
+    },
+    {
+      "rule_id": "PROV-RULE-015",
+      "rule": "Lossy transformations shall be identifiable."
+    },
+    {
+      "rule_id": "PROV-RULE-016",
+      "rule": "Experience records shall remain traceable to validated cases."
+    },
+    {
+      "rule_id": "PROV-RULE-017",
+      "rule": "Aggregated statistics shall remain traceable to contributing records."
+    },
+    {
+      "rule_id": "PROV-RULE-018",
+      "rule": "Raw conversation shall not directly become canonical knowledge."
+    },
+    {
+      "rule_id": "PROV-RULE-019",
+      "rule": "Model-generated content shall never silently become manufacturer or engineering knowledge."
+    },
+    {
+      "rule_id": "PROV-RULE-020",
+      "rule": "ARIA shall be capable of explaining where she knows something from."
+    }
+  ]
+}
