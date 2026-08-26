@@ -1,0 +1,588 @@
+{
+  "registry": "ARIA_SYMPTOM_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical observable microwave backhaul symptoms recognized by A.R.I.A. Symptoms describe what is observed and shall remain distinct from failure modes, root causes, and diagnoses.",
+
+  "symptom_types": [
+    {
+      "id": "SYM-RF-001",
+      "name": "LOW_RSL",
+      "canonical_name": "Low RSL",
+      "category": "RF_SIGNAL",
+      "description": "Received Signal Level is materially weaker than the applicable expected, engineered, historical, or threshold value.",
+      "measurement_types": ["RSL"],
+      "aliases": [
+        "Low Receive Level",
+        "Weak RSL",
+        "Weak Receive Signal",
+        "Low RX Level"
+      ]
+    },
+
+    {
+      "id": "SYM-RF-002",
+      "name": "HIGH_RSL",
+      "canonical_name": "High RSL",
+      "category": "RF_SIGNAL",
+      "description": "Received Signal Level is materially stronger than the applicable expected, engineered, historical, or configured value.",
+      "measurement_types": ["RSL"]
+    },
+
+    {
+      "id": "SYM-RF-003",
+      "name": "RSL_DISCREPANCY",
+      "canonical_name": "RSL Discrepancy",
+      "category": "RF_SIGNAL",
+      "description": "Two or more RSL values that are expected to reasonably correspond differ materially.",
+      "measurement_types": ["RSL", "RSL_DELTA"],
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "LOCAL_VS_REMOTE",
+        "MAIN_VS_DIVERSITY"
+      ]
+    },
+
+    {
+      "id": "SYM-RF-004",
+      "name": "MAIN_DIVERSITY_RSL_IMBALANCE",
+      "canonical_name": "Main/Diversity RSL Imbalance",
+      "category": "RF_SIGNAL",
+      "description": "Main and Diversity receive levels differ materially beyond the applicable expected relationship.",
+      "measurement_types": ["RSL", "RSL_DELTA"],
+      "comparison_modes": ["MAIN_VS_DIVERSITY"]
+    },
+
+    {
+      "id": "SYM-RF-005",
+      "name": "LOCAL_REMOTE_RSL_IMBALANCE",
+      "canonical_name": "Local/Remote RSL Imbalance",
+      "category": "RF_SIGNAL",
+      "description": "Corresponding receive levels at opposite microwave endpoints differ materially beyond expected behavior.",
+      "measurement_types": ["RSL", "RSL_DELTA"],
+      "comparison_modes": ["LOCAL_VS_REMOTE"]
+    },
+
+    {
+      "id": "SYM-RF-006",
+      "name": "UNSTABLE_RSL",
+      "canonical_name": "Unstable RSL",
+      "category": "RF_SIGNAL",
+      "description": "Received Signal Level varies materially over time without an expected operational explanation.",
+      "measurement_types": ["RSL"],
+      "comparison_modes": ["BEFORE_VS_AFTER"],
+      "aliases": [
+        "Fluctuating RSL",
+        "RSL Flapping",
+        "RSL Variation"
+      ]
+    },
+
+    {
+      "id": "SYM-RF-007",
+      "name": "NO_RSL",
+      "canonical_name": "No RSL",
+      "category": "RF_SIGNAL",
+      "description": "Expected receive signal is absent, undetectable, or reported below the usable receiver condition.",
+      "measurement_types": ["RSL"]
+    },
+
+    {
+      "id": "SYM-RF-008",
+      "name": "LOW_SNR",
+      "canonical_name": "Low SNR",
+      "category": "RF_SIGNAL",
+      "description": "Signal-to-noise ratio is below the applicable expected or acceptable condition.",
+      "measurement_types": ["SNR"]
+    },
+
+    {
+      "id": "SYM-RF-009",
+      "name": "LOW_SINR",
+      "canonical_name": "Low SINR",
+      "category": "RF_SIGNAL",
+      "description": "Signal-to-interference-plus-noise ratio is below the applicable expected or acceptable condition.",
+      "measurement_types": ["SINR"]
+    },
+
+    {
+      "id": "SYM-RF-010",
+      "name": "LOW_XPD",
+      "canonical_name": "Low Cross-Polarization Discrimination",
+      "category": "RF_SIGNAL",
+      "description": "Measured cross-polarization discrimination is below the applicable requirement or expected condition.",
+      "measurement_types": ["XPD"]
+    },
+
+    {
+      "id": "SYM-RF-011",
+      "name": "LOW_FADE_MARGIN",
+      "canonical_name": "Low Fade Margin",
+      "category": "RF_SIGNAL",
+      "description": "Available receive margin above the applicable receiver threshold is lower than required or engineered."
+    },
+
+    {
+      "id": "SYM-LINK-001",
+      "name": "LINK_DOWN",
+      "canonical_name": "Link Down",
+      "category": "LINK_STATE",
+      "description": "Microwave link is not operational or traffic-bearing when operation is expected.",
+      "aliases": [
+        "Radio Link Down",
+        "Microwave Link Down"
+      ]
+    },
+
+    {
+      "id": "SYM-LINK-002",
+      "name": "LINK_FLAPPING",
+      "canonical_name": "Link Flapping",
+      "category": "LINK_STATE",
+      "description": "Link repeatedly transitions between operational and non-operational states.",
+      "aliases": [
+        "Intermittent Link",
+        "Link Bouncing"
+      ]
+    },
+
+    {
+      "id": "SYM-LINK-003",
+      "name": "ONE_WAY_LINK",
+      "canonical_name": "One-Way Link Behavior",
+      "category": "LINK_STATE",
+      "description": "Communication or expected RF/system behavior is present in one direction but absent or materially degraded in the opposite direction."
+    },
+
+    {
+      "id": "SYM-LINK-004",
+      "name": "PARTIAL_LINK_OPERATION",
+      "canonical_name": "Partial Link Operation",
+      "category": "LINK_STATE",
+      "description": "A microwave system is operational only in part, such as one radio, carrier, polarization, or path functioning while another is not."
+    },
+
+    {
+      "id": "SYM-LINK-005",
+      "name": "MAIN_PATH_DOWN",
+      "canonical_name": "Main Path Down",
+      "category": "LINK_STATE",
+      "description": "The designated Main RF or radio path is unavailable while other system elements may remain operational."
+    },
+
+    {
+      "id": "SYM-LINK-006",
+      "name": "DIVERSITY_PATH_DOWN",
+      "canonical_name": "Diversity Path Down",
+      "category": "LINK_STATE",
+      "description": "The designated Diversity RF or radio path is unavailable while other system elements may remain operational."
+    },
+
+    {
+      "id": "SYM-PERF-001",
+      "name": "HIGH_BER",
+      "canonical_name": "High Bit Error Rate",
+      "category": "PERFORMANCE",
+      "description": "Bit Error Rate exceeds the applicable acceptable threshold or expected operating condition.",
+      "measurement_types": ["BER"]
+    },
+
+    {
+      "id": "SYM-PERF-002",
+      "name": "HIGH_PACKET_ERROR_RATE",
+      "canonical_name": "High Packet Error Rate",
+      "category": "PERFORMANCE",
+      "description": "Packet Error Rate exceeds the applicable acceptable threshold.",
+      "measurement_types": ["PER"]
+    },
+
+    {
+      "id": "SYM-PERF-003",
+      "name": "PACKET_LOSS",
+      "canonical_name": "Packet Loss",
+      "category": "PERFORMANCE",
+      "description": "Observed packet loss exceeds the applicable expected or acceptable condition.",
+      "measurement_types": ["PACKET_LOSS"]
+    },
+
+    {
+      "id": "SYM-PERF-004",
+      "name": "LOW_THROUGHPUT",
+      "canonical_name": "Low Throughput",
+      "category": "PERFORMANCE",
+      "description": "Measured traffic throughput is materially below the expected, configured, or engineered capability.",
+      "measurement_types": ["THROUGHPUT"]
+    },
+
+    {
+      "id": "SYM-PERF-005",
+      "name": "LOW_CAPACITY",
+      "canonical_name": "Low Link Capacity",
+      "category": "PERFORMANCE",
+      "description": "Available or reported microwave capacity is materially below the expected or configured condition.",
+      "measurement_types": ["CAPACITY"]
+    },
+
+    {
+      "id": "SYM-PERF-006",
+      "name": "LOW_MODULATION",
+      "canonical_name": "Low Modulation",
+      "category": "PERFORMANCE",
+      "description": "Current modulation state is below the expected or normally sustainable modulation level.",
+      "measurement_types": ["MODULATION_ORDER", "ACM_STATE"],
+      "aliases": [
+        "Modulation Down",
+        "Low QAM"
+      ]
+    },
+
+    {
+      "id": "SYM-PERF-007",
+      "name": "MODULATION_FLAPPING",
+      "canonical_name": "Modulation Flapping",
+      "category": "PERFORMANCE",
+      "description": "Adaptive modulation repeatedly transitions between materially different operating states.",
+      "measurement_types": ["MODULATION_ORDER", "ACM_STATE"]
+    },
+
+    {
+      "id": "SYM-PERF-008",
+      "name": "HIGH_ERRORED_SECONDS",
+      "canonical_name": "High Errored Seconds",
+      "category": "PERFORMANCE",
+      "description": "Errored Seconds exceed the applicable expected or acceptable condition.",
+      "measurement_types": ["ES"]
+    },
+
+    {
+      "id": "SYM-PERF-009",
+      "name": "HIGH_SEVERELY_ERRORED_SECONDS",
+      "canonical_name": "High Severely Errored Seconds",
+      "category": "PERFORMANCE",
+      "description": "Severely Errored Seconds exceed the applicable expected or acceptable condition.",
+      "measurement_types": ["SES"]
+    },
+
+    {
+      "id": "SYM-PERF-010",
+      "name": "HIGH_UNAVAILABLE_SECONDS",
+      "canonical_name": "High Unavailable Seconds",
+      "category": "PERFORMANCE",
+      "description": "Unavailable Seconds exceed the applicable expected or acceptable condition.",
+      "measurement_types": ["UAS"]
+    },
+
+    {
+      "id": "SYM-PERF-011",
+      "name": "HIGH_LATENCY",
+      "canonical_name": "High Latency",
+      "category": "PERFORMANCE",
+      "description": "Measured latency exceeds the applicable expected or acceptable threshold.",
+      "measurement_types": ["LATENCY"]
+    },
+
+    {
+      "id": "SYM-PERF-012",
+      "name": "HIGH_JITTER",
+      "canonical_name": "High Jitter",
+      "category": "PERFORMANCE",
+      "description": "Measured packet-delay variation exceeds the applicable expected or acceptable threshold.",
+      "measurement_types": ["JITTER"]
+    },
+
+    {
+      "id": "SYM-CONFIG-001",
+      "name": "FREQUENCY_MISMATCH",
+      "canonical_name": "Frequency Mismatch",
+      "category": "CONFIGURATION_OBSERVATION",
+      "description": "Observed or reported frequency values that should correspond do not match.",
+      "measurement_types": ["FREQUENCY"]
+    },
+
+    {
+      "id": "SYM-CONFIG-002",
+      "name": "CHANNEL_BANDWIDTH_MISMATCH",
+      "canonical_name": "Channel Bandwidth Mismatch",
+      "category": "CONFIGURATION_OBSERVATION",
+      "description": "Observed or reported channel bandwidth values that should correspond do not match.",
+      "measurement_types": ["CHANNEL_BANDWIDTH"]
+    },
+
+    {
+      "id": "SYM-CONFIG-003",
+      "name": "TX_POWER_DISCREPANCY",
+      "canonical_name": "Transmit Power Discrepancy",
+      "category": "CONFIGURATION_OBSERVATION",
+      "description": "Actual, reported, configured, expected, or endpoint transmit-power values differ materially.",
+      "measurement_types": ["TX_POWER", "ATPC_POWER"]
+    },
+
+    {
+      "id": "SYM-CONFIG-004",
+      "name": "CONFIGURATION_MISMATCH",
+      "canonical_name": "Configuration Mismatch",
+      "category": "CONFIGURATION_OBSERVATION",
+      "description": "Two configuration states that are expected to correspond are materially inconsistent."
+    },
+
+    {
+      "id": "SYM-CONFIG-005",
+      "name": "DESIGN_CONFIGURATION_MISMATCH",
+      "canonical_name": "Design/Configuration Mismatch",
+      "category": "CONFIGURATION_OBSERVATION",
+      "description": "Configured system state differs materially from the applicable engineering design."
+    },
+
+    {
+      "id": "SYM-ALARM-001",
+      "name": "ACTIVE_RADIO_ALARM",
+      "canonical_name": "Active Radio Alarm",
+      "category": "ALARM",
+      "description": "One or more radio-related alarms are active."
+    },
+
+    {
+      "id": "SYM-ALARM-002",
+      "name": "ACTIVE_RF_ALARM",
+      "canonical_name": "Active RF Alarm",
+      "category": "ALARM",
+      "description": "One or more RF-related alarms are active."
+    },
+
+    {
+      "id": "SYM-ALARM-003",
+      "name": "ACTIVE_CONFIGURATION_ALARM",
+      "canonical_name": "Active Configuration Alarm",
+      "category": "ALARM",
+      "description": "One or more alarms indicate a configuration inconsistency, invalid state, or configuration-related problem."
+    },
+
+    {
+      "id": "SYM-ALARM-004",
+      "name": "ACTIVE_HARDWARE_ALARM",
+      "canonical_name": "Active Hardware Alarm",
+      "category": "ALARM",
+      "description": "One or more alarms indicate hardware abnormality or failure."
+    },
+
+    {
+      "id": "SYM-ALARM-005",
+      "name": "ACTIVE_POWER_ALARM",
+      "canonical_name": "Active Power Alarm",
+      "category": "ALARM",
+      "description": "One or more alarms indicate abnormal equipment power conditions."
+    },
+
+    {
+      "id": "SYM-POWER-001",
+      "name": "NO_POWER",
+      "canonical_name": "No Equipment Power",
+      "category": "POWER",
+      "description": "Equipment expected to be powered is not receiving or reporting usable power."
+    },
+
+    {
+      "id": "SYM-POWER-002",
+      "name": "LOW_VOLTAGE",
+      "canonical_name": "Low Voltage",
+      "category": "POWER",
+      "description": "Measured equipment supply voltage is below the applicable expected or acceptable range.",
+      "measurement_types": ["VOLTAGE"]
+    },
+
+    {
+      "id": "SYM-POWER-003",
+      "name": "UNSTABLE_POWER",
+      "canonical_name": "Unstable Power",
+      "category": "POWER",
+      "description": "Equipment supply power or voltage varies materially or intermittently outside expected behavior.",
+      "measurement_types": ["VOLTAGE", "CURRENT"]
+    },
+
+    {
+      "id": "SYM-PHYSICAL-001",
+      "name": "VISIBLE_COMPONENT_DAMAGE",
+      "canonical_name": "Visible Component Damage",
+      "category": "PHYSICAL",
+      "description": "Physical inspection reveals visible damage to equipment or an RF-chain component."
+    },
+
+    {
+      "id": "SYM-PHYSICAL-002",
+      "name": "VISIBLE_WATER_INGRESS",
+      "canonical_name": "Visible Water Ingress",
+      "category": "PHYSICAL",
+      "description": "Physical inspection reveals water, moisture, corrosion, or evidence of moisture intrusion."
+    },
+
+    {
+      "id": "SYM-PHYSICAL-003",
+      "name": "LOOSE_CONNECTION_OBSERVED",
+      "canonical_name": "Loose Connection Observed",
+      "category": "PHYSICAL",
+      "description": "Physical inspection reveals a connection that is loose, unseated, improperly retained, or otherwise mechanically suspect."
+    },
+
+    {
+      "id": "SYM-PHYSICAL-004",
+      "name": "INCORRECT_COMPONENT_OBSERVED",
+      "canonical_name": "Incorrect Component Observed",
+      "category": "PHYSICAL",
+      "description": "Physical inspection indicates that an installed component differs from the applicable design or required hardware."
+    },
+
+    {
+      "id": "SYM-PATH-001",
+      "name": "LOS_OBSTRUCTION_OBSERVED",
+      "canonical_name": "Line-of-Sight Obstruction Observed",
+      "category": "PATH",
+      "description": "A physical obstruction is observed within or near the microwave propagation path."
+    },
+
+    {
+      "id": "SYM-PATH-002",
+      "name": "FRESNEL_CLEARANCE_DEFICIENCY",
+      "canonical_name": "Fresnel Clearance Deficiency",
+      "category": "PATH",
+      "description": "Observed or calculated Fresnel-zone clearance is below the applicable requirement.",
+      "measurement_types": ["FRESNEL_CLEARANCE"]
+    },
+
+    {
+      "id": "SYM-PATH-003",
+      "name": "AZIMUTH_DISCREPANCY",
+      "canonical_name": "Azimuth Discrepancy",
+      "category": "PATH",
+      "description": "Observed antenna azimuth differs materially from the applicable design azimuth.",
+      "measurement_types": ["AZIMUTH"]
+    },
+
+    {
+      "id": "SYM-PATH-004",
+      "name": "ELEVATION_DISCREPANCY",
+      "canonical_name": "Elevation Discrepancy",
+      "category": "PATH",
+      "description": "Observed antenna elevation angle differs materially from the applicable design.",
+      "measurement_types": ["ELEVATION_ANGLE"]
+    },
+
+    {
+      "id": "SYM-PATH-005",
+      "name": "ANTENNA_HEIGHT_DISCREPANCY",
+      "canonical_name": "Antenna Height Discrepancy",
+      "category": "PATH",
+      "description": "Observed installed antenna height differs materially from the applicable engineering design.",
+      "measurement_types": ["ANTENNA_HEIGHT"]
+    },
+
+    {
+      "id": "SYM-ENV-001",
+      "name": "WEATHER_CORRELATED_DEGRADATION",
+      "canonical_name": "Weather-Correlated Degradation",
+      "category": "ENVIRONMENTAL",
+      "description": "Technical degradation is observed to correlate with changing weather conditions without independently establishing the specific environmental cause."
+    },
+
+    {
+      "id": "SYM-ENV-002",
+      "name": "RAIN_CORRELATED_RSL_DEGRADATION",
+      "canonical_name": "Rain-Correlated RSL Degradation",
+      "category": "ENVIRONMENTAL",
+      "description": "RSL degradation is observed during precipitation and materially changes with precipitation conditions.",
+      "measurement_types": ["RSL", "PRECIPITATION_RATE"]
+    },
+
+    {
+      "id": "SYM-ENV-003",
+      "name": "WIND_CORRELATED_RSL_VARIATION",
+      "canonical_name": "Wind-Correlated RSL Variation",
+      "category": "ENVIRONMENTAL",
+      "description": "RSL variation is observed to correlate with wind conditions.",
+      "measurement_types": ["RSL", "WIND_SPEED"]
+    },
+
+    {
+      "id": "SYM-ENV-004",
+      "name": "TEMPERATURE_CORRELATED_FAILURE",
+      "canonical_name": "Temperature-Correlated Failure",
+      "category": "ENVIRONMENTAL",
+      "description": "Failure or degradation is observed to correlate with equipment or ambient temperature.",
+      "measurement_types": ["TEMPERATURE"]
+    },
+
+    {
+      "id": "SYM-INFO-001",
+      "name": "REFERENCE_DATA_CONFLICT",
+      "canonical_name": "Reference Data Conflict",
+      "category": "INFORMATION",
+      "description": "Two or more authoritative or operational reference sources contain materially conflicting technical information."
+    },
+
+    {
+      "id": "SYM-INFO-002",
+      "name": "SITE_INFORMATION_MISMATCH",
+      "canonical_name": "Site Information Mismatch",
+      "category": "INFORMATION",
+      "description": "Observed site, path, endpoint, configuration, or equipment information does not correspond with the expected site information."
+    },
+
+    {
+      "id": "SYM-UNKNOWN-001",
+      "name": "UNCLASSIFIED_ABNORMAL_CONDITION",
+      "canonical_name": "Unclassified Abnormal Condition",
+      "category": "UNKNOWN",
+      "description": "An abnormal condition has been reported or observed but cannot yet be mapped confidently to a more specific canonical symptom."
+    }
+  ],
+
+  "semantic_rules": [
+    {
+      "rule_id": "SYM-RULE-001",
+      "rule": "A symptom describes an observed or reported condition and shall not independently establish the underlying failure mode or root cause."
+    },
+
+    {
+      "rule_id": "SYM-RULE-002",
+      "rule": "ARIA shall preserve the distinction between a raw observation, a derived symptom, a hypothesis, and a confirmed diagnosis."
+    },
+
+    {
+      "rule_id": "SYM-RULE-003",
+      "rule": "Multiple symptoms may coexist within a single case and may jointly provide substantially more diagnostic information than any symptom evaluated independently."
+    },
+
+    {
+      "rule_id": "SYM-RULE-004",
+      "rule": "A discrepancy symptom requires an explicit comparison basis. ARIA shall preserve what was compared, such as Main versus Diversity, Local versus Remote, Actual versus Expected, or Actual versus Design."
+    },
+
+    {
+      "rule_id": "SYM-RULE-005",
+      "rule": "Manufacturer terminology and technician slang shall map to canonical symptoms through aliases or graph relationships rather than creating duplicate symptom classes."
+    },
+
+    {
+      "rule_id": "SYM-RULE-006",
+      "rule": "A symptom may increase or decrease the probability of multiple competing hypotheses and shall not be treated as uniquely identifying a root cause unless validated evidence supports that conclusion."
+    },
+
+    {
+      "rule_id": "SYM-RULE-007",
+      "rule": "Correlated observations such as weather-correlated degradation describe correlation only. Correlation shall not be promoted to causation without sufficient supporting evidence."
+    },
+
+    {
+      "rule_id": "SYM-RULE-008",
+      "rule": "Historical diagnostic probabilities associated with symptoms belong to the Experience Ledger and reasoning layers and shall not be encoded as fixed probabilities in this registry."
+    },
+
+    {
+      "rule_id": "SYM-RULE-009",
+      "rule": "ARIA should prefer the most specific symptom supported by evidence while retaining broader symptoms when they remain independently useful for reasoning."
+    },
+
+    {
+      "rule_id": "SYM-RULE-010",
+      "rule": "UNCLASSIFIED_ABNORMAL_CONDITION shall be used only when available information cannot yet support a more specific canonical symptom."
+    }
+  ]
+}
