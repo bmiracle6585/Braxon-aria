@@ -1,0 +1,752 @@
+{
+  "specification": "ARIA_CONTEXT_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines how A.R.I.A. identifies, resolves, represents, scores, inherits, changes, and applies technical context without depending on rigid directory hierarchies.",
+
+  "core_principle": {
+    "statement": "Context is a multidimensional technical state, not a directory path. ARIA shall identify the combination of entities, relationships, conditions, scope, participants, and time required to determine which knowledge and experience apply to the current reasoning problem.",
+    "rules": [
+      "Context shall be represented as intersecting dimensions rather than one hierarchical folder path.",
+      "A technical entity may participate in many contexts simultaneously.",
+      "Missing context shall remain explicitly unknown.",
+      "Context shall not be invented merely to complete a structure.",
+      "Context may change during a case.",
+      "Context determines applicability but does not itself establish diagnosis.",
+      "Context resolution shall remain traceable to evidence or authoritative records."
+    ]
+  },
+
+  "context_dimensions": [
+    {
+      "name": "ORGANIZATION",
+      "examples": [
+        "Braxon Industries"
+      ]
+    },
+    {
+      "name": "CUSTOMER",
+      "examples": [
+        "Verizon",
+        "AT&T",
+        "T-Mobile"
+      ]
+    },
+    {
+      "name": "MANUFACTURER",
+      "examples": [
+        "Nokia",
+        "Aviat",
+        "Ceragon",
+        "Ericsson"
+      ]
+    },
+    {
+      "name": "PRODUCT_FAMILY",
+      "examples": [
+        "Wavence"
+      ]
+    },
+    {
+      "name": "PRODUCT",
+      "examples": [
+        "UBT",
+        "UBT-T"
+      ]
+    },
+    {
+      "name": "PRODUCT_VARIANT",
+      "examples": [
+        "frequency-specific or hardware-specific variant"
+      ]
+    },
+    {
+      "name": "HARDWARE_REVISION",
+      "examples": [
+        "manufacturer-defined hardware revision"
+      ]
+    },
+    {
+      "name": "SOFTWARE",
+      "examples": [
+        "management software",
+        "embedded software"
+      ]
+    },
+    {
+      "name": "FIRMWARE",
+      "examples": [
+        "applicable equipment firmware release"
+      ]
+    },
+    {
+      "name": "FREQUENCY_BAND",
+      "examples": [
+        "6 GHz",
+        "11 GHz",
+        "18 GHz",
+        "23 GHz"
+      ]
+    },
+    {
+      "name": "TOPOLOGY",
+      "examples": [
+        "1+0",
+        "2+0",
+        "1+1",
+        "Space Diversity"
+      ]
+    },
+    {
+      "name": "DIVERSITY_MODE",
+      "examples": [
+        "No Diversity",
+        "Space Diversity",
+        "Frequency Diversity"
+      ]
+    },
+    {
+      "name": "POLARIZATION",
+      "examples": [
+        "Vertical",
+        "Horizontal",
+        "Dual Polarization"
+      ]
+    },
+    {
+      "name": "SCOPE_OF_WORK",
+      "examples": [
+        "Installation",
+        "Commissioning",
+        "Integration",
+        "Troubleshooting",
+        "Acceptance",
+        "Maintenance"
+      ]
+    },
+    {
+      "name": "PROJECT_PHASE",
+      "examples": [
+        "Preconstruction",
+        "Installation",
+        "Commissioning",
+        "Turn-up",
+        "Acceptance",
+        "In Service"
+      ]
+    },
+    {
+      "name": "PROJECT",
+      "examples": [
+        "specific project"
+      ]
+    },
+    {
+      "name": "SITE",
+      "examples": [
+        "Site A",
+        "Site B"
+      ]
+    },
+    {
+      "name": "PATH",
+      "examples": [
+        "microwave path between two endpoints"
+      ]
+    },
+    {
+      "name": "ENDPOINT",
+      "examples": [
+        "near end",
+        "far end"
+      ]
+    },
+    {
+      "name": "RADIO_ROLE",
+      "examples": [
+        "Radio A",
+        "Radio B",
+        "Main",
+        "Diversity"
+      ]
+    },
+    {
+      "name": "RF_CHAIN",
+      "examples": [
+        "Main RF chain",
+        "Diversity RF chain"
+      ]
+    },
+    {
+      "name": "COMPONENT",
+      "examples": [
+        "radio",
+        "antenna",
+        "flex twist",
+        "OCM",
+        "waveguide",
+        "coupler"
+      ]
+    },
+    {
+      "name": "USER",
+      "examples": [
+        "technician",
+        "engineer",
+        "project manager"
+      ]
+    },
+    {
+      "name": "TEAM",
+      "examples": [
+        "crew",
+        "engineering group"
+      ]
+    },
+    {
+      "name": "ENVIRONMENT",
+      "examples": [
+        "weather",
+        "temperature",
+        "terrain",
+        "obstruction state"
+      ]
+    },
+    {
+      "name": "TEMPORAL_STATE",
+      "examples": [
+        "before change",
+        "after change",
+        "during outage",
+        "after reboot"
+      ]
+    },
+    {
+      "name": "RECENT_CHANGE",
+      "examples": [
+        "configuration change",
+        "radio replacement",
+        "antenna adjustment",
+        "firmware upgrade",
+        "cable reroute"
+      ]
+    }
+  ],
+
+  "context_record": {
+    "required_fields": [
+      "context_id",
+      "case_id",
+      "generated_at",
+      "dimensions",
+      "resolved_entities",
+      "unresolved_dimensions",
+      "context_confidence",
+      "context_sources",
+      "context_version"
+    ]
+  },
+
+  "context_value": {
+    "required_fields": [
+      "dimension",
+      "entity_id",
+      "display_value",
+      "resolution_status",
+      "confidence",
+      "source_evidence_ids"
+    ],
+
+    "resolution_statuses": [
+      "CONFIRMED",
+      "INFERRED",
+      "REPORTED",
+      "AMBIGUOUS",
+      "UNKNOWN",
+      "NOT_APPLICABLE"
+    ]
+  },
+
+  "multidimensional_model": {
+    "description": "Context shall be represented as a set of dimensions and graph relationships rather than a single path.",
+
+    "example": {
+      "manufacturer": "Nokia",
+      "product_family": "Wavence",
+      "product": "UBT-T",
+      "frequency_band": "18 GHz",
+      "topology": "2+0",
+      "diversity_mode": "Space Diversity",
+      "scope_of_work": "Commissioning",
+      "site": "Site A",
+      "radio_role": "Radio B",
+      "rf_chain": "Diversity"
+    },
+
+    "interpretation": "Each value references a reusable graph entity. The complete context exists as the intersection of those entities rather than as a directory named Nokia/Wavence/UBT-T/18GHz/2+0/Space-Diversity/Commissioning/Site-A/Radio-B/Diversity."
+  },
+
+  "context_resolution_pipeline": [
+    {
+      "step": 1,
+      "name": "EXTRACT_CANDIDATE_CONTEXT",
+      "description": "Identify context stated or implied by user input, case records, artifacts, equipment data, and project information."
+    },
+    {
+      "step": 2,
+      "name": "NORMALIZE_TERMS",
+      "description": "Resolve aliases, abbreviations, informal names, and manufacturer terminology to canonical entities."
+    },
+    {
+      "step": 3,
+      "name": "RESOLVE_GRAPH_ENTITIES",
+      "description": "Map normalized terms to existing knowledge graph entities."
+    },
+    {
+      "step": 4,
+      "name": "APPLY_RELATIONSHIP_CONSTRAINTS",
+      "description": "Check whether resolved context combinations are technically compatible."
+    },
+    {
+      "step": 5,
+      "name": "IDENTIFY_MISSING_CONTEXT",
+      "description": "Determine which unresolved dimensions could materially affect reasoning."
+    },
+    {
+      "step": 6,
+      "name": "CALCULATE_CONTEXT_CONFIDENCE",
+      "description": "Estimate confidence that the current context representation is correct."
+    },
+    {
+      "step": 7,
+      "name": "PUBLISH_CONTEXT_STATE",
+      "description": "Provide the resolved context to memory, retrieval, hypothesis, probability, evidence, and routing engines."
+    }
+  ],
+
+  "alias_resolution": {
+    "enabled": true,
+
+    "examples": [
+      {
+        "input": "UBTT",
+        "canonical": "UBT-T"
+      },
+      {
+        "input": "div",
+        "canonical": "Diversity"
+      },
+      {
+        "input": "main",
+        "canonical": "Main"
+      }
+    ],
+
+    "rules": [
+      "Aliases shall map to canonical entities rather than create duplicate technical entities.",
+      "Ambiguous aliases shall not be silently resolved without sufficient context.",
+      "Manufacturer terminology may override generic terminology only within applicable scope.",
+      "Alias mappings shall preserve provenance."
+    ]
+  },
+
+  "context_inheritance": {
+    "enabled": true,
+
+    "description": "Applicable knowledge may inherit through graph relationships when the more specific entity does not override the broader rule.",
+
+    "example": {
+      "general": "RSL degradation may result from physical RF path loss.",
+      "manufacturer": "Nokia equipment uses applicable manufacturer-specific measurements and alarms.",
+      "product": "UBT-T adds product-specific ports and configuration relationships.",
+      "variant": "18 GHz variant adds frequency-specific hardware and engineering constraints."
+    },
+
+    "rules": [
+      "General technical knowledge remains available unless a more specific rule limits applicability.",
+      "Specific knowledge may refine broader knowledge.",
+      "Specific knowledge shall not duplicate broader knowledge unnecessarily.",
+      "Overrides shall be explicit.",
+      "Inheritance shall preserve the source level of each applicable rule."
+    ]
+  },
+
+  "applicability_model": {
+    "range": {
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+
+    "candidate_factors": [
+      "ENTITY_MATCH",
+      "RELATIONSHIP_MATCH",
+      "VERSION_MATCH",
+      "TOPOLOGY_MATCH",
+      "FREQUENCY_MATCH",
+      "SCOPE_MATCH",
+      "TEMPORAL_MATCH",
+      "USER_MATCH",
+      "ENVIRONMENT_MATCH"
+    ],
+
+    "rules": [
+      "Applicability shall be calculated relative to the knowledge, experience, evidence, hypothesis, or action being evaluated.",
+      "Not every context dimension matters equally to every technical concept.",
+      "Missing irrelevant context shall not reduce applicability.",
+      "Conflict in a critical context dimension may reduce applicability sharply."
+    ]
+  },
+
+  "critical_context": {
+    "description": "Different technical questions require different minimum context.",
+
+    "examples": [
+      {
+        "technical_question": "What is the expected free-space path loss?",
+        "important_dimensions": [
+          "frequency",
+          "distance"
+        ]
+      },
+      {
+        "technical_question": "Which UBT-T port should the Diversity flex connect to?",
+        "important_dimensions": [
+          "manufacturer",
+          "product",
+          "topology",
+          "diversity_mode",
+          "radio_role",
+          "rf_chain"
+        ]
+      },
+      {
+        "technical_question": "How likely is this technician's configuration to contain an error?",
+        "important_dimensions": [
+          "user",
+          "manufacturer",
+          "product",
+          "scope_of_work",
+          "symptom_pattern"
+        ]
+      }
+    ],
+
+    "rules": [
+      "ARIA shall request missing context only when it materially affects the reasoning operation.",
+      "ARIA shall not interrogate the user for dimensions irrelevant to the current question."
+    ]
+  },
+
+  "context_signature": {
+    "description": "A normalized context signature may be used for indexing and historical aggregation without becoming a directory path.",
+
+    "example": {
+      "manufacturer": "NOKIA",
+      "product": "UBT_T",
+      "frequency_band": "18_GHZ",
+      "topology": "2_PLUS_0",
+      "diversity_mode": "SPACE_DIVERSITY",
+      "scope": "COMMISSIONING"
+    },
+
+    "rules": [
+      "Signatures may contain only dimensions relevant to the indexed pattern.",
+      "Different learning aggregates may use different context signatures.",
+      "A signature shall reference canonical entity identifiers when implemented.",
+      "Signatures shall not require every possible context dimension."
+    ]
+  },
+
+  "context_specificity": {
+    "levels": [
+      "GENERAL",
+      "DOMAIN",
+      "MANUFACTURER",
+      "PRODUCT_FAMILY",
+      "PRODUCT",
+      "PRODUCT_VARIANT",
+      "CONFIGURATION",
+      "PROJECT",
+      "SITE",
+      "PATH",
+      "ENDPOINT",
+      "COMPONENT"
+    ],
+
+    "rules": [
+      "Greater specificity may improve applicability but may reduce available historical sample size.",
+      "Reasoning engines shall balance specificity against statistical support.",
+      "ARIA shall be capable of broadening context when specific historical data is sparse."
+    ]
+  },
+
+  "context_change_detection": {
+    "enabled": true,
+
+    "change_types": [
+      "CONFIGURATION_CHANGED",
+      "COMPONENT_CHANGED",
+      "FIRMWARE_CHANGED",
+      "TOPOLOGY_CHANGED",
+      "PATH_CHANGED",
+      "SITE_CHANGED",
+      "RADIO_ROLE_CHANGED",
+      "RF_CHAIN_CHANGED",
+      "PROJECT_PHASE_CHANGED",
+      "ENVIRONMENT_CHANGED",
+      "USER_CHANGED"
+    ],
+
+    "rules": [
+      "Material context changes shall create a new context version.",
+      "Previous context versions shall remain historical.",
+      "Probability and routing engines shall be notified when material context changes.",
+      "Previously applicable evidence or knowledge may require reevaluation after a context change."
+    ]
+  },
+
+  "context_versioning": {
+    "append_only": true,
+
+    "required_fields": [
+      "context_version",
+      "case_id",
+      "created_at",
+      "previous_context_version",
+      "changed_dimensions",
+      "change_reason",
+      "trigger_evidence_ids"
+    ]
+  },
+
+  "relationship_context": {
+    "description": "Some technical meaning exists in relationships rather than individual entities.",
+
+    "examples": [
+      {
+        "subject": "UBT-T Radio B",
+        "relationship": "CONNECTED_TO",
+        "object": "Diversity OCM Port"
+      },
+      {
+        "subject": "Main Antenna",
+        "relationship": "ALIGNED_WITH",
+        "object": "Far-End Main Antenna"
+      },
+      {
+        "subject": "Clayton",
+        "relationship": "PERFORMED_ACTION",
+        "object": "Configuration"
+      }
+    ],
+
+    "rules": [
+      "ARIA shall preserve relationship context when the technical fact depends on how entities interact.",
+      "A component shall not be interpreted only from its category.",
+      "Connection, direction, role, dependency, and temporal relationships may materially change technical meaning."
+    ]
+  },
+
+  "context_conflicts": {
+    "examples": [
+      "User reports UBT-T while project inventory identifies UBT.",
+      "Screenshot indicates Radio A while conversation refers to Radio B.",
+      "Historical case is 11 GHz while current case is 18 GHz.",
+      "Documentation applies to firmware version different from current equipment."
+    ],
+
+    "rules": [
+      "Material context conflicts shall not be silently resolved.",
+      "ARIA shall determine whether one source supersedes another or whether clarification is required.",
+      "Context conflict shall reduce applicability confidence.",
+      "Reasoning based on uncertain context shall communicate material uncertainty."
+    ]
+  },
+
+  "new_product_integration": {
+    "description": "New products shall integrate by adding entities and relationships rather than requiring redesign of the directory structure.",
+
+    "process": [
+      "CREATE_MANUFACTURER_IF_NEW",
+      "CREATE_PRODUCT_FAMILY_IF_APPLICABLE",
+      "CREATE_PRODUCT",
+      "CREATE_VARIANTS",
+      "CONNECT_PRODUCT_TO_EXISTING_CONCEPTS",
+      "ADD_PRODUCT_SPECIFIC_RELATIONSHIPS",
+      "ADD_PRODUCT_SPECIFIC_PROCEDURES",
+      "ADD_PRODUCT_SPECIFIC_FAILURE_MODES",
+      "ADD_ALIASES",
+      "ADD_PROVENANCE"
+    ],
+
+    "example": {
+      "new_product": "FutureRadio-X",
+      "existing_shared_concepts": [
+        "RSL",
+        "alignment",
+        "cross polarization",
+        "line of sight",
+        "configuration",
+        "RF chain",
+        "weather"
+      ],
+      "new_specific_concepts": [
+        "FutureRadio-X port mapping",
+        "FutureRadio-X alarms",
+        "FutureRadio-X configuration parameters"
+      ]
+    },
+
+    "rule": "A new product shall reuse existing applicable technical concepts and add only the relationships and concepts that are genuinely new."
+  },
+
+  "redundancy_prevention": {
+    "description": "Technical concepts shall be normalized into reusable graph entities rather than repeatedly rewritten under every applicable manufacturer, product, and procedure.",
+
+    "example": {
+      "incorrect_structure": [
+        "General/RSL_Degradation",
+        "Nokia/RSL_Degradation",
+        "UBT/RSL_Degradation",
+        "UBT-T/RSL_Degradation",
+        "Alignment/RSL_Degradation"
+      ],
+
+      "preferred_structure": {
+        "shared_entity": "RSL_DEGRADATION",
+        "relationships": [
+          "CAN_BE_CAUSED_BY -> ALIGNMENT_ERROR",
+          "CAN_BE_CAUSED_BY -> RF_COMPONENT_FAILURE",
+          "CAN_BE_CAUSED_BY -> WEATHER",
+          "CAN_BE_CAUSED_BY -> BLOCKED_LOS",
+          "APPLIES_TO -> NOKIA_UBT",
+          "APPLIES_TO -> NOKIA_UBT_T"
+        ]
+      }
+    },
+
+    "rules": [
+      "One canonical concept may have many relationships.",
+      "Manufacturer-specific behavior shall be represented as additional relationships or scoped properties.",
+      "Product-specific exceptions shall be explicit rather than implemented through duplicated general knowledge."
+    ]
+  },
+
+  "example_context_graph": {
+    "nodes": [
+      "NOKIA",
+      "WAVENCE",
+      "UBT_T",
+      "18_GHZ",
+      "SPACE_DIVERSITY",
+      "RADIO_A",
+      "RADIO_B",
+      "MAIN_RF_CHAIN",
+      "DIVERSITY_RF_CHAIN",
+      "RSL_DISCREPANCY",
+      "RF_ROUTING_ERROR"
+    ],
+
+    "relationships": [
+      "NOKIA MANUFACTURES UBT_T",
+      "UBT_T MEMBER_OF WAVENCE",
+      "UBT_T HAS_VARIANT 18_GHZ",
+      "CURRENT_PATH USES SPACE_DIVERSITY",
+      "RADIO_A SERVES MAIN_RF_CHAIN",
+      "RADIO_B SERVES DIVERSITY_RF_CHAIN",
+      "RSL_DISCREPANCY CAN_BE_CAUSED_BY RF_ROUTING_ERROR"
+    ]
+  },
+
+  "engine_interfaces": {
+    "knowledge_graph": "Uses context to determine which technical nodes and relationships apply.",
+    "memory_engine": "Uses context to retrieve relevant memory.",
+    "hypothesis_engine": "Uses context to generate technically compatible hypotheses.",
+    "probability_engine": "Uses context to select applicable historical populations and priors.",
+    "evidence_engine": "Uses context to determine evidence applicability.",
+    "routing_engine": "Uses context to determine valid and useful diagnostic actions.",
+    "learning_engine": "Uses context to preserve the scope of learned experience."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "CTX-RULE-001",
+      "rule": "Context is multidimensional and shall not be represented as one mandatory hierarchical directory."
+    },
+    {
+      "rule_id": "CTX-RULE-002",
+      "rule": "Technical concepts shall be shared across contexts rather than duplicated merely because they apply to multiple products or manufacturers."
+    },
+    {
+      "rule_id": "CTX-RULE-003",
+      "rule": "Manufacturer-specific and product-specific knowledge shall refine shared technical concepts through scoped relationships."
+    },
+    {
+      "rule_id": "CTX-RULE-004",
+      "rule": "Missing context shall remain unknown rather than being silently assumed."
+    },
+    {
+      "rule_id": "CTX-RULE-005",
+      "rule": "ARIA shall request missing context only when obtaining it is expected to materially improve reasoning."
+    },
+    {
+      "rule_id": "CTX-RULE-006",
+      "rule": "Context resolution shall preserve provenance."
+    },
+    {
+      "rule_id": "CTX-RULE-007",
+      "rule": "A context value may be reported, inferred, or confirmed, and these states shall remain distinguishable."
+    },
+    {
+      "rule_id": "CTX-RULE-008",
+      "rule": "Context applicability is relative to the technical question being evaluated."
+    },
+    {
+      "rule_id": "CTX-RULE-009",
+      "rule": "More specific context shall not automatically override broader knowledge when the specific evidence is weak or inapplicable."
+    },
+    {
+      "rule_id": "CTX-RULE-010",
+      "rule": "ARIA shall balance contextual specificity against available statistical support."
+    },
+    {
+      "rule_id": "CTX-RULE-011",
+      "rule": "Material context changes shall trigger reevaluation of affected hypotheses, probabilities, evidence applicability, and routes."
+    },
+    {
+      "rule_id": "CTX-RULE-012",
+      "rule": "Historical context versions shall remain available for reconstruction."
+    },
+    {
+      "rule_id": "CTX-RULE-013",
+      "rule": "Relationships between entities may be as important as the entities themselves."
+    },
+    {
+      "rule_id": "CTX-RULE-014",
+      "rule": "New products shall extend the graph rather than require restructuring existing knowledge."
+    },
+    {
+      "rule_id": "CTX-RULE-015",
+      "rule": "Aliases shall resolve to canonical entities rather than create duplicate technical concepts."
+    },
+    {
+      "rule_id": "CTX-RULE-016",
+      "rule": "Context conflict shall reduce confidence and shall not be hidden."
+    },
+    {
+      "rule_id": "CTX-RULE-017",
+      "rule": "The same failure mode may apply across many contexts while having different probabilities or diagnostic routes within each."
+    },
+    {
+      "rule_id": "CTX-RULE-018",
+      "rule": "Context determines applicability; evidence determines the current technical state."
+    },
+    {
+      "rule_id": "CTX-RULE-019",
+      "rule": "The language model may assist in extracting candidate context, but authoritative context resolution shall be controlled by structured ARIA services."
+    },
+    {
+      "rule_id": "CTX-RULE-020",
+      "rule": "ARIA's context architecture shall support growth without requiring exponential duplication of technical knowledge."
+    }
+  ]
+}
