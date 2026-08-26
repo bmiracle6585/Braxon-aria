@@ -1,0 +1,923 @@
+{
+  "specification": "ARIA_RELATIONSHIP_TYPES",
+  "version": "0.1.0",
+  "description": "Defines the canonical relationship vocabulary used by the A.R.I.A. knowledge graph, reasoning system, experience model, technical topology, user overlays, evidence model, and diagnostic routing architecture.",
+
+  "core_principle": {
+    "statement": "ARIA shall represent technical intelligence through explicit typed relationships between canonical entities. Relationship meaning shall be stable, directional where appropriate, context-aware, provenance-aware, and extensible without duplicating concepts.",
+    "rules": [
+      "Every graph edge shall use a canonical relationship type.",
+      "Equivalent relationship meanings shall not be represented under competing names.",
+      "Directionality shall be explicitly defined.",
+      "Inverse relationships shall be defined where semantically valid.",
+      "Relationships may carry confidence, probability, context, provenance, temporal applicability, and experience weighting.",
+      "A relationship shall not imply causality unless its relationship type explicitly represents causality.",
+      "Physical relationships, causal relationships, evidence relationships, product relationships, procedural relationships, and experiential relationships shall remain semantically distinct.",
+      "New relationship types shall extend the vocabulary rather than alter existing meanings."
+    ]
+  },
+
+  "relationship_definition_contract": {
+    "required_fields": [
+      "relationship_type",
+      "category",
+      "directionality",
+      "description"
+    ],
+    "optional_fields": [
+      "inverse_relationship",
+      "transitive",
+      "symmetric",
+      "allowed_source_types",
+      "allowed_target_types",
+      "supports_probability",
+      "supports_confidence",
+      "supports_context_constraints",
+      "supports_temporal_constraints",
+      "supports_provenance"
+    ]
+  },
+
+  "categories": [
+    "TAXONOMY",
+    "PRODUCT",
+    "TECHNOLOGY",
+    "PHYSICAL",
+    "TOPOLOGY",
+    "SIGNAL",
+    "CAUSAL",
+    "SYMPTOM",
+    "DIAGNOSTIC",
+    "EVIDENCE",
+    "PROCEDURAL",
+    "CONFIGURATION",
+    "VALIDATION",
+    "EXPERIENCE",
+    "USER",
+    "CONTEXT",
+    "TEMPORAL",
+    "DEPENDENCY",
+    "CASE"
+  ],
+
+  "relationship_types": [
+
+    {
+      "relationship_type": "IS_A",
+      "category": "TAXONOMY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "HAS_SUBTYPE",
+      "transitive": true,
+      "description": "Source is a more specific type of the target concept."
+    },
+
+    {
+      "relationship_type": "HAS_SUBTYPE",
+      "category": "TAXONOMY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "IS_A",
+      "transitive": true,
+      "description": "Source has target as a more specific subtype."
+    },
+
+    {
+      "relationship_type": "PART_OF",
+      "category": "TAXONOMY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "HAS_PART",
+      "transitive": true,
+      "description": "Source is a constituent part of target."
+    },
+
+    {
+      "relationship_type": "HAS_PART",
+      "category": "TAXONOMY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "PART_OF",
+      "transitive": true,
+      "description": "Source contains target as a constituent part."
+    },
+
+    {
+      "relationship_type": "MANUFACTURES",
+      "category": "PRODUCT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "MANUFACTURED_BY",
+      "description": "Manufacturer produces the target product or product family."
+    },
+
+    {
+      "relationship_type": "MANUFACTURED_BY",
+      "category": "PRODUCT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "MANUFACTURES",
+      "description": "Product is manufactured by the target manufacturer."
+    },
+
+    {
+      "relationship_type": "MEMBER_OF_PRODUCT_FAMILY",
+      "category": "PRODUCT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "HAS_PRODUCT",
+      "description": "Product belongs to the target product family."
+    },
+
+    {
+      "relationship_type": "HAS_PRODUCT",
+      "category": "PRODUCT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "MEMBER_OF_PRODUCT_FAMILY",
+      "description": "Product family contains the target product."
+    },
+
+    {
+      "relationship_type": "VARIANT_OF",
+      "category": "PRODUCT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "HAS_VARIANT",
+      "description": "Source is a technical variant of target."
+    },
+
+    {
+      "relationship_type": "HAS_VARIANT",
+      "category": "PRODUCT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "VARIANT_OF",
+      "description": "Source has target as a technical variant."
+    },
+
+    {
+      "relationship_type": "SUPPORTS_TECHNOLOGY",
+      "category": "TECHNOLOGY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "SUPPORTED_BY_PRODUCT",
+      "description": "Product, component, or system supports the target technology."
+    },
+
+    {
+      "relationship_type": "SUPPORTED_BY_PRODUCT",
+      "category": "TECHNOLOGY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "SUPPORTS_TECHNOLOGY",
+      "description": "Technology is supported by the target product or system."
+    },
+
+    {
+      "relationship_type": "CONNECTS_TO",
+      "category": "PHYSICAL",
+      "directionality": "BIDIRECTIONAL",
+      "symmetric": true,
+      "description": "Source is physically connected to target."
+    },
+
+    {
+      "relationship_type": "MATES_WITH",
+      "category": "PHYSICAL",
+      "directionality": "BIDIRECTIONAL",
+      "symmetric": true,
+      "description": "Source physically mates with target through an intended interface."
+    },
+
+    {
+      "relationship_type": "INSTALLED_ON",
+      "category": "PHYSICAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "HAS_INSTALLED_COMPONENT",
+      "description": "Source component is physically installed on target."
+    },
+
+    {
+      "relationship_type": "HAS_INSTALLED_COMPONENT",
+      "category": "PHYSICAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "INSTALLED_ON",
+      "description": "Source has target physically installed upon it."
+    },
+
+    {
+      "relationship_type": "FEEDS",
+      "category": "TOPOLOGY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "FED_BY",
+      "description": "Source provides signal, power, data, or another defined flow to target."
+    },
+
+    {
+      "relationship_type": "FED_BY",
+      "category": "TOPOLOGY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "FEEDS",
+      "description": "Source receives a defined flow from target."
+    },
+
+    {
+      "relationship_type": "UPSTREAM_OF",
+      "category": "TOPOLOGY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "DOWNSTREAM_OF",
+      "transitive": true,
+      "description": "Source occurs upstream of target in the applicable topology."
+    },
+
+    {
+      "relationship_type": "DOWNSTREAM_OF",
+      "category": "TOPOLOGY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "UPSTREAM_OF",
+      "transitive": true,
+      "description": "Source occurs downstream of target in the applicable topology."
+    },
+
+    {
+      "relationship_type": "TRANSMITS_TO",
+      "category": "SIGNAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "RECEIVES_FROM",
+      "description": "Source transmits the applicable signal toward target."
+    },
+
+    {
+      "relationship_type": "RECEIVES_FROM",
+      "category": "SIGNAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "TRANSMITS_TO",
+      "description": "Source receives the applicable signal from target."
+    },
+
+    {
+      "relationship_type": "USES_PORT",
+      "category": "PHYSICAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "USED_BY",
+      "description": "Source system, function, or configuration uses the target port."
+    },
+
+    {
+      "relationship_type": "USED_BY",
+      "category": "PHYSICAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "USES_PORT",
+      "description": "Source port or component is used by target."
+    },
+
+    {
+      "relationship_type": "MAY_CAUSE",
+      "category": "CAUSAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "MAY_BE_CAUSED_BY",
+      "supports_probability": true,
+      "supports_confidence": true,
+      "description": "Source condition is a plausible cause of target condition within applicable context."
+    },
+
+    {
+      "relationship_type": "MAY_BE_CAUSED_BY",
+      "category": "CAUSAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "MAY_CAUSE",
+      "supports_probability": true,
+      "supports_confidence": true,
+      "description": "Source condition may result from target cause."
+    },
+
+    {
+      "relationship_type": "CAUSES",
+      "category": "CAUSAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "CAUSED_BY",
+      "supports_confidence": true,
+      "description": "Source has an established causal relationship to target under the specified context."
+    },
+
+    {
+      "relationship_type": "CAUSED_BY",
+      "category": "CAUSAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "CAUSES",
+      "supports_confidence": true,
+      "description": "Source is caused by target under the specified context."
+    },
+
+    {
+      "relationship_type": "CONTRIBUTES_TO",
+      "category": "CAUSAL",
+      "directionality": "DIRECTED",
+      "description": "Source may materially contribute to target without independently being sufficient to cause it."
+    },
+
+    {
+      "relationship_type": "PRODUCES_SYMPTOM",
+      "category": "SYMPTOM",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "SYMPTOM_OF",
+      "supports_probability": true,
+      "description": "Source failure mode may produce the target observable symptom."
+    },
+
+    {
+      "relationship_type": "SYMPTOM_OF",
+      "category": "SYMPTOM",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "PRODUCES_SYMPTOM",
+      "supports_probability": true,
+      "description": "Source symptom may be associated with target failure mode."
+    },
+
+    {
+      "relationship_type": "DEGRADES",
+      "category": "CAUSAL",
+      "directionality": "DIRECTED",
+      "description": "Source condition reduces performance or quality of target."
+    },
+
+    {
+      "relationship_type": "PREVENTS",
+      "category": "CAUSAL",
+      "directionality": "DIRECTED",
+      "description": "Source condition prevents target condition or function from occurring."
+    },
+
+    {
+      "relationship_type": "REQUIRES",
+      "category": "DEPENDENCY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "REQUIRED_BY",
+      "description": "Source requires target for valid operation, execution, or applicability."
+    },
+
+    {
+      "relationship_type": "REQUIRED_BY",
+      "category": "DEPENDENCY",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "REQUIRES",
+      "description": "Source is required by target."
+    },
+
+    {
+      "relationship_type": "DEPENDS_ON",
+      "category": "DEPENDENCY",
+      "directionality": "DIRECTED",
+      "description": "Source state, conclusion, function, or action depends materially on target."
+    },
+
+    {
+      "relationship_type": "INCOMPATIBLE_WITH",
+      "category": "DEPENDENCY",
+      "directionality": "BIDIRECTIONAL",
+      "symmetric": true,
+      "description": "Source and target are incompatible within the specified technical context."
+    },
+
+    {
+      "relationship_type": "CONFIGURED_AS",
+      "category": "CONFIGURATION",
+      "directionality": "DIRECTED",
+      "description": "Source is configured to operate according to target configuration or role."
+    },
+
+    {
+      "relationship_type": "MUST_MATCH",
+      "category": "CONFIGURATION",
+      "directionality": "BIDIRECTIONAL",
+      "symmetric": true,
+      "description": "Source and target values or states must match within applicable tolerance."
+    },
+
+    {
+      "relationship_type": "MUST_DIFFER_FROM",
+      "category": "CONFIGURATION",
+      "directionality": "BIDIRECTIONAL",
+      "symmetric": true,
+      "description": "Source and target are required to differ according to applicable technical rules."
+    },
+
+    {
+      "relationship_type": "VALID_FOR",
+      "category": "CONTEXT",
+      "directionality": "DIRECTED",
+      "description": "Source knowledge, procedure, value, or relationship is valid for target context."
+    },
+
+    {
+      "relationship_type": "APPLIES_TO",
+      "category": "CONTEXT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "HAS_APPLICABLE_KNOWLEDGE",
+      "description": "Source concept, rule, procedure, or knowledge applies to target."
+    },
+
+    {
+      "relationship_type": "HAS_APPLICABLE_KNOWLEDGE",
+      "category": "CONTEXT",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "APPLIES_TO",
+      "description": "Source entity has target knowledge applicable to it."
+    },
+
+    {
+      "relationship_type": "TESTED_BY",
+      "category": "DIAGNOSTIC",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "TESTS",
+      "description": "Source hypothesis, condition, or component can be evaluated by target action."
+    },
+
+    {
+      "relationship_type": "TESTS",
+      "category": "DIAGNOSTIC",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "TESTED_BY",
+      "description": "Source action evaluates target hypothesis, condition, or component."
+    },
+
+    {
+      "relationship_type": "DISCRIMINATES_BETWEEN",
+      "category": "DIAGNOSTIC",
+      "directionality": "DIRECTED",
+      "description": "Source action or evidence can distinguish between target competing hypotheses."
+    },
+
+    {
+      "relationship_type": "RULES_OUT",
+      "category": "DIAGNOSTIC",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "RULED_OUT_BY",
+      "description": "Source evidence or finding sufficiently excludes target within the current context."
+    },
+
+    {
+      "relationship_type": "RULED_OUT_BY",
+      "category": "DIAGNOSTIC",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "RULES_OUT",
+      "description": "Source hypothesis or condition is excluded by target evidence or finding."
+    },
+
+    {
+      "relationship_type": "SUPPORTS",
+      "category": "EVIDENCE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "SUPPORTED_BY",
+      "supports_confidence": true,
+      "description": "Source evidence increases support for target claim, finding, or hypothesis."
+    },
+
+    {
+      "relationship_type": "SUPPORTED_BY",
+      "category": "EVIDENCE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "SUPPORTS",
+      "supports_confidence": true,
+      "description": "Source claim, finding, or hypothesis receives support from target evidence."
+    },
+
+    {
+      "relationship_type": "CONTRADICTS",
+      "category": "EVIDENCE",
+      "directionality": "BIDIRECTIONAL",
+      "symmetric": true,
+      "supports_confidence": true,
+      "description": "Source and target contain materially conflicting technical information."
+    },
+
+    {
+      "relationship_type": "DERIVED_FROM",
+      "category": "EVIDENCE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "DERIVATION_SOURCE_FOR",
+      "description": "Source information was derived from target information."
+    },
+
+    {
+      "relationship_type": "DERIVATION_SOURCE_FOR",
+      "category": "EVIDENCE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "DERIVED_FROM",
+      "description": "Source information was used to derive target information."
+    },
+
+    {
+      "relationship_type": "SUPERSEDES",
+      "category": "TEMPORAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "SUPERSEDED_BY",
+      "description": "Source replaces target as the more current or authoritative applicable information."
+    },
+
+    {
+      "relationship_type": "SUPERSEDED_BY",
+      "category": "TEMPORAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "SUPERSEDES",
+      "description": "Source has been replaced by target."
+    },
+
+    {
+      "relationship_type": "PRECEDES",
+      "category": "TEMPORAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "FOLLOWS",
+      "transitive": true,
+      "description": "Source occurs before target."
+    },
+
+    {
+      "relationship_type": "FOLLOWS",
+      "category": "TEMPORAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "PRECEDES",
+      "transitive": true,
+      "description": "Source occurs after target."
+    },
+
+    {
+      "relationship_type": "PERFORM_BEFORE",
+      "category": "PROCEDURAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "PERFORM_AFTER",
+      "description": "Source action should be completed before target action when applicable."
+    },
+
+    {
+      "relationship_type": "PERFORM_AFTER",
+      "category": "PROCEDURAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "PERFORM_BEFORE",
+      "description": "Source action should occur after target action when applicable."
+    },
+
+    {
+      "relationship_type": "VALIDATED_BY",
+      "category": "VALIDATION",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "VALIDATES",
+      "description": "Source conclusion, condition, or action is validated by target evidence or validation procedure."
+    },
+
+    {
+      "relationship_type": "VALIDATES",
+      "category": "VALIDATION",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "VALIDATED_BY",
+      "description": "Source evidence or procedure validates target."
+    },
+
+    {
+      "relationship_type": "CORRECTED_BY",
+      "category": "PROCEDURAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "CORRECTS",
+      "description": "Source failure mode or condition may be corrected by target action."
+    },
+
+    {
+      "relationship_type": "CORRECTS",
+      "category": "PROCEDURAL",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "CORRECTED_BY",
+      "description": "Source action corrects target condition when applicable."
+    },
+
+    {
+      "relationship_type": "HAS_EXPERIENCE_WITH",
+      "category": "EXPERIENCE",
+      "directionality": "DIRECTED",
+      "description": "Source user, organization, or team has recorded experience involving target."
+    },
+
+    {
+      "relationship_type": "OBSERVED_IN",
+      "category": "EXPERIENCE",
+      "directionality": "DIRECTED",
+      "description": "Source condition, failure mode, or technical pattern was observed within target experience or case."
+    },
+
+    {
+      "relationship_type": "HISTORICALLY_ASSOCIATED_WITH",
+      "category": "EXPERIENCE",
+      "directionality": "BIDIRECTIONAL",
+      "supports_probability": true,
+      "supports_confidence": true,
+      "description": "Source and target demonstrate a validated historical association without asserting deterministic causality."
+    },
+
+    {
+      "relationship_type": "HISTORICALLY_RESOLVED_BY",
+      "category": "EXPERIENCE",
+      "directionality": "DIRECTED",
+      "supports_probability": true,
+      "description": "Source condition has historically been resolved following target action in validated cases."
+    },
+
+    {
+      "relationship_type": "PERFORMED_BY",
+      "category": "USER",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "PERFORMED",
+      "description": "Source action or observation was performed by target user."
+    },
+
+    {
+      "relationship_type": "PERFORMED",
+      "category": "USER",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "PERFORMED_BY",
+      "description": "Source user performed target action or observation."
+    },
+
+    {
+      "relationship_type": "REPORTED_BY",
+      "category": "USER",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "REPORTED",
+      "description": "Source information was reported by target user."
+    },
+
+    {
+      "relationship_type": "REPORTED",
+      "category": "USER",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "REPORTED_BY",
+      "description": "Source user reported target information."
+    },
+
+    {
+      "relationship_type": "OCCURRED_IN_CASE",
+      "category": "CASE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "CONTAINS_CASE_ENTITY",
+      "description": "Source event, evidence, action, finding, or experience occurred within target case."
+    },
+
+    {
+      "relationship_type": "CONTAINS_CASE_ENTITY",
+      "category": "CASE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "OCCURRED_IN_CASE",
+      "description": "Source case contains target case-associated entity."
+    },
+
+    {
+      "relationship_type": "RELATED_TO_CASE",
+      "category": "CASE",
+      "directionality": "BIDIRECTIONAL",
+      "symmetric": true,
+      "description": "Source and target cases have a meaningful relationship that does not imply identity."
+    },
+
+    {
+      "relationship_type": "RECURRENCE_OF",
+      "category": "CASE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "HAS_RECURRENCE",
+      "description": "Source case represents a recurrence of target case or validated failure."
+    },
+
+    {
+      "relationship_type": "HAS_RECURRENCE",
+      "category": "CASE",
+      "directionality": "DIRECTED",
+      "inverse_relationship": "RECURRENCE_OF",
+      "description": "Source case has target as a recurrence."
+    }
+  ],
+
+  "causality_policy": {
+    "hierarchy": [
+      "HISTORICALLY_ASSOCIATED_WITH",
+      "MAY_CAUSE",
+      "CONTRIBUTES_TO",
+      "CAUSES"
+    ],
+
+    "rules": [
+      "HISTORICALLY_ASSOCIATED_WITH shall not be interpreted as causal.",
+      "MAY_CAUSE represents technical plausibility or empirical causal possibility.",
+      "CONTRIBUTES_TO represents partial causal influence.",
+      "CAUSES requires sufficiently established causal support within applicable context.",
+      "Learning shall not automatically promote MAY_CAUSE to CAUSES based only on frequency.",
+      "Successful corrective action alone shall not automatically establish CAUSES."
+    ]
+  },
+
+  "relationship_weight_contract": {
+    "optional_fields": [
+      "base_weight",
+      "context_weight",
+      "experience_weight",
+      "user_weight",
+      "confidence",
+      "sample_size",
+      "last_calibrated_at"
+    ],
+
+    "rules": [
+      "Weights shall be metadata on relationships rather than new relationship types.",
+      "User-specific weighting shall not mutate the global relationship.",
+      "Manufacturer-specific weighting shall be represented through context constraints or scoped statistics.",
+      "Historical frequency shall remain distinguishable from deterministic technical strength."
+    ]
+  },
+
+  "context_constraint_contract": {
+    "candidate_dimensions": [
+      "manufacturer_id",
+      "product_family_id",
+      "product_id",
+      "product_variant_id",
+      "technology_id",
+      "scope_id",
+      "frequency_band",
+      "software_version",
+      "hardware_revision",
+      "topology",
+      "site_role",
+      "path_role",
+      "component_role",
+      "environment"
+    ],
+
+    "rule": "A relationship may be globally valid, broadly applicable, or narrowly constrained without requiring duplicate relationship definitions."
+  },
+
+  "traversal_policy": {
+    "rules": [
+      "ARIA may traverse multiple relationship categories during one reasoning operation.",
+      "Traversal direction shall respect relationship semantics.",
+      "Transitive relationships may be recursively traversed when technically appropriate.",
+      "Symmetric relationships may be traversed in either direction.",
+      "Inverse relationships may be generated logically rather than duplicated physically when implementation permits.",
+      "Context constraints shall be evaluated during traversal.",
+      "Traversal depth alone shall not determine relevance.",
+      "Relationship authority, confidence, context match, and diagnostic value shall influence traversal ranking."
+    ]
+  },
+
+  "anti_duplication_policy": {
+    "incorrect": [
+      "NOKIA_MAY_CAUSE",
+      "AVIAT_MAY_CAUSE",
+      "CLAYTON_MAY_CAUSE",
+      "RSL_MAY_RESULT_FROM",
+      "CAN_CAUSE",
+      "POSSIBLY_CAUSES"
+    ],
+
+    "correct": {
+      "relationship_type": "MAY_CAUSE",
+      "context_and_weighting": "Stored separately on the relationship instance."
+    },
+
+    "rule": "Semantic variation shall be represented through context and metadata rather than proliferating relationship names."
+  },
+
+  "example_network": {
+    "relationships": [
+      {
+        "source": "UBT-T",
+        "relationship": "MANUFACTURED_BY",
+        "target": "Nokia"
+      },
+      {
+        "source": "UBT-T",
+        "relationship": "SUPPORTS_TECHNOLOGY",
+        "target": "Space Diversity"
+      },
+      {
+        "source": "Space Diversity",
+        "relationship": "USES_PORT",
+        "target": "Main Port"
+      },
+      {
+        "source": "Space Diversity",
+        "relationship": "USES_PORT",
+        "target": "Diversity Port"
+      },
+      {
+        "source": "RF Routing Error",
+        "relationship": "MAY_CAUSE",
+        "target": "RSL Degradation"
+      },
+      {
+        "source": "Cross Polarization",
+        "relationship": "MAY_CAUSE",
+        "target": "RSL Degradation"
+      },
+      {
+        "source": "Verify Main/Diversity Routing",
+        "relationship": "TESTS",
+        "target": "RF Routing Error"
+      },
+      {
+        "source": "Routing Inspection Evidence",
+        "relationship": "SUPPORTS",
+        "target": "RF Routing Error"
+      },
+      {
+        "source": "Clayton",
+        "relationship": "HAS_EXPERIENCE_WITH",
+        "target": "Configuration Error"
+      }
+    ]
+  },
+
+  "multi_axis_example": {
+    "starting_node": "RSL_DEGRADATION",
+
+    "possible_traversals": [
+      "RSL_DEGRADATION <- MAY_CAUSE <- ALIGNMENT_ERROR",
+      "RSL_DEGRADATION <- MAY_CAUSE <- RF_ROUTING_ERROR",
+      "RSL_DEGRADATION <- MAY_CAUSE <- CROSS_POLARIZATION",
+      "RF_ROUTING_ERROR <- TESTS <- VERIFY_MAIN_DIVERSITY_ROUTING",
+      "RF_ROUTING_ERROR -> APPLIES_TO -> SPACE_DIVERSITY",
+      "SPACE_DIVERSITY <- SUPPORTS_TECHNOLOGY <- UBT-T",
+      "UBT-T -> MANUFACTURED_BY -> NOKIA",
+      "CONFIGURATION_ERROR <- HISTORICALLY_ASSOCIATED_WITH -> USER_EXPERIENCE_CONTEXT"
+    ],
+
+    "interpretation": "ARIA can move horizontally through competing causes, vertically into product-specific implementation, outward into diagnostic actions, backward into evidence, and across into user-specific experience without duplicating the underlying concepts."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "REL-RULE-001",
+      "rule": "Every ARIA graph relationship shall use a canonical relationship type."
+    },
+    {
+      "rule_id": "REL-RULE-002",
+      "rule": "Relationship semantics shall remain stable across all engines."
+    },
+    {
+      "rule_id": "REL-RULE-003",
+      "rule": "Directionality shall be explicitly defined."
+    },
+    {
+      "rule_id": "REL-RULE-004",
+      "rule": "Causal relationships shall remain distinguishable from association."
+    },
+    {
+      "rule_id": "REL-RULE-005",
+      "rule": "MAY_CAUSE shall not be interpreted as CAUSES."
+    },
+    {
+      "rule_id": "REL-RULE-006",
+      "rule": "Historical association shall not independently establish causality."
+    },
+    {
+      "rule_id": "REL-RULE-007",
+      "rule": "Relationship weights shall be metadata rather than relationship names."
+    },
+    {
+      "rule_id": "REL-RULE-008",
+      "rule": "User-specific experience shall not mutate canonical global relationships."
+    },
+    {
+      "rule_id": "REL-RULE-009",
+      "rule": "Manufacturer-specific applicability shall be expressed through context rather than duplicate edge vocabularies."
+    },
+    {
+      "rule_id": "REL-RULE-010",
+      "rule": "Physical connectivity shall not automatically imply signal direction."
+    },
+    {
+      "rule_id": "REL-RULE-011",
+      "rule": "Signal direction shall remain explicit when technically relevant."
+    },
+    {
+      "rule_id": "REL-RULE-012",
+      "rule": "Evidence support and contradiction shall remain explicit graph relationships."
+    },
+    {
+      "rule_id": "REL-RULE-013",
+      "rule": "Derived information shall preserve its derivation relationship."
+    },
+    {
+      "rule_id": "REL-RULE-014",
+      "rule": "Supersession shall not erase historical relationships."
+    },
+    {
+      "rule_id": "REL-RULE-015",
+      "rule": "Actions may connect simultaneously to hypotheses, evidence expectations, prerequisites, risks, and validation requirements."
+    },
+    {
+      "rule_id": "REL-RULE-016",
+      "rule": "ARIA may traverse across relationship categories rather than remain within hierarchical branches."
+    },
+    {
+      "rule_id": "REL-RULE-017",
+      "rule": "Context constraints shall be evaluated during graph traversal."
+    },
+    {
+      "rule_id": "REL-RULE-018",
+      "rule": "Adding new technical domains shall normally reuse existing relationship semantics."
+    },
+    {
+      "rule_id": "REL-RULE-019",
+      "rule": "Relationship vocabulary shall grow deliberately rather than through uncontrolled synonyms."
+    },
+    {
+      "rule_id": "REL-RULE-020",
+      "rule": "ARIA's intelligence shall emerge from entities, relationships, evidence, experience, and changing state rather than directory location."
+    }
+  ]
+}
