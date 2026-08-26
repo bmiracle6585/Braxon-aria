@@ -1,0 +1,510 @@
+{
+  "registry": "ARIA_MEASUREMENT_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical measurement types used by A.R.I.A. for microwave backhaul reasoning, evidence evaluation, comparison, and diagnostics.",
+
+  "measurement_types": [
+    {
+      "type": "RSL",
+      "canonical_name": "Received Signal Level",
+      "category": "RF",
+      "value_type": "NUMBER",
+      "canonical_unit": "dBm",
+      "directionality": "HIGHER_IS_STRONGER",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "LOCAL_VS_REMOTE",
+        "MAIN_VS_DIVERSITY",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Received RF signal power measured at the receiver.",
+      "aliases": [
+        "Received Signal Level",
+        "Receive Signal Level",
+        "RX Level",
+        "Rx Level"
+      ]
+    },
+
+    {
+      "type": "RSL_DELTA",
+      "canonical_name": "RSL Delta",
+      "category": "RF",
+      "value_type": "NUMBER",
+      "canonical_unit": "dB",
+      "directionality": "LOWER_ABSOLUTE_IS_CLOSER",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "MAIN_VS_DIVERSITY",
+        "LOCAL_VS_REMOTE"
+      ],
+      "description": "Difference between two RSL values or between measured and expected RSL."
+    },
+
+    {
+      "type": "TX_POWER",
+      "canonical_name": "Transmit Power",
+      "category": "RF",
+      "value_type": "NUMBER",
+      "canonical_unit": "dBm",
+      "directionality": "CONTEXT_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_CONFIGURED",
+        "ACTUAL_VS_EXPECTED",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "RF transmit power produced or reported by a radio."
+    },
+
+    {
+      "type": "SNR",
+      "canonical_name": "Signal-to-Noise Ratio",
+      "category": "RF",
+      "value_type": "NUMBER",
+      "canonical_unit": "dB",
+      "directionality": "HIGHER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Ratio between desired received signal and noise."
+    },
+
+    {
+      "type": "SINR",
+      "canonical_name": "Signal-to-Interference-plus-Noise Ratio",
+      "category": "RF",
+      "value_type": "NUMBER",
+      "canonical_unit": "dB",
+      "directionality": "HIGHER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Ratio of desired signal power to combined interference and noise."
+    },
+
+    {
+      "type": "BER",
+      "canonical_name": "Bit Error Rate",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "RATIO",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Ratio of erroneous bits to total transmitted or received bits."
+    },
+
+    {
+      "type": "PER",
+      "canonical_name": "Packet Error Rate",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "PERCENT",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Percentage or ratio of packets received in error."
+    },
+
+    {
+      "type": "ES",
+      "canonical_name": "Errored Seconds",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "COUNT",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Count of errored seconds over a defined observation interval."
+    },
+
+    {
+      "type": "SES",
+      "canonical_name": "Severely Errored Seconds",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "COUNT",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Count of severely errored seconds over a defined observation interval."
+    },
+
+    {
+      "type": "UAS",
+      "canonical_name": "Unavailable Seconds",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "COUNT",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Count of seconds during which the service or link is considered unavailable."
+    },
+
+    {
+      "type": "THROUGHPUT",
+      "canonical_name": "Throughput",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "Mbps",
+      "directionality": "HIGHER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "ACTUAL_VS_CONFIGURED",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Measured or reported data throughput."
+    },
+
+    {
+      "type": "CAPACITY",
+      "canonical_name": "Link Capacity",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "Mbps",
+      "directionality": "HIGHER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "ACTUAL_VS_CONFIGURED"
+      ],
+      "description": "Current or engineered traffic-carrying capacity of the microwave link."
+    },
+
+    {
+      "type": "FREQUENCY",
+      "canonical_name": "Frequency",
+      "category": "RF_CONFIGURATION",
+      "value_type": "NUMBER",
+      "canonical_unit": "MHz",
+      "directionality": "EXACT_MATCH",
+      "comparison_modes": [
+        "ACTUAL_VS_CONFIGURED",
+        "LOCAL_VS_REMOTE",
+        "ACTUAL_VS_DESIGN"
+      ],
+      "description": "Configured, measured, assigned, or engineered operating frequency."
+    },
+
+    {
+      "type": "CHANNEL_BANDWIDTH",
+      "canonical_name": "Channel Bandwidth",
+      "category": "RF_CONFIGURATION",
+      "value_type": "NUMBER",
+      "canonical_unit": "MHz",
+      "directionality": "EXACT_MATCH",
+      "comparison_modes": [
+        "ACTUAL_VS_CONFIGURED",
+        "LOCAL_VS_REMOTE",
+        "ACTUAL_VS_DESIGN"
+      ],
+      "description": "Configured or engineered RF channel bandwidth."
+    },
+
+    {
+      "type": "MODULATION_ORDER",
+      "canonical_name": "Modulation Order",
+      "category": "RF_CONFIGURATION",
+      "value_type": "ORDINAL",
+      "canonical_unit": null,
+      "directionality": "CONTEXT_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Current, configured, or maximum modulation state."
+    },
+
+    {
+      "type": "ACM_STATE",
+      "canonical_name": "Adaptive Coding and Modulation State",
+      "category": "RF_CONFIGURATION",
+      "value_type": "ENUM",
+      "canonical_unit": null,
+      "directionality": "CONTEXT_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Current adaptive coding and modulation operating state."
+    },
+
+    {
+      "type": "ATPC_POWER",
+      "canonical_name": "ATPC Transmit Power",
+      "category": "RF",
+      "value_type": "NUMBER",
+      "canonical_unit": "dBm",
+      "directionality": "CONTEXT_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "LOCAL_VS_REMOTE",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Transmit power currently commanded or produced under automatic transmit power control."
+    },
+
+    {
+      "type": "ATPC_TARGET",
+      "canonical_name": "ATPC Target RSL",
+      "category": "RF_CONFIGURATION",
+      "value_type": "NUMBER",
+      "canonical_unit": "dBm",
+      "directionality": "EXACT_OR_RANGE_MATCH",
+      "comparison_modes": [
+        "ACTUAL_VS_CONFIGURED",
+        "LOCAL_VS_REMOTE"
+      ],
+      "description": "Configured receive-level target used by automatic transmit power control."
+    },
+
+    {
+      "type": "AZIMUTH",
+      "canonical_name": "Azimuth",
+      "category": "ALIGNMENT",
+      "value_type": "NUMBER",
+      "canonical_unit": "DEGREES",
+      "directionality": "LOWER_ABSOLUTE_DELTA_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_DESIGN",
+        "LOCAL_VS_REMOTE"
+      ],
+      "description": "Horizontal pointing direction of an antenna or path."
+    },
+
+    {
+      "type": "ELEVATION_ANGLE",
+      "canonical_name": "Elevation Angle",
+      "category": "ALIGNMENT",
+      "value_type": "NUMBER",
+      "canonical_unit": "DEGREES",
+      "directionality": "LOWER_ABSOLUTE_DELTA_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_DESIGN"
+      ],
+      "description": "Vertical pointing angle of an antenna."
+    },
+
+    {
+      "type": "POLARIZATION_ANGLE",
+      "canonical_name": "Polarization Angle",
+      "category": "ALIGNMENT",
+      "value_type": "NUMBER",
+      "canonical_unit": "DEGREES",
+      "directionality": "LOWER_ABSOLUTE_DELTA_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_DESIGN",
+        "LOCAL_VS_REMOTE"
+      ],
+      "description": "Measured or configured antenna polarization orientation."
+    },
+
+    {
+      "type": "XPD",
+      "canonical_name": "Cross-Polarization Discrimination",
+      "category": "RF",
+      "value_type": "NUMBER",
+      "canonical_unit": "dB",
+      "directionality": "HIGHER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Difference between desired and undesired orthogonal polarization response."
+    },
+
+    {
+      "type": "PATH_DISTANCE",
+      "canonical_name": "Path Distance",
+      "category": "PATH",
+      "value_type": "NUMBER",
+      "canonical_unit": "km",
+      "directionality": "NEUTRAL",
+      "comparison_modes": [
+        "ACTUAL_VS_DESIGN"
+      ],
+      "description": "Physical distance between microwave path endpoints."
+    },
+
+    {
+      "type": "ANTENNA_HEIGHT",
+      "canonical_name": "Antenna Height",
+      "category": "PATH",
+      "value_type": "NUMBER",
+      "canonical_unit": "ft",
+      "directionality": "EXACT_OR_RANGE_MATCH",
+      "comparison_modes": [
+        "ACTUAL_VS_DESIGN"
+      ],
+      "description": "Installed or designed antenna height referenced to the defined site datum."
+    },
+
+    {
+      "type": "FRESNEL_CLEARANCE",
+      "canonical_name": "Fresnel Zone Clearance",
+      "category": "PATH",
+      "value_type": "NUMBER",
+      "canonical_unit": "PERCENT",
+      "directionality": "HIGHER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "ACTUAL_VS_DESIGN"
+      ],
+      "description": "Percentage of the applicable Fresnel zone that is unobstructed."
+    },
+
+    {
+      "type": "LATENCY",
+      "canonical_name": "Latency",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "ms",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Measured transmission or network latency."
+    },
+
+    {
+      "type": "JITTER",
+      "canonical_name": "Jitter",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "ms",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Variation in packet delay."
+    },
+
+    {
+      "type": "PACKET_LOSS",
+      "canonical_name": "Packet Loss",
+      "category": "PERFORMANCE",
+      "value_type": "NUMBER",
+      "canonical_unit": "PERCENT",
+      "directionality": "LOWER_IS_BETTER",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Percentage of packets not successfully delivered."
+    },
+
+    {
+      "type": "VOLTAGE",
+      "canonical_name": "Voltage",
+      "category": "ELECTRICAL",
+      "value_type": "NUMBER",
+      "canonical_unit": "V",
+      "directionality": "RANGE_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Measured electrical potential."
+    },
+
+    {
+      "type": "CURRENT",
+      "canonical_name": "Current",
+      "category": "ELECTRICAL",
+      "value_type": "NUMBER",
+      "canonical_unit": "A",
+      "directionality": "RANGE_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_EXPECTED",
+        "ACTUAL_VS_THRESHOLD"
+      ],
+      "description": "Measured electrical current."
+    },
+
+    {
+      "type": "TEMPERATURE",
+      "canonical_name": "Temperature",
+      "category": "ENVIRONMENTAL",
+      "value_type": "NUMBER",
+      "canonical_unit": "C",
+      "directionality": "RANGE_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD",
+        "BEFORE_VS_AFTER"
+      ],
+      "description": "Measured equipment or environmental temperature."
+    },
+
+    {
+      "type": "WIND_SPEED",
+      "canonical_name": "Wind Speed",
+      "category": "ENVIRONMENTAL",
+      "value_type": "NUMBER",
+      "canonical_unit": "mph",
+      "directionality": "CONTEXT_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD"
+      ],
+      "description": "Observed or measured wind speed relevant to alignment, installation, or operational conditions."
+    },
+
+    {
+      "type": "PRECIPITATION_RATE",
+      "canonical_name": "Precipitation Rate",
+      "category": "ENVIRONMENTAL",
+      "value_type": "NUMBER",
+      "canonical_unit": "mm/h",
+      "directionality": "CONTEXT_DEPENDENT",
+      "comparison_modes": [
+        "ACTUAL_VS_THRESHOLD"
+      ],
+      "description": "Measured or reported precipitation rate relevant to propagation conditions."
+    }
+  ],
+
+  "comparison_modes": {
+    "ACTUAL_VS_EXPECTED": "Compare a measured or reported value with an expected technical value.",
+    "ACTUAL_VS_CONFIGURED": "Compare an observed value with the configured value.",
+    "ACTUAL_VS_DESIGN": "Compare an observed or installed value with the engineered design.",
+    "ACTUAL_VS_THRESHOLD": "Compare an observed value with an applicable limit or threshold.",
+    "LOCAL_VS_REMOTE": "Compare corresponding measurements from opposite ends of a microwave path.",
+    "MAIN_VS_DIVERSITY": "Compare corresponding measurements between Main and Diversity paths.",
+    "BEFORE_VS_AFTER": "Compare values before and after a test, configuration change, repair, or corrective action."
+  },
+
+  "directionality": {
+    "HIGHER_IS_BETTER": "Larger values generally represent improved technical condition.",
+    "HIGHER_IS_STRONGER": "Larger numerical values represent stronger measured signal.",
+    "LOWER_IS_BETTER": "Smaller values generally represent improved technical condition.",
+    "LOWER_ABSOLUTE_IS_CLOSER": "Smaller absolute difference indicates closer agreement.",
+    "LOWER_ABSOLUTE_DELTA_IS_BETTER": "Smaller angular or numerical deviation from the reference is preferred.",
+    "EXACT_MATCH": "Values should match the applicable configured or engineered reference.",
+    "EXACT_OR_RANGE_MATCH": "Value should equal or remain within an applicable allowed range.",
+    "RANGE_DEPENDENT": "Acceptability depends upon defined minimum and maximum limits.",
+    "CONTEXT_DEPENDENT": "The value cannot be classified as better or worse without additional technical context.",
+    "NEUTRAL": "The measurement describes system context and does not independently imply quality."
+  }
+}
