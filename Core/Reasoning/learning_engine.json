@@ -1,0 +1,679 @@
+{
+  "specification": "ARIA_LEARNING_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines how A.R.I.A. converts validated case experience into future diagnostic priors, route-performance knowledge, user-specific experience, contextual patterns, and candidate canonical knowledge without corrupting the underlying knowledge graph.",
+
+  "core_principle": {
+    "statement": "ARIA shall learn from validated experience by adjusting future expectations and routing behavior while preserving the distinction between observed history, statistical pattern, technical inference, and canonical truth.",
+    "rules": [
+      "A completed case is not automatically a trustworthy learning example.",
+      "Learning strength shall depend on evidence quality, diagnosis quality, causal confidence, validation quality, context completeness, and outcome certainty.",
+      "User-specific learning shall remain attributable to the applicable user.",
+      "Shared technical learning shall preserve context.",
+      "Repeated experience may propose new canonical knowledge but shall not silently promote correlation into truth.",
+      "Case history shall remain immutable even when learned aggregates change."
+    ]
+  },
+
+  "learning_outputs": [
+    {
+      "name": "CASE_EXPERIENCE_RECORD",
+      "description": "Permanent structured record of what occurred in the completed case."
+    },
+
+    {
+      "name": "FAILURE_PRIOR_UPDATE",
+      "description": "Adjustment to learned historical frequency for failure modes within applicable context."
+    },
+
+    {
+      "name": "ROUTE_PERFORMANCE_UPDATE",
+      "description": "Adjustment to learned performance of diagnostic actions and routes."
+    },
+
+    {
+      "name": "USER_EXPERIENCE_UPDATE",
+      "description": "Contextual learning associated with a specific user's demonstrated observations, actions, outcomes, or recurring patterns."
+    },
+
+    {
+      "name": "TEAM_EXPERIENCE_UPDATE",
+      "description": "Contextual learning associated with a crew or team when individual attribution is not appropriate."
+    },
+
+    {
+      "name": "PRODUCT_EXPERIENCE_UPDATE",
+      "description": "Historical learning associated with a product, variant, hardware revision, firmware, topology, or configuration."
+    },
+
+    {
+      "name": "MANUFACTURER_EXPERIENCE_UPDATE",
+      "description": "Historical learning associated with equipment from an applicable manufacturer."
+    },
+
+    {
+      "name": "SYMPTOM_PATTERN_UPDATE",
+      "description": "Learning about combinations of symptoms and their relationship to confirmed outcomes."
+    },
+
+    {
+      "name": "EVIDENCE_PATTERN_UPDATE",
+      "description": "Learning about the diagnostic value of evidence patterns."
+    },
+
+    {
+      "name": "CANDIDATE_KNOWLEDGE_CLAIM",
+      "description": "Proposed technical knowledge derived from repeated validated experience and routed through the knowledge-governance process."
+    }
+  ],
+
+  "learning_assessment": {
+    "required_inputs": [
+      "case_id",
+      "case_outcome",
+      "diagnosis",
+      "causal_confidence",
+      "diagnostic_confidence",
+      "resolution_confidence",
+      "evidence_quality",
+      "evidence_completeness",
+      "context_completeness",
+      "route_history",
+      "participant_attribution",
+      "validation_state",
+      "recurrence_state"
+    ],
+
+    "outputs": [
+      "learning_eligibility",
+      "learning_confidence",
+      "learning_weight",
+      "allowed_learning_targets",
+      "restricted_learning_targets",
+      "exclusion_reasons"
+    ]
+  },
+
+  "learning_eligibility_states": [
+    {
+      "name": "FULL",
+      "description": "Case is sufficiently validated for normal contribution to applicable learned experience."
+    },
+
+    {
+      "name": "RESTRICTED",
+      "description": "Case contains useful validated information but uncertainty limits which learning targets or weights are appropriate."
+    },
+
+    {
+      "name": "ROUTE_ONLY",
+      "description": "Case is insufficient to teach root-cause frequency but can still teach diagnostic route performance."
+    },
+
+    {
+      "name": "EVIDENCE_ONLY",
+      "description": "Case can teach evidence interpretation or measurement patterns but not validated root-cause probability."
+    },
+
+    {
+      "name": "USER_ONLY",
+      "description": "Case may update a user-specific action or evidence pattern without supporting broader technical generalization."
+    },
+
+    {
+      "name": "EXCLUDED",
+      "description": "Case shall not modify learned diagnostic aggregates."
+    }
+  ],
+
+  "learning_confidence_model": {
+    "range": {
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+
+    "candidate_factors": [
+      "DIAGNOSTIC_CONFIDENCE",
+      "CAUSAL_CONFIDENCE",
+      "RESOLUTION_CONFIDENCE",
+      "EVIDENCE_QUALITY",
+      "EVIDENCE_COMPLETENESS",
+      "CONTEXT_COMPLETENESS",
+      "VARIABLE_CONTROL",
+      "OUTCOME_VALIDATION",
+      "PARTICIPANT_ATTRIBUTION_CONFIDENCE",
+      "RECURRENCE_STATUS"
+    ],
+
+    "rules": [
+      "Learning confidence shall not exceed what the weakest critical causal factor can reasonably support.",
+      "A resolved case with uncertain root cause may have high resolution confidence but low causal learning confidence.",
+      "A case with strong root-cause isolation but incomplete long-term validation may contribute causal learning while receiving reduced resolution learning weight.",
+      "Exact weighting shall remain configurable and calibratable."
+    ]
+  },
+
+  "case_weight": {
+    "description": "Each case contributes to learned aggregates according to a bounded learning weight rather than raw count alone.",
+
+    "conceptual_formula": "case_weight = learning_confidence * context_applicability * attribution_confidence * recency_weight * independence_weight",
+
+    "range": {
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+
+    "rules": [
+      "Fully validated high-quality cases may approach weight 1.0.",
+      "Restricted cases shall contribute less than fully validated cases.",
+      "Excluded cases contribute 0.",
+      "Raw case count shall remain separately available."
+    ]
+  },
+
+  "experience_ledger_update": {
+    "append_only": true,
+
+    "required_fields": [
+      "learning_event_id",
+      "case_id",
+      "learning_target",
+      "context_signature",
+      "failure_mode_id",
+      "action_ids",
+      "outcome_ids",
+      "participant_attribution",
+      "learning_confidence",
+      "learning_weight",
+      "created_at"
+    ],
+
+    "rules": [
+      "The Experience Ledger stores the learning event, not merely the resulting aggregate.",
+      "Aggregates shall be reproducible from underlying learning events.",
+      "Historical learning events shall not be rewritten when later weighting models change.",
+      "New aggregation logic may recalculate current statistics from preserved ledger records."
+    ]
+  },
+
+  "failure_frequency_learning": {
+    "enabled": true,
+
+    "description": "Validated resolved cases may update the empirical frequency of confirmed failure modes within applicable contexts.",
+
+    "dimensions": [
+      "domain",
+      "organization",
+      "manufacturer",
+      "product_family",
+      "product",
+      "product_variant",
+      "hardware_revision",
+      "firmware",
+      "frequency_band",
+      "topology",
+      "scope",
+      "project_phase",
+      "symptom_pattern",
+      "user",
+      "team"
+    ],
+
+    "rules": [
+      "Failure frequency shall be stored as weighted experience, not universal truth.",
+      "A case may contribute to multiple contextual aggregates using the same underlying learning event.",
+      "Aggregation across dimensions shall not duplicate the case as independent evidence.",
+      "Probability calculations shall use effective sample size and regularization."
+    ]
+  },
+
+  "route_learning": {
+    "enabled": true,
+
+    "description": "ARIA shall learn whether diagnostic actions actually reduced uncertainty, saved time, produced reliable evidence, or contributed to successful resolution.",
+
+    "route_metrics": [
+      "ACTION_COMPLETION_RATE",
+      "EVIDENCE_RETURN_RATE",
+      "EVIDENCE_QUALITY_RETURNED",
+      "EXPECTED_INFORMATION_GAIN",
+      "REALIZED_INFORMATION_GAIN",
+      "HYPOTHESIS_DISCRIMINATION",
+      "TIME_TO_RESULT",
+      "USER_FRICTION",
+      "SERVICE_IMPACT",
+      "RESOLUTION_CONTRIBUTION",
+      "REPEAT_REQUIREMENT"
+    ],
+
+    "rules": [
+      "An action that rules out a hypothesis may be considered successful.",
+      "An action that finds the root cause but consumes excessive time may still receive lower routing efficiency than a faster alternative.",
+      "Route success and diagnosis correctness are separate learning dimensions.",
+      "Route statistics shall preserve context.",
+      "Failed routes remain valuable learning data."
+    ]
+  },
+
+  "user_learning": {
+    "enabled": true,
+
+    "description": "ARIA may learn contextual patterns about how specific users observe, configure, troubleshoot, execute actions, and communicate technical information.",
+
+    "allowed_dimensions": [
+      "ACTION_ACCURACY",
+      "OBSERVATION_RELIABILITY",
+      "CONFIGURATION_ACCURACY",
+      "MEASUREMENT_ACCURACY",
+      "ACTION_COMPLETION_RATE",
+      "EVIDENCE_QUALITY",
+      "HISTORICAL_FAILURE_ATTRIBUTION",
+      "PROCEDURAL_COMPETENCY",
+      "PRODUCT_EXPERIENCE",
+      "MANUFACTURER_EXPERIENCE",
+      "SCOPE_EXPERIENCE",
+      "PREFERRED_COMMUNICATION_DEPTH"
+    ],
+
+    "rules": [
+      "User learning must remain contextual.",
+      "ARIA shall not create one universal competence or credibility score.",
+      "Reporter identity shall not imply fault attribution.",
+      "Improvement over time shall be reflected in learned user experience.",
+      "Older user history may receive less predictive weight when newer validated experience indicates change.",
+      "User-specific learning may affect priors, routing, evidence requests, and communication style.",
+      "User-specific learning shall not override direct validated evidence.",
+      "Personal judgment labels shall not be stored as technical learning."
+    ]
+  },
+
+  "attribution_learning": {
+    "description": "Learning about human actions requires clear attribution of who performed, observed, diagnosed, corrected, and validated relevant technical work.",
+
+    "roles": [
+      "REPORTER",
+      "OBSERVER",
+      "INSTALLER",
+      "CONFIGURATOR",
+      "ALIGNER",
+      "TESTER",
+      "TROUBLESHOOTER",
+      "DIAGNOSTICIAN",
+      "CORRECTIVE_ACTION_PERFORMER",
+      "VALIDATOR",
+      "SUPERVISOR"
+    ],
+
+    "rules": [
+      "A case shall not assign an error to the reporter merely because they opened the case.",
+      "Shared work may attribute different actions to different participants.",
+      "When attribution is unknown, learning should remain at team, case, or organizational level rather than invent individual responsibility.",
+      "Attribution confidence shall influence learning weight."
+    ]
+  },
+
+  "pattern_learning": {
+    "enabled": true,
+
+    "pattern_types": [
+      "SYMPTOM_TO_FAILURE",
+      "EVIDENCE_TO_FAILURE",
+      "ACTION_TO_INFORMATION_GAIN",
+      "ACTION_TO_OUTCOME",
+      "SEQUENCE_TO_RESOLUTION",
+      "RECENT_CHANGE_TO_FAILURE",
+      "USER_CONTEXT_TO_FAILURE",
+      "PRODUCT_CONTEXT_TO_FAILURE",
+      "MULTI_SYMPTOM_PATTERN",
+      "FAILURE_CO_OCCURRENCE"
+    ],
+
+    "rules": [
+      "Patterns shall preserve sample size and contextual scope.",
+      "Correlation shall not automatically become causal knowledge.",
+      "Rare patterns shall remain low-confidence until sufficient support accumulates.",
+      "Pattern learning may generate candidate claims for review."
+    ]
+  },
+
+  "sequence_learning": {
+    "enabled": true,
+
+    "description": "ARIA shall learn not only which actions succeeded, but which diagnostic sequences produced efficient resolution.",
+
+    "example": {
+      "sequence_a": [
+        "CHECK_RSL",
+        "VERIFY_CONFIGURATION",
+        "INSPECT_RF_ROUTING"
+      ],
+      "average_resolution_minutes": 18.4,
+
+      "sequence_b": [
+        "COMPARE_MAIN_DIVERSITY_RSL",
+        "INSPECT_RF_ROUTING"
+      ],
+      "average_resolution_minutes": 7.1
+    },
+
+    "rules": [
+      "Sequence performance shall preserve context.",
+      "Shorter sequences are not automatically better if they carry greater risk or lower diagnostic reliability.",
+      "Sequence learning shall influence route selection, not create mandatory static troubleshooting trees."
+    ]
+  },
+
+  "causal_learning": {
+    "enabled": true,
+
+    "description": "ARIA may increase empirical causal confidence when validated interventions repeatedly produce predicted technical outcomes.",
+
+    "strong_causal_patterns": [
+      "CONTROLLED_COMPONENT_SWAP",
+      "CONTROLLED_PATH_SWAP",
+      "SINGLE_VARIABLE_CONFIGURATION_CHANGE",
+      "CORRECTIVE_ACTION_WITH_PREDICTED_BEFORE_AFTER_RESULT",
+      "REPRODUCIBLE_FAILURE_INDUCTION_AND_REMOVAL"
+    ],
+
+    "rules": [
+      "Causal learning requires stronger evidence than correlation learning.",
+      "Multiple variables changed simultaneously shall reduce causal attribution confidence.",
+      "Before-and-after improvement alone does not guarantee causation when uncontrolled variables exist.",
+      "Repeated controlled observations may generate candidate canonical causal relationships."
+    ]
+  },
+
+  "canonical_knowledge_promotion": {
+    "automatic_promotion": false,
+
+    "description": "Experience-derived patterns may propose additions or changes to canonical knowledge but shall enter the provenance and review process.",
+
+    "pipeline": [
+      "EXPERIENCE_PATTERN_DETECTED",
+      "CANDIDATE_CLAIM_CREATED",
+      "PROVENANCE_ATTACHED",
+      "SUPPORTING_CASES_ATTACHED",
+      "CONTRADICTIONS_CHECKED",
+      "AUTHORITY_REVIEW",
+      "HUMAN_OR_POLICY_VALIDATION",
+      "CANONICAL_RELATIONSHIP_CREATED_OR_UPDATED"
+    ],
+
+    "rules": [
+      "Repeated field correlation shall not automatically create CAN_CAUSE.",
+      "Experience may establish ASSOCIATED_WITH before sufficient causal evidence exists.",
+      "Manufacturer contradiction shall trigger review rather than silent overwrite.",
+      "Canonical promotion decisions shall remain auditable."
+    ]
+  },
+
+  "anti_poisoning": {
+    "description": "ARIA shall resist accumulation of incorrect learned beliefs from weak, duplicated, manipulated, or misattributed experience.",
+
+    "controls": [
+      "LEARNING_ELIGIBILITY",
+      "LEARNING_CONFIDENCE",
+      "PROVENANCE_REQUIREMENT",
+      "DUPLICATE_CASE_DETECTION",
+      "DEPENDENT_EVIDENCE_DETECTION",
+      "ATTRIBUTION_VALIDATION",
+      "OUTLIER_MONITORING",
+      "RECURRENCE_MONITORING",
+      "CALIBRATION_MONITORING",
+      "HUMAN_REVIEW_FOR_CANONICAL_PROMOTION"
+    ],
+
+    "rules": [
+      "Multiple copies of the same underlying incident shall not inflate learned frequency.",
+      "Cases with uncertain diagnosis shall not receive full causal learning weight.",
+      "Learning derived from invalidated evidence shall be recalculated.",
+      "Deliberately repeated claims shall not create artificial historical confidence.",
+      "Sudden extreme learned shifts shall be detectable and reviewable."
+    ]
+  },
+
+  "duplicate_case_handling": {
+    "enabled": true,
+
+    "candidate_duplicate_signals": [
+      "same_project",
+      "same_path",
+      "same_time_window",
+      "same_symptom_pattern",
+      "same_artifacts",
+      "same_root_cause",
+      "same_corrective_action",
+      "same_participants"
+    ],
+
+    "rules": [
+      "Duplicate detection may flag cases for review.",
+      "Linked duplicate cases shall not be counted as independent learning observations.",
+      "Cases describing genuinely separate recurrences shall remain distinct."
+    ]
+  },
+
+  "recurrence_learning": {
+    "enabled": true,
+
+    "rules": [
+      "Recurrence after validated resolution shall reduce confidence in the completeness or durability of the previous correction.",
+      "Recurrence may reveal an incomplete root cause.",
+      "Time to recurrence shall be preserved.",
+      "Repeated recurrence may change route and corrective-action effectiveness statistics.",
+      "A recurrence shall not silently erase the original case outcome."
+    ]
+  },
+
+  "negative_learning": {
+    "enabled": true,
+
+    "description": "ARIA shall learn from paths that were unsuccessful, irrelevant, redundant, or excessively costly.",
+
+    "examples": [
+      "Repeated configuration checks produced no useful evidence in this context.",
+      "Radio replacement frequently failed to resolve this symptom pattern.",
+      "Physical inspection was often unnecessary when a configuration export could discriminate the same hypotheses."
+    ],
+
+    "rules": [
+      "Negative learning modifies route utility rather than prohibiting technically valid actions.",
+      "A historically poor action may become useful when new evidence or context changes.",
+      "Negative learning shall preserve context and sample size."
+    ]
+  },
+
+  "learning_decay": {
+    "enabled": true,
+
+    "description": "Predictive influence of some learned experience may decay while the underlying historical record remains unchanged.",
+
+    "candidate_decay_domains": [
+      "USER_BEHAVIOR",
+      "PROCEDURAL_PERFORMANCE",
+      "SOFTWARE_BEHAVIOR",
+      "FIRMWARE_BEHAVIOR",
+      "PRODUCT_FAILURE_PATTERN",
+      "ROUTE_EFFECTIVENESS"
+    ],
+
+    "non_decay_domains": [
+      "IMMUTABLE_CASE_HISTORY",
+      "VALIDATED_PHYSICAL_CONSTANTS",
+      "HISTORICAL_PROVENANCE"
+    ],
+
+    "rules": [
+      "Decay affects predictive weighting, not deletion.",
+      "Decay behavior may differ by learning domain.",
+      "Revision changes may supersede time-based decay for product or firmware patterns."
+    ]
+  },
+
+  "aggregation": {
+    "description": "ARIA may maintain materialized aggregates for speed while preserving the Experience Ledger as the authoritative source.",
+
+    "aggregate_examples": [
+      "failure frequency by product and symptom",
+      "failure frequency by user and scope",
+      "action effectiveness by failure mode",
+      "average information gain by action",
+      "average resolution time by route sequence",
+      "recurrence rate by corrective action"
+    ],
+
+    "rules": [
+      "Aggregates shall be reproducible from underlying ledger events.",
+      "Aggregates may be rebuilt when models change.",
+      "Aggregates shall preserve effective sample size and confidence.",
+      "Aggregates shall not become the only surviving representation of experience."
+    ]
+  },
+
+  "learning_explainability": {
+    "required_capabilities": [
+      "Explain why a case was or was not eligible for learning.",
+      "Show learning confidence and weight.",
+      "Identify which aggregates the case influenced.",
+      "Identify which user-specific experience was updated.",
+      "Identify which route-performance statistics changed.",
+      "Identify any candidate canonical claims generated.",
+      "Recalculate learned statistics if a case is later invalidated."
+    ]
+  },
+
+  "example": {
+    "case": "Nokia UBT-T 18 GHz commissioning RSL discrepancy",
+
+    "validated_findings": {
+      "symptom": "MAIN_DIVERSITY_RSL_IMBALANCE",
+      "root_cause": "MAIN_DIVERSITY_ROUTING_ERROR",
+      "correction": "CORRECT_RF_ROUTING",
+      "validation": "RSL normalized after correction"
+    },
+
+    "participants": [
+      {
+        "user": "Clayton",
+        "role": "CONFIGURATOR"
+      },
+      {
+        "user": "Michael",
+        "role": "TROUBLESHOOTER"
+      }
+    ],
+
+    "learning_confidence": 0.96,
+    "learning_weight": 0.93,
+
+    "updates": [
+      "Increase weighted occurrence of Main/Diversity routing error for similar UBT-T commissioning cases.",
+      "Increase effectiveness of Compare Main/Diversity RSL for this symptom pattern.",
+      "Increase effectiveness of Verify Main/Diversity Routing after asymmetric Main/Diversity evidence.",
+      "Update applicable user experience only according to actual participant attribution."
+    ]
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "LEARN-RULE-001",
+      "rule": "ARIA shall learn from validated experience, not merely from conversation frequency."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-002",
+      "rule": "Case closure does not automatically make a case suitable for causal learning."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-003",
+      "rule": "Learning weight shall reflect the quality of the case."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-004",
+      "rule": "The Experience Ledger is authoritative for historical learning events; aggregates are derived representations."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-005",
+      "rule": "User-specific experience shall remain contextual and attributable."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-006",
+      "rule": "ARIA shall allow users, products, procedures, and route effectiveness to change over time."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-007",
+      "rule": "Historical patterns may affect future priors without becoming canonical technical truth."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-008",
+      "rule": "Repeated experience may generate candidate knowledge claims but shall not bypass provenance and validation."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-009",
+      "rule": "Failed diagnostic routes are valid learning data when they reveal what not to prioritize in similar contexts."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-010",
+      "rule": "Duplicate or dependent cases shall not be treated as independent experience."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-011",
+      "rule": "Learning derived from invalidated evidence shall be recalculated."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-012",
+      "rule": "ARIA shall distinguish correlation learning from causal learning."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-013",
+      "rule": "A high-frequency field pattern shall not silently override an applicable deterministic technical requirement."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-014",
+      "rule": "Learning shall preserve the exact technical context required to interpret historical relevance."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-015",
+      "rule": "ARIA shall prefer recalculable statistical experience over permanently encoded opaque model intuition."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-016",
+      "rule": "Language-model outputs may identify candidate patterns but shall not independently mutate authoritative learned experience."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-017",
+      "rule": "The system shall preserve enough history to explain how ARIA's current learned expectation developed."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-018",
+      "rule": "Learning confidence and diagnostic confidence are separate. A correct diagnosis does not automatically mean the case is a clean learning example."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-019",
+      "rule": "The goal of learning is improved future reasoning, not merely accumulation of more data."
+    },
+
+    {
+      "rule_id": "LEARN-RULE-020",
+      "rule": "ARIA shall never intentionally improve apparent accuracy by hiding, deleting, or excluding difficult cases except under explicit data-quality rules."
+    }
+  ]
+}
