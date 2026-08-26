@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/entity.schema.json",
+  "title": "A.R.I.A. Canonical Entity",
+  "description": "Machine-readable validation schema for canonical entities in the A.R.I.A. Knowledge Graph.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "entity_id",
+    "entity_type",
+    "canonical_name",
+    "status",
+    "validation_state",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "entity_id": {
+      "type": "string",
+      "pattern": "^ENT-[0-9]{6,}$",
+      "description": "Permanent canonical entity identifier."
+    },
+
+    "entity_type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Approved entity type from the A.R.I.A. entity-type registry."
+    },
+
+    "canonical_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+
+    "description": {
+      "type": ["string", "null"]
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "ACTIVE",
+        "DEPRECATED",
+        "SUPERSEDED",
+        "REJECTED"
+      ]
+    },
+
+    "validation_state": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "REVIEWED",
+        "VALIDATED",
+        "REJECTED"
+      ]
+    },
+
+    "effective_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "deprecated_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "superseded_by": {
+      "type": ["string", "null"],
+      "pattern": "^ENT-[0-9]{6,}$"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Controlled extensibility for entity-type-specific metadata.",
+      "additionalProperties": true
+    }
+  }
+}
