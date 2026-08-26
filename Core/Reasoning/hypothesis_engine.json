@@ -1,0 +1,553 @@
+{
+  "specification": "ARIA_HYPOTHESIS_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines how A.R.I.A. creates, represents, prioritizes, updates, suppresses, rules out, confirms, combines, and reactivates diagnostic hypotheses during microwave backhaul reasoning.",
+
+  "core_principle": {
+    "statement": "A hypothesis is a candidate explanation for one or more observed conditions. Hypotheses remain provisional until sufficient evidence supports confirmation and shall compete, coexist, weaken, strengthen, or be ruled out as evidence changes.",
+    "principles": [
+      "Do not confuse plausibility with proof.",
+      "Do not confuse historical frequency with current diagnosis.",
+      "Do not discard alternatives merely because one hypothesis currently leads.",
+      "Do not preserve weak hypotheses indefinitely when evidence has materially ruled them out.",
+      "Allow multiple simultaneous failure modes when technically plausible.",
+      "Preserve an unknown explanation when the modeled hypothesis set may be incomplete."
+    ]
+  },
+
+  "hypothesis_record": {
+    "required_fields": [
+      "hypothesis_id",
+      "case_id",
+      "failure_mode_id",
+      "status",
+      "created_at",
+      "creation_reason",
+      "applicable_symptom_ids",
+      "applicable_context",
+      "prior_probability",
+      "current_probability",
+      "diagnostic_confidence",
+      "supporting_evidence_ids",
+      "contradicting_evidence_ids",
+      "unresolved_evidence_ids",
+      "required_discriminating_evidence",
+      "related_hypothesis_ids",
+      "last_updated_at"
+    ],
+
+    "optional_fields": [
+      "parent_hypothesis_id",
+      "component_entity_id",
+      "path_entity_id",
+      "endpoint_entity_id",
+      "product_entity_id",
+      "user_entity_id",
+      "manufacturer_entity_id",
+      "scope_entity_id",
+      "confirmation_reason",
+      "rule_out_reason",
+      "reactivation_reason"
+    ]
+  },
+
+  "hypothesis_statuses": [
+    {
+      "name": "CANDIDATE",
+      "description": "Technically plausible hypothesis generated for evaluation."
+    },
+    {
+      "name": "ACTIVE",
+      "description": "Hypothesis currently participating in diagnostic reasoning."
+    },
+    {
+      "name": "LEADING",
+      "description": "Hypothesis currently having the strongest justified support among the applicable candidate explanations."
+    },
+    {
+      "name": "SUPPORTED",
+      "description": "Evidence materially supports the hypothesis but confirmation requirements are not satisfied."
+    },
+    {
+      "name": "WEAKENED",
+      "description": "Evidence has materially reduced support for the hypothesis."
+    },
+    {
+      "name": "DORMANT",
+      "description": "Hypothesis remains technically possible but currently has insufficient probability or relevance to justify active diagnostic effort."
+    },
+    {
+      "name": "RULED_OUT",
+      "description": "Available evidence is sufficient to remove the hypothesis from active consideration under the current technical state."
+    },
+    {
+      "name": "CONFIRMED",
+      "description": "Available evidence satisfies applicable diagnostic confirmation requirements."
+    },
+    {
+      "name": "SUPERSEDED",
+      "description": "A more precise or technically appropriate hypothesis has replaced this hypothesis while preserving its historical role."
+    },
+    {
+      "name": "MERGED",
+      "description": "The hypothesis has been incorporated into another hypothesis because they represented the same underlying explanation."
+    }
+  ],
+
+  "generation_sources": [
+    {
+      "name": "KNOWLEDGE_GRAPH",
+      "description": "Failure modes connected to observed symptoms, products, configurations, components, topologies, or technical mechanisms."
+    },
+    {
+      "name": "EXPERIENCE_LEDGER",
+      "description": "Failure modes observed in sufficiently similar historical cases."
+    },
+    {
+      "name": "USER_HISTORY",
+      "description": "Historically relevant failure patterns associated with the applicable user."
+    },
+    {
+      "name": "PRODUCT_HISTORY",
+      "description": "Historically relevant failure patterns associated with the applicable product or variant."
+    },
+    {
+      "name": "MANUFACTURER_HISTORY",
+      "description": "Historically relevant failure patterns associated with the applicable manufacturer."
+    },
+    {
+      "name": "CURRENT_EVIDENCE",
+      "description": "Candidate explanations directly suggested by current measurements, alarms, configuration, visual evidence, logs, or test results."
+    },
+    {
+      "name": "TECHNICAL_INFERENCE",
+      "description": "A technically valid explanation inferred from relationships between current observations."
+    },
+    {
+      "name": "UNKNOWN_BUCKET",
+      "description": "Explicit representation of explanations not currently modeled or recognized."
+    }
+  ],
+
+  "generation_process": [
+    {
+      "step": 1,
+      "name": "IDENTIFY_EXPLAINED_SYMPTOMS",
+      "description": "Determine which canonical symptoms require explanation."
+    },
+    {
+      "step": 2,
+      "name": "RETRIEVE_APPLICABLE_FAILURE_MODES",
+      "description": "Retrieve failure modes capable of producing the symptoms within the resolved technical context."
+    },
+    {
+      "step": 3,
+      "name": "RETRIEVE_HISTORICAL_FAILURES",
+      "description": "Retrieve relevant historical failure modes using contextual similarity."
+    },
+    {
+      "step": 4,
+      "name": "APPLY_TECHNICAL_CONSTRAINTS",
+      "description": "Remove technically impossible candidates while preserving uncertain candidates."
+    },
+    {
+      "step": 5,
+      "name": "DEDUPLICATE",
+      "description": "Merge semantically equivalent hypotheses referring to the same underlying technical condition."
+    },
+    {
+      "step": 6,
+      "name": "ADD_UNKNOWN",
+      "description": "Add unknown or unmodeled hypothesis mass when the candidate set cannot reasonably be assumed exhaustive."
+    },
+    {
+      "step": 7,
+      "name": "INITIALIZE_PRIORS",
+      "description": "Assign regularized starting probabilities before applying current evidence."
+    }
+  ],
+
+  "hierarchical_hypotheses": {
+    "enabled": true,
+
+    "description": "ARIA may begin with a broad hypothesis and progressively refine it into more specific hypotheses as evidence becomes available.",
+
+    "example": {
+      "level_1": "PHYSICAL_RF_CHAIN_FAILURE",
+      "level_2": "RF_ROUTING_FAILURE",
+      "level_3": "MAIN_DIVERSITY_ROUTING_FAILURE",
+      "level_4": "DIVERSITY_FLEX_CONNECTED_TO_INCORRECT_PORT"
+    },
+
+    "rules": [
+      "Broad hypotheses may remain active while insufficient evidence exists to justify greater specificity.",
+      "A child hypothesis inherits technical compatibility constraints from its parent.",
+      "Confirmation of a specific child hypothesis may supersede broader parent hypotheses for diagnosis while preserving lineage.",
+      "Probability assigned to hierarchical hypotheses shall avoid double counting parent and child explanations."
+    ]
+  },
+
+  "evidence_effects": [
+    {
+      "name": "STRONGLY_SUPPORTS",
+      "description": "Evidence substantially increases support for the hypothesis."
+    },
+    {
+      "name": "SUPPORTS",
+      "description": "Evidence moderately increases support for the hypothesis."
+    },
+    {
+      "name": "WEAKLY_SUPPORTS",
+      "description": "Evidence slightly increases support for the hypothesis."
+    },
+    {
+      "name": "NEUTRAL",
+      "description": "Evidence has no material effect on the hypothesis."
+    },
+    {
+      "name": "WEAKENS",
+      "description": "Evidence moderately reduces support for the hypothesis."
+    },
+    {
+      "name": "STRONGLY_WEAKENS",
+      "description": "Evidence substantially reduces support for the hypothesis."
+    },
+    {
+      "name": "CONTRADICTS",
+      "description": "Evidence is materially inconsistent with the hypothesis."
+    },
+    {
+      "name": "EXCLUDES",
+      "description": "Validated evidence establishes a condition incompatible with the hypothesis under the applicable technical model."
+    }
+  ],
+
+  "evidence_evaluation": {
+    "required_questions": [
+      "Is this evidence technically relevant to the hypothesis?",
+      "Is the evidence applicable to the current product and context?",
+      "How reliable is the evidence?",
+      "How direct is the evidence?",
+      "Is the evidence current enough to represent the present condition?",
+      "Is the evidence independent from other supporting evidence?",
+      "Does the evidence support or contradict the mechanism predicted by the hypothesis?",
+      "How strongly should the evidence change belief?"
+    ]
+  },
+
+  "prior_model": {
+    "inputs": [
+      "global_failure_frequency",
+      "manufacturer_failure_frequency",
+      "product_family_failure_frequency",
+      "product_failure_frequency",
+      "product_variant_failure_frequency",
+      "topology_failure_frequency",
+      "frequency_band_failure_frequency",
+      "scope_failure_frequency",
+      "symptom_failure_frequency",
+      "user_failure_frequency",
+      "contextually_similar_case_frequency"
+    ],
+
+    "rules": [
+      "Specific historical populations may influence priors more strongly when sufficient sample size and contextual similarity exist.",
+      "Broad populations shall remain available as fallback priors when specific historical populations are sparse.",
+      "Small sample populations shall be regularized toward broader applicable populations.",
+      "Historical priors shall not override strong current evidence.",
+      "Historical priors shall preserve their source population and sample size."
+    ]
+  },
+
+  "regularization": {
+    "enabled": true,
+
+    "purpose": "Prevent ARIA from overlearning from small or noisy historical samples.",
+
+    "rules": [
+      "One successful case shall not establish a dominant future prior.",
+      "Small user-specific samples shall be blended with broader applicable experience.",
+      "As validated sample size increases, specific historical populations may receive greater influence.",
+      "Cases with restricted learning confidence shall contribute proportionally less weight.",
+      "Cases excluded from learning shall contribute no learned probability weight."
+    ]
+  },
+
+  "competing_hypotheses": {
+    "rules": [
+      "ARIA shall maintain multiple active hypotheses when technically justified.",
+      "A leading hypothesis shall not cause automatic suppression of viable alternatives.",
+      "Diagnostic actions should preferentially discriminate between high-value competing hypotheses.",
+      "Probability shall be redistributed only according to the applicable probability model.",
+      "Evidence supporting one hypothesis does not automatically weaken another unless the hypotheses compete or the evidence has discriminatory value."
+    ]
+  },
+
+  "coexisting_hypotheses": {
+    "enabled": true,
+
+    "description": "ARIA shall support cases where multiple failures exist simultaneously.",
+
+    "rules": [
+      "Potentially coexisting hypotheses shall not be forced into a mutually exclusive probability distribution.",
+      "ARIA may create hypothesis groups representing independent or partially dependent fault domains.",
+      "Resolution of one failure shall not automatically close the case when unresolved symptoms remain.",
+      "Remaining symptoms shall be reevaluated after each confirmed correction."
+    ],
+
+    "example": {
+      "hypothesis_1": "ANTENNA_MISALIGNMENT",
+      "hypothesis_2": "WATER_INGRESS",
+      "relationship": "CAN_COEXIST"
+    }
+  },
+
+  "hypothesis_relationships": [
+    {
+      "name": "MUTUALLY_EXCLUSIVE",
+      "description": "Both hypotheses cannot simultaneously explain the defined condition under the applicable technical model."
+    },
+    {
+      "name": "CAN_COEXIST",
+      "description": "Both hypotheses may simultaneously be true."
+    },
+    {
+      "name": "DEPENDENT",
+      "description": "Probability or validity of one hypothesis depends materially on another."
+    },
+    {
+      "name": "CAUSAL_CHAIN",
+      "description": "One hypothesis may cause or contribute to the other."
+    },
+    {
+      "name": "SHARED_PARENT",
+      "description": "Hypotheses are more specific alternatives beneath a common broader hypothesis."
+    },
+    {
+      "name": "OVERLAPPING",
+      "description": "Hypotheses partially describe the same technical mechanism and require careful probability handling to avoid double counting."
+    },
+    {
+      "name": "UNRELATED",
+      "description": "No material dependency is currently known."
+    }
+  ],
+
+  "rule_out_policy": {
+    "requirements": [
+      "Evidence materially incompatible with the hypothesis exists.",
+      "Evidence quality is sufficient for the technical consequence of ruling out the hypothesis.",
+      "Applicability of the excluding evidence is established.",
+      "Material contradictions in the excluding evidence have been addressed."
+    ],
+
+    "rules": [
+      "Low probability alone shall not rule out a hypothesis.",
+      "Failure to find supporting evidence shall not automatically rule out a hypothesis.",
+      "A hypothesis may be ruled out when validated evidence establishes an incompatible condition.",
+      "Rule-out reason and supporting evidence shall be preserved."
+    ]
+  },
+
+  "reactivation_policy": {
+    "description": "A ruled-out or dormant hypothesis may return to active reasoning only when the technical state materially changes.",
+
+    "valid_reactivation_triggers": [
+      "NEW_CONTRADICTORY_EVIDENCE",
+      "PRIOR_EVIDENCE_INVALIDATED",
+      "CONTEXT_CHANGED",
+      "NEW_SYMPTOM",
+      "NEW_FAILURE_MODE_RELATIONSHIP",
+      "PREVIOUS_TEST_FOUND_UNRELIABLE",
+      "RECURRENCE",
+      "PRODUCT_OR_CONFIGURATION_REIDENTIFIED"
+    ],
+
+    "rules": [
+      "Reactivation requires an explicit reason.",
+      "ARIA shall preserve why the hypothesis was previously ruled out.",
+      "Reactivation shall not erase prior probability history.",
+      "Repeated unjustified reactivation shall be treated as a reasoning-loop defect."
+    ]
+  },
+
+  "confirmation_policy": {
+    "factors": [
+      "posterior_probability",
+      "diagnostic_confidence",
+      "evidence_quality",
+      "evidence_completeness",
+      "causal_evidence",
+      "contradictory_evidence",
+      "test_discrimination",
+      "corrective_action_risk"
+    ],
+
+    "rules": [
+      "No universal probability threshold alone shall confirm every diagnosis.",
+      "Higher-risk corrective actions may require stronger confirmation.",
+      "Direct isolation evidence may justify confirmation more strongly than historical frequency.",
+      "Material unexplained contradictions shall reduce confirmation confidence.",
+      "ARIA may maintain a provisional diagnosis when confirmation requirements are not satisfied."
+    ]
+  },
+
+  "unknown_hypothesis": {
+    "enabled": true,
+    "canonical_name": "UNKNOWN_OR_UNMODELED_CAUSE",
+
+    "purpose": "Prevent ARIA from forcing every case into an existing failure mode.",
+
+    "rules": [
+      "Unknown may receive nonzero probability whenever the candidate hypothesis set is not known to be exhaustive.",
+      "Unknown probability may increase when known hypotheses are weakened without another explanation gaining support.",
+      "Unknown probability should decrease when evidence strongly supports sufficiently comprehensive modeled explanations.",
+      "A persistent high unknown probability should trigger broader knowledge retrieval, alternative hypothesis generation, or escalation."
+    ]
+  },
+
+  "hypothesis_pruning": {
+    "purpose": "Control computational growth without destroying diagnostically meaningful alternatives.",
+
+    "strategies": [
+      "DORMANT_LOW_VALUE_HYPOTHESES",
+      "MERGE_DUPLICATES",
+      "SUPERSEDE_BROAD_PARENTS",
+      "GROUP_RELATED_HYPOTHESES",
+      "RETAIN_TOP_ACTIVE_SET",
+      "PRESERVE_RULED_OUT_HISTORY"
+    ],
+
+    "rules": [
+      "Pruning shall not delete hypothesis history.",
+      "Low-probability hypotheses with high consequence or inexpensive discriminating tests may remain active.",
+      "Dormant hypotheses remain retrievable.",
+      "The number of actively scored hypotheses may be bounded independently from the number of hypotheses preserved in case history."
+    ]
+  },
+
+  "active_set_policy": {
+    "description": "ARIA shall maintain a manageable working set of hypotheses while preserving the broader hypothesis graph.",
+
+    "default_targets": {
+      "preferred_active_hypotheses": 5,
+      "soft_maximum_active_hypotheses": 10
+    },
+
+    "rules": [
+      "These values are computational defaults rather than technical limits.",
+      "ARIA may exceed the soft maximum when case complexity justifies it.",
+      "Hypotheses outside the active set remain available as dormant candidates.",
+      "High-consequence hypotheses may remain active despite relatively low probability."
+    ]
+  },
+
+  "example_reasoning_state": {
+    "symptom": "MAIN_DIVERSITY_RSL_IMBALANCE",
+
+    "context": {
+      "manufacturer": "Nokia",
+      "product": "UBT-T",
+      "frequency_band": "18 GHz",
+      "topology": "2+0",
+      "diversity_mode": "Space Diversity",
+      "project_phase": "Commissioning"
+    },
+
+    "hypotheses": [
+      {
+        "name": "MAIN_DIVERSITY_RF_ROUTING_ERROR",
+        "probability": 0.42,
+        "status": "LEADING"
+      },
+      {
+        "name": "RADIO_OR_PORT_ASSIGNMENT_ERROR",
+        "probability": 0.24,
+        "status": "ACTIVE"
+      },
+      {
+        "name": "RF_COMPONENT_FAILURE",
+        "probability": 0.16,
+        "status": "ACTIVE"
+      },
+      {
+        "name": "CONFIGURATION_ERROR",
+        "probability": 0.10,
+        "status": "ACTIVE"
+      },
+      {
+        "name": "ALIGNMENT_OR_POLARIZATION",
+        "probability": 0.05,
+        "status": "ACTIVE"
+      },
+      {
+        "name": "UNKNOWN_OR_UNMODELED_CAUSE",
+        "probability": 0.03,
+        "status": "ACTIVE"
+      }
+    ]
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "HYP-RULE-001",
+      "rule": "A hypothesis is a temporary explanatory model and shall never be treated as fact merely because ARIA generated it."
+    },
+    {
+      "rule_id": "HYP-RULE-002",
+      "rule": "ARIA shall preserve meaningful competing explanations until evidence justifies weakening, dormancy, rule-out, merging, supersession, or confirmation."
+    },
+    {
+      "rule_id": "HYP-RULE-003",
+      "rule": "The leading hypothesis is the currently strongest candidate, not necessarily the diagnosis."
+    },
+    {
+      "rule_id": "HYP-RULE-004",
+      "rule": "Historical experience influences prior probability but current evidence determines whether the historical expectation remains applicable."
+    },
+    {
+      "rule_id": "HYP-RULE-005",
+      "rule": "ARIA shall not repeatedly resurrect a ruled-out hypothesis without new technical justification."
+    },
+    {
+      "rule_id": "HYP-RULE-006",
+      "rule": "Hypothesis probability changes shall preserve traceability to the evidence and operations responsible for the change."
+    },
+    {
+      "rule_id": "HYP-RULE-007",
+      "rule": "ARIA shall distinguish broad fault domains from specific root causes and progressively refine hypotheses when evidence supports greater specificity."
+    },
+    {
+      "rule_id": "HYP-RULE-008",
+      "rule": "Parent and child hypotheses shall not be independently counted as separate competing causes when they represent the same causal explanation at different levels of specificity."
+    },
+    {
+      "rule_id": "HYP-RULE-009",
+      "rule": "Multiple simultaneous faults are valid and shall not be forced into a single-root-cause model."
+    },
+    {
+      "rule_id": "HYP-RULE-010",
+      "rule": "Unknown is preferable to an unsupported known hypothesis."
+    },
+    {
+      "rule_id": "HYP-RULE-011",
+      "rule": "Hypothesis pruning is a computational optimization and shall not destroy diagnostic history."
+    },
+    {
+      "rule_id": "HYP-RULE-012",
+      "rule": "ARIA shall avoid confirmation bias by selecting diagnostic actions according to discriminatory utility rather than merely seeking evidence supporting the leading hypothesis."
+    },
+    {
+      "rule_id": "HYP-RULE-013",
+      "rule": "Evidence shall be allowed to increase the probability of an initially unlikely hypothesis when the evidence strongly discriminates in its favor."
+    },
+    {
+      "rule_id": "HYP-RULE-014",
+      "rule": "ARIA shall distinguish correlation, mechanism compatibility, isolation evidence, and causal confirmation."
+    },
+    {
+      "rule_id": "HYP-RULE-015",
+      "rule": "When all known hypotheses become weak, ARIA shall broaden the search space rather than artificially promoting the least-wrong known explanation."
+    }
+  ]
+}
