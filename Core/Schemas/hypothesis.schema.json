@@ -1,0 +1,409 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/hypothesis.schema.json",
+  "title": "A.R.I.A. Diagnostic Hypothesis",
+  "description": "Machine-readable schema for a candidate explanation being evaluated within an A.R.I.A. diagnostic case.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "hypothesis_id",
+    "case_id",
+    "hypothesis_entity_id",
+    "status",
+    "current_probability",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^HYP-[0-9]{6,}$",
+      "description": "Permanent identifier for this case-specific hypothesis."
+    },
+
+    "case_id": {
+      "type": "string",
+      "pattern": "^EXP-[0-9]{6,}$"
+    },
+
+    "hypothesis_entity_id": {
+      "type": "string",
+      "pattern": "^ENT-[0-9]{6,}$",
+      "description": "Canonical failure mode, cause, condition, or other entity being evaluated."
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "CANDIDATE",
+        "ACTIVE",
+        "DEPRIORITIZED",
+        "UNLIKELY",
+        "ELIMINATED",
+        "CONFIRMED",
+        "SUPERSEDED"
+      ]
+    },
+
+    "initial_probability": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Probability assigned when the hypothesis first entered the active case."
+    },
+
+    "current_probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Current case-specific probability after applicable evidence and priors have been evaluated."
+    },
+
+    "probability_confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence in the quality of the current probability estimate."
+    },
+
+    "prior": {
+      "type": ["object", "null"],
+      "description": "Structured record of the prior information used when initializing or recalculating this hypothesis.",
+      "additionalProperties": false,
+
+      "properties": {
+        "domain_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "manufacturer_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "product_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "configuration_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "scope_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "team_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "user_prior": {
+          "$ref": "#/$defs/probability_component"
+        },
+
+        "combined_prior": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "method": {
+          "type": ["string", "null"],
+          "description": "Identifier for the method used to combine available priors."
+        }
+      }
+    },
+
+    "supporting_relationship_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^REL-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "supporting_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "contradicting_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "required_evidence_ids": {
+      "type": "array",
+      "description": "Evidence still required to adequately evaluate this hypothesis when known.",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "probability_history": {
+      "type": "array",
+      "description": "Immutable history of material probability changes during the case.",
+      "items": {
+        "$ref": "#/$defs/probability_update"
+      },
+      "default": []
+    },
+
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "manufacturer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_variant_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "configuration_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "topology_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "scope_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "symptom_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        }
+      }
+    },
+
+    "similar_case_ids": {
+      "type": "array",
+      "description": "Historical cases materially contributing to this hypothesis evaluation.",
+      "items": {
+        "type": "string",
+        "pattern": "^EXP-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "sample_size": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "Number of sufficiently comparable historical cases contributing to the empirical prior."
+    },
+
+    "explanation": {
+      "type": ["string", "null"],
+      "description": "Human-readable explanation of why the hypothesis currently has its assigned probability."
+    },
+
+    "elimination": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "eliminated": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "reason": {
+          "type": ["string", "null"]
+        },
+
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EVD-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "eliminated_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "confirmation": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "confirmed": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "confirmation_method": {
+          "type": ["string", "null"]
+        },
+
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EVD-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "confirmed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "entity_id_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "probability_component": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "probability": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "confidence": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "sample_size": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "source_case_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EXP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "probability_update": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "previous_probability",
+        "new_probability",
+        "updated_at"
+      ],
+
+      "properties": {
+        "previous_probability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "new_probability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "trigger_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EVD-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "trigger_event_id": {
+          "type": ["string", "null"],
+          "pattern": "^EVT-[0-9]{6,}$"
+        },
+
+        "reason": {
+          "type": ["string", "null"]
+        },
+
+        "calculation_method": {
+          "type": ["string", "null"]
+        },
+
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
