@@ -1,0 +1,597 @@
+{
+  "registry": "ARIA_CONTEXT_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining contextual dimensions used by A.R.I.A. to determine applicability, similarity, historical relevance, and diagnostic specificity across microwave backhaul cases.",
+
+  "context_types": [
+    {
+      "id": "CTX-PERSON-001",
+      "name": "USER",
+      "canonical_name": "User",
+      "category": "PERSON",
+      "description": "The individual interacting with ARIA or materially participating in the case.",
+      "examples": ["Technician", "Engineer", "Project Manager"]
+    },
+
+    {
+      "id": "CTX-PERSON-002",
+      "name": "TECHNICIAN",
+      "canonical_name": "Technician",
+      "category": "PERSON",
+      "description": "The individual performing or reporting technical field activity."
+    },
+
+    {
+      "id": "CTX-PERSON-003",
+      "name": "ENGINEER",
+      "canonical_name": "Engineer",
+      "category": "PERSON",
+      "description": "The individual responsible for or contributing engineering information, design, interpretation, or technical direction."
+    },
+
+    {
+      "id": "CTX-ORG-001",
+      "name": "CUSTOMER",
+      "canonical_name": "Customer",
+      "category": "ORGANIZATION",
+      "description": "The customer organization associated with the case, project, standard, design, or scope."
+    },
+
+    {
+      "id": "CTX-ORG-002",
+      "name": "CONTRACTOR",
+      "canonical_name": "Contractor",
+      "category": "ORGANIZATION",
+      "description": "The contractor or subcontractor organization performing relevant work."
+    },
+
+    {
+      "id": "CTX-MFG-001",
+      "name": "MANUFACTURER",
+      "canonical_name": "Manufacturer",
+      "category": "EQUIPMENT",
+      "description": "The equipment manufacturer relevant to the case.",
+      "examples": [
+        "Nokia",
+        "Aviat",
+        "Ceragon",
+        "Ericsson"
+      ]
+    },
+
+    {
+      "id": "CTX-PRODUCT-001",
+      "name": "PRODUCT_FAMILY",
+      "canonical_name": "Product Family",
+      "category": "EQUIPMENT",
+      "description": "Broad manufacturer product family relevant to the case.",
+      "examples": [
+        "Nokia Waveence"
+      ]
+    },
+
+    {
+      "id": "CTX-PRODUCT-002",
+      "name": "PRODUCT",
+      "canonical_name": "Product",
+      "category": "EQUIPMENT",
+      "description": "Specific product type or platform relevant to the case.",
+      "examples": [
+        "UBT",
+        "UBT-T"
+      ]
+    },
+
+    {
+      "id": "CTX-PRODUCT-003",
+      "name": "PRODUCT_VARIANT",
+      "canonical_name": "Product Variant",
+      "category": "EQUIPMENT",
+      "description": "A technically meaningful product variant, model, option, or sub-type."
+    },
+
+    {
+      "id": "CTX-PRODUCT-004",
+      "name": "HARDWARE_REVISION",
+      "canonical_name": "Hardware Revision",
+      "category": "EQUIPMENT",
+      "description": "Hardware revision or generation when differences may affect applicability or diagnosis."
+    },
+
+    {
+      "id": "CTX-PRODUCT-005",
+      "name": "COMPONENT",
+      "canonical_name": "Component",
+      "category": "EQUIPMENT",
+      "description": "Specific component participating in the applicable equipment or RF architecture.",
+      "examples": [
+        "Radio",
+        "AIM",
+        "OCM",
+        "Flex Twist",
+        "Antenna"
+      ]
+    },
+
+    {
+      "id": "CTX-SW-001",
+      "name": "FIRMWARE_VERSION",
+      "canonical_name": "Firmware Version",
+      "category": "SOFTWARE",
+      "description": "Installed equipment firmware or software version relevant to technical behavior."
+    },
+
+    {
+      "id": "CTX-SW-002",
+      "name": "SOFTWARE_RELEASE",
+      "canonical_name": "Software Release",
+      "category": "SOFTWARE",
+      "description": "Applicable management-system, controller, or platform software release."
+    },
+
+    {
+      "id": "CTX-RF-001",
+      "name": "FREQUENCY_BAND",
+      "canonical_name": "Frequency Band",
+      "category": "RF",
+      "description": "Microwave frequency band applicable to the case.",
+      "examples": [
+        "6 GHz",
+        "7 GHz",
+        "8 GHz",
+        "11 GHz",
+        "13 GHz",
+        "15 GHz",
+        "18 GHz",
+        "23 GHz",
+        "38 GHz",
+        "60 GHz",
+        "70/80 GHz"
+      ]
+    },
+
+    {
+      "id": "CTX-RF-002",
+      "name": "CHANNEL_FREQUENCY",
+      "canonical_name": "Channel Frequency",
+      "category": "RF",
+      "description": "Specific transmit or receive channel frequency relevant to the case."
+    },
+
+    {
+      "id": "CTX-RF-003",
+      "name": "CHANNEL_BANDWIDTH",
+      "canonical_name": "Channel Bandwidth",
+      "category": "RF",
+      "description": "Configured or engineered RF channel bandwidth."
+    },
+
+    {
+      "id": "CTX-RF-004",
+      "name": "POLARIZATION",
+      "canonical_name": "Polarization",
+      "category": "RF",
+      "description": "Applicable RF polarization or polarization arrangement."
+    },
+
+    {
+      "id": "CTX-RF-005",
+      "name": "MODULATION_PROFILE",
+      "canonical_name": "Modulation Profile",
+      "category": "RF",
+      "description": "Applicable fixed or adaptive modulation configuration."
+    },
+
+    {
+      "id": "CTX-TOPOLOGY-001",
+      "name": "RADIO_TOPOLOGY",
+      "canonical_name": "Radio Topology",
+      "category": "TOPOLOGY",
+      "description": "Logical and physical microwave radio architecture.",
+      "examples": [
+        "1+0",
+        "1+1",
+        "2+0",
+        "4+0"
+      ]
+    },
+
+    {
+      "id": "CTX-TOPOLOGY-002",
+      "name": "DIVERSITY_MODE",
+      "canonical_name": "Diversity Mode",
+      "category": "TOPOLOGY",
+      "description": "Applicable diversity architecture or mode.",
+      "examples": [
+        "Space Diversity",
+        "Frequency Diversity"
+      ]
+    },
+
+    {
+      "id": "CTX-TOPOLOGY-003",
+      "name": "PROTECTION_MODE",
+      "canonical_name": "Protection Mode",
+      "category": "TOPOLOGY",
+      "description": "Applicable radio protection arrangement."
+    },
+
+    {
+      "id": "CTX-TOPOLOGY-004",
+      "name": "XPIC_STATE",
+      "canonical_name": "XPIC State",
+      "category": "TOPOLOGY",
+      "description": "Whether XPIC is applicable and its relevant configured or operational state."
+    },
+
+    {
+      "id": "CTX-TOPOLOGY-005",
+      "name": "MAIN_DIVERSITY_ROLE",
+      "canonical_name": "Main/Diversity Role",
+      "category": "TOPOLOGY",
+      "description": "Whether an observation, component, radio, or path applies to Main, Diversity, or another defined RF role."
+    },
+
+    {
+      "id": "CTX-PATH-001",
+      "name": "PATH",
+      "canonical_name": "Microwave Path",
+      "category": "PATH",
+      "description": "The specific point-to-point microwave path associated with the case."
+    },
+
+    {
+      "id": "CTX-PATH-002",
+      "name": "PATH_DISTANCE",
+      "canonical_name": "Path Distance",
+      "category": "PATH",
+      "description": "Engineered or actual distance between microwave endpoints."
+    },
+
+    {
+      "id": "CTX-PATH-003",
+      "name": "SITE",
+      "canonical_name": "Site",
+      "category": "PATH",
+      "description": "Specific telecommunications site associated with the case."
+    },
+
+    {
+      "id": "CTX-PATH-004",
+      "name": "ENDPOINT",
+      "canonical_name": "Path Endpoint",
+      "category": "PATH",
+      "description": "Specific endpoint or side of a microwave path.",
+      "examples": [
+        "Site A",
+        "Site B"
+      ]
+    },
+
+    {
+      "id": "CTX-PATH-005",
+      "name": "ANTENNA_HEIGHT",
+      "canonical_name": "Antenna Height",
+      "category": "PATH",
+      "description": "Installed or designed antenna centerline height relevant to the case."
+    },
+
+    {
+      "id": "CTX-PATH-006",
+      "name": "ANTENNA_MODEL",
+      "canonical_name": "Antenna Model",
+      "category": "PATH",
+      "description": "Specific antenna model or technically meaningful antenna type."
+    },
+
+    {
+      "id": "CTX-PATH-007",
+      "name": "ANTENNA_DIAMETER",
+      "canonical_name": "Antenna Diameter",
+      "category": "PATH",
+      "description": "Applicable microwave antenna diameter."
+    },
+
+    {
+      "id": "CTX-SCOPE-001",
+      "name": "SCOPE_OF_WORK",
+      "canonical_name": "Scope of Work",
+      "category": "WORK",
+      "description": "Technical work scope associated with the case.",
+      "examples": [
+        "New Installation",
+        "Microwave Upgrade",
+        "Radio Replacement",
+        "Antenna Replacement",
+        "Troubleshooting",
+        "Decommission"
+      ]
+    },
+
+    {
+      "id": "CTX-SCOPE-002",
+      "name": "PROJECT_PHASE",
+      "canonical_name": "Project Phase",
+      "category": "WORK",
+      "description": "Lifecycle phase during which the condition occurred.",
+      "examples": [
+        "Engineering",
+        "Preconstruction",
+        "Installation",
+        "Commissioning",
+        "Integration",
+        "Acceptance",
+        "Maintenance",
+        "Troubleshooting"
+      ]
+    },
+
+    {
+      "id": "CTX-SCOPE-003",
+      "name": "WORK_ACTIVITY",
+      "canonical_name": "Work Activity",
+      "category": "WORK",
+      "description": "Specific activity being performed when the condition was observed."
+    },
+
+    {
+      "id": "CTX-SCOPE-004",
+      "name": "RECENT_CHANGE",
+      "canonical_name": "Recent Change",
+      "category": "WORK",
+      "description": "A recent modification, replacement, configuration change, installation activity, or other event potentially relevant to the current condition."
+    },
+
+    {
+      "id": "CTX-ENV-001",
+      "name": "WEATHER_CONDITION",
+      "canonical_name": "Weather Condition",
+      "category": "ENVIRONMENT",
+      "description": "Relevant weather condition at or near the microwave path."
+    },
+
+    {
+      "id": "CTX-ENV-002",
+      "name": "PRECIPITATION",
+      "canonical_name": "Precipitation",
+      "category": "ENVIRONMENT",
+      "description": "Relevant precipitation condition or rate."
+    },
+
+    {
+      "id": "CTX-ENV-003",
+      "name": "WIND_CONDITION",
+      "canonical_name": "Wind Condition",
+      "category": "ENVIRONMENT",
+      "description": "Relevant wind speed, gust, or direction condition."
+    },
+
+    {
+      "id": "CTX-ENV-004",
+      "name": "TEMPERATURE_CONDITION",
+      "canonical_name": "Temperature Condition",
+      "category": "ENVIRONMENT",
+      "description": "Relevant ambient or equipment temperature condition."
+    },
+
+    {
+      "id": "CTX-ENV-005",
+      "name": "TERRAIN_TYPE",
+      "canonical_name": "Terrain Type",
+      "category": "ENVIRONMENT",
+      "description": "Terrain characteristics potentially relevant to propagation, access, or installation."
+    },
+
+    {
+      "id": "CTX-ENV-006",
+      "name": "PATH_ENVIRONMENT",
+      "canonical_name": "Path Environment",
+      "category": "ENVIRONMENT",
+      "description": "Environmental characteristics of the propagation path.",
+      "examples": [
+        "Urban",
+        "Suburban",
+        "Rural",
+        "Desert",
+        "Mountain",
+        "Coastal"
+      ]
+    },
+
+    {
+      "id": "CTX-CASE-001",
+      "name": "SYMPTOM_PATTERN",
+      "canonical_name": "Symptom Pattern",
+      "category": "CASE",
+      "description": "Combination and relationship of symptoms present in a case."
+    },
+
+    {
+      "id": "CTX-CASE-002",
+      "name": "FAILURE_MODE",
+      "canonical_name": "Failure Mode Context",
+      "category": "CASE",
+      "description": "Confirmed or candidate canonical failure mode relevant to contextual comparison."
+    },
+
+    {
+      "id": "CTX-CASE-003",
+      "name": "CASE_STAGE",
+      "canonical_name": "Case Stage",
+      "category": "CASE",
+      "description": "Current diagnostic lifecycle stage.",
+      "examples": [
+        "Intake",
+        "Evidence Gathering",
+        "Hypothesis Evaluation",
+        "Isolation",
+        "Correction",
+        "Validation",
+        "Closed"
+      ]
+    },
+
+    {
+      "id": "CTX-CASE-004",
+      "name": "PRIOR_ACTION_PATTERN",
+      "canonical_name": "Prior Action Pattern",
+      "category": "CASE",
+      "description": "Relevant sequence or combination of diagnostic actions already performed."
+    },
+
+    {
+      "id": "CTX-CASE-005",
+      "name": "PRIOR_OUTCOME_PATTERN",
+      "canonical_name": "Prior Outcome Pattern",
+      "category": "CASE",
+      "description": "Relevant sequence or combination of outcomes already observed."
+    },
+
+    {
+      "id": "CTX-TIME-001",
+      "name": "TIME_SINCE_INSTALLATION",
+      "canonical_name": "Time Since Installation",
+      "category": "TEMPORAL",
+      "description": "Elapsed time between installation or commissioning and the current condition."
+    },
+
+    {
+      "id": "CTX-TIME-002",
+      "name": "TIME_SINCE_CHANGE",
+      "canonical_name": "Time Since Change",
+      "category": "TEMPORAL",
+      "description": "Elapsed time between a relevant change and symptom onset."
+    },
+
+    {
+      "id": "CTX-TIME-003",
+      "name": "FAILURE_DURATION",
+      "canonical_name": "Failure Duration",
+      "category": "TEMPORAL",
+      "description": "Elapsed duration of the observed abnormal condition."
+    },
+
+    {
+      "id": "CTX-TIME-004",
+      "name": "RECURRENCE_INTERVAL",
+      "canonical_name": "Recurrence Interval",
+      "category": "TEMPORAL",
+      "description": "Elapsed time between prior resolution and recurrence of a materially related condition."
+    }
+  ],
+
+  "match_states": [
+    "EXACT_MATCH",
+    "STRONG_MATCH",
+    "PARTIAL_MATCH",
+    "WEAK_MATCH",
+    "CONFLICT",
+    "UNKNOWN",
+    "NOT_APPLICABLE"
+  ],
+
+  "importance_classes": {
+    "CRITICAL": "A mismatch may substantially alter technical applicability or diagnostic probability.",
+    "HIGH": "A match or mismatch is normally important to diagnostic similarity.",
+    "MODERATE": "Context may improve relevance but is not normally decisive alone.",
+    "LOW": "Context provides secondary specificity.",
+    "DYNAMIC": "Importance depends on the hypothesis, symptom, product, action, or technical question being evaluated."
+  },
+
+  "context_importance_defaults": {
+    "MANUFACTURER": "HIGH",
+    "PRODUCT_FAMILY": "HIGH",
+    "PRODUCT": "CRITICAL",
+    "PRODUCT_VARIANT": "CRITICAL",
+    "HARDWARE_REVISION": "DYNAMIC",
+    "FIRMWARE_VERSION": "DYNAMIC",
+    "FREQUENCY_BAND": "HIGH",
+    "RADIO_TOPOLOGY": "HIGH",
+    "DIVERSITY_MODE": "HIGH",
+    "XPIC_STATE": "DYNAMIC",
+    "SCOPE_OF_WORK": "HIGH",
+    "PROJECT_PHASE": "HIGH",
+    "SYMPTOM_PATTERN": "CRITICAL",
+    "USER": "DYNAMIC",
+    "CUSTOMER": "DYNAMIC",
+    "WEATHER_CONDITION": "DYNAMIC",
+    "RECENT_CHANGE": "HIGH"
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "CTX-RULE-001",
+      "rule": "Context determines applicability and relevance but shall not independently establish causation."
+    },
+
+    {
+      "rule_id": "CTX-RULE-002",
+      "rule": "ARIA shall not treat all historical cases as equally relevant. Historical evidence shall be weighted according to similarity to the current case."
+    },
+
+    {
+      "rule_id": "CTX-RULE-003",
+      "rule": "Context similarity shall be multidimensional. No single context field shall automatically determine overall case similarity unless technical rules establish that field as decisive."
+    },
+
+    {
+      "rule_id": "CTX-RULE-004",
+      "rule": "Context importance may change according to the hypothesis being evaluated. Firmware may be highly important to a software defect and nearly irrelevant to a visibly damaged waveguide."
+    },
+
+    {
+      "rule_id": "CTX-RULE-005",
+      "rule": "A manufacturer match shall not substitute for a product match when product-specific technical differences materially affect applicability."
+    },
+
+    {
+      "rule_id": "CTX-RULE-006",
+      "rule": "A product-family match shall not automatically imply that procedures, ports, configurations, alarms, or failure mechanisms are identical across products or variants."
+    },
+
+    {
+      "rule_id": "CTX-RULE-007",
+      "rule": "User-specific history may modify diagnostic priors, communication strategy, expected information quality, and route selection, but shall not override validated current technical evidence."
+    },
+
+    {
+      "rule_id": "CTX-RULE-008",
+      "rule": "Customer context shall influence reasoning only where customer-specific design, standards, configuration, workflow, acceptance criteria, or historical patterns are technically relevant."
+    },
+
+    {
+      "rule_id": "CTX-RULE-009",
+      "rule": "Missing context shall be represented as unknown rather than assumed."
+    },
+
+    {
+      "rule_id": "CTX-RULE-010",
+      "rule": "A conflict in a critical context dimension may sharply reduce the relevance of a historical case even when other dimensions match."
+    },
+
+    {
+      "rule_id": "CTX-RULE-011",
+      "rule": "ARIA shall preserve hierarchical context relationships such as Manufacturer to Product Family to Product to Product Variant without requiring knowledge to be stored as a hierarchical directory."
+    },
+
+    {
+      "rule_id": "CTX-RULE-012",
+      "rule": "Context entities shall be reusable graph entities rather than duplicated descriptive strings whenever a canonical entity exists."
+    },
+
+    {
+      "rule_id": "CTX-RULE-013",
+      "rule": "Recent changes occurring shortly before symptom onset may receive increased diagnostic relevance but shall not automatically be assumed causal."
+    },
+
+    {
+      "rule_id": "CTX-RULE-014",
+      "rule": "The same historical case may have different similarity scores when evaluated against different hypotheses."
+    },
+
+    {
+      "rule_id": "CTX-RULE-015",
+      "rule": "Similarity shall support probability estimation and retrieval but shall not be treated as proof that two cases share the same root cause."
+    }
+  ]
+}
