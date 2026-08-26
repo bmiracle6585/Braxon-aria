@@ -1,0 +1,522 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/route_step.schema.json",
+  "title": "A.R.I.A. Diagnostic Route Step",
+  "description": "Machine-readable schema for a case-specific diagnostic action considered, selected, executed, skipped, or superseded by the A.R.I.A. routing engine.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "route_step_id",
+    "case_id",
+    "action_type",
+    "status",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "route_step_id": {
+      "type": "string",
+      "pattern": "^RTE-[0-9]{6,}$",
+      "description": "Permanent identifier for this case-specific diagnostic route step."
+    },
+
+    "case_id": {
+      "type": "string",
+      "pattern": "^EXP-[0-9]{6,}$"
+    },
+
+    "sequence_number": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Execution order when the step becomes part of the active route."
+    },
+
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "ASK_QUESTION",
+        "REQUEST_OBSERVATION",
+        "REQUEST_MEASUREMENT",
+        "REQUEST_ARTIFACT",
+        "PERFORM_TEST",
+        "VERIFY_CONFIGURATION",
+        "PHYSICAL_INSPECTION",
+        "COMPARE_VALUES",
+        "REVIEW_LOG",
+        "REVIEW_ALARM",
+        "REVIEW_DOCUMENT",
+        "CORRECTIVE_ACTION",
+        "ESCALATE",
+        "WAIT",
+        "OTHER"
+      ]
+    },
+
+    "action_entity_id": {
+      "type": ["string", "null"],
+      "pattern": "^ENT-[0-9]{6,}$",
+      "description": "Canonical test, procedure, corrective action, or other reusable action represented by this route step."
+    },
+
+    "instruction": {
+      "type": ["string", "null"],
+      "description": "Human-readable instruction for performing the route step."
+    },
+
+    "reason": {
+      "type": ["string", "null"],
+      "description": "Explanation of why this step is relevant to the current diagnostic state."
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "CANDIDATE",
+        "SELECTED",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "SKIPPED",
+        "BLOCKED",
+        "FAILED",
+        "SUPERSEDED",
+        "CANCELLED"
+      ]
+    },
+
+    "target_hypothesis_ids": {
+      "type": "array",
+      "description": "Hypotheses this route step is expected to help distinguish, support, contradict, eliminate, or confirm.",
+      "items": {
+        "type": "string",
+        "pattern": "^HYP-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "supporting_relationship_ids": {
+      "type": "array",
+      "description": "Canonical graph relationships establishing why this action is technically relevant.",
+      "items": {
+        "type": "string",
+        "pattern": "^REL-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "input_evidence_ids": {
+      "type": "array",
+      "description": "Existing evidence materially contributing to selection of this route step.",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "expected_evidence": {
+      "type": "array",
+      "description": "Types of evidence expected to result from completing this step.",
+      "items": {
+        "$ref": "#/$defs/expected_evidence"
+      },
+      "default": []
+    },
+
+    "resulting_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "routing_metrics": {
+      "type": "object",
+      "description": "Metrics used to compare this candidate action against alternative next steps.",
+      "additionalProperties": false,
+
+      "properties": {
+        "information_gain": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated ability of the step to reduce diagnostic uncertainty."
+        },
+
+        "discrimination_power": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated ability to distinguish among currently plausible hypotheses."
+        },
+
+        "success_likelihood": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated probability that the step can be successfully completed and produce usable evidence."
+        },
+
+        "execution_cost": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Normalized expected resource cost of performing the step."
+        },
+
+        "time_cost": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Normalized expected time cost."
+        },
+
+        "operational_disruption": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Normalized expected operational impact."
+        },
+
+        "risk": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Normalized technical, operational, or safety risk used by the routing model."
+        },
+
+        "historical_effectiveness": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Observed effectiveness of this action in sufficiently comparable validated historical cases."
+        },
+
+        "user_friction": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated burden or resistance associated with requesting this action from the current user."
+        },
+
+        "route_value": {
+          "type": ["number", "null"],
+          "description": "Calculated comparative value of this candidate next step. This is not a diagnostic probability."
+        },
+
+        "calculation_method": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "historical_support": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "similar_case_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^EXP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "sample_size": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "successful_cases": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "unsuccessful_cases": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "average_steps_saved": {
+          "type": ["number", "null"]
+        },
+
+        "average_time_saved_seconds": {
+          "type": ["number", "null"]
+        }
+      }
+    },
+
+    "prerequisite_route_step_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^RTE-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "prerequisite_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "blocked_by": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocker"
+      },
+      "default": []
+    },
+
+    "alternative_route_step_ids": {
+      "type": "array",
+      "description": "Other candidate next steps evaluated at the same decision point.",
+      "items": {
+        "type": "string",
+        "pattern": "^RTE-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "selection": {
+      "type": "object",
+      "description": "Record of the routing decision that selected or rejected this step.",
+      "additionalProperties": false,
+
+      "properties": {
+        "selected": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "decision_event_id": {
+          "type": ["string", "null"],
+          "pattern": "^EVT-[0-9]{6,}$"
+        },
+
+        "selected_over_route_step_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^RTE-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "selection_reason": {
+          "type": ["string", "null"]
+        },
+
+        "selected_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "execution": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "performed_by": {
+          "type": ["string", "null"]
+        },
+
+        "started_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "completed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "duration_seconds": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "successful": {
+          "type": ["boolean", "null"]
+        },
+
+        "execution_notes": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "outcome": {
+      "type": ["object", "null"],
+      "description": "Diagnostic effect produced by this route step.",
+      "additionalProperties": false,
+
+      "properties": {
+        "produced_useful_evidence": {
+          "type": ["boolean", "null"]
+        },
+
+        "changed_route": {
+          "type": ["boolean", "null"]
+        },
+
+        "hypotheses_eliminated": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^HYP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "hypotheses_strengthened": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^HYP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "hypotheses_weakened": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^HYP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "hypotheses_confirmed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^HYP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "information_gain_observed": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "outcome_notes": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "supersedes_route_step_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^RTE-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "superseded_by_route_step_id": {
+      "type": ["string", "null"],
+      "pattern": "^RTE-[0-9]{6,}$"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "expected_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "evidence_type": {
+          "type": ["string", "null"]
+        },
+
+        "measurement_entity_id": {
+          "type": ["string", "null"],
+          "pattern": "^ENT-[0-9]{6,}$"
+        },
+
+        "description": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "blocker_type": {
+          "type": "string",
+          "enum": [
+            "MISSING_EVIDENCE",
+            "MISSING_TOOL",
+            "MISSING_ACCESS",
+            "MISSING_PERMISSION",
+            "SAFETY_CONSTRAINT",
+            "OPERATIONAL_CONSTRAINT",
+            "USER_UNAVAILABLE",
+            "SYSTEM_UNAVAILABLE",
+            "OTHER"
+          ]
+        },
+
+        "description": {
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}
