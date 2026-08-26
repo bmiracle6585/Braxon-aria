@@ -1,0 +1,551 @@
+{
+  "registry": "ARIA_RELATIONSHIP_TYPES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical relationship types permitted within the A.R.I.A. Knowledge Graph.",
+
+  "relationship_types": [
+    {
+      "type": "MANUFACTURED_BY",
+      "category": "IDENTITY",
+      "direction": "DIRECTED",
+      "inverse": "MANUFACTURES",
+      "description": "Associates equipment, products, components, tools, or software with their manufacturer."
+    },
+
+    {
+      "type": "MANUFACTURES",
+      "category": "IDENTITY",
+      "direction": "DIRECTED",
+      "inverse": "MANUFACTURED_BY",
+      "description": "Associates a manufacturer with equipment, products, components, tools, or software it manufactures."
+    },
+
+    {
+      "type": "MEMBER_OF",
+      "category": "HIERARCHY",
+      "direction": "DIRECTED",
+      "inverse": "HAS_MEMBER",
+      "description": "Associates an entity with a broader canonical family, group, or classification."
+    },
+
+    {
+      "type": "HAS_MEMBER",
+      "category": "HIERARCHY",
+      "direction": "DIRECTED",
+      "inverse": "MEMBER_OF",
+      "description": "Associates a canonical family, group, or classification with one of its members."
+    },
+
+    {
+      "type": "VARIANT_OF",
+      "category": "HIERARCHY",
+      "direction": "DIRECTED",
+      "inverse": "HAS_VARIANT",
+      "description": "Associates a product or component variant with its parent canonical product."
+    },
+
+    {
+      "type": "HAS_VARIANT",
+      "category": "HIERARCHY",
+      "direction": "DIRECTED",
+      "inverse": "VARIANT_OF",
+      "description": "Associates a canonical product with one of its variants."
+    },
+
+    {
+      "type": "COMPONENT_OF",
+      "category": "STRUCTURE",
+      "direction": "DIRECTED",
+      "inverse": "HAS_COMPONENT",
+      "description": "Associates a physical or logical component with the system or assembly containing it."
+    },
+
+    {
+      "type": "HAS_COMPONENT",
+      "category": "STRUCTURE",
+      "direction": "DIRECTED",
+      "inverse": "COMPONENT_OF",
+      "description": "Associates a system or assembly with one of its components."
+    },
+
+    {
+      "type": "HAS_INTERFACE",
+      "category": "STRUCTURE",
+      "direction": "DIRECTED",
+      "inverse": "INTERFACE_OF",
+      "description": "Associates equipment or a component with an interface it provides."
+    },
+
+    {
+      "type": "INTERFACE_OF",
+      "category": "STRUCTURE",
+      "direction": "DIRECTED",
+      "inverse": "HAS_INTERFACE",
+      "description": "Associates an interface with the equipment or component providing it."
+    },
+
+    {
+      "type": "HAS_PORT",
+      "category": "STRUCTURE",
+      "direction": "DIRECTED",
+      "inverse": "PORT_OF",
+      "description": "Associates equipment, a component, or interface with a specific port."
+    },
+
+    {
+      "type": "PORT_OF",
+      "category": "STRUCTURE",
+      "direction": "DIRECTED",
+      "inverse": "HAS_PORT",
+      "description": "Associates a port with the equipment, component, or interface containing it."
+    },
+
+    {
+      "type": "CONNECTS_TO",
+      "category": "CONNECTIVITY",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "CONNECTS_TO",
+      "description": "Indicates a valid physical or logical connection between entities."
+    },
+
+    {
+      "type": "MATES_WITH",
+      "category": "CONNECTIVITY",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "MATES_WITH",
+      "description": "Indicates that two physical entities are designed or approved to mechanically or electrically mate."
+    },
+
+    {
+      "type": "FEEDS",
+      "category": "CONNECTIVITY",
+      "direction": "DIRECTED",
+      "inverse": "FED_BY",
+      "description": "Indicates signal, RF, power, timing, or another relevant flow from one entity into another."
+    },
+
+    {
+      "type": "FED_BY",
+      "category": "CONNECTIVITY",
+      "direction": "DIRECTED",
+      "inverse": "FEEDS",
+      "description": "Indicates that an entity receives signal, RF, power, timing, or another relevant flow from another entity."
+    },
+
+    {
+      "type": "PRECEDES_IN_PATH",
+      "category": "CONNECTIVITY",
+      "direction": "DIRECTED",
+      "inverse": "FOLLOWS_IN_PATH",
+      "description": "Indicates ordering within a physical, logical, or RF path."
+    },
+
+    {
+      "type": "FOLLOWS_IN_PATH",
+      "category": "CONNECTIVITY",
+      "direction": "DIRECTED",
+      "inverse": "PRECEDES_IN_PATH",
+      "description": "Indicates that an entity follows another entity within a physical, logical, or RF path."
+    },
+
+    {
+      "type": "SUPPORTS",
+      "category": "CAPABILITY",
+      "direction": "DIRECTED",
+      "inverse": "SUPPORTED_BY",
+      "description": "Indicates that an entity supports a feature, topology, configuration, function, or capability."
+    },
+
+    {
+      "type": "SUPPORTED_BY",
+      "category": "CAPABILITY",
+      "direction": "DIRECTED",
+      "inverse": "SUPPORTS",
+      "description": "Indicates that a feature, topology, configuration, function, or capability is supported by another entity."
+    },
+
+    {
+      "type": "COMPATIBLE_WITH",
+      "category": "COMPATIBILITY",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "COMPATIBLE_WITH",
+      "description": "Indicates validated technical compatibility between entities within defined applicability."
+    },
+
+    {
+      "type": "INCOMPATIBLE_WITH",
+      "category": "COMPATIBILITY",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "INCOMPATIBLE_WITH",
+      "description": "Indicates known technical incompatibility between entities within defined applicability."
+    },
+
+    {
+      "type": "REQUIRES",
+      "category": "REQUIREMENT",
+      "direction": "DIRECTED",
+      "inverse": "REQUIRED_BY",
+      "description": "Indicates that one entity requires another entity, state, condition, configuration, procedure, or requirement."
+    },
+
+    {
+      "type": "REQUIRED_BY",
+      "category": "REQUIREMENT",
+      "direction": "DIRECTED",
+      "inverse": "REQUIRES",
+      "description": "Inverse of REQUIRES."
+    },
+
+    {
+      "type": "PROHIBITS",
+      "category": "REQUIREMENT",
+      "direction": "DIRECTED",
+      "inverse": "PROHIBITED_BY",
+      "description": "Indicates that a requirement, standard, configuration, or condition prohibits another state or action."
+    },
+
+    {
+      "type": "PROHIBITED_BY",
+      "category": "REQUIREMENT",
+      "direction": "DIRECTED",
+      "inverse": "PROHIBITS",
+      "description": "Inverse of PROHIBITS."
+    },
+
+    {
+      "type": "CONSTRAINS",
+      "category": "REQUIREMENT",
+      "direction": "DIRECTED",
+      "inverse": "CONSTRAINED_BY",
+      "description": "Indicates that one entity imposes a technical or operational constraint upon another."
+    },
+
+    {
+      "type": "CONSTRAINED_BY",
+      "category": "REQUIREMENT",
+      "direction": "DIRECTED",
+      "inverse": "CONSTRAINS",
+      "description": "Inverse of CONSTRAINS."
+    },
+
+    {
+      "type": "APPLIES_TO",
+      "category": "APPLICABILITY",
+      "direction": "DIRECTED",
+      "inverse": "GOVERNED_BY",
+      "description": "Indicates that a requirement, procedure, standard, constraint, or other knowledge entity applies to another entity."
+    },
+
+    {
+      "type": "GOVERNED_BY",
+      "category": "APPLICABILITY",
+      "direction": "DIRECTED",
+      "inverse": "APPLIES_TO",
+      "description": "Indicates that an entity is governed by an applicable requirement, procedure, standard, or constraint."
+    },
+
+    {
+      "type": "VALID_FOR",
+      "category": "APPLICABILITY",
+      "direction": "DIRECTED",
+      "inverse": null,
+      "description": "Indicates known validity within a specific product, revision, configuration, frequency, topology, or other context."
+    },
+
+    {
+      "type": "SUPERSEDES",
+      "category": "VERSIONING",
+      "direction": "DIRECTED",
+      "inverse": "SUPERSEDED_BY",
+      "description": "Indicates that one canonical entity replaces an earlier entity or technical state."
+    },
+
+    {
+      "type": "SUPERSEDED_BY",
+      "category": "VERSIONING",
+      "direction": "DIRECTED",
+      "inverse": "SUPERSEDES",
+      "description": "Indicates that an entity has been replaced by another."
+    },
+
+    {
+      "type": "CAN_CAUSE",
+      "category": "CAUSAL",
+      "direction": "DIRECTED",
+      "inverse": "CAN_BE_CAUSED_BY",
+      "description": "Indicates that one condition, failure mode, configuration, component state, or root cause can produce another condition or symptom."
+    },
+
+    {
+      "type": "CAN_BE_CAUSED_BY",
+      "category": "CAUSAL",
+      "direction": "DIRECTED",
+      "inverse": "CAN_CAUSE",
+      "description": "Inverse of CAN_CAUSE."
+    },
+
+    {
+      "type": "CONTRIBUTES_TO",
+      "category": "CAUSAL",
+      "direction": "DIRECTED",
+      "inverse": "HAS_CONTRIBUTOR",
+      "description": "Indicates a contributing but not necessarily sufficient causal relationship."
+    },
+
+    {
+      "type": "HAS_CONTRIBUTOR",
+      "category": "CAUSAL",
+      "direction": "DIRECTED",
+      "inverse": "CONTRIBUTES_TO",
+      "description": "Inverse of CONTRIBUTES_TO."
+    },
+
+    {
+      "type": "CAN_EXHIBIT",
+      "category": "DIAGNOSTIC",
+      "direction": "DIRECTED",
+      "inverse": "OBSERVED_ON",
+      "description": "Indicates that equipment, configuration, or a system can exhibit a symptom, alarm, failure mode, or measurable condition."
+    },
+
+    {
+      "type": "OBSERVED_ON",
+      "category": "DIAGNOSTIC",
+      "direction": "DIRECTED",
+      "inverse": "CAN_EXHIBIT",
+      "description": "Associates an observable technical condition with equipment or a system on which it may occur."
+    },
+
+    {
+      "type": "INDICATES",
+      "category": "DIAGNOSTIC",
+      "direction": "DIRECTED",
+      "inverse": "INDICATED_BY",
+      "description": "Indicates that an observation, alarm, measurement, or symptom provides evidence toward another technical condition."
+    },
+
+    {
+      "type": "INDICATED_BY",
+      "category": "DIAGNOSTIC",
+      "direction": "DIRECTED",
+      "inverse": "INDICATES",
+      "description": "Inverse of INDICATES."
+    },
+
+    {
+      "type": "CONSISTENT_WITH",
+      "category": "DIAGNOSTIC",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "CONSISTENT_WITH",
+      "description": "Indicates that an observation or condition is technically consistent with another condition without establishing causation."
+    },
+
+    {
+      "type": "CONTRADICTS",
+      "category": "DIAGNOSTIC",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "CONTRADICTS",
+      "description": "Indicates that one technical condition or evidence pattern materially conflicts with another."
+    },
+
+    {
+      "type": "TESTED_BY",
+      "category": "DIAGNOSTIC",
+      "direction": "DIRECTED",
+      "inverse": "TESTS_FOR",
+      "description": "Associates a hypothesis, condition, component, or failure mode with a diagnostic test capable of evaluating it."
+    },
+
+    {
+      "type": "TESTS_FOR",
+      "category": "DIAGNOSTIC",
+      "direction": "DIRECTED",
+      "inverse": "TESTED_BY",
+      "description": "Associates a diagnostic test with the conditions it can evaluate."
+    },
+
+    {
+      "type": "MEASURED_BY",
+      "category": "MEASUREMENT",
+      "direction": "DIRECTED",
+      "inverse": "MEASURES",
+      "description": "Associates a measurable quantity or condition with a tool, instrument, or system capable of measuring it."
+    },
+
+    {
+      "type": "MEASURES",
+      "category": "MEASUREMENT",
+      "direction": "DIRECTED",
+      "inverse": "MEASURED_BY",
+      "description": "Associates a tool, instrument, or system with a quantity it measures."
+    },
+
+    {
+      "type": "MEASURED_IN",
+      "category": "MEASUREMENT",
+      "direction": "DIRECTED",
+      "inverse": "UNIT_FOR",
+      "description": "Associates a measurable quantity with its canonical unit."
+    },
+
+    {
+      "type": "UNIT_FOR",
+      "category": "MEASUREMENT",
+      "direction": "DIRECTED",
+      "inverse": "MEASURED_IN",
+      "description": "Associates a unit with a measurable quantity."
+    },
+
+    {
+      "type": "HAS_THRESHOLD",
+      "category": "MEASUREMENT",
+      "direction": "DIRECTED",
+      "inverse": "THRESHOLD_FOR",
+      "description": "Associates a measurement, alarm, test, or technical state with an applicable threshold or tolerance."
+    },
+
+    {
+      "type": "THRESHOLD_FOR",
+      "category": "MEASUREMENT",
+      "direction": "DIRECTED",
+      "inverse": "HAS_THRESHOLD",
+      "description": "Inverse of HAS_THRESHOLD."
+    },
+
+    {
+      "type": "RESOLVED_BY",
+      "category": "REMEDIATION",
+      "direction": "DIRECTED",
+      "inverse": "RESOLVES",
+      "description": "Associates a root cause, failure mode, or technical condition with a corrective action capable of resolving it."
+    },
+
+    {
+      "type": "RESOLVES",
+      "category": "REMEDIATION",
+      "direction": "DIRECTED",
+      "inverse": "RESOLVED_BY",
+      "description": "Associates a corrective action with a condition it can resolve."
+    },
+
+    {
+      "type": "MITIGATED_BY",
+      "category": "REMEDIATION",
+      "direction": "DIRECTED",
+      "inverse": "MITIGATES",
+      "description": "Associates a condition or risk with an action that can reduce its impact without necessarily eliminating its root cause."
+    },
+
+    {
+      "type": "MITIGATES",
+      "category": "REMEDIATION",
+      "direction": "DIRECTED",
+      "inverse": "MITIGATED_BY",
+      "description": "Associates an action with a condition or risk whose impact it can reduce."
+    },
+
+    {
+      "type": "PERFORMED_WITH",
+      "category": "PROCEDURAL",
+      "direction": "DIRECTED",
+      "inverse": null,
+      "description": "Associates a test, procedure, installation action, or corrective action with a required or appropriate tool."
+    },
+
+    {
+      "type": "PRECEDES",
+      "category": "PROCEDURAL",
+      "direction": "DIRECTED",
+      "inverse": "FOLLOWS",
+      "description": "Indicates valid or required procedural ordering."
+    },
+
+    {
+      "type": "FOLLOWS",
+      "category": "PROCEDURAL",
+      "direction": "DIRECTED",
+      "inverse": "PRECEDES",
+      "description": "Inverse of PRECEDES."
+    },
+
+    {
+      "type": "DEPENDS_ON",
+      "category": "DEPENDENCY",
+      "direction": "DIRECTED",
+      "inverse": "DEPENDENCY_OF",
+      "description": "Indicates that validity, operation, execution, or reasoning involving one entity depends upon another."
+    },
+
+    {
+      "type": "DEPENDENCY_OF",
+      "category": "DEPENDENCY",
+      "direction": "DIRECTED",
+      "inverse": "DEPENDS_ON",
+      "description": "Inverse of DEPENDS_ON."
+    },
+
+    {
+      "type": "AFFECTS",
+      "category": "INFLUENCE",
+      "direction": "DIRECTED",
+      "inverse": "AFFECTED_BY",
+      "description": "Indicates a known technical influence where stronger causal terminology is not justified."
+    },
+
+    {
+      "type": "AFFECTED_BY",
+      "category": "INFLUENCE",
+      "direction": "DIRECTED",
+      "inverse": "AFFECTS",
+      "description": "Inverse of AFFECTS."
+    },
+
+    {
+      "type": "INCREASES",
+      "category": "INFLUENCE",
+      "direction": "DIRECTED",
+      "inverse": "INCREASED_BY",
+      "description": "Indicates that one condition tends to increase a measurement, probability, risk, or technical quantity."
+    },
+
+    {
+      "type": "INCREASED_BY",
+      "category": "INFLUENCE",
+      "direction": "DIRECTED",
+      "inverse": "INCREASES",
+      "description": "Inverse of INCREASES."
+    },
+
+    {
+      "type": "DECREASES",
+      "category": "INFLUENCE",
+      "direction": "DIRECTED",
+      "inverse": "DECREASED_BY",
+      "description": "Indicates that one condition tends to decrease a measurement, probability, risk, or technical quantity."
+    },
+
+    {
+      "type": "DECREASED_BY",
+      "category": "INFLUENCE",
+      "direction": "DIRECTED",
+      "inverse": "DECREASES",
+      "description": "Inverse of DECREASES."
+    },
+
+    {
+      "type": "EQUIVALENT_TO",
+      "category": "SEMANTIC",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "EQUIVALENT_TO",
+      "description": "Indicates validated semantic or technical equivalence between canonical entities."
+    },
+
+    {
+      "type": "RELATED_TO",
+      "category": "SEMANTIC",
+      "direction": "BIDIRECTIONAL",
+      "inverse": "RELATED_TO",
+      "description": "Generic relationship permitted only when a more precise canonical relationship cannot yet be established."
+    }
+  ]
+}
