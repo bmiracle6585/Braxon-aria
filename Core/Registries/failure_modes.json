@@ -1,0 +1,483 @@
+{
+  "registry": "ARIA_FAILURE_MODES",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary defining canonical microwave backhaul failure modes recognized by A.R.I.A. Manufacturer-specific manifestations, products, procedures, evidence patterns, and historical probabilities are connected separately through the Knowledge Graph and Experience Ledger.",
+
+  "failure_modes": [
+    {
+      "id": "FM-RF-001",
+      "name": "ANTENNA_MISALIGNMENT",
+      "canonical_name": "Antenna Misalignment",
+      "category": "RF_ALIGNMENT",
+      "description": "Antenna pointing differs sufficiently from the required path alignment to degrade RF performance.",
+      "common_symptom_types": [
+        "LOW_RSL",
+        "RSL_DISCREPANCY",
+        "REDUCED_FADE_MARGIN",
+        "LOW_MODULATION",
+        "DEGRADED_CAPACITY"
+      ]
+    },
+
+    {
+      "id": "FM-RF-002",
+      "name": "AZIMUTH_ERROR",
+      "canonical_name": "Azimuth Error",
+      "category": "RF_ALIGNMENT",
+      "description": "Horizontal antenna pointing differs from the required path azimuth."
+    },
+
+    {
+      "id": "FM-RF-003",
+      "name": "ELEVATION_ERROR",
+      "canonical_name": "Elevation Error",
+      "category": "RF_ALIGNMENT",
+      "description": "Vertical antenna pointing differs from the required path elevation."
+    },
+
+    {
+      "id": "FM-RF-004",
+      "name": "CROSS_POLARIZATION_ERROR",
+      "canonical_name": "Cross-Polarization Error",
+      "category": "RF_ALIGNMENT",
+      "description": "Polarization alignment or discrimination is incorrect or insufficient for the applicable system."
+    },
+
+    {
+      "id": "FM-RF-005",
+      "name": "INCORRECT_POLARIZATION",
+      "canonical_name": "Incorrect Polarization",
+      "category": "RF_CONFIGURATION",
+      "description": "Installed or configured polarization does not match the required design or corresponding path endpoint."
+    },
+
+    {
+      "id": "FM-RFCHAIN-001",
+      "name": "RF_CHAIN_CONNECTION_ERROR",
+      "canonical_name": "RF Chain Connection Error",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "One or more RF-chain components are connected incorrectly."
+    },
+
+    {
+      "id": "FM-RFCHAIN-002",
+      "name": "INCORRECT_PORT_ROUTING",
+      "canonical_name": "Incorrect Port Routing",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "An RF path is physically routed through the wrong equipment port or path."
+    },
+
+    {
+      "id": "FM-RFCHAIN-003",
+      "name": "MAIN_DIVERSITY_ROUTING_ERROR",
+      "canonical_name": "Main/Diversity Routing Error",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "Main and Diversity RF paths are connected, assigned, or routed incorrectly."
+    },
+
+    {
+      "id": "FM-RFCHAIN-004",
+      "name": "LOOSE_RF_CONNECTION",
+      "canonical_name": "Loose RF Connection",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "An RF connection is not properly seated, secured, torqued, or mechanically retained."
+    },
+
+    {
+      "id": "FM-RFCHAIN-005",
+      "name": "DAMAGED_RF_COMPONENT",
+      "canonical_name": "Damaged RF Component",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "A physical RF component is damaged sufficiently to affect operation."
+    },
+
+    {
+      "id": "FM-RFCHAIN-006",
+      "name": "DAMAGED_WAVEGUIDE",
+      "canonical_name": "Damaged Waveguide",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "Waveguide or equivalent RF transmission medium is physically damaged, deformed, contaminated, or otherwise impaired."
+    },
+
+    {
+      "id": "FM-RFCHAIN-007",
+      "name": "WATER_INGRESS",
+      "canonical_name": "RF Path Water Ingress",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "Moisture or water has entered an RF component, connection, waveguide, cable, or interface."
+    },
+
+    {
+      "id": "FM-RFCHAIN-008",
+      "name": "INCORRECT_RF_COMPONENT",
+      "canonical_name": "Incorrect RF Component",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "Installed RF component is not the required or compatible component for the applicable design."
+    },
+
+    {
+      "id": "FM-RFCHAIN-009",
+      "name": "RF_COMPONENT_MATING_ERROR",
+      "canonical_name": "RF Component Mating Error",
+      "category": "PHYSICAL_RF_CHAIN",
+      "description": "RF components that require specific orientation, mating, engagement, or interface conditions are assembled incorrectly."
+    },
+
+    {
+      "id": "FM-RADIO-001",
+      "name": "RADIO_HARDWARE_FAILURE",
+      "canonical_name": "Radio Hardware Failure",
+      "category": "RADIO",
+      "description": "Radio hardware is malfunctioning or incapable of performing its required RF or system function."
+    },
+
+    {
+      "id": "FM-RADIO-002",
+      "name": "TRANSMITTER_FAILURE",
+      "canonical_name": "Transmitter Failure",
+      "category": "RADIO",
+      "description": "Radio transmitter fails to produce the required RF output or behaves outside expected operating limits."
+    },
+
+    {
+      "id": "FM-RADIO-003",
+      "name": "RECEIVER_FAILURE",
+      "canonical_name": "Receiver Failure",
+      "category": "RADIO",
+      "description": "Radio receiver fails to correctly receive, detect, or report the incoming RF signal."
+    },
+
+    {
+      "id": "FM-RADIO-004",
+      "name": "RADIO_PATH_ASSIGNMENT_ERROR",
+      "canonical_name": "Radio Path Assignment Error",
+      "category": "RADIO",
+      "description": "Radio A, Radio B, Main, Diversity, or another logical RF path is assigned incorrectly."
+    },
+
+    {
+      "id": "FM-CONFIG-001",
+      "name": "GENERAL_CONFIGURATION_ERROR",
+      "canonical_name": "Configuration Error",
+      "category": "CONFIGURATION",
+      "description": "One or more equipment configuration values do not match the required operational state."
+    },
+
+    {
+      "id": "FM-CONFIG-002",
+      "name": "FREQUENCY_CONFIGURATION_ERROR",
+      "canonical_name": "Frequency Configuration Error",
+      "category": "CONFIGURATION",
+      "description": "Configured transmit or receive frequency does not match the required channel plan or corresponding endpoint."
+    },
+
+    {
+      "id": "FM-CONFIG-003",
+      "name": "CHANNEL_BANDWIDTH_MISMATCH",
+      "canonical_name": "Channel Bandwidth Mismatch",
+      "category": "CONFIGURATION",
+      "description": "Configured channel bandwidth is incorrect or inconsistent between required system elements."
+    },
+
+    {
+      "id": "FM-CONFIG-004",
+      "name": "TX_POWER_CONFIGURATION_ERROR",
+      "canonical_name": "Transmit Power Configuration Error",
+      "category": "CONFIGURATION",
+      "description": "Configured transmit power or applicable transmit-power control setting is incorrect."
+    },
+
+    {
+      "id": "FM-CONFIG-005",
+      "name": "ATPC_CONFIGURATION_ERROR",
+      "canonical_name": "ATPC Configuration Error",
+      "category": "CONFIGURATION",
+      "description": "Automatic Transmit Power Control configuration, target, limits, state, or associated parameters are incorrect."
+    },
+
+    {
+      "id": "FM-CONFIG-006",
+      "name": "MODULATION_CONFIGURATION_ERROR",
+      "canonical_name": "Modulation Configuration Error",
+      "category": "CONFIGURATION",
+      "description": "Configured modulation, adaptive modulation, coding, or related capacity parameters are incorrect."
+    },
+
+    {
+      "id": "FM-CONFIG-007",
+      "name": "TOPOLOGY_CONFIGURATION_ERROR",
+      "canonical_name": "Topology Configuration Error",
+      "category": "CONFIGURATION",
+      "description": "Equipment is configured for the wrong topology, protection arrangement, aggregation mode, or radio architecture."
+    },
+
+    {
+      "id": "FM-CONFIG-008",
+      "name": "MAIN_DIVERSITY_CONFIGURATION_ERROR",
+      "canonical_name": "Main/Diversity Configuration Error",
+      "category": "CONFIGURATION",
+      "description": "Main and Diversity paths are logically configured or associated incorrectly."
+    },
+
+    {
+      "id": "FM-CONFIG-009",
+      "name": "ENDPOINT_CONFIGURATION_MISMATCH",
+      "canonical_name": "Endpoint Configuration Mismatch",
+      "category": "CONFIGURATION",
+      "description": "Corresponding microwave endpoints contain incompatible or inconsistent configuration values."
+    },
+
+    {
+      "id": "FM-CONFIG-010",
+      "name": "WRONG_CONFIGURATION_TEMPLATE",
+      "canonical_name": "Incorrect Configuration Template",
+      "category": "CONFIGURATION",
+      "description": "Configuration derived from an incorrect template, site, product, topology, frequency, or deployment context."
+    },
+
+    {
+      "id": "FM-SOFTWARE-001",
+      "name": "FIRMWARE_DEFECT",
+      "canonical_name": "Firmware Defect",
+      "category": "SOFTWARE",
+      "description": "Installed firmware contains a defect affecting expected system operation."
+    },
+
+    {
+      "id": "FM-SOFTWARE-002",
+      "name": "FIRMWARE_COMPATIBILITY_ERROR",
+      "canonical_name": "Firmware Compatibility Error",
+      "category": "SOFTWARE",
+      "description": "Installed firmware is incompatible with hardware, configuration, topology, management software, or another system component."
+    },
+
+    {
+      "id": "FM-SOFTWARE-003",
+      "name": "SOFTWARE_CONFIGURATION_STATE_ERROR",
+      "canonical_name": "Software State Error",
+      "category": "SOFTWARE",
+      "description": "Software or management-system state does not accurately reflect or correctly control the intended equipment state."
+    },
+
+    {
+      "id": "FM-PATH-001",
+      "name": "LINE_OF_SIGHT_OBSTRUCTION",
+      "canonical_name": "Line-of-Sight Obstruction",
+      "category": "PROPAGATION",
+      "description": "A physical object obstructs or materially intrudes into the microwave propagation path."
+    },
+
+    {
+      "id": "FM-PATH-002",
+      "name": "INSUFFICIENT_FRESNEL_CLEARANCE",
+      "canonical_name": "Insufficient Fresnel Clearance",
+      "category": "PROPAGATION",
+      "description": "Required Fresnel-zone clearance is not maintained."
+    },
+
+    {
+      "id": "FM-PATH-003",
+      "name": "PATH_DESIGN_ERROR",
+      "canonical_name": "Path Design Error",
+      "category": "PROPAGATION",
+      "description": "An engineered path parameter or assumption is incorrect or unsuitable for actual deployment conditions."
+    },
+
+    {
+      "id": "FM-PATH-004",
+      "name": "PATH_ENDPOINT_ERROR",
+      "canonical_name": "Incorrect Path Endpoint",
+      "category": "PROPAGATION",
+      "description": "Antenna or system is aligned, configured, or constructed toward an incorrect endpoint."
+    },
+
+    {
+      "id": "FM-PATH-005",
+      "name": "ANTENNA_HEIGHT_ERROR",
+      "canonical_name": "Antenna Height Error",
+      "category": "PROPAGATION",
+      "description": "Installed antenna height differs materially from the required path design."
+    },
+
+    {
+      "id": "FM-INTERFERENCE-001",
+      "name": "RF_INTERFERENCE",
+      "canonical_name": "RF Interference",
+      "category": "INTERFERENCE",
+      "description": "Undesired RF energy degrades receiver or link performance."
+    },
+
+    {
+      "id": "FM-INTERFERENCE-002",
+      "name": "CO_CHANNEL_INTERFERENCE",
+      "canonical_name": "Co-Channel Interference",
+      "category": "INTERFERENCE",
+      "description": "Interference is produced by another signal operating on the same or effectively overlapping channel."
+    },
+
+    {
+      "id": "FM-INTERFERENCE-003",
+      "name": "ADJACENT_CHANNEL_INTERFERENCE",
+      "canonical_name": "Adjacent-Channel Interference",
+      "category": "INTERFERENCE",
+      "description": "Energy from a neighboring channel materially affects receiver performance."
+    },
+
+    {
+      "id": "FM-ENV-001",
+      "name": "RAIN_ATTENUATION",
+      "canonical_name": "Rain Attenuation",
+      "category": "ENVIRONMENTAL",
+      "description": "Precipitation causes additional microwave path attenuation."
+    },
+
+    {
+      "id": "FM-ENV-002",
+      "name": "ICE_OR_SNOW_ACCUMULATION",
+      "canonical_name": "Ice or Snow Accumulation",
+      "category": "ENVIRONMENTAL",
+      "description": "Ice or snow accumulation affects antenna, radome, RF components, structure, or propagation."
+    },
+
+    {
+      "id": "FM-ENV-003",
+      "name": "WIND_INDUCED_MISALIGNMENT",
+      "canonical_name": "Wind-Induced Misalignment",
+      "category": "ENVIRONMENTAL",
+      "description": "Wind loading causes temporary or persistent antenna pointing error or structural movement."
+    },
+
+    {
+      "id": "FM-ENV-004",
+      "name": "TEMPERATURE_RELATED_FAILURE",
+      "canonical_name": "Temperature-Related Failure",
+      "category": "ENVIRONMENTAL",
+      "description": "Equipment or a component behaves incorrectly because of temperature or thermal conditions."
+    },
+
+    {
+      "id": "FM-POWER-001",
+      "name": "POWER_SUPPLY_FAILURE",
+      "canonical_name": "Power Supply Failure",
+      "category": "POWER",
+      "description": "Required equipment power is absent, unstable, outside tolerance, or otherwise unsuitable."
+    },
+
+    {
+      "id": "FM-POWER-002",
+      "name": "LOW_INPUT_VOLTAGE",
+      "canonical_name": "Low Input Voltage",
+      "category": "POWER",
+      "description": "Equipment input voltage is below the applicable operating requirement."
+    },
+
+    {
+      "id": "FM-POWER-003",
+      "name": "POWER_CONNECTION_ERROR",
+      "canonical_name": "Power Connection Error",
+      "category": "POWER",
+      "description": "Power wiring, connector placement, polarity, termination, or related physical connection is incorrect."
+    },
+
+    {
+      "id": "FM-INSTALL-001",
+      "name": "INSTALLATION_ERROR",
+      "canonical_name": "Installation Error",
+      "category": "INSTALLATION",
+      "description": "Equipment or supporting infrastructure was installed incorrectly."
+    },
+
+    {
+      "id": "FM-INSTALL-002",
+      "name": "INCORRECT_HARDWARE_INSTALLED",
+      "canonical_name": "Incorrect Hardware Installed",
+      "category": "INSTALLATION",
+      "description": "Installed hardware does not match the required design, bill of material, compatibility requirement, or intended application."
+    },
+
+    {
+      "id": "FM-INSTALL-003",
+      "name": "ORIENTATION_ERROR",
+      "canonical_name": "Component Orientation Error",
+      "category": "INSTALLATION",
+      "description": "A component is physically installed in an incorrect orientation."
+    },
+
+    {
+      "id": "FM-INSTALL-004",
+      "name": "MISSING_COMPONENT",
+      "canonical_name": "Missing Required Component",
+      "category": "INSTALLATION",
+      "description": "A required component is absent from the installed system."
+    },
+
+    {
+      "id": "FM-DATA-001",
+      "name": "INCORRECT_REFERENCE_DATA",
+      "canonical_name": "Incorrect Reference Data",
+      "category": "INFORMATION",
+      "description": "Troubleshooting, installation, commissioning, or configuration is being performed using incorrect or outdated reference information."
+    },
+
+    {
+      "id": "FM-DATA-002",
+      "name": "INCORRECT_DESIGN_DATA",
+      "canonical_name": "Incorrect Design Data",
+      "category": "INFORMATION",
+      "description": "Engineering or design information contains an error affecting implementation or diagnosis."
+    },
+
+    {
+      "id": "FM-DATA-003",
+      "name": "SITE_IDENTIFICATION_ERROR",
+      "canonical_name": "Site Identification Error",
+      "category": "INFORMATION",
+      "description": "Information, configuration, files, or actions are associated with the wrong site, path, endpoint, or project."
+    },
+
+    {
+      "id": "FM-UNKNOWN-001",
+      "name": "UNDETERMINED_FAILURE",
+      "canonical_name": "Undetermined Failure",
+      "category": "UNKNOWN",
+      "description": "Available evidence establishes that an abnormal condition exists but does not yet support a sufficiently specific failure classification."
+    }
+  ],
+
+  "semantic_rules": [
+    {
+      "rule_id": "FM-RULE-001",
+      "rule": "A registered failure mode represents a technically possible class of failure and does not independently establish probability, occurrence, or causation in a specific case."
+    },
+
+    {
+      "rule_id": "FM-RULE-002",
+      "rule": "Manufacturer-specific failure manifestations shall connect to canonical failure modes through Knowledge Graph entities and relationships rather than creating duplicate manufacturer-specific failure classes unless the failure mechanism is genuinely distinct."
+    },
+
+    {
+      "rule_id": "FM-RULE-003",
+      "rule": "ARIA shall prefer the most specific failure mode justified by available evidence while preserving broader parent classifications when useful for reasoning."
+    },
+
+    {
+      "rule_id": "FM-RULE-004",
+      "rule": "A symptom shall not be treated as a failure mode unless evidence establishes the underlying failure condition."
+    },
+
+    {
+      "rule_id": "FM-RULE-005",
+      "rule": "Multiple failure modes may remain simultaneously active hypotheses during diagnosis."
+    },
+
+    {
+      "rule_id": "FM-RULE-006",
+      "rule": "Historical occurrence rates belong to the Experience Ledger and probabilistic reasoning layers and shall not be encoded as fixed probabilities in this registry."
+    },
+
+    {
+      "rule_id": "FM-RULE-007",
+      "rule": "UNDETERMINED_FAILURE is permitted when evidence is insufficient for a more specific classification and shall not be used merely to avoid continued diagnostic reasoning."
+    }
+  ]
+}
