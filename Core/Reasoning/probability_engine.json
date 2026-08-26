@@ -1,0 +1,659 @@
+{
+  "specification": "ARIA_PROBABILITY_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines how A.R.I.A. initializes, updates, normalizes, regularizes, preserves, and explains diagnostic probabilities across competing and coexisting hypotheses.",
+
+  "core_principle": {
+    "statement": "ARIA shall treat probability as a dynamic representation of current belief, not as certainty, truth, confidence, blame, or route priority.",
+    "rules": [
+      "Historical experience establishes priors.",
+      "Current evidence updates priors into posteriors.",
+      "Strong current evidence may overcome strong historical priors.",
+      "Small samples shall not create extreme certainty.",
+      "Unknown probability mass shall be preserved when the hypothesis set may be incomplete.",
+      "Probability changes must be explainable."
+    ]
+  },
+
+  "probability_domains": [
+    {
+      "name": "MUTUALLY_EXCLUSIVE",
+      "description": "Hypotheses represent competing explanations where only one member of the defined set may be true for the modeled condition.",
+      "normalization_required": true,
+      "target_total": 1.0
+    },
+
+    {
+      "name": "COEXISTING",
+      "description": "Hypotheses represent conditions that may simultaneously be true.",
+      "normalization_required": false
+    },
+
+    {
+      "name": "HIERARCHICAL",
+      "description": "Hypotheses represent different levels of specificity within the same causal branch.",
+      "normalization_required": false,
+      "special_handling_required": true
+    }
+  ],
+
+  "hypothesis_probability_record": {
+    "required_fields": [
+      "hypothesis_id",
+      "case_id",
+      "probability_domain",
+      "prior_probability",
+      "current_probability",
+      "probability_confidence",
+      "sample_support",
+      "evidence_updates",
+      "calculation_method",
+      "updated_at"
+    ]
+  },
+
+  "prior_sources": [
+    {
+      "name": "DOMAIN_BASELINE",
+      "description": "Broad microwave backhaul experience."
+    },
+
+    {
+      "name": "ORGANIZATION_HISTORY",
+      "description": "Validated Braxon historical experience."
+    },
+
+    {
+      "name": "MANUFACTURER_HISTORY",
+      "description": "Validated cases involving the applicable manufacturer."
+    },
+
+    {
+      "name": "PRODUCT_FAMILY_HISTORY",
+      "description": "Validated cases involving the applicable product family."
+    },
+
+    {
+      "name": "PRODUCT_HISTORY",
+      "description": "Validated cases involving the applicable product."
+    },
+
+    {
+      "name": "PRODUCT_VARIANT_HISTORY",
+      "description": "Validated cases involving the applicable product variant."
+    },
+
+    {
+      "name": "TOPOLOGY_HISTORY",
+      "description": "Validated cases involving the applicable topology."
+    },
+
+    {
+      "name": "FREQUENCY_BAND_HISTORY",
+      "description": "Validated cases involving the applicable frequency band."
+    },
+
+    {
+      "name": "SCOPE_HISTORY",
+      "description": "Validated cases involving the applicable scope of work or project phase."
+    },
+
+    {
+      "name": "SYMPTOM_HISTORY",
+      "description": "Validated cases involving the applicable symptom or symptom pattern."
+    },
+
+    {
+      "name": "USER_HISTORY",
+      "description": "Validated user-specific experience relevant to the current context."
+    },
+
+    {
+      "name": "TEAM_HISTORY",
+      "description": "Validated team-level experience relevant to the current context."
+    },
+
+    {
+      "name": "SIMILAR_CASE_HISTORY",
+      "description": "Cases selected by contextual similarity rather than a single dimension."
+    }
+  ],
+
+  "prior_component": {
+    "required_fields": [
+      "source_type",
+      "probability",
+      "sample_size",
+      "effective_sample_size",
+      "context_similarity",
+      "learning_confidence",
+      "weight"
+    ],
+
+    "optional_fields": [
+      "source_case_ids",
+      "time_window",
+      "recency_weight",
+      "validation_quality",
+      "notes"
+    ]
+  },
+
+  "hierarchical_prior_model": {
+    "description": "ARIA shall blend broad and specific prior populations rather than allowing a small specific population to dominate solely because it is more specific.",
+
+    "conceptual_order": [
+      "DOMAIN_BASELINE",
+      "ORGANIZATION_HISTORY",
+      "MANUFACTURER_HISTORY",
+      "PRODUCT_FAMILY_HISTORY",
+      "PRODUCT_HISTORY",
+      "PRODUCT_VARIANT_HISTORY",
+      "TOPOLOGY_HISTORY",
+      "SCOPE_HISTORY",
+      "SYMPTOM_HISTORY",
+      "USER_HISTORY",
+      "SIMILAR_CASE_HISTORY"
+    ],
+
+    "rules": [
+      "The conceptual order describes increasing specificity, not automatic precedence.",
+      "A more specific prior receives greater influence only when sufficient reliable evidence supports it.",
+      "A broad population may outweigh a highly specific population when the specific sample is extremely small.",
+      "Context similarity and effective sample size shall influence prior weighting.",
+      "Specific priors shall shrink toward broader applicable priors when sample support is limited."
+    ]
+  },
+
+  "bayesian_smoothing": {
+    "enabled": true,
+
+    "default_method": "BETA_BINOMIAL_SHRINKAGE",
+
+    "description": "Initial implementation may use Beta-Binomial smoothing for binary historical rates and related Bayesian shrinkage methods for multinomial hypothesis sets.",
+
+    "binary_model": {
+      "posterior_mean_formula": "(successes + alpha) / (successes + failures + alpha + beta)",
+
+      "parameters": {
+        "alpha": "Derived from broader applicable prior strength.",
+        "beta": "Derived from broader applicable prior strength."
+      }
+    },
+
+    "multinomial_model": {
+      "default_method": "DIRICHLET_MULTINOMIAL_SHRINKAGE",
+      "description": "For mutually exclusive multi-class failure outcomes, observed counts may be regularized using a Dirichlet prior derived from broader experience."
+    },
+
+    "rules": [
+      "Exact smoothing parameters shall remain configurable.",
+      "Smoothing shall prevent 1 of 1 from becoming 100 percent certainty.",
+      "Smoothing strength may decrease as validated sample size increases.",
+      "The unsmoothed raw historical rate shall remain available for audit."
+    ]
+  },
+
+  "effective_sample_size": {
+    "description": "Historical records shall contribute according to quality and similarity rather than simple raw count alone.",
+
+    "conceptual_formula": "ESS = SUM(case_weight_i)",
+
+    "case_weight_factors": [
+      "LEARNING_CONFIDENCE",
+      "CONTEXT_SIMILARITY",
+      "VALIDATION_QUALITY",
+      "RECENCY",
+      "INDEPENDENCE"
+    ],
+
+    "rules": [
+      "A case with learning confidence 0 contributes less than a fully validated case.",
+      "A poorly matched historical case contributes less than an exact-context case.",
+      "Duplicate or dependent records shall not inflate effective sample size.",
+      "Raw sample size and effective sample size shall both remain available."
+    ]
+  },
+
+  "context_similarity_weighting": {
+    "enabled": true,
+
+    "range": {
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+
+    "candidate_dimensions": [
+      "manufacturer",
+      "product_family",
+      "product",
+      "product_variant",
+      "hardware_revision",
+      "firmware",
+      "frequency_band",
+      "topology",
+      "diversity_mode",
+      "scope_of_work",
+      "project_phase",
+      "symptom_pattern",
+      "recent_change",
+      "environment",
+      "user"
+    ],
+
+    "rules": [
+      "Dimension importance may vary by hypothesis.",
+      "A firmware match may matter greatly to a firmware hypothesis and minimally to physical waveguide damage.",
+      "Critical context conflicts may sharply reduce similarity.",
+      "Missing context shall reduce certainty in similarity rather than being assumed to match."
+    ]
+  },
+
+  "user_specific_probability": {
+    "enabled": true,
+
+    "description": "Validated user-specific history may adjust priors when the user's role and applicable technical context are relevant.",
+
+    "rules": [
+      "User history shall be tied to actual case attribution.",
+      "Reporter identity alone shall not assign technical fault to the reporter.",
+      "User history shall be contextual rather than universal.",
+      "User-specific samples shall be smoothed toward broader experience.",
+      "Recent validated improvement may reduce the influence of older user patterns.",
+      "User history shall never override strong contradictory current evidence."
+    ],
+
+    "example": {
+      "current_case": {
+        "user": "Clayton",
+        "manufacturer": "Nokia",
+        "product": "UBT-T",
+        "scope": "Commissioning",
+        "symptom": "RSL Discrepancy"
+      },
+
+      "history": {
+        "comparable_cases": 13,
+        "configuration_related": 9,
+        "raw_rate": 0.6923
+      },
+
+      "interpretation": "This history may increase the configuration prior, but shall not directly set the current configuration probability to 69.23 percent."
+    }
+  },
+
+  "recency_model": {
+    "enabled": true,
+
+    "description": "Historical influence may decay with time when older records are less predictive of current competency, procedures, firmware, products, or failure behavior.",
+
+    "default_method": "EXPONENTIAL_DECAY",
+
+    "conceptual_formula": "recency_weight = exp(-lambda * age)",
+
+    "rules": [
+      "Recency modifies influence, not historical truth.",
+      "Decay rate may vary by context.",
+      "Stable engineering facts shall not decay merely because they are old.",
+      "User-performance history may decay faster than fundamental physical knowledge.",
+      "Product behavior may require revision-aware rather than purely time-based decay."
+    ]
+  },
+
+  "evidence_update_model": {
+    "default_method": "LIKELIHOOD_RATIO",
+
+    "description": "Evidence shall modify hypothesis belief according to how expected that evidence is when the hypothesis is true compared with relevant alternatives.",
+
+    "conceptual_binary_formula": "posterior_odds = prior_odds * likelihood_ratio",
+
+    "likelihood_ratio": {
+      "conceptual_formula": "LR = P(evidence | hypothesis) / P(evidence | alternative)",
+
+      "rules": [
+        "Likelihood ratios may initially be hand-calibrated or derived from validated experience.",
+        "Likelihood values shall preserve provenance and confidence.",
+        "ARIA shall not invent precise likelihood ratios when insufficient data exists.",
+        "Qualitative evidence effects may be mapped to conservative bounded likelihood ranges during early implementation."
+      ]
+    }
+  },
+
+  "qualitative_evidence_mapping": {
+    "description": "Initial implementation may map qualitative evidence effects to conservative likelihood-ratio ranges before sufficient empirical data exists.",
+
+    "default_ranges": {
+      "STRONGLY_SUPPORTS": {
+        "minimum_lr": 5.0,
+        "maximum_lr": 20.0
+      },
+
+      "SUPPORTS": {
+        "minimum_lr": 2.0,
+        "maximum_lr": 5.0
+      },
+
+      "WEAKLY_SUPPORTS": {
+        "minimum_lr": 1.1,
+        "maximum_lr": 2.0
+      },
+
+      "NEUTRAL": {
+        "minimum_lr": 0.95,
+        "maximum_lr": 1.05
+      },
+
+      "WEAKENS": {
+        "minimum_lr": 0.5,
+        "maximum_lr": 0.9
+      },
+
+      "STRONGLY_WEAKENS": {
+        "minimum_lr": 0.1,
+        "maximum_lr": 0.5
+      },
+
+      "CONTRADICTS": {
+        "minimum_lr": 0.01,
+        "maximum_lr": 0.1
+      }
+    },
+
+    "rules": [
+      "These ranges are initial calibration aids, not immutable physical constants.",
+      "Evidence quality shall moderate the effective likelihood ratio.",
+      "Low-confidence evidence shall move probabilities less strongly than high-confidence evidence.",
+      "Future empirical calibration may replace generic ranges with context-specific learned likelihoods."
+    ]
+  },
+
+  "evidence_quality_modulation": {
+    "enabled": true,
+
+    "description": "The strength of an evidence update shall be moderated by confidence in the evidence itself.",
+
+    "conceptual_method": "Shrink the evidence likelihood effect toward neutral as evidence confidence decreases.",
+
+    "conceptual_formula": "effective_log_lr = evidence_confidence * log(raw_lr)",
+
+    "equivalent_formula": "effective_lr = exp(evidence_confidence * log(raw_lr))",
+
+    "rules": [
+      "Evidence confidence of 1.0 preserves the full likelihood effect.",
+      "Evidence confidence approaching 0 moves the effective likelihood ratio toward 1.0.",
+      "Low-quality evidence shall not produce extreme posterior movement.",
+      "Evidence confidence and hypothesis probability shall remain separately stored."
+    ]
+  },
+
+  "dependent_evidence_handling": {
+    "enabled": true,
+
+    "description": "Evidence derived from the same underlying source shall not be multiplied as though each item were independent.",
+
+    "rules": [
+      "Evidence items shall preserve provenance lineage.",
+      "Dependent evidence may be grouped into one evidence family.",
+      "Repeated screenshots of the same unchanged value shall not multiply confidence indefinitely.",
+      "A technician statement and a screenshot supplied solely to substantiate that same statement may be partially dependent.",
+      "Independent instrument measurements may provide genuine corroboration."
+    ]
+  },
+
+  "mutually_exclusive_normalization": {
+    "enabled": true,
+
+    "description": "When a hypothesis group is explicitly modeled as mutually exclusive and sufficiently exhaustive, posterior values shall be normalized within the group.",
+
+    "formula": "P_i_normalized = raw_weight_i / SUM(raw_weight_j)",
+
+    "rules": [
+      "Unknown or Other shall be included when the known hypothesis set is not exhaustive.",
+      "Parent and child hypotheses representing the same branch shall not compete independently.",
+      "Normalization shall occur only within a defined probability group."
+    ]
+  },
+
+  "coexisting_probability_handling": {
+    "description": "Potentially simultaneous faults shall maintain independent probability estimates.",
+
+    "rules": [
+      "Independent coexisting probabilities are not required to sum to 1.0.",
+      "Dependencies between coexisting hypotheses should be modeled explicitly where known.",
+      "Confirmation of one fault does not automatically reduce unrelated coexisting fault probability."
+    ]
+  },
+
+  "hierarchical_probability_handling": {
+    "description": "Broad and specific hypotheses within the same causal branch shall not be double counted.",
+
+    "rules": [
+      "A child's probability is conditional on the parent branch where appropriate.",
+      "A specific child may inherit probability mass from its parent as evidence refines the branch.",
+      "When a child is confirmed, the broader parent may become superseded rather than remain a separate competing diagnosis.",
+      "Sibling hypotheses may form a normalized mutually exclusive group beneath a parent when technically appropriate."
+    ]
+  },
+
+  "probability_floors_and_ceilings": {
+    "description": "ARIA may use configurable bounds to prevent unsupported mathematical certainty.",
+
+    "defaults": {
+      "minimum_active_probability": 0.001,
+      "maximum_unconfirmed_probability": 0.995
+    },
+
+    "rules": [
+      "A probability of exactly zero should normally require exclusion by validated technical evidence.",
+      "A probability of exactly one should normally require confirmation or deterministic logical consequence.",
+      "These defaults may be overridden by explicit technical rules."
+    ]
+  },
+
+  "unknown_probability": {
+    "enabled": true,
+
+    "rules": [
+      "Unknown probability shall represent unmodeled or insufficiently understood causes.",
+      "Unknown probability may increase when known explanations are repeatedly contradicted.",
+      "Unknown probability may decrease as evidence supports comprehensive known explanations.",
+      "Persistently high unknown probability should trigger broader retrieval or escalation."
+    ]
+  },
+
+  "probability_history": {
+    "append_only": true,
+
+    "required_fields": [
+      "hypothesis_id",
+      "previous_probability",
+      "new_probability",
+      "change_reason",
+      "trigger_evidence_ids",
+      "prior_components",
+      "calculation_method",
+      "timestamp"
+    ],
+
+    "rules": [
+      "Material probability changes shall be auditable.",
+      "Previous probability states shall not be overwritten.",
+      "Recalculation due to corrected evidence shall create a new probability event."
+    ]
+  },
+
+  "calibration": {
+    "enabled": true,
+
+    "description": "ARIA shall evaluate whether predicted probabilities correspond to actual validated outcomes over time.",
+
+    "metrics": [
+      "BRIER_SCORE",
+      "LOG_LOSS",
+      "CALIBRATION_CURVE",
+      "EXPECTED_CALIBRATION_ERROR"
+    ],
+
+    "rules": [
+      "Calibration shall be measured using validated cases.",
+      "A hypothesis assigned approximately 70 percent probability should, across sufficiently comparable cases, be correct approximately 70 percent of the time.",
+      "Systematic overconfidence shall trigger recalibration.",
+      "Systematic underconfidence shall also be detectable.",
+      "Calibration may be evaluated globally and within important contexts."
+    ]
+  },
+
+  "example_update": {
+    "case": "RSL discrepancy",
+
+    "initial_state": {
+      "configuration": 0.35,
+      "physical_rf_chain": 0.30,
+      "alignment": 0.20,
+      "radio_failure": 0.10,
+      "unknown": 0.05
+    },
+
+    "new_evidence": {
+      "observation": "Main RSL is normal while Diversity RSL is materially degraded.",
+      "confidence": 0.95
+    },
+
+    "post_update_state_example": {
+      "configuration": 0.27,
+      "physical_rf_chain": 0.51,
+      "alignment": 0.07,
+      "radio_failure": 0.10,
+      "unknown": 0.05
+    },
+
+    "note": "Values are illustrative only. Production values shall be calculated from calibrated likelihood and prior models."
+  },
+
+  "explainability": {
+    "required_capabilities": [
+      "Explain the starting prior.",
+      "Identify historical populations materially affecting the prior.",
+      "Show sample size and effective sample size.",
+      "Identify evidence that changed the probability.",
+      "Explain whether evidence supported or contradicted the hypothesis.",
+      "Explain the effect of evidence quality.",
+      "Identify whether normalization occurred.",
+      "Distinguish probability from diagnostic confidence."
+    ],
+
+    "example": "Configuration began at 38 percent because similar Nokia commissioning cases historically showed elevated configuration failures. The probability fell to 4 percent after current configuration evidence was independently verified and strongly contradicted the hypothesis."
+  },
+
+  "anti_bias_rules": [
+    "Do not preserve a high prior merely because ARIA historically expected a failure.",
+    "Do not increase probability because a user agrees with ARIA.",
+    "Do not reduce probability solely because a user rejects the hypothesis.",
+    "Do not use user identity as a substitute for technical evidence.",
+    "Do not count ARIA's own inference as independent evidence.",
+    "Do not repeatedly reuse the same historical cases as multiple independent priors.",
+    "Do not create false precision when calibration data is sparse."
+  ],
+
+  "semantic_rules": [
+    {
+      "rule_id": "PROB-RULE-001",
+      "rule": "Probability represents ARIA's current belief regarding a hypothesis and shall remain distinct from evidence confidence, diagnostic confidence, route value, and source authority."
+    },
+
+    {
+      "rule_id": "PROB-RULE-002",
+      "rule": "Historical experience establishes priors; current evidence establishes whether those priors remain justified."
+    },
+
+    {
+      "rule_id": "PROB-RULE-003",
+      "rule": "ARIA shall regularize small historical samples toward broader applicable experience."
+    },
+
+    {
+      "rule_id": "PROB-RULE-004",
+      "rule": "ARIA shall preserve the underlying validated case records used to generate historical probabilities."
+    },
+
+    {
+      "rule_id": "PROB-RULE-005",
+      "rule": "Current high-quality contradictory evidence may substantially overcome a strong historical prior."
+    },
+
+    {
+      "rule_id": "PROB-RULE-006",
+      "rule": "Probability changes shall be attributable to evidence, context, prior adjustment, or an explicit mathematical operation."
+    },
+
+    {
+      "rule_id": "PROB-RULE-007",
+      "rule": "ARIA shall distinguish raw historical rate from smoothed diagnostic prior."
+    },
+
+    {
+      "rule_id": "PROB-RULE-008",
+      "rule": "Mutually exclusive hypotheses may be normalized to a total probability of 1.0 only within a defined exhaustive hypothesis group."
+    },
+
+    {
+      "rule_id": "PROB-RULE-009",
+      "rule": "Coexisting hypotheses shall not be artificially normalized against one another."
+    },
+
+    {
+      "rule_id": "PROB-RULE-010",
+      "rule": "Parent and child hypotheses shall not independently consume probability mass when they represent the same causal branch at different levels of specificity."
+    },
+
+    {
+      "rule_id": "PROB-RULE-011",
+      "rule": "Unknown probability mass shall remain available when ARIA cannot justify that her modeled hypothesis set is complete."
+    },
+
+    {
+      "rule_id": "PROB-RULE-012",
+      "rule": "ARIA shall prefer conservative calibrated probability over unsupported precise-looking percentages."
+    },
+
+    {
+      "rule_id": "PROB-RULE-013",
+      "rule": "User-specific historical priors shall require relevant attribution and contextual similarity."
+    },
+
+    {
+      "rule_id": "PROB-RULE-014",
+      "rule": "User improvement and changing technical conditions shall be capable of changing the predictive influence of older experience."
+    },
+
+    {
+      "rule_id": "PROB-RULE-015",
+      "rule": "Probability shall guide diagnosis but shall not independently determine the next diagnostic action."
+    },
+
+    {
+      "rule_id": "PROB-RULE-016",
+      "rule": "ARIA shall measure and improve probability calibration against validated outcomes over time."
+    },
+
+    {
+      "rule_id": "PROB-RULE-017",
+      "rule": "Evidence dependence shall be modeled sufficiently to prevent duplicated evidence from creating artificial confidence."
+    },
+
+    {
+      "rule_id": "PROB-RULE-018",
+      "rule": "Probability of exactly zero or one shall require substantially stronger justification than merely low or high historical frequency."
+    },
+
+    {
+      "rule_id": "PROB-RULE-019",
+      "rule": "When probabilities are displayed to users, ARIA should communicate material uncertainty and sample limitations when relevant."
+    },
+
+    {
+      "rule_id": "PROB-RULE-020",
+      "rule": "The mathematical implementation may evolve, but all future implementations shall preserve case-level provenance, explainability, calibration capability, and separation between prior and current evidence."
+    }
+  ]
+}
