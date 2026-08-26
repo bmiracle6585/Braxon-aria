@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/event.schema.json",
+  "title": "A.R.I.A. Case Event",
+  "description": "Machine-readable schema for chronological events occurring within an A.R.I.A. Experience Ledger case.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "event_id",
+    "case_id",
+    "event_type",
+    "occurred_at",
+    "created_at"
+  ],
+
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "pattern": "^EVT-[0-9]{6,}$",
+      "description": "Permanent identifier for this case event."
+    },
+
+    "case_id": {
+      "type": "string",
+      "pattern": "^EXP-[0-9]{6,}$"
+    },
+
+    "sequence_number": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "Chronological sequence of this event within the case."
+    },
+
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "CASE_OPENED",
+        "CASE_STATUS_CHANGED",
+        "USER_MESSAGE",
+        "ARIA_MESSAGE",
+        "QUESTION_ASKED",
+        "ANSWER_RECEIVED",
+        "OBSERVATION_REPORTED",
+        "EVIDENCE_ADDED",
+        "EVIDENCE_UPDATED",
+        "EVIDENCE_INVALIDATED",
+        "HYPOTHESIS_CREATED",
+        "HYPOTHESIS_UPDATED",
+        "HYPOTHESIS_ELIMINATED",
+        "HYPOTHESIS_CONFIRMED",
+        "PROBABILITY_UPDATED",
+        "ROUTE_CANDIDATES_EVALUATED",
+        "ROUTE_STEP_SELECTED",
+        "ROUTE_STEP_STARTED",
+        "ROUTE_STEP_COMPLETED",
+        "ROUTE_STEP_SKIPPED",
+        "ROUTE_STEP_BLOCKED",
+        "TEST_PERFORMED",
+        "MEASUREMENT_TAKEN",
+        "ARTIFACT_RECEIVED",
+        "CONFIGURATION_REVIEWED",
+        "CORRECTIVE_ACTION_STARTED",
+        "CORRECTIVE_ACTION_COMPLETED",
+        "DIAGNOSIS_PROPOSED",
+        "DIAGNOSIS_CONFIRMED",
+        "OUTCOME_VALIDATED",
+        "CASE_RESOLVED",
+        "CASE_CLOSED",
+        "CASE_REOPENED",
+        "LEARNING_EVALUATED",
+        "CLAIM_GENERATED",
+        "KNOWLEDGE_CONFLICT_DETECTED",
+        "ESCALATION",
+        "SYSTEM_EVENT",
+        "OTHER"
+      ]
+    },
+
+    "actor": {
+      "type": ["object", "null"],
+      "description": "Person, A.R.I.A. component, or external system responsible for the event.",
+      "additionalProperties": false,
+
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "ARIA",
+            "SYSTEM",
+            "EXTERNAL_SYSTEM",
+            "UNKNOWN"
+          ]
+        },
+
+        "person_entity_id": {
+          "type": ["string", "null"]
+        },
+
+        "system_identifier": {
+          "type": ["string", "null"]
+        },
+
+        "component_identifier": {
+          "type": ["string", "null"],
+          "description": "A.R.I.A. subsystem responsible for the event when applicable."
+        }
+      }
+    },
+
+    "summary": {
+      "type": ["string", "null"],
+      "description": "Concise human-readable description of the event."
+    },
+
+    "content": {
+      "type": ["string", "null"],
+      "description": "Optional event content when preservation is useful."
+    },
+
+    "related_entity_ids": {
+      "$ref": "#/$defs/entity_id_array"
+    },
+
+    "related_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "related_hypothesis_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^HYP-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "related_route_step_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^RTE-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "related_claim_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^CLM-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "related_relationship_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^REL-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "probability_change": {
+      "type": ["object", "null"],
+      "description": "Probability transition associated with this event when applicable.",
+      "additionalProperties": false,
+
+      "properties": {
+        "hypothesis_id": {
+          "type": ["string", "null"],
+          "pattern": "^HYP-[0-9]{6,}$"
+        },
+
+        "previous_probability": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "new_probability": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "reason": {
+          "type": ["string", "null"]
+        },
+
+        "calculation_method": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "route_decision": {
+      "type": ["object", "null"],
+      "description": "Routing decision information associated with this event.",
+      "additionalProperties": false,
+
+      "properties": {
+        "selected_route_step_id": {
+          "type": ["string", "null"],
+          "pattern": "^RTE-[0-9]{6,}$"
+        },
+
+        "candidate_route_step_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^RTE-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "selection_reason": {
+          "type": ["string", "null"]
+        },
+
+        "routing_method": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "state_snapshot": {
+      "type": ["object", "null"],
+      "description": "Optional compact snapshot of important case state immediately after the event.",
+      "additionalProperties": false,
+
+      "properties": {
+        "case_status": {
+          "type": ["string", "null"]
+        },
+
+        "leading_hypothesis_id": {
+          "type": ["string", "null"],
+          "pattern": "^HYP-[0-9]{6,}$"
+        },
+
+        "leading_probability": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "active_hypothesis_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^HYP-[0-9]{6,}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "selected_route_step_id": {
+          "type": ["string", "null"],
+          "pattern": "^RTE-[0-9]{6,}$"
+        }
+      }
+    },
+
+    "caused_by_event_ids": {
+      "type": "array",
+      "description": "Earlier events that materially caused or triggered this event.",
+      "items": {
+        "type": "string",
+        "pattern": "^EVT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "supersedes_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "recorded_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When A.R.I.A. recorded the event if different from when it occurred."
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "entity_id_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    }
+  }
+}
