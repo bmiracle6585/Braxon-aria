@@ -1,0 +1,658 @@
+{
+  "specification": "ARIA_ROUTING_ENGINE",
+  "version": "0.1.0",
+  "description": "Defines how A.R.I.A. selects, scores, executes, evaluates, and reroutes diagnostic next hops through a dynamic microwave backhaul reasoning graph.",
+
+  "core_principle": {
+    "statement": "ARIA shall select the diagnostic next hop expected to produce the greatest useful reduction in uncertainty or advancement toward resolution for the lowest justified operational cost, risk, and disruption.",
+    "rules": [
+      "The most probable hypothesis does not automatically determine the next action.",
+      "The cheapest action does not automatically determine the next action.",
+      "The highest-information action does not automatically determine the next action.",
+      "Routing shall balance diagnostic value against operational cost and constraints.",
+      "Every completed action changes the current routing state.",
+      "ARIA reroutes from the resulting state rather than restarting a predetermined troubleshooting tree."
+    ]
+  },
+
+  "routing_model": {
+    "graph_type": "DYNAMIC_WEIGHTED_DIRECTED_GRAPH",
+
+    "node_types": [
+      "CASE_STATE",
+      "SYMPTOM",
+      "HYPOTHESIS",
+      "EVIDENCE",
+      "QUESTION",
+      "DIAGNOSTIC_ACTION",
+      "OBSERVATION",
+      "FAILURE_MODE",
+      "CORRECTIVE_ACTION",
+      "VALIDATION_ACTION",
+      "ESCALATION"
+    ],
+
+    "edge_properties": [
+      "relationship_type",
+      "applicability",
+      "expected_information_gain",
+      "expected_discrimination",
+      "execution_cost",
+      "time_cost",
+      "physical_effort",
+      "service_impact",
+      "safety_risk",
+      "reversibility",
+      "user_capability",
+      "historical_effectiveness",
+      "context_similarity",
+      "availability",
+      "route_penalty",
+      "route_score"
+    ],
+
+    "rules": [
+      "Graph topology may change as evidence is received.",
+      "Edge weights are dynamic rather than permanent universal values.",
+      "The same diagnostic action may have different route value in different cases.",
+      "A previously poor route may become valuable when context changes."
+    ]
+  },
+
+  "route_candidate": {
+    "required_fields": [
+      "route_candidate_id",
+      "case_id",
+      "action_id",
+      "target_hypothesis_ids",
+      "target_uncertainties",
+      "expected_outcomes",
+      "applicability",
+      "information_gain_score",
+      "discrimination_score",
+      "time_cost_score",
+      "execution_cost_score",
+      "effort_score",
+      "service_impact_score",
+      "safety_risk_score",
+      "reversibility_score",
+      "user_capability_score",
+      "historical_effectiveness_score",
+      "context_match_score",
+      "repeat_penalty",
+      "availability_score",
+      "route_score",
+      "score_confidence",
+      "generated_at"
+    ]
+  },
+
+  "candidate_generation": {
+    "sources": [
+      "KNOWLEDGE_GRAPH",
+      "ACTIVE_HYPOTHESES",
+      "MISSING_EVIDENCE",
+      "UNRESOLVED_CONTRADICTIONS",
+      "HISTORICAL_ROUTES",
+      "PRODUCT_PROCEDURES",
+      "MANUFACTURER_PROCEDURES",
+      "USER_CAPABILITIES",
+      "CURRENT_CASE_CONSTRAINTS"
+    ],
+
+    "rules": [
+      "Candidate actions shall have a defined diagnostic purpose.",
+      "ARIA shall not generate actions merely because they appear in a generic troubleshooting procedure.",
+      "Actions incompatible with the current technical context shall be excluded.",
+      "Actions prohibited by safety or authorization constraints shall not be executable candidates.",
+      "Questions are valid diagnostic actions when the answer has meaningful expected information value."
+    ]
+  },
+
+  "routing_dimensions": [
+    {
+      "name": "EXPECTED_INFORMATION_GAIN",
+      "direction": "MAXIMIZE",
+      "description": "Expected reduction in meaningful diagnostic uncertainty."
+    },
+
+    {
+      "name": "DIAGNOSTIC_DISCRIMINATION",
+      "direction": "MAXIMIZE",
+      "description": "Ability of the action's possible outcomes to distinguish between competing hypotheses."
+    },
+
+    {
+      "name": "HYPOTHESIS_COVERAGE",
+      "direction": "MAXIMIZE",
+      "description": "Amount of relevant active hypothesis space affected by the action."
+    },
+
+    {
+      "name": "TIME_COST",
+      "direction": "MINIMIZE",
+      "description": "Expected time required to perform the action and obtain usable evidence."
+    },
+
+    {
+      "name": "EXECUTION_COST",
+      "direction": "MINIMIZE",
+      "description": "Financial or resource cost of executing the action."
+    },
+
+    {
+      "name": "PHYSICAL_EFFORT",
+      "direction": "MINIMIZE",
+      "description": "Human effort required to perform the action."
+    },
+
+    {
+      "name": "SERVICE_IMPACT",
+      "direction": "MINIMIZE",
+      "description": "Potential disruption to live network service."
+    },
+
+    {
+      "name": "SAFETY_RISK",
+      "direction": "MINIMIZE",
+      "description": "Potential safety consequence associated with the action."
+    },
+
+    {
+      "name": "INVASIVENESS",
+      "direction": "MINIMIZE",
+      "description": "Degree to which the action modifies the current technical state merely to obtain information."
+    },
+
+    {
+      "name": "REVERSIBILITY",
+      "direction": "MAXIMIZE",
+      "description": "Ease with which the technical state can be restored after the action."
+    },
+
+    {
+      "name": "HISTORICAL_EFFECTIVENESS",
+      "direction": "MAXIMIZE",
+      "description": "Validated historical ability of the action to advance similar cases."
+    },
+
+    {
+      "name": "USER_CAPABILITY",
+      "direction": "MAXIMIZE",
+      "description": "Likelihood that the current user can correctly perform the action and return reliable evidence."
+    },
+
+    {
+      "name": "CONTEXT_APPLICABILITY",
+      "direction": "MAXIMIZE",
+      "description": "Technical applicability of the action to the current equipment, configuration, scope, and case state."
+    },
+
+    {
+      "name": "RESULT_AVAILABILITY",
+      "direction": "MAXIMIZE",
+      "description": "Likelihood that the requested action can actually produce usable evidence under current conditions."
+    }
+  ],
+
+  "route_score_model": {
+    "method": "WEIGHTED_UTILITY",
+
+    "conceptual_formula": "route_score = diagnostic_value - operational_cost - penalties",
+
+    "diagnostic_value": [
+      "expected_information_gain",
+      "diagnostic_discrimination",
+      "hypothesis_coverage",
+      "historical_effectiveness",
+      "context_applicability",
+      "result_availability"
+    ],
+
+    "operational_cost": [
+      "time_cost",
+      "execution_cost",
+      "physical_effort",
+      "service_impact",
+      "safety_risk",
+      "invasiveness"
+    ],
+
+    "penalties": [
+      "repeat_penalty",
+      "dependency_penalty",
+      "low_evidence_reliability_penalty",
+      "authorization_penalty",
+      "unavailable_resource_penalty"
+    ],
+
+    "rules": [
+      "Weight values shall remain configurable.",
+      "Weights may vary by operational context.",
+      "Safety constraints may act as hard gates rather than ordinary weighted penalties.",
+      "Service-impact constraints may act as hard gates where applicable.",
+      "ARIA shall preserve the component scores used to calculate route utility."
+    ]
+  },
+
+  "information_gain": {
+    "enabled": true,
+
+    "description": "ARIA shall prefer actions whose possible outcomes are expected to meaningfully reduce uncertainty among important hypotheses.",
+
+    "conceptual_method": "EXPECTED_ENTROPY_REDUCTION",
+
+    "conceptual_formula": "information_gain = current_entropy - expected_posterior_entropy",
+
+    "rules": [
+      "Information gain shall consider all materially likely action outcomes.",
+      "A test that returns the same expected result under every major hypothesis has low discriminatory value.",
+      "A test capable of sharply separating competing hypotheses may have high information value even when it does not directly fix the problem.",
+      "Information gain estimates may initially be qualitative when empirical outcome probabilities are unavailable."
+    ]
+  },
+
+  "expected_outcome_model": {
+    "required_fields": [
+      "action_id",
+      "possible_outcome",
+      "estimated_outcome_probability",
+      "hypothesis_effects",
+      "expected_probability_state",
+      "expected_information_gain"
+    ],
+
+    "rules": [
+      "ARIA should predict diagnostically meaningful possible outcomes before requesting an action when practical.",
+      "Actual outcomes shall be compared against expected outcomes.",
+      "Unexpected results shall trigger rerouting rather than being discarded."
+    ]
+  },
+
+  "action_cost_classes": [
+    {
+      "name": "NEGLIGIBLE",
+      "examples": [
+        "Answer an available question",
+        "Read an existing displayed value",
+        "Review an already available screenshot"
+      ]
+    },
+
+    {
+      "name": "LOW",
+      "examples": [
+        "Open a configuration page",
+        "Capture a screenshot",
+        "Verify a cable label"
+      ]
+    },
+
+    {
+      "name": "MODERATE",
+      "examples": [
+        "Perform a local measurement",
+        "Access equipment requiring additional field effort",
+        "Inspect an installed RF component"
+      ]
+    },
+
+    {
+      "name": "HIGH",
+      "examples": [
+        "Tower climb",
+        "Physical component replacement",
+        "Service-affecting test"
+      ]
+    },
+
+    {
+      "name": "VERY_HIGH",
+      "examples": [
+        "Major outage",
+        "Complex replacement requiring multiple resources",
+        "High-risk invasive technical intervention"
+      ]
+    }
+  ],
+
+  "cheap_test_preference": {
+    "enabled": true,
+
+    "rule": "When multiple actions provide comparable diagnostic value, ARIA should prefer the action requiring less time, effort, risk, cost, and service disruption.",
+
+    "example": {
+      "hypothesis": "CONFIGURATION_ERROR",
+      "probability": 0.18,
+      "action": "Review configuration screenshot",
+      "cost": "NEGLIGIBLE",
+      "interpretation": "This action may outrank testing a 55 percent physical RF hypothesis when physical verification requires a tower climb."
+    }
+  },
+
+  "high_consequence_policy": {
+    "enabled": true,
+
+    "description": "Low-probability hypotheses may justify early investigation when failure consequences are severe and the available test is proportionate.",
+
+    "rules": [
+      "Probability alone shall not determine diagnostic priority.",
+      "Expected consequence may modify route priority.",
+      "Safety-critical conditions may require immediate evaluation regardless of ordinary route score.",
+      "Low-probability high-consequence hypotheses should not trigger disproportionate invasive action without justification."
+    ]
+  },
+
+  "user_adaptive_routing": {
+    "enabled": true,
+
+    "description": "ARIA may adapt diagnostic route selection according to validated history of how individual users perform diagnostic actions and provide evidence.",
+
+    "user_route_factors": [
+      "historical_action_accuracy",
+      "evidence_reliability",
+      "response_latency",
+      "technical_capability",
+      "known_tool_access",
+      "known_site_access",
+      "historical_need_for_clarification"
+    ],
+
+    "rules": [
+      "User adaptation shall improve route efficiency rather than punish or stereotype users.",
+      "User-specific route effects shall be based on validated experience.",
+      "User capability shall be contextual to the action.",
+      "ARIA may provide more explicit instructions when historical evidence indicates that doing so improves result quality.",
+      "User-specific routing shall not override safety or technical truth."
+    ]
+  },
+
+  "parallel_actions": {
+    "enabled": true,
+
+    "rules": [
+      "ARIA may request multiple actions in parallel when they are independent, low-cost, and operationally efficient.",
+      "Parallel actions should not create unnecessary workload.",
+      "Actions whose interpretation depends on earlier results should remain sequential.",
+      "ARIA shall preserve which evidence resulted from which parallel branch."
+    ]
+  },
+
+  "dependency_handling": {
+    "rules": [
+      "An action requiring unavailable prerequisite information shall be deferred.",
+      "Prerequisite actions may receive increased route value when they unlock multiple downstream diagnostic routes.",
+      "ARIA shall avoid requesting information that can already be derived reliably from existing evidence.",
+      "Dependencies shall be represented explicitly rather than hidden in conversational instructions."
+    ]
+  },
+
+  "repeat_action_policy": {
+    "default_repeat_penalty": true,
+
+    "valid_repeat_reasons": [
+      "PREVIOUS_EVIDENCE_LOW_CONFIDENCE",
+      "TECHNICAL_STATE_CHANGED",
+      "CONFIGURATION_CHANGED",
+      "COMPONENT_CHANGED",
+      "TIME_DEPENDENT_CONDITION",
+      "RECURRENCE",
+      "INDEPENDENT_VERIFICATION_REQUIRED",
+      "PREVIOUS_ACTION_INCOMPLETE"
+    ],
+
+    "rules": [
+      "A completed valid diagnostic action shall normally receive a substantial repeat penalty.",
+      "Repeating an action requires an explicit reason.",
+      "A repeated action after a meaningful technical change is not considered redundant.",
+      "ARIA shall recognize semantically equivalent actions to prevent disguised loops."
+    ]
+  },
+
+  "route_failure_learning": {
+    "enabled": true,
+
+    "description": "Diagnostic routes that fail to produce useful information shall influence future route selection without becoming permanently prohibited.",
+
+    "metrics": [
+      "information_gain_realized",
+      "time_consumed",
+      "action_completion_rate",
+      "evidence_quality_returned",
+      "hypothesis_discrimination_realized",
+      "resolution_contribution"
+    ],
+
+    "rules": [
+      "Low-yield actions may receive reduced future route value in similar contexts.",
+      "An action may remain valuable in other contexts.",
+      "Failure to confirm the tested hypothesis does not mean the action itself was unsuccessful if it produced useful discrimination.",
+      "Route performance shall be evaluated according to information gained, not merely whether the suspected failure was found."
+    ]
+  },
+
+  "rerouting": {
+    "triggers": [
+      "NEW_EVIDENCE",
+      "ACTION_COMPLETED",
+      "ACTION_FAILED",
+      "UNEXPECTED_RESULT",
+      "HYPOTHESIS_RULED_OUT",
+      "HYPOTHESIS_CONFIRMED",
+      "NEW_HYPOTHESIS",
+      "CONTEXT_CHANGED",
+      "CONSTRAINT_CHANGED",
+      "USER_CAPABILITY_CHANGED",
+      "RESOURCE_AVAILABILITY_CHANGED"
+    ],
+
+    "rules": [
+      "Every material state change may trigger route recalculation.",
+      "ARIA shall calculate from the current state rather than return to the beginning of the original route.",
+      "Previously completed actions remain part of the current graph state.",
+      "Previously obtained valid evidence remains active unless invalidated."
+    ]
+  },
+
+  "route_history": {
+    "append_only": true,
+
+    "required_fields": [
+      "route_event_id",
+      "case_id",
+      "timestamp",
+      "candidate_actions",
+      "candidate_scores",
+      "selected_action",
+      "selected_score",
+      "selection_reason",
+      "expected_outcomes",
+      "actual_outcome",
+      "information_gain_realized",
+      "probability_state_before",
+      "probability_state_after"
+    ]
+  },
+
+  "route_explainability": {
+    "required_capabilities": [
+      "Explain why an action was selected.",
+      "Explain why a higher-probability hypothesis was not tested first.",
+      "Explain what information the action is expected to provide.",
+      "Explain which hypotheses the action discriminates between.",
+      "Explain operational costs or risks affecting route selection.",
+      "Explain when user history materially affected route selection.",
+      "Explain why an action was not repeated."
+    ]
+  },
+
+  "example_route": {
+    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+
+    "probability_state": {
+      "rf_routing": 0.46,
+      "configuration": 0.23,
+      "radio_failure": 0.15,
+      "alignment": 0.09,
+      "unknown": 0.07
+    },
+
+    "candidate_actions": [
+      {
+        "action": "Review existing configuration",
+        "target_hypotheses": [
+          "configuration",
+          "radio_assignment"
+        ],
+        "information_gain": 0.72,
+        "cost": "NEGLIGIBLE",
+        "risk": "LOW",
+        "route_score": 0.88
+      },
+
+      {
+        "action": "Verify Main and Diversity physical RF routing",
+        "target_hypotheses": [
+          "rf_routing"
+        ],
+        "information_gain": 0.91,
+        "cost": "HIGH",
+        "risk": "MODERATE",
+        "route_score": 0.63
+      },
+
+      {
+        "action": "Replace suspected radio",
+        "target_hypotheses": [
+          "radio_failure"
+        ],
+        "information_gain": 0.39,
+        "cost": "HIGH",
+        "risk": "MODERATE",
+        "route_score": 0.21
+      }
+    ],
+
+    "selected_next_hop": "Review existing configuration",
+
+    "reason": "Although RF routing is currently more probable, reviewing existing configuration provides substantial discrimination at negligible operational cost and may eliminate multiple competing hypotheses before physical tower work is requested."
+  },
+
+  "ospf_analogy": {
+    "description": "ARIA's routing behavior is conceptually similar to dynamic network path selection but shall not literally implement OSPF metrics.",
+
+    "mapping": {
+      "network_node": "diagnostic_state",
+      "network_link": "possible diagnostic transition",
+      "link_cost": "diagnostic and operational cost",
+      "routing_table": "current ranked candidate actions",
+      "topology_change": "new evidence or changed case state",
+      "route_recalculation": "next-hop rescoring",
+      "destination": "sufficiently validated resolution"
+    },
+
+    "important_difference": "ARIA is navigating an uncertain information graph. The destination and graph topology may themselves be partially unknown until evidence is gathered."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "ROUTE-RULE-001",
+      "rule": "The most probable diagnosis and the best next diagnostic action are separate calculations."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-002",
+      "rule": "ARIA shall optimize expected diagnostic progress rather than blindly pursue the leading hypothesis."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-003",
+      "rule": "Low-cost high-information actions should generally precede high-cost invasive actions when their diagnostic value is comparable."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-004",
+      "rule": "Every diagnostic action shall have an identifiable purpose within the current reasoning state."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-005",
+      "rule": "ARIA shall predict useful possible outcomes before selecting an action when practical."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-006",
+      "rule": "Unexpected results shall become evidence and trigger rerouting."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-007",
+      "rule": "ARIA shall reroute from the current state rather than restart a static troubleshooting sequence."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-008",
+      "rule": "Previously completed diagnostic work shall remain represented in route state."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-009",
+      "rule": "A diagnostic action that rules out a hypothesis may be highly successful even though it did not identify the final root cause."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-010",
+      "rule": "ARIA shall penalize unjustified repetition of completed diagnostic actions."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-011",
+      "rule": "Route costs and benefits may vary according to user, equipment, project phase, access, safety, service state, and available evidence."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-012",
+      "rule": "User-specific routing shall optimize communication and execution efficiency without substituting historical user behavior for technical evidence."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-013",
+      "rule": "Safety and authorization constraints may prohibit a route regardless of calculated diagnostic utility."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-014",
+      "rule": "ARIA shall preserve sufficient routing history to reconstruct why each next hop was chosen."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-015",
+      "rule": "Route-performance learning shall be context-sensitive and shall not convert one unsuccessful action into a universal prohibition."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-016",
+      "rule": "When no available route provides sufficient expected value, ARIA shall seek additional context, broaden the hypothesis space, wait for required conditions, or escalate."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-017",
+      "rule": "ARIA's routing graph shall be capable of expanding as new products, failure modes, diagnostic actions, and learned relationships are introduced."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-018",
+      "rule": "The routing engine shall remain deterministic and auditable even when a language model assists in generating candidate actions."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-019",
+      "rule": "No language-model recommendation shall bypass hard safety, authorization, or state-transition constraints."
+    },
+
+    {
+      "rule_id": "ROUTE-RULE-020",
+      "rule": "The destination of diagnostic routing is not merely an answer; it is a sufficiently supported diagnosis, effective correction, and validated resolution."
+    }
+  ]
+}
