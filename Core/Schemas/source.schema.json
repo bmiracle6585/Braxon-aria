@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/source.schema.json",
+  "title": "A.R.I.A. Knowledge Source",
+  "description": "Machine-readable validation schema for authoritative and supporting sources used by the A.R.I.A. knowledge system.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "source_id",
+    "source_type",
+    "title",
+    "status",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "pattern": "^SRC-[0-9]{6,}$",
+      "description": "Permanent identifier for this source record."
+    },
+
+    "source_family_id": {
+      "type": ["string", "null"],
+      "pattern": "^DOCFAM-[0-9]{6,}$",
+      "description": "Optional stable identifier grouping revisions or versions of the same logical source."
+    },
+
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "MANUFACTURER_MANUAL",
+        "MANUFACTURER_DATASHEET",
+        "MANUFACTURER_TECHNICAL_BULLETIN",
+        "MANUFACTURER_RELEASE_NOTE",
+        "MANUFACTURER_TRAINING",
+        "ENGINEERING_STANDARD",
+        "INDUSTRY_STANDARD",
+        "CUSTOMER_DOCUMENT",
+        "CUSTOMER_REQUIREMENT",
+        "BRAXON_PROCEDURE",
+        "BRAXON_ENGINEERING_DOCUMENT",
+        "BRAXON_TRAINING",
+        "PROJECT_DOCUMENT",
+        "DESIGN_DOCUMENT",
+        "FIELD_OBSERVATION",
+        "VALIDATED_EXPERIENCE",
+        "EXPERT_CONTRIBUTION",
+        "STRUCTURED_DATASET",
+        "LEGACY_ARIA_KNOWLEDGE",
+        "EXTERNAL_REFERENCE",
+        "MODEL_PROPOSED"
+      ]
+    },
+
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+
+    "publisher": {
+      "type": ["string", "null"],
+      "maxLength": 255
+    },
+
+    "manufacturer_entity_id": {
+      "type": ["string", "null"],
+      "pattern": "^ENT-[0-9]{6,}$"
+    },
+
+    "customer_entity_id": {
+      "type": ["string", "null"],
+      "pattern": "^ENT-[0-9]{6,}$"
+    },
+
+    "document_number": {
+      "type": ["string", "null"],
+      "maxLength": 255
+    },
+
+    "revision": {
+      "type": ["string", "null"],
+      "maxLength": 100
+    },
+
+    "publication_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+
+    "effective_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "ingested_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "last_verified_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "SUPERSEDED",
+        "DEPRECATED",
+        "INVALIDATED",
+        "RETIRED",
+        "RESTRICTED"
+      ]
+    },
+
+    "authority_class": {
+      "type": ["string", "null"],
+      "enum": [
+        "PRIMARY_AUTHORITATIVE",
+        "AUTHORITATIVE",
+        "CONTROLLED_INTERNAL",
+        "VALIDATED_EXPERIENCE",
+        "EXPERT_CONTRIBUTION",
+        "SUPPORTING_REFERENCE",
+        "UNVALIDATED",
+        "MODEL_PROPOSED",
+        null
+      ],
+      "description": "Default authority classification. Actual authority remains context-dependent."
+    },
+
+    "artifact": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "storage_location": {
+          "type": ["string", "null"],
+          "description": "Managed storage reference. This should not be treated as permanent source identity."
+        },
+
+        "original_filename": {
+          "type": ["string", "null"]
+        },
+
+        "media_type": {
+          "type": ["string", "null"],
+          "description": "Artifact media type such as application/pdf."
+        },
+
+        "size_bytes": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Fa-f0-9]{64}$",
+          "description": "SHA-256 fingerprint of the original source artifact."
+        }
+      }
+    },
+
+    "supersedes_source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^SRC-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "superseded_by_source_id": {
+      "type": ["string", "null"],
+      "pattern": "^SRC-[0-9]{6,}$"
+    },
+
+    "origin_source_ids": {
+      "type": "array",
+      "description": "Sources from which this source is known to derive, allowing independent corroboration to be distinguished from repeated information.",
+      "items": {
+        "type": "string",
+        "pattern": "^SRC-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "applicability": {
+      "type": "object",
+      "description": "Known technical scope of this source.",
+      "additionalProperties": false,
+
+      "properties": {
+        "manufacturer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_family_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_variant_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "hardware_revision_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "firmware_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "frequency_band_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "configuration_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "scope_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        }
+      }
+    },
+
+    "access": {
+      "type": "object",
+      "description": "Basic visibility and source-artifact access classification.",
+      "additionalProperties": false,
+
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "INTERNAL",
+            "CONFIDENTIAL",
+            "RESTRICTED"
+          ]
+        },
+
+        "artifact_retrieval_restricted": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Controlled extensibility for source-type-specific metadata.",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "entity_id_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    }
+  }
+}
