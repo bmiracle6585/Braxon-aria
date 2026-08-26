@@ -1,0 +1,702 @@
+{
+  "specification": "ARIA_CONTEXT_DIMENSIONS",
+  "version": "0.1.0",
+  "description": "Defines the canonical multidimensional context model used by A.R.I.A. to determine applicability, specificity, inheritance, retrieval relevance, experience scope, probability scope, and technical reasoning boundaries.",
+
+  "core_principle": {
+    "statement": "ARIA shall represent context as an intersecting set of independent dimensions rather than as a hierarchical directory path. Knowledge, evidence, experience, hypotheses, actions, and relationships may apply across any combination of dimensions.",
+    "rules": [
+      "Context dimensions shall remain independently addressable.",
+      "No single dimension shall define the complete technical context.",
+      "Unknown dimensions shall not prevent use of otherwise applicable broader knowledge.",
+      "More specific applicable information shall normally outrank broader information.",
+      "Specific information shall not automatically override broader information when its authority or evidence quality is weaker.",
+      "User identity shall be a context dimension without becoming part of canonical technical truth.",
+      "Manufacturer and product shall not contain scope, technology, or failure mode hierarchies.",
+      "Context shall be extensible without restructuring existing knowledge.",
+      "Context matching shall support partial matches.",
+      "Contradictory information shall be evaluated using specificity, authority, temporal applicability, and evidence quality."
+    ]
+  },
+
+  "context_object": {
+    "required_fields": [
+      "context_id",
+      "schema_version"
+    ],
+    "optional_fields": [
+      "organization_id",
+      "customer_id",
+      "project_id",
+      "case_id",
+      "user_id",
+      "manufacturer_id",
+      "product_family_id",
+      "product_id",
+      "product_variant_id",
+      "technology_ids",
+      "scope_ids",
+      "site_id",
+      "site_role",
+      "path_id",
+      "path_role",
+      "component_ids",
+      "component_roles",
+      "frequency_band",
+      "channel",
+      "polarization",
+      "topology_ids",
+      "hardware_revision",
+      "software_version",
+      "firmware_version",
+      "configuration_profile_ids",
+      "environmental_conditions",
+      "network_state",
+      "service_state",
+      "temporal_context",
+      "geographic_context",
+      "attributes"
+    ]
+  },
+
+  "dimension_classes": [
+    "ORGANIZATIONAL",
+    "HUMAN",
+    "PRODUCT",
+    "TECHNOLOGY",
+    "WORK_SCOPE",
+    "PHYSICAL",
+    "NETWORK",
+    "RF",
+    "CONFIGURATION",
+    "SOFTWARE",
+    "ENVIRONMENTAL",
+    "TEMPORAL",
+    "GEOGRAPHIC",
+    "OPERATIONAL"
+  ],
+
+  "dimensions": [
+    {
+      "dimension": "organization_id",
+      "class": "ORGANIZATIONAL",
+      "description": "Organization associated with the case, experience, user, or technical environment.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "customer_id",
+      "class": "ORGANIZATIONAL",
+      "description": "Customer or carrier context applicable to the information.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "project_id",
+      "class": "ORGANIZATIONAL",
+      "description": "Project-specific context.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "case_id",
+      "class": "ORGANIZATIONAL",
+      "description": "Diagnostic case-specific context.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "user_id",
+      "class": "HUMAN",
+      "description": "User-specific experience or interaction context.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "manufacturer_id",
+      "class": "PRODUCT",
+      "description": "Equipment manufacturer.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "product_family_id",
+      "class": "PRODUCT",
+      "description": "Manufacturer product family.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "product_id",
+      "class": "PRODUCT",
+      "description": "Canonical product.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "product_variant_id",
+      "class": "PRODUCT",
+      "description": "Specific product variant.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "technology_ids",
+      "class": "TECHNOLOGY",
+      "description": "Technologies active or applicable within the context.",
+      "cardinality": "ZERO_OR_MANY"
+    },
+    {
+      "dimension": "scope_ids",
+      "class": "WORK_SCOPE",
+      "description": "Work activities or operational scopes applicable to the information.",
+      "cardinality": "ZERO_OR_MANY"
+    },
+    {
+      "dimension": "site_id",
+      "class": "PHYSICAL",
+      "description": "Specific physical site.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "site_role",
+      "class": "PHYSICAL",
+      "description": "Logical role of the site within the system or path.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "path_id",
+      "class": "NETWORK",
+      "description": "Specific communications or RF path.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "path_role",
+      "class": "NETWORK",
+      "description": "Logical role within a path or topology.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "component_ids",
+      "class": "PHYSICAL",
+      "description": "Specific components relevant to the context.",
+      "cardinality": "ZERO_OR_MANY"
+    },
+    {
+      "dimension": "component_roles",
+      "class": "PHYSICAL",
+      "description": "Functional roles such as MAIN_RADIO, DIVERSITY_RADIO, OCM_MAIN, OCM_DIVERSITY, ANTENNA, FLEX_TWIST, or MODEM.",
+      "cardinality": "ZERO_OR_MANY"
+    },
+    {
+      "dimension": "frequency_band",
+      "class": "RF",
+      "description": "Applicable RF frequency band.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "channel",
+      "class": "RF",
+      "description": "Applicable channel, center frequency, or channel identifier.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "polarization",
+      "class": "RF",
+      "description": "Applicable polarization or polarization relationship.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "topology_ids",
+      "class": "NETWORK",
+      "description": "Applicable topology concepts such as 1+0, 2+0, XPIC, Space Diversity, ring, protected, or unprotected.",
+      "cardinality": "ZERO_OR_MANY"
+    },
+    {
+      "dimension": "hardware_revision",
+      "class": "PRODUCT",
+      "description": "Hardware revision when behavior is revision-specific.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "software_version",
+      "class": "SOFTWARE",
+      "description": "Software release relevant to technical behavior.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "firmware_version",
+      "class": "SOFTWARE",
+      "description": "Firmware revision relevant to technical behavior.",
+      "cardinality": "ZERO_OR_ONE"
+    },
+    {
+      "dimension": "configuration_profile_ids",
+      "class": "CONFIGURATION",
+      "description": "Applicable configuration profiles, modes, or roles.",
+      "cardinality": "ZERO_OR_MANY"
+    },
+    {
+      "dimension": "environmental_conditions",
+      "class": "ENVIRONMENTAL",
+      "description": "Weather and environmental conditions relevant to the technical state.",
+      "cardinality": "STRUCTURED"
+    },
+    {
+      "dimension": "network_state",
+      "class": "OPERATIONAL",
+      "description": "Operational network condition during observation or reasoning.",
+      "cardinality": "STRUCTURED"
+    },
+    {
+      "dimension": "service_state",
+      "class": "OPERATIONAL",
+      "description": "Service availability or degradation state.",
+      "cardinality": "STRUCTURED"
+    },
+    {
+      "dimension": "temporal_context",
+      "class": "TEMPORAL",
+      "description": "Time interval or lifecycle period during which the context applies.",
+      "cardinality": "STRUCTURED"
+    },
+    {
+      "dimension": "geographic_context",
+      "class": "GEOGRAPHIC",
+      "description": "Geographic context when technically relevant.",
+      "cardinality": "STRUCTURED"
+    }
+  ],
+
+  "product_context_inheritance": {
+    "hierarchy": [
+      "MANUFACTURER",
+      "PRODUCT_FAMILY",
+      "PRODUCT",
+      "PRODUCT_VARIANT"
+    ],
+    "example": [
+      "Nokia",
+      "Wavence",
+      "UBT-T",
+      "UBT-T 18 GHz"
+    ],
+    "rules": [
+      "Product hierarchy may be used for applicability inheritance.",
+      "Product hierarchy shall not become the primary storage hierarchy for technical knowledge.",
+      "Knowledge applicable to UBT-T may apply to UBT-T 18 GHz unless explicitly constrained or contradicted.",
+      "Variant-specific information may narrow or override broader applicability when sufficiently authoritative."
+    ]
+  },
+
+  "scope_context": {
+    "canonical_examples": [
+      "DESIGN",
+      "INSTALLATION",
+      "COMMISSIONING",
+      "ALIGNMENT",
+      "TROUBLESHOOTING",
+      "ACCEPTANCE",
+      "MAINTENANCE",
+      "UPGRADE",
+      "REPAIR",
+      "VALIDATION"
+    ],
+    "rules": [
+      "One case may have multiple active scopes.",
+      "Technical knowledge may apply across multiple scopes.",
+      "Scope shall not be inferred solely from product or manufacturer.",
+      "Troubleshooting knowledge may reference installation knowledge without duplicating it."
+    ]
+  },
+
+  "technology_context": {
+    "canonical_examples": [
+      "MICROWAVE",
+      "RF",
+      "SPACE_DIVERSITY",
+      "XPIC",
+      "ACM",
+      "ETHERNET",
+      "IP",
+      "MPLS",
+      "DC_POWER",
+      "GROUNDING",
+      "SYNC",
+      "MANAGEMENT"
+    ],
+    "rules": [
+      "Technologies may overlap.",
+      "Products may support multiple technologies.",
+      "A technical concept may apply to multiple products from multiple manufacturers through shared technology context."
+    ]
+  },
+
+  "role_context": {
+    "description": "Logical component and endpoint roles shall be represented independently of physical model numbers.",
+    "examples": [
+      "SITE_A",
+      "SITE_B",
+      "NEAR_END",
+      "FAR_END",
+      "RADIO_A",
+      "RADIO_B",
+      "MAIN_RADIO",
+      "DIVERSITY_RADIO",
+      "MAIN_PORT",
+      "DIVERSITY_PORT",
+      "TX",
+      "RX",
+      "PRIMARY",
+      "SECONDARY"
+    ],
+    "rule": "ARIA shall reason about functional roles even when the specific physical component identity is unknown."
+  },
+
+  "environmental_context": {
+    "candidate_fields": [
+      "temperature",
+      "precipitation",
+      "humidity",
+      "wind_speed",
+      "wind_direction",
+      "visibility",
+      "atmospheric_condition",
+      "icing",
+      "obstruction_state"
+    ],
+    "rules": [
+      "Environmental conditions shall be considered only when technically relevant.",
+      "Weather correlation shall not automatically establish weather causation.",
+      "Observation time shall accompany time-sensitive environmental evidence."
+    ]
+  },
+
+  "context_specificity": {
+    "description": "Measures how narrowly information is scoped relative to the active case.",
+    "conceptual_levels": [
+      {
+        "level": 0,
+        "name": "UNIVERSAL",
+        "example": "General RF principle"
+      },
+      {
+        "level": 1,
+        "name": "TECHNOLOGY",
+        "example": "Microwave-specific behavior"
+      },
+      {
+        "level": 2,
+        "name": "MANUFACTURER",
+        "example": "Nokia implementation"
+      },
+      {
+        "level": 3,
+        "name": "PRODUCT_FAMILY",
+        "example": "Wavence behavior"
+      },
+      {
+        "level": 4,
+        "name": "PRODUCT",
+        "example": "UBT-T behavior"
+      },
+      {
+        "level": 5,
+        "name": "VARIANT",
+        "example": "UBT-T 18 GHz behavior"
+      },
+      {
+        "level": 6,
+        "name": "CONFIGURATION",
+        "example": "UBT-T 18 GHz Space Diversity configuration"
+      },
+      {
+        "level": 7,
+        "name": "CASE",
+        "example": "Current Site B Radio B state"
+      }
+    ],
+    "rules": [
+      "Specificity is multidimensional and shall not be calculated from directory depth.",
+      "A user-specific record is not automatically technically more authoritative than manufacturer documentation.",
+      "Specificity influences relevance but does not independently determine truth."
+    ]
+  },
+
+  "context_match": {
+    "result_fields": [
+      "match_score",
+      "matched_dimensions",
+      "unmatched_dimensions",
+      "unknown_dimensions",
+      "conflicting_dimensions",
+      "specificity_score"
+    ],
+    "rules": [
+      "Exact matches shall generally score higher than inherited matches.",
+      "Compatible broader context may remain applicable.",
+      "Unknown active-case dimensions shall not be treated as conflicts.",
+      "Explicitly incompatible dimensions may exclude a record.",
+      "Context match shall be combined with authority, evidence quality, confidence, and recency."
+    ]
+  },
+
+  "context_match_scoring": {
+    "conceptual_formula": "context_relevance = dimension_match + specificity + inheritance_compatibility - explicit_conflict_penalty",
+    "rules": [
+      "The formula shall remain configurable.",
+      "Not all dimensions require equal weight.",
+      "Dimensions material to the current technical question may receive greater weight.",
+      "A product mismatch may be critical for product-specific configuration while irrelevant for a universal RF principle."
+    ]
+  },
+
+  "applicability_states": [
+    "DIRECT",
+    "INHERITED",
+    "PARTIAL",
+    "CONDITIONAL",
+    "UNKNOWN",
+    "CONFLICTING",
+    "NOT_APPLICABLE"
+  ],
+
+  "inheritance_policy": {
+    "rules": [
+      "Broader knowledge may flow into narrower context when no incompatible constraint exists.",
+      "Narrower knowledge shall not automatically flow outward into broader contexts.",
+      "Manufacturer-specific knowledge shall not automatically apply to other manufacturers.",
+      "Technology-level knowledge may apply across manufacturers when the underlying technical principle is shared.",
+      "Product-specific procedures shall remain product-specific unless generalized through validated evidence or governance.",
+      "User experience shall never be inherited by another user."
+    ]
+  },
+
+  "conflict_resolution": {
+    "evaluation_dimensions": [
+      "TECHNICAL_AUTHORITY",
+      "CONTEXT_SPECIFICITY",
+      "EVIDENCE_QUALITY",
+      "TEMPORAL_APPLICABILITY",
+      "SOURCE_PROVENANCE",
+      "CONFIDENCE"
+    ],
+    "rules": [
+      "Specificity alone shall not resolve a contradiction.",
+      "Current direct evidence may outweigh historical generalized experience.",
+      "Authoritative product documentation may outweigh generalized practice when applicable.",
+      "Observed field behavior may create a contradiction requiring investigation rather than silent replacement of authoritative knowledge."
+    ]
+  },
+
+  "user_context": {
+    "description": "Defines how user-specific history participates in multidimensional context.",
+    "allowed_effects": [
+      "HYPOTHESIS_PRIOR_ADJUSTMENT",
+      "ACTION_PRIORITY_ADJUSTMENT",
+      "EXPECTED_ACTION_ACCURACY",
+      "EXPECTED_EVIDENCE_QUALITY",
+      "COMMUNICATION_DETAIL",
+      "LIKELY_INFORMATION_GAPS"
+    ],
+    "prohibited_effects": [
+      "CHANGE_PHYSICAL_LAW",
+      "CHANGE_MANUFACTURER_REQUIREMENT",
+      "OVERRIDE_CURRENT_VALIDATED_EVIDENCE",
+      "CREATE_DETERMINISTIC_CAUSALITY"
+    ],
+    "rule": "User context personalizes reasoning strategy without personalizing technical reality."
+  },
+
+  "experience_scope": {
+    "description": "Experience shall be tagged with the dimensions that were actually present when the outcome occurred.",
+    "example": {
+      "user_id": "Clayton",
+      "manufacturer": "Nokia",
+      "product": "UBT-T",
+      "technology": [
+        "MICROWAVE",
+        "SPACE_DIVERSITY"
+      ],
+      "scope": [
+        "COMMISSIONING",
+        "TROUBLESHOOTING"
+      ],
+      "failure_mode": "CONFIGURATION_ERROR",
+      "frequency_band": "18 GHz"
+    },
+    "rules": [
+      "Experience shall not automatically generalize beyond its validated scope.",
+      "ARIA may use broader aggregates when narrow sample sizes are insufficient.",
+      "The scope used for a probability adjustment shall remain explainable."
+    ]
+  },
+
+  "progressive_generalization": {
+    "description": "Allows ARIA to widen historical retrieval when exact context contains insufficient data.",
+    "example_order": [
+      "Clayton + Nokia + UBT-T + 18 GHz + Space Diversity + RSL discrepancy",
+      "Clayton + Nokia + UBT-T + Space Diversity + RSL discrepancy",
+      "Clayton + Nokia + UBT-T + RSL discrepancy",
+      "Clayton + Nokia + microwave RSL discrepancy",
+      "Clayton + microwave RSL discrepancy",
+      "All users + Nokia + UBT-T + Space Diversity + RSL discrepancy",
+      "All validated microwave RSL discrepancy cases"
+    ],
+    "rules": [
+      "ARIA shall prefer the most specific statistically useful experience scope.",
+      "Scope widening shall be explicit internally.",
+      "Broader data shall not masquerade as user-specific history.",
+      "Sample size and calibration shall influence how strongly historical experience modifies priors."
+    ]
+  },
+
+  "context_signature": {
+    "description": "Canonical normalized representation used for matching, caching, retrieval, experience aggregation, and reasoning.",
+    "properties": [
+      "Order-independent where dimensions are sets.",
+      "Stable for semantically equivalent context.",
+      "Hashable.",
+      "Versioned.",
+      "Supports partial signatures."
+    ],
+    "rule": "The signature identifies contextual equivalence for computation; it does not replace the underlying structured context object."
+  },
+
+  "retrieval_policy": {
+    "ranking_inputs": [
+      "CONTEXT_MATCH",
+      "SPECIFICITY",
+      "SOURCE_AUTHORITY",
+      "CONFIDENCE",
+      "EVIDENCE_QUALITY",
+      "RECENCY",
+      "DIAGNOSTIC_RELEVANCE",
+      "SAMPLE_SIZE"
+    ],
+    "rules": [
+      "Retrieval shall not rely primarily on file paths.",
+      "Canonical graph relationships and context metadata shall drive retrieval.",
+      "Broad knowledge may be retrieved alongside narrow knowledge when diagnostically useful.",
+      "Duplicate semantic information shall be consolidated before model context assembly where practical."
+    ]
+  },
+
+  "example": {
+    "active_case": {
+      "user": "Clayton",
+      "manufacturer": "Nokia",
+      "product_family": "Wavence",
+      "product": "UBT-T",
+      "product_variant": "UBT-T 18 GHz",
+      "technology": [
+        "MICROWAVE",
+        "SPACE_DIVERSITY"
+      ],
+      "scope": [
+        "COMMISSIONING",
+        "TROUBLESHOOTING"
+      ],
+      "site_role": "SITE_B",
+      "component_role": "DIVERSITY_RADIO",
+      "symptom": "RSL_DEGRADATION"
+    },
+    "retrieved_knowledge": [
+      {
+        "knowledge": "RSL may degrade due to alignment error.",
+        "context": "General microwave",
+        "applicability": "INHERITED"
+      },
+      {
+        "knowledge": "Space Diversity requires correct Main/Diversity RF routing.",
+        "context": "Space Diversity",
+        "applicability": "INHERITED"
+      },
+      {
+        "knowledge": "UBT-T implementation-specific Main/Diversity behavior.",
+        "context": "Nokia + UBT-T",
+        "applicability": "DIRECT"
+      },
+      {
+        "knowledge": "Clayton has 9 validated configuration errors across 13 comparable cases.",
+        "context": "Clayton + comparable case scope",
+        "applicability": "DIRECT_USER_EXPERIENCE"
+      }
+    ],
+    "interpretation": "ARIA can combine universal RF knowledge, technology knowledge, Nokia product knowledge, and Clayton-specific experience without storing four copies of RSL degradation."
+  },
+
+  "semantic_rules": [
+    {
+      "rule_id": "CTXDIM-RULE-001",
+      "rule": "Context shall be represented as independent intersecting dimensions rather than directory hierarchy."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-002",
+      "rule": "No single dimension shall define complete technical applicability."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-003",
+      "rule": "Unknown dimensions shall remain unknown rather than becoming mismatches."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-004",
+      "rule": "Context matching shall support partial applicability."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-005",
+      "rule": "More-specific applicable information shall generally receive greater relevance."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-006",
+      "rule": "Specificity shall not independently determine authority or correctness."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-007",
+      "rule": "Broader technical knowledge may inherit downward into compatible narrower context."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-008",
+      "rule": "Narrow context shall not automatically generalize outward."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-009",
+      "rule": "Technology knowledge may cross manufacturer boundaries when technically universal."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-010",
+      "rule": "Manufacturer-specific behavior shall remain manufacturer constrained."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-011",
+      "rule": "Product-specific behavior shall remain product constrained unless validated generalization occurs."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-012",
+      "rule": "User experience shall never be inherited by another user."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-013",
+      "rule": "User context may alter reasoning strategy but shall not alter technical truth."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-014",
+      "rule": "Experience shall retain the context in which it was observed."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-015",
+      "rule": "Historical retrieval shall prefer the most specific statistically useful scope."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-016",
+      "rule": "ARIA may progressively generalize retrieval when narrow experience is insufficient."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-017",
+      "rule": "Broader historical data shall remain distinguishable from user-specific data."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-018",
+      "rule": "Functional roles shall remain distinguishable from physical equipment identities."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-019",
+      "rule": "Context signatures shall support computation and retrieval without replacing structured context."
+    },
+    {
+      "rule_id": "CTXDIM-RULE-020",
+      "rule": "Adding a new context dimension shall not require restructuring ARIA's existing knowledge graph."
+    }
+  ]
+}
