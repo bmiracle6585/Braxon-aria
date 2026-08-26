@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/evidence.schema.json",
+  "title": "A.R.I.A. Case Evidence",
+  "description": "Machine-readable validation schema for observations, measurements, test results, artifacts, configuration data, and other evidence associated with an active or historical A.R.I.A. case.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "evidence_id",
+    "case_id",
+    "evidence_type",
+    "status",
+    "observed_at",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^EVD-[0-9]{6,}$",
+      "description": "Permanent identifier for this evidence record."
+    },
+
+    "case_id": {
+      "type": "string",
+      "pattern": "^EXP-[0-9]{6,}$",
+      "description": "Experience Ledger case to which this evidence belongs."
+    },
+
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "USER_OBSERVATION",
+        "TECHNICIAN_OBSERVATION",
+        "DIRECT_MEASUREMENT",
+        "INSTRUMENT_MEASUREMENT",
+        "SYSTEM_READING",
+        "CONFIGURATION_VALUE",
+        "CONFIGURATION_EXPORT",
+        "TEST_RESULT",
+        "ALARM",
+        "LOG_ENTRY",
+        "SCREENSHOT",
+        "PHOTOGRAPH",
+        "VIDEO",
+        "DOCUMENT",
+        "DESIGN_VALUE",
+        "EXPECTED_VALUE",
+        "ENVIRONMENTAL_OBSERVATION",
+        "PHYSICAL_INSPECTION",
+        "SYSTEM_INFERENCE",
+        "OTHER"
+      ]
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "SUPERSEDED",
+        "INVALIDATED",
+        "RETRACTED"
+      ]
+    },
+
+    "observation": {
+      "type": ["string", "null"],
+      "description": "Human-readable statement describing what was directly observed or recorded."
+    },
+
+    "interpretation": {
+      "type": ["string", "null"],
+      "description": "Interpretation of the observation. This shall remain distinguishable from the observation itself."
+    },
+
+    "measurement_entity_id": {
+      "type": ["string", "null"],
+      "pattern": "^ENT-[0-9]{6,}$",
+      "description": "Canonical measurement entity represented by this evidence."
+    },
+
+    "value": {
+      "description": "Observed value. May be numeric, textual, boolean, or null depending upon the evidence type.",
+      "type": [
+        "number",
+        "string",
+        "boolean",
+        "null"
+      ]
+    },
+
+    "unit_entity_id": {
+      "type": ["string", "null"],
+      "pattern": "^ENT-[0-9]{6,}$",
+      "description": "Canonical unit entity when the evidence contains a measurable value."
+    },
+
+    "expected_value": {
+      "description": "Expected, engineered, configured, or reference value when applicable.",
+      "type": [
+        "number",
+        "string",
+        "boolean",
+        "null"
+      ]
+    },
+
+    "expected_unit_entity_id": {
+      "type": ["string", "null"],
+      "pattern": "^ENT-[0-9]{6,}$"
+    },
+
+    "comparison": {
+      "type": ["object", "null"],
+      "description": "Structured comparison between observed and expected conditions.",
+      "additionalProperties": false,
+
+      "properties": {
+        "difference": {
+          "type": ["number", "null"]
+        },
+
+        "absolute_difference": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+
+        "within_tolerance": {
+          "type": ["boolean", "null"]
+        },
+
+        "tolerance": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+
+        "comparison_result": {
+          "type": ["string", "null"],
+          "enum": [
+            "MATCH",
+            "ABOVE_EXPECTED",
+            "BELOW_EXPECTED",
+            "WITHIN_TOLERANCE",
+            "OUTSIDE_TOLERANCE",
+            "DIFFERENT",
+            "UNKNOWN",
+            null
+          ]
+        }
+      }
+    },
+
+    "subject_entity_ids": {
+      "$ref": "#/$defs/entity_id_array"
+    },
+
+    "context": {
+      "type": "object",
+      "description": "Technical context associated with this evidence.",
+      "additionalProperties": false,
+
+      "properties": {
+        "manufacturer_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "product_variant_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "hardware_revision_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "firmware_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "frequency_band_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "configuration_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "topology_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "scope_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "symptom_entity_ids": {
+          "$ref": "#/$defs/entity_id_array"
+        },
+
+        "site": {
+          "type": ["string", "null"]
+        },
+
+        "side": {
+          "type": ["string", "null"],
+          "description": "Optional path or system side such as Main, Diversity, Radio A, Radio B, Site A, or Site B."
+        }
+      }
+    },
+
+    "observer": {
+      "type": ["object", "null"],
+      "description": "Person or system responsible for the observation.",
+      "additionalProperties": false,
+
+      "properties": {
+        "person_entity_id": {
+          "type": ["string", "null"],
+          "description": "Stable person identifier when available."
+        },
+
+        "role": {
+          "type": ["string", "null"]
+        },
+
+        "system_identifier": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "collection_method": {
+      "type": ["string", "null"],
+      "enum": [
+        "DIRECT_OBSERVATION",
+        "MANUAL_ENTRY",
+        "INSTRUMENT",
+        "SYSTEM_API",
+        "CONFIGURATION_EXPORT",
+        "SCREEN_CAPTURE",
+        "PHOTO_CAPTURE",
+        "VIDEO_CAPTURE",
+        "LOG_EXTRACTION",
+        "DOCUMENT_EXTRACTION",
+        "MODEL_INTERPRETATION",
+        "SYSTEM_DERIVATION",
+        null
+      ]
+    },
+
+    "instrument": {
+      "type": ["object", "null"],
+      "description": "Measurement instrument information when applicable.",
+      "additionalProperties": false,
+
+      "properties": {
+        "tool_entity_id": {
+          "type": ["string", "null"],
+          "pattern": "^ENT-[0-9]{6,}$"
+        },
+
+        "manufacturer": {
+          "type": ["string", "null"]
+        },
+
+        "model": {
+          "type": ["string", "null"]
+        },
+
+        "serial_number": {
+          "type": ["string", "null"]
+        },
+
+        "calibration_status": {
+          "type": ["string", "null"],
+          "enum": [
+            "CURRENT",
+            "EXPIRED",
+            "UNKNOWN",
+            "NOT_APPLICABLE",
+            null
+          ]
+        },
+
+        "calibration_due_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "artifact": {
+      "type": ["object", "null"],
+      "description": "Artifact supporting the evidence.",
+      "additionalProperties": false,
+
+      "properties": {
+        "artifact_id": {
+          "type": ["string", "null"]
+        },
+
+        "storage_location": {
+          "type": ["string", "null"]
+        },
+
+        "original_filename": {
+          "type": ["string", "null"]
+        },
+
+        "media_type": {
+          "type": ["string", "null"]
+        },
+
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        }
+      }
+    },
+
+    "reliability": {
+      "type": "object",
+      "description": "Structured assessment of evidence reliability.",
+      "additionalProperties": false,
+
+      "properties": {
+        "observation_confidence": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "measurement_confidence": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "context_confidence": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "overall_confidence": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "independently_verified": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+
+    "verification": {
+      "type": "object",
+      "description": "Independent verification of this evidence when available.",
+      "additionalProperties": false,
+
+      "properties": {
+        "verified": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "verified_by": {
+          "type": ["string", "null"]
+        },
+
+        "verified_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "verification_method": {
+          "type": ["string", "null"]
+        },
+
+        "verification_notes": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "supports_hypothesis_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^HYP-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "contradicts_hypothesis_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^HYP-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "supersedes_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^EVD-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "superseded_by_evidence_id": {
+      "type": ["string", "null"],
+      "pattern": "^EVD-[0-9]{6,}$"
+    },
+
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "received_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"]
+    },
+
+    "updated_by": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Controlled extensibility for evidence-type-specific metadata.",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "entity_id_array": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ENT-[0-9]{6,}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    }
+  }
+}
