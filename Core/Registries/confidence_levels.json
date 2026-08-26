@@ -1,0 +1,411 @@
+{
+  "registry": "ARIA_CONFIDENCE_LEVELS",
+  "version": "0.1.0",
+  "description": "Controlled vocabulary and semantic framework defining how A.R.I.A. represents confidence, probability, evidence quality, diagnostic certainty, resolution certainty, and learning confidence. These dimensions shall remain distinct.",
+
+  "confidence_dimensions": [
+    {
+      "id": "CONF-DIM-001",
+      "name": "HYPOTHESIS_PROBABILITY",
+      "canonical_name": "Hypothesis Probability",
+      "description": "ARIA's current estimated probability that a candidate hypothesis explains the relevant condition given the current evidence and context.",
+      "value_type": "PROBABILITY",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-002",
+      "name": "DIAGNOSTIC_CONFIDENCE",
+      "canonical_name": "Diagnostic Confidence",
+      "description": "ARIA's confidence that the available evidence is sufficient to support the current diagnosis, independent of the relative probability distribution among competing hypotheses.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-003",
+      "name": "EVIDENCE_QUALITY",
+      "canonical_name": "Evidence Quality",
+      "description": "Assessment of the reliability, directness, applicability, freshness, independence, completeness, and provenance quality of evidence supporting a conclusion.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-004",
+      "name": "EVIDENCE_COMPLETENESS",
+      "canonical_name": "Evidence Completeness",
+      "description": "Assessment of whether sufficient relevant evidence has been collected to evaluate the material competing explanations.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-005",
+      "name": "RESOLUTION_CONFIDENCE",
+      "canonical_name": "Resolution Confidence",
+      "description": "Confidence that the reported technical problem has actually been corrected and remains within the applicable acceptable condition.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-006",
+      "name": "CAUSAL_CONFIDENCE",
+      "canonical_name": "Causal Confidence",
+      "description": "Confidence that the identified failure or root cause actually caused the observed condition rather than merely correlating with it.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-007",
+      "name": "LEARNING_CONFIDENCE",
+      "canonical_name": "Learning Confidence",
+      "description": "Confidence that a completed case is sufficiently validated and attributable to safely influence ARIA's future learned probabilities, route statistics, and diagnostic experience.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-008",
+      "name": "CONTEXT_MATCH_CONFIDENCE",
+      "canonical_name": "Context Match Confidence",
+      "description": "Confidence that retrieved historical knowledge, documentation, procedures, or cases are technically applicable to the current context.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-009",
+      "name": "EXTRACTION_CONFIDENCE",
+      "canonical_name": "Extraction Confidence",
+      "description": "Confidence that ARIA correctly extracted or interpreted information from a source artifact such as a screenshot, document, configuration file, log, or user statement.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    },
+
+    {
+      "id": "CONF-DIM-010",
+      "name": "ROUTE_CONFIDENCE",
+      "canonical_name": "Route Confidence",
+      "description": "Confidence that a selected diagnostic action represents an appropriate next step given current hypotheses, expected information gain, cost, risk, constraints, and available evidence.",
+      "value_type": "CONFIDENCE",
+      "range": {
+        "minimum": 0.0,
+        "maximum": 1.0
+      },
+      "dynamic": true
+    }
+  ],
+
+  "qualitative_levels": [
+    {
+      "id": "CONF-LEVEL-001",
+      "name": "VERY_LOW",
+      "minimum": 0.0,
+      "maximum_exclusive": 0.20,
+      "description": "Very weak confidence. Information is insufficient, highly uncertain, poorly applicable, or materially contradictory."
+    },
+
+    {
+      "id": "CONF-LEVEL-002",
+      "name": "LOW",
+      "minimum": 0.20,
+      "maximum_exclusive": 0.40,
+      "description": "Limited confidence. Some supporting information exists but substantial uncertainty remains."
+    },
+
+    {
+      "id": "CONF-LEVEL-003",
+      "name": "MODERATE",
+      "minimum": 0.40,
+      "maximum_exclusive": 0.60,
+      "description": "Meaningful support exists, but competing explanations or important evidence gaps remain."
+    },
+
+    {
+      "id": "CONF-LEVEL-004",
+      "name": "HIGH",
+      "minimum": 0.60,
+      "maximum_exclusive": 0.80,
+      "description": "Strong support exists and material uncertainty has been reduced, though confirmation may still require additional evidence."
+    },
+
+    {
+      "id": "CONF-LEVEL-005",
+      "name": "VERY_HIGH",
+      "minimum": 0.80,
+      "maximum_exclusive": 0.95,
+      "description": "Evidence strongly supports the conclusion with relatively little remaining uncertainty."
+    },
+
+    {
+      "id": "CONF-LEVEL-006",
+      "name": "NEAR_CERTAIN",
+      "minimum": 0.95,
+      "maximum": 1.0,
+      "description": "Evidence is exceptionally strong and material competing explanations have been sufficiently constrained."
+    }
+  ],
+
+  "probability_semantics": {
+    "description": "Hypothesis probability represents relative belief in candidate explanations given current evidence. Probability and confidence are not interchangeable.",
+    "normalization_policy": "When hypotheses are modeled as mutually exclusive and collectively exhaustive for a defined diagnostic decision state, their normalized probabilities should sum to 1.0. When hypotheses may coexist, overlap, or do not represent an exhaustive set, independent probabilities may be maintained and are not required to sum to 1.0.",
+    "unknown_mass_policy": "ARIA may explicitly preserve probability mass for unknown, unmodeled, or insufficiently specified explanations rather than forcing known hypotheses to sum to certainty."
+  },
+
+  "confidence_factors": [
+    {
+      "factor": "SOURCE_RELIABILITY",
+      "description": "Reliability of the originating evidence source."
+    },
+
+    {
+      "factor": "DIRECTNESS",
+      "description": "Whether evidence directly measures or observes the relevant condition versus indirectly implying it."
+    },
+
+    {
+      "factor": "CORROBORATION",
+      "description": "Presence of genuinely independent supporting evidence."
+    },
+
+    {
+      "factor": "CONTRADICTION",
+      "description": "Presence and strength of evidence inconsistent with the conclusion."
+    },
+
+    {
+      "factor": "APPLICABILITY",
+      "description": "Degree to which evidence applies to the exact product, variant, topology, firmware, scope, and technical context."
+    },
+
+    {
+      "factor": "FRESHNESS",
+      "description": "Whether time-sensitive evidence remains representative of the current state."
+    },
+
+    {
+      "factor": "PROVENANCE",
+      "description": "Degree to which evidence origin and transformation history are known and traceable."
+    },
+
+    {
+      "factor": "INDEPENDENCE",
+      "description": "Degree to which supporting evidence originates from independent underlying sources."
+    },
+
+    {
+      "factor": "COMPLETENESS",
+      "description": "Whether important competing explanations have received sufficient evaluation."
+    },
+
+    {
+      "factor": "TEST_DISCRIMINATION",
+      "description": "Degree to which an action or test meaningfully distinguishes between competing hypotheses."
+    },
+
+    {
+      "factor": "VARIABLE_CONTROL",
+      "description": "Degree to which a diagnostic test or corrective action isolated the variable being evaluated."
+    },
+
+    {
+      "factor": "HISTORICAL_SAMPLE_SIZE",
+      "description": "Number of relevant historical observations supporting a learned pattern."
+    },
+
+    {
+      "factor": "HISTORICAL_SIMILARITY",
+      "description": "Similarity of historical cases to the current context."
+    },
+
+    {
+      "factor": "RECURRENCE",
+      "description": "Whether a supposedly resolved condition subsequently returned."
+    }
+  ],
+
+  "decision_states": [
+    {
+      "id": "DEC-STATE-001",
+      "name": "INSUFFICIENT_INFORMATION",
+      "description": "Available information is insufficient to establish a useful probability distribution or select a justified diagnostic route."
+    },
+
+    {
+      "id": "DEC-STATE-002",
+      "name": "EXPLORATORY",
+      "description": "Multiple plausible hypotheses remain and ARIA should prioritize efficient information gathering."
+    },
+
+    {
+      "id": "DEC-STATE-003",
+      "name": "DIRECTIONAL",
+      "description": "Evidence favors one or more diagnostic directions but additional discrimination is appropriate."
+    },
+
+    {
+      "id": "DEC-STATE-004",
+      "name": "STRONG_HYPOTHESIS",
+      "description": "One hypothesis has strong support but confirmation or sufficient validation remains incomplete."
+    },
+
+    {
+      "id": "DEC-STATE-005",
+      "name": "DIAGNOSIS_CONFIRMED",
+      "description": "Available evidence satisfies the applicable policy for confirming the diagnosis."
+    },
+
+    {
+      "id": "DEC-STATE-006",
+      "name": "RESOLUTION_PENDING_VALIDATION",
+      "description": "Corrective action has been performed and appears successful, but sufficient validation has not yet been completed."
+    },
+
+    {
+      "id": "DEC-STATE-007",
+      "name": "RESOLUTION_VALIDATED",
+      "description": "Post-correction evidence sufficiently supports that the reported condition has been resolved."
+    }
+  ],
+
+  "semantic_rules": [
+    {
+      "rule_id": "CONF-RULE-001",
+      "rule": "Probability and confidence are distinct. A hypothesis may have the highest probability while diagnostic confidence remains low."
+    },
+
+    {
+      "rule_id": "CONF-RULE-002",
+      "rule": "ARIA shall not communicate a single generic confidence number when multiple materially different confidence dimensions are relevant."
+    },
+
+    {
+      "rule_id": "CONF-RULE-003",
+      "rule": "Hypothesis probability shall describe belief about what explanation is true. Evidence quality shall describe the quality of the evidence supporting that belief."
+    },
+
+    {
+      "rule_id": "CONF-RULE-004",
+      "rule": "High probability does not independently authorize a high-impact corrective action when diagnostic confidence or evidence completeness remains insufficient."
+    },
+
+    {
+      "rule_id": "CONF-RULE-005",
+      "rule": "A hypothesis being substantially more probable than competing hypotheses does not automatically mean the hypothesis is confirmed."
+    },
+
+    {
+      "rule_id": "CONF-RULE-006",
+      "rule": "ARIA shall preserve unknown probability mass when the known hypothesis set is incomplete rather than manufacturing false certainty."
+    },
+
+    {
+      "rule_id": "CONF-RULE-007",
+      "rule": "When hypotheses are not mutually exclusive, their individual probabilities are not required to sum to 1.0."
+    },
+
+    {
+      "rule_id": "CONF-RULE-008",
+      "rule": "Confidence shall generally increase when relevant independent evidence converges and decrease when credible contradictory evidence emerges."
+    },
+
+    {
+      "rule_id": "CONF-RULE-009",
+      "rule": "Repeated representations of the same underlying evidence shall not independently increase confidence."
+    },
+
+    {
+      "rule_id": "CONF-RULE-010",
+      "rule": "Historical frequency shall primarily influence prior probability. Current validated evidence shall primarily determine posterior probability."
+    },
+
+    {
+      "rule_id": "CONF-RULE-011",
+      "rule": "Small historical samples shall not produce extreme learned confidence without exceptional supporting evidence."
+    },
+
+    {
+      "rule_id": "CONF-RULE-012",
+      "rule": "User-specific historical accuracy may affect priors and evidence weighting but shall not override valid direct evidence."
+    },
+
+    {
+      "rule_id": "CONF-RULE-013",
+      "rule": "ARIA shall be capable of expressing that the most likely explanation is still uncertain."
+    },
+
+    {
+      "rule_id": "CONF-RULE-014",
+      "rule": "ARIA shall be capable of expressing high confidence in a measurement while simultaneously maintaining low confidence in its cause."
+    },
+
+    {
+      "rule_id": "CONF-RULE-015",
+      "rule": "Resolution confidence shall be based on validation of the original technical condition and shall remain separate from confidence in the diagnosed root cause."
+    },
+
+    {
+      "rule_id": "CONF-RULE-016",
+      "rule": "Learning confidence shall consider diagnostic certainty, causal attribution, evidence quality, validation quality, context completeness, and recurrence."
+    },
+
+    {
+      "rule_id": "CONF-RULE-017",
+      "rule": "A case with low learning confidence shall not materially influence future learned probabilities merely because the case was closed."
+    },
+
+    {
+      "rule_id": "CONF-RULE-018",
+      "rule": "Qualitative confidence labels are communication aids and shall not replace the underlying numeric values and supporting evidence."
+    },
+
+    {
+      "rule_id": "CONF-RULE-019",
+      "rule": "Confidence thresholds for confirmation, corrective action, escalation, or autonomous behavior shall be defined by policy and may vary according to action risk and technical context."
+    },
+
+    {
+      "rule_id": "CONF-RULE-020",
+      "rule": "ARIA shall prefer calibrated uncertainty over unsupported precision."
+    }
+  ]
+}
