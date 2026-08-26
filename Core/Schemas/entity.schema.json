@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aria.braxon.ai/schemas/entity.schema.json",
-  "title": "A.R.I.A. Canonical Entity",
-  "description": "Machine-readable validation schema for canonical entities in the A.R.I.A. Knowledge Graph.",
+  "title": "A.R.I.A. Canonical Technical Entity",
+  "description": "Machine-readable validation schema for canonical technical entities used by A.R.I.A. This schema is subordinate to entity_contracts.json for identity and shared interoperability contracts and to entity_types.json for canonical entity-type vocabulary.",
   "type": "object",
   "additionalProperties": false,
 
   "required": [
-    "entity_id",
+    "id",
     "entity_type",
     "canonical_name",
     "status",
@@ -17,26 +17,37 @@
   ],
 
   "properties": {
-    "entity_id": {
-      "type": "string",
-      "pattern": "^ENT-[0-9]{6,}$",
-      "description": "Permanent canonical entity identifier."
+    "id": {
+      "$ref": "#/$defs/canonical_entity_identifier"
     },
 
     "entity_type": {
       "type": "string",
       "minLength": 1,
-      "description": "Approved entity type from the A.R.I.A. entity-type registry."
+      "description": "Canonical entity classification. The value MUST exist in Core/Registries/entity_types.json. This schema intentionally does not duplicate the Registry vocabulary as an enum."
     },
 
     "canonical_name": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 255
+      "maxLength": 255,
+      "description": "Preferred human-readable name for the canonical technical entity. The name may change without changing canonical identity."
     },
 
     "description": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Concise definition of the entity itself. Relationships, case observations, and historical experience should not be serialized into this field."
+    },
+
+    "short_description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
     },
 
     "status": {
@@ -47,7 +58,8 @@
         "DEPRECATED",
         "SUPERSEDED",
         "REJECTED"
-      ]
+      ],
+      "description": "Lifecycle status of the canonical entity."
     },
 
     "validation_state": {
@@ -56,23 +68,110 @@
         "PROPOSED",
         "REVIEWED",
         "VALIDATED",
+        "DISPUTED",
         "REJECTED"
-      ]
+      ],
+      "description": "Validation state of the entity. Entity validation does not automatically validate relationships involving the entity."
     },
 
-    "effective_at": {
-      "type": ["string", "null"],
-      "format": "date-time"
+    "aliases": {
+      "type": "array",
+      "description": "Known names, abbreviations, manufacturer terminology, historical terminology, or other labels resolving to this canonical entity. Aliases do not create separate canonical entities.",
+      "items": {
+        "$ref": "#/$defs/alias"
+      },
+      "default": []
+    },
+
+    "provenance": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Provenance describing how the canonical entity entered A.R.I.A.'s knowledge system. Semantics are governed by the provenance contract in Core/Schemas/entity_contracts.json.",
+      "additionalProperties": true
+    },
+
+    "confidence": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Confidence in the quality or support for this entity assertion. Confidence is not probability. Semantics are governed by the confidence contract in Core/Schemas/entity_contracts.json.",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "basis"
+      ],
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+
+    "valid_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Beginning of the period during which this entity definition or applicability is considered valid when temporally bounded."
+    },
+
+    "valid_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "End of the entity's known applicability period. Null means no known end."
     },
 
     "deprecated_at": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+
+    "superseded_at": {
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time"
     },
 
     "superseded_by": {
-      "type": ["string", "null"],
-      "pattern": "^ENT-[0-9]{6,}$"
+      "oneOf": [
+        {
+          "$ref": "#/$defs/canonical_entity_identifier"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Canonical identifier of the entity that supersedes this entity when applicable."
+    },
+
+    "legacy_identifiers": {
+      "type": "array",
+      "description": "Historical identifiers retained for migration, reconciliation, and auditability. Legacy identifiers are not authoritative canonical identities.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
     },
 
     "created_at": {
@@ -86,17 +185,110 @@
     },
 
     "created_by": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Canonical actor reference or implementation-defined creator reference when available."
     },
 
     "updated_by": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Canonical actor reference or implementation-defined updater reference when available."
     },
 
     "metadata": {
       "type": "object",
-      "description": "Controlled extensibility for entity-type-specific metadata.",
-      "additionalProperties": true
+      "description": "Controlled extensibility for entity-type-specific technical metadata. Metadata must not be used to create hidden relationship systems, duplicate canonical entities, store case-specific evidence, or replace authoritative Registry vocabulary.",
+      "additionalProperties": true,
+      "default": {}
+    }
+  },
+
+  "$defs": {
+    "canonical_entity_identifier": {
+      "type": "string",
+      "description": "Canonical typed identifier governed by Core/Schemas/entity_contracts.json. The most specific established identity prefix should be used. The generic ent prefix is used for canonical technical entities that do not have a dedicated canonical prefix.",
+      "pattern": "^(ent|mfr|pfam|prod|pvar|scope|sym|fm|meas|unit|tool)_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+
+    "alias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+
+        "alias_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional classification such as abbreviation, manufacturer terminology, historical name, field terminology, alternate spelling, or other implementation-defined alias classification."
+        },
+
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional canonical source reference supporting this alias."
+        },
+
+        "manufacturer_entity_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^mfr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+          "description": "Optional manufacturer context when an alias is manufacturer-specific."
+        },
+
+        "valid_from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+
+        "valid_to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+
+        "deprecated": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true,
+          "default": {}
+        }
+      }
     }
   }
 }
