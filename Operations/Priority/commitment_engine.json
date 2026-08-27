@@ -1,0 +1,393 @@
+{
+  "engine": {
+    "id": "aria.operations.commitment_engine",
+    "name": "A.R.I.A. Commitment Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "commitment_management",
+    "status": "active",
+    "purpose": "Govern operational promises and accepted obligations from the time they are identified through fulfillment, modification, release, breach, or other legitimate resolution. The engine ensures commitments remain distinguishable from ordinary tasks, deadlines, intentions, and requests.",
+    "principles": [
+      "A commitment is stronger than an intention.",
+      "A request is not automatically a commitment.",
+      "A proposed action is not automatically a commitment.",
+      "A deadline is not automatically a commitment.",
+      "A.R.I.A. must preserve who committed, to whom, to what, and by when when those facts are available.",
+      "Commitments may exist without an explicit completion date.",
+      "Commitments remain active until legitimately fulfilled, modified, released, superseded, or otherwise resolved.",
+      "A claim of completion does not always establish fulfillment.",
+      "A changed commitment must preserve the history of the original commitment.",
+      "A missed commitment is operationally meaningful but does not independently establish negligence, blame, or intent.",
+      "Commitment state may affect priority and attention but does not own either.",
+      "Commitment management must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+
+    "applicable_conditions": [
+      "commitment.is_commitment is true",
+      "Capture Engine identifies a potential commitment",
+      "new source information modifies an existing commitment",
+      "a commitment reaches or approaches its promised completion point",
+      "an outcome may satisfy an active commitment"
+    ],
+
+    "context": [
+      "current_time",
+      "source",
+      "owner",
+      "requester",
+      "commitment",
+      "timing",
+      "status",
+      "activity",
+      "resolution",
+      "related work items"
+    ]
+  },
+
+  "commitment_states": {
+    "candidate": {
+      "description": "Available information suggests a commitment may exist, but material interpretation remains unresolved."
+    },
+
+    "active": {
+      "description": "A sufficiently supported commitment exists and remains outstanding."
+    },
+
+    "at_risk": {
+      "description": "Current circumstances materially threaten timely or adequate fulfillment."
+    },
+
+    "due": {
+      "description": "The promised completion point has arrived and fulfillment has not yet been established."
+    },
+
+    "overdue": {
+      "description": "The promised completion point has passed without sufficient evidence of fulfillment, release, or valid modification."
+    },
+
+    "fulfilled": {
+      "description": "The promised obligation has been sufficiently satisfied."
+    },
+
+    "modified": {
+      "description": "The original commitment was legitimately changed and its successor terms are represented by current commitment state or a related commitment."
+    },
+
+    "released": {
+      "description": "The party to whom the commitment was owed has legitimately released or withdrawn the obligation."
+    },
+
+    "superseded": {
+      "description": "Another supported commitment has replaced this commitment."
+    },
+
+    "cancelled": {
+      "description": "The commitment was legitimately cancelled under applicable authority or agreement."
+    },
+
+    "unresolved": {
+      "description": "Available information is insufficient to determine the current commitment state."
+    }
+  },
+
+  "establishment": {
+    "signals": [
+      "explicit promise",
+      "explicit acceptance of responsibility",
+      "explicit agreement to deliver",
+      "explicit agreement to respond",
+      "explicit agreement to perform work",
+      "explicit acceptance of a requested deadline",
+      "documented organizational obligation",
+      "supported implicit acceptance"
+    ],
+
+    "requirements": [
+      "The committing party must be identified when reasonably determinable.",
+      "The party to whom the commitment is owed should be identified when reasonably determinable.",
+      "The committed outcome must be sufficiently clear to govern operationally.",
+      "Any promised completion time must preserve whether it was explicit or derived.",
+      "The source establishing the commitment must remain traceable.",
+      "Ambiguous language must not be silently promoted into a confirmed commitment."
+    ],
+
+    "non_commitment_examples": [
+      "I'll look into whether we can do that.",
+      "We should be able to get there next week.",
+      "I think we can have it done Friday.",
+      "Can you send this tomorrow?",
+      "The customer wants it completed Monday.",
+      "We may need to call them."
+    ],
+
+    "rules": [
+      "Intent, prediction, preference, request, and commitment must remain distinguishable.",
+      "Context may establish that apparently tentative language is operationally accepted, but that inference must be supportable.",
+      "Quoted or forwarded commitment language must be attributed to the original speaker when determinable.",
+      "A.R.I.A. must not treat another person's requested deadline as accepted merely because it was received."
+    ]
+  },
+
+  "commitment_record": {
+    "canonical_fields": [
+      "is_commitment",
+      "committed_by",
+      "committed_to",
+      "committed_at",
+      "promised_by",
+      "commitment_text",
+      "source_reference"
+    ],
+
+    "supplemental_evaluation_fields": [
+      "commitment_state",
+      "current_terms",
+      "at_risk_reason",
+      "fulfillment_evidence",
+      "state_evaluated_at"
+    ],
+
+    "requirements": [
+      "commitment_text should preserve the substantive obligation rather than merely copying an entire source message.",
+      "promised_by represents the promised completion point when one exists.",
+      "Absence of promised_by does not invalidate an otherwise supported commitment.",
+      "Current commitment interpretation must remain traceable to source information."
+    ]
+  },
+
+  "modification": {
+    "recognized_changes": [
+      "completion date changed",
+      "scope changed",
+      "deliverable changed",
+      "responsible party changed by legitimate reassignment",
+      "recipient or beneficiary changed",
+      "conditions changed",
+      "commitment released",
+      "commitment replaced"
+    ],
+
+    "rules": [
+      "A commitment must not be silently rewritten when its terms change.",
+      "The prior commitment terms should remain recoverable through history or provenance.",
+      "A unilateral statement changing a commitment does not automatically establish that the other party accepted the change.",
+      "A new promised date should only replace the prior date when the modification is sufficiently supported.",
+      "A materially different obligation may require a new or related work item rather than mutation of the original obligation.",
+      "Modification may require Priority and Follow-Up reevaluation."
+    ]
+  },
+
+  "risk_evaluation": {
+    "signals": [
+      "promised completion approaching with insufficient progress",
+      "known blocker",
+      "required dependency unresolved",
+      "delegated work not progressing as expected",
+      "necessary information unavailable",
+      "resource unavailable",
+      "customer condition changed",
+      "scope materially expanded",
+      "multiple prior promised dates missed",
+      "current evidence indicates likely inability to fulfill"
+    ],
+
+    "rules": [
+      "A commitment may become at risk before it becomes due.",
+      "At-risk status should be based on supported circumstances rather than anxiety about the deadline alone.",
+      "At-risk evaluation should identify the condition threatening fulfillment.",
+      "At-risk status may trigger Priority reevaluation.",
+      "At-risk status may trigger Attention reevaluation.",
+      "A.R.I.A. should surface preventable commitment failure early enough for useful intervention when possible."
+    ]
+  },
+
+  "due_and_overdue": {
+    "rules": [
+      "A commitment becomes due when its supported promised completion point arrives without established fulfillment.",
+      "A commitment becomes overdue when that point passes without established fulfillment, valid modification, release, cancellation, or supersession.",
+      "Overdue state must not automatically assign maximum priority.",
+      "Overdue state must not automatically establish fault.",
+      "A grace period may be applied only when supported by applicable policy, agreement, context, or explicit operational methodology.",
+      "A missed promised date should trigger reevaluation of follow-up, priority, and attention where applicable."
+    ]
+  },
+
+  "fulfillment": {
+    "possible_evidence": [
+      "deliverable received",
+      "requested response sent",
+      "work completed",
+      "approval provided",
+      "required action performed",
+      "recipient confirms satisfaction",
+      "system state verifies completion",
+      "authoritative project state verifies completion",
+      "other sufficient validation"
+    ],
+
+    "rules": [
+      "Fulfillment means the commitment itself was satisfied, not merely that activity occurred.",
+      "A status update does not automatically fulfill a commitment to complete work.",
+      "Sending a deliverable may fulfill a delivery commitment while leaving a broader underlying work item active.",
+      "A completion claim may require verification when consequence or workflow warrants it.",
+      "Fulfillment of the commitment does not automatically mean every related work item is complete.",
+      "Fulfillment evidence should be preserved when materially relevant."
+    ]
+  },
+
+  "release_and_cancellation": {
+    "rules": [
+      "A commitment may be released when the party to whom it is owed legitimately removes the obligation.",
+      "Cancellation must reflect applicable authority or agreement.",
+      "A.R.I.A. must not infer release merely because the recipient stopped asking.",
+      "Silence does not release a commitment.",
+      "A work item may remain active for other reasons after its commitment component is released or cancelled."
+    ]
+  },
+
+  "relationship_to_work_item": {
+    "rules": [
+      "A commitment normally exists within or in relation to a work item.",
+      "One work item may contain one primary operational commitment and related historical commitment states.",
+      "Materially independent commitments should be represented separately when they have distinct outcomes, parties, timing, or closure conditions.",
+      "The work item status and commitment state are related but not identical.",
+      "A work item may remain in progress after one commitment is fulfilled.",
+      "A work item may be completed only according to the applicable work-resolution logic."
+    ]
+  },
+
+  "user_commitments": {
+    "purpose": "Protect commitments made by the user from disappearing into communication history.",
+
+    "rules": [
+      "Commitments made by the user should be captured when sufficiently supported.",
+      "A.R.I.A. should surface user commitments early enough to prevent avoidable misses.",
+      "A.R.I.A. should distinguish commitments personally requiring the user's action from commitments delegated to others.",
+      "Delegating execution does not automatically release a commitment the user made externally.",
+      "When a delegated task supports a user commitment, the relationship should remain visible.",
+      "A.R.I.A. should be capable of answering what the user has promised and what remains outstanding."
+    ]
+  },
+
+  "organizational_commitments": {
+    "rules": [
+      "A commitment made on behalf of an organization may remain organizational even when a specific person coordinates fulfillment.",
+      "Organizational commitments should not automatically be attributed personally to every participant.",
+      "The responsible operational owner may differ from the party who originally communicated the commitment.",
+      "Reassignment of operational execution must not silently rewrite who originally made the commitment."
+    ]
+  },
+
+  "interaction_with_follow_up": {
+    "rules": [
+      "Commitment Engine determines the state of the commitment.",
+      "Follow-Up Engine determines when verification, pursuit, or intervention becomes operationally appropriate.",
+      "A promised completion point may establish a natural follow-up point.",
+      "A fulfilled commitment may satisfy a follow-up without automatically completing the work item."
+    ]
+  },
+
+  "interaction_with_priority": {
+    "rules": [
+      "Commitments may materially influence operational priority.",
+      "Priority Engine owns canonical priority scoring and banding.",
+      "Commitment Engine may emit commitment conditions relevant to priority.",
+      "Commitment Engine must not independently overwrite canonical priority."
+    ]
+  },
+
+  "interaction_with_attention": {
+    "rules": [
+      "Commitment Engine may identify at-risk, due, or overdue commitment conditions.",
+      "Attention Engine determines when and how those conditions should consume user attention.",
+      "An overdue commitment does not automatically require immediate interruption."
+    ]
+  },
+
+  "interaction_with_capture": {
+    "rules": [
+      "Capture Engine detects candidate commitments from incoming sources.",
+      "Commitment Engine governs sufficiently supported commitments after capture.",
+      "New source information may modify, fulfill, release, or contradict an existing commitment.",
+      "Materially new obligations discovered during commitment processing must return to Capture Engine evaluation."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new commitment detected",
+      "commitment terms change",
+      "promised completion approaches",
+      "promised completion arrives",
+      "promised completion passes",
+      "new activity occurs",
+      "dependency changes",
+      "blocker changes",
+      "delegation changes",
+      "fulfillment evidence appears",
+      "recipient releases obligation",
+      "replacement commitment appears",
+      "user requests commitment review"
+    ],
+
+    "rules": [
+      "Reevaluation must preserve prior commitment history.",
+      "Reevaluation should determine current commitment state from available supported information.",
+      "State changes may trigger Follow-Up, Priority, and Attention reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.commitment",
+
+    "canonical_fields": [
+      "is_commitment",
+      "committed_by",
+      "committed_to",
+      "committed_at",
+      "promised_by",
+      "commitment_text",
+      "source_reference"
+    ],
+
+    "evaluation_output": [
+      "work_item_id",
+      "commitment_state",
+      "at_risk_reason",
+      "fulfillment_evidence",
+      "recommended_reassessment",
+      "evaluated_at"
+    ],
+
+    "requirements": [
+      "Commitment state must reference the applicable work_item_id.",
+      "Changes must preserve historical provenance.",
+      "Derived timing must not be represented as an explicit promise.",
+      "Fulfillment must be supported by evidence appropriate to the obligation.",
+      "Material commitment state changes must be made available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat every request as a commitment.",
+    "Do not treat every intention as a commitment.",
+    "Do not treat every proposed date as a promise.",
+    "Do not treat receipt of a requested deadline as acceptance.",
+    "Do not invent committed parties.",
+    "Do not invent promised dates.",
+    "Do not silently rewrite commitment terms.",
+    "Do not infer release from silence.",
+    "Do not infer fulfillment from unrelated activity.",
+    "Do not automatically mark a work item complete because one commitment was fulfilled.",
+    "Do not assign blame merely because a commitment is overdue.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Attention Engine for user-facing interruption decisions.",
+    "Do not bypass the Follow-Up Engine for follow-up timing.",
+    "Do not modify Core reasoning architecture as part of commitment management."
+  ]
+}
