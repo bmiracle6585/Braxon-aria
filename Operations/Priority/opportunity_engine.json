@@ -1,0 +1,513 @@
+{
+  "engine": {
+    "id": "aria.operations.opportunity_engine",
+    "name": "A.R.I.A. Opportunity Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_opportunity_management",
+    "status": "active",
+    "purpose": "Identify, characterize, evaluate, monitor, and govern supported opportunities that could materially improve operational, customer, financial, commercial, capacity, scheduling, strategic, or other consequential outcomes. The engine distinguishes opportunity from obligation and prevents attractive possibilities from silently displacing committed work.",
+    "principles": [
+      "An opportunity is a supported possibility for beneficial outcome, not an existing obligation.",
+      "Potential value does not automatically create priority.",
+      "An opportunity should have a plausible path to realizing material benefit.",
+      "Opportunity value must be considered alongside cost, capacity demand, timing, uncertainty, and displaced obligations.",
+      "A.R.I.A. should identify opportunities early enough to preserve useful action windows.",
+      "An expiring opportunity may become time-sensitive without becoming mandatory.",
+      "Pursuing an opportunity may create commitments and obligations.",
+      "Declining an opportunity is not the same as failing a task.",
+      "A.R.I.A. should distinguish opportunity identification from authorization to pursue it.",
+      "Speculative possibilities must not be represented as expected value.",
+      "Opportunities that require consequential tradeoffs may require an authorized decision.",
+      "Opportunity decisions must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "incoming information suggests potential beneficial work",
+      "unused capacity could produce material value",
+      "a customer or vendor presents additional work",
+      "an operational improvement becomes available",
+      "a favorable timing window appears",
+      "a commercial or financial opportunity appears",
+      "a strategic opportunity becomes actionable",
+      "a resource can be used more effectively",
+      "new information materially changes opportunity value",
+      "user requests opportunity evaluation"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "commitments",
+      "dependencies",
+      "capacity",
+      "scheduling",
+      "conflicts",
+      "decisions",
+      "risks",
+      "issues",
+      "delegation",
+      "aging",
+      "escalation",
+      "follow_up",
+      "resolution",
+      "activity",
+      "source history"
+    ]
+  },
+
+  "opportunity_states": {
+    "identified": {
+      "description": "A supported possibility for material beneficial outcome has been identified."
+    },
+    "assessing": {
+      "description": "Material value, feasibility, timing, cost, or consequence is still being evaluated."
+    },
+    "qualified": {
+      "description": "Available evidence supports the opportunity as sufficiently real and potentially valuable for deliberate consideration."
+    },
+    "decision_required": {
+      "description": "Pursuit requires an authorized choice or consequential tradeoff."
+    },
+    "approved": {
+      "description": "An authorized party has approved pursuit of the opportunity."
+    },
+    "pursuing": {
+      "description": "Authorized work intended to realize the opportunity is underway."
+    },
+    "captured": {
+      "description": "The intended material benefit has been realized or secured."
+    },
+    "declined": {
+      "description": "An authorized decision was made not to pursue the opportunity."
+    },
+    "expired": {
+      "description": "The useful opportunity window passed without pursuit or realization."
+    },
+    "withdrawn": {
+      "description": "The opportunity ceased to exist before disposition."
+    },
+    "superseded": {
+      "description": "A changed condition or more accurate representation replaced the original opportunity."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine current opportunity state."
+    }
+  },
+
+  "opportunity_types": {
+    "customer": "Potential beneficial customer work, relationship, expansion, retention, or service outcome.",
+    "revenue": "Potential additional revenue or economically beneficial work.",
+    "commercial": "Potential purchasing, pricing, vendor, contract, or commercial advantage.",
+    "operational": "Potential improvement to operational execution, reliability, efficiency, or throughput.",
+    "capacity": "Potential beneficial use, expansion, or reallocation of available execution capacity.",
+    "schedule": "Potential timing advantage created by an available execution window.",
+    "resource": "Potential beneficial use or acquisition of people, equipment, vehicles, systems, facilities, or other resources.",
+    "financial": "Potential beneficial financial, cost, cash-flow, or capital outcome.",
+    "technical": "Potential technical improvement or capability advantage.",
+    "strategic": "Potential advancement of a supported strategic objective.",
+    "relationship": "Potential beneficial development of an important business relationship.",
+    "learning": "Potential acquisition of knowledge or capability with material future operational value.",
+    "other": "A supported opportunity not represented by another canonical type."
+  },
+
+  "opportunity_record": {
+    "fields": [
+      "opportunity_id",
+      "work_item_id",
+      "opportunity_type",
+      "opportunity_state",
+      "opportunity_statement",
+      "potential_benefit",
+      "required_investment",
+      "required_capacity",
+      "opportunity_window",
+      "dependencies",
+      "risks",
+      "affected_commitments",
+      "decision_authority",
+      "opportunity_owner",
+      "identified_at",
+      "decision_required_by",
+      "resolved_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Each materially independent opportunity should have a persistent identity.",
+      "Potential benefit must remain distinguishable from realized benefit.",
+      "Unknown value, cost, capacity, or timing must remain unknown rather than invented.",
+      "Opportunity history must remain recoverable after disposition.",
+      "Opportunity ownership and decision authority must not be invented."
+    ]
+  },
+
+  "establishment": {
+    "questions": [
+      "What beneficial outcome may be available?",
+      "What evidence supports that the opportunity actually exists?",
+      "What must occur to realize the benefit?",
+      "What resources, time, cost, or authority would pursuit require?",
+      "What existing obligations could pursuit affect?",
+      "How long does the useful opportunity window remain open?"
+    ],
+    "rules": [
+      "A.R.I.A. must distinguish supported opportunity from generic possibility.",
+      "An opportunity should have a plausible path to material benefit.",
+      "Potential benefit must not be represented as guaranteed benefit.",
+      "An idea with no supported operational path may remain informational rather than becoming an opportunity record.",
+      "Unknown opportunity timing must not be fabricated."
+    ]
+  },
+
+  "value_evaluation": {
+    "dimensions": [
+      "customer_value",
+      "revenue_value",
+      "financial_value",
+      "operational_value",
+      "capacity_value",
+      "strategic_value",
+      "relationship_value",
+      "learning_value",
+      "future_option_value"
+    ],
+    "levels": {
+      "low": "Potential benefit is limited relative to required effort or consequence.",
+      "moderate": "Potential benefit is meaningful and deserves deliberate consideration.",
+      "high": "Potential benefit could materially improve consequential outcomes.",
+      "transformative": "Potential benefit could substantially alter supported strategic, financial, customer, or operational outcomes.",
+      "unknown": "Available evidence is insufficient for useful value classification."
+    },
+    "rules": [
+      "Opportunity value should reflect supported potential benefit rather than enthusiasm.",
+      "Value should not be evaluated independently from feasibility and required investment.",
+      "Future strategic value may matter even when immediate financial value is limited.",
+      "Unknown value must remain unknown."
+    ]
+  },
+
+  "feasibility": {
+    "dimensions": [
+      "capacity",
+      "skills",
+      "resources",
+      "funding",
+      "timing",
+      "access",
+      "authority",
+      "dependencies",
+      "technical_feasibility",
+      "commercial_feasibility"
+    ],
+    "states": {
+      "feasible": "Supported conditions indicate a practical path to pursuit exists.",
+      "conditionally_feasible": "A practical path exists if identified conditions are satisfied.",
+      "infeasible": "Supported constraints currently prevent practical pursuit.",
+      "unknown": "Available information is insufficient to determine feasibility."
+    },
+    "rules": [
+      "Attractive value must not override infeasibility.",
+      "Unknown capacity or resources must not be treated as available.",
+      "Conditional feasibility should identify material conditions when known.",
+      "A.R.I.A. should not assume additional staffing, funding, equipment, or authority can be obtained."
+    ]
+  },
+
+  "opportunity_window": {
+    "rules": [
+      "The useful action window should remain distinct from the date benefit would ultimately be realized.",
+      "A.R.I.A. should identify when delay materially reduces opportunity value or feasibility.",
+      "An expiring opportunity may justify earlier attention without becoming an obligation.",
+      "A distant opportunity may require present action when lead time is substantial.",
+      "Unknown expiration or decision timing must remain unknown."
+    ]
+  },
+
+  "tradeoff_evaluation": {
+    "factors": [
+      "existing commitments",
+      "canonical priority",
+      "capacity consumption",
+      "schedule displacement",
+      "financial investment",
+      "customer consequence",
+      "operational disruption",
+      "risk introduced",
+      "reversibility",
+      "strategic alignment",
+      "opportunity cost"
+    ],
+    "rules": [
+      "Pursuing opportunity must not silently displace existing obligations.",
+      "Material displacement should trigger Priority, Capacity, Scheduling, Conflict, Commitment, or Decision reevaluation.",
+      "A high-value opportunity may legitimately justify changing existing plans when authorized.",
+      "Opportunity cost should be considered when scarce capacity can only support one path.",
+      "A.R.I.A. should expose consequential tradeoffs rather than manufacture a recommendation that everything can fit."
+    ]
+  },
+
+  "qualification": {
+    "rules": [
+      "Qualification should consider evidence, value, feasibility, timing, and material tradeoffs.",
+      "A qualified opportunity is not automatically approved.",
+      "Low-confidence opportunities may remain under assessment rather than consuming execution capacity.",
+      "A.R.I.A. should avoid repeatedly resurfacing opportunities that remain unsupported or immaterial.",
+      "Material new evidence may requalify a previously declined, infeasible, or low-value opportunity when the underlying opportunity still exists."
+    ]
+  },
+
+  "pursuit": {
+    "rules": [
+      "Pursuit should begin only when supported authority permits it.",
+      "Approved pursuit may create actionable work requiring Capture Engine evaluation.",
+      "Pursuit work consumes real capacity and must be governed accordingly.",
+      "Pursuit may create customer, vendor, financial, or other commitments.",
+      "Opportunity Engine must not silently establish commitments.",
+      "Failure to capture an opportunity is not automatically operational failure when pursuit was reasonable but uncertain."
+    ]
+  },
+
+  "realization": {
+    "rules": [
+      "Potential benefit must remain distinguishable from secured or realized benefit.",
+      "An opportunity should only become captured when supported evidence establishes the intended benefit was obtained or secured.",
+      "Partial realization should remain distinguishable from full realization when materially relevant.",
+      "Realized benefit may create new obligations requiring Capture Engine evaluation.",
+      "Opportunity history should preserve the original expectation and actual outcome for future learning."
+    ]
+  },
+
+  "decline_and_expiration": {
+    "rules": [
+      "Declining an opportunity requires appropriate authority when the decision is consequential.",
+      "Declined opportunities should stop consuming execution attention unless material conditions change.",
+      "Expired opportunities should not remain active merely because they were once attractive.",
+      "A.R.I.A. should preserve why an opportunity was declined when materially relevant.",
+      "A missed opportunity must not automatically be represented as failure or fault."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines relative operational importance.",
+      "Opportunity Engine determines potential beneficial value and pursuit conditions.",
+      "Opportunity value may contribute to Priority reevaluation after pursuit becomes valid work.",
+      "Opportunity Engine must not independently overwrite canonical priority.",
+      "Potential value alone does not make an opportunity Priority 1."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Opportunity Engine determines whether a material opportunity exists.",
+      "Attention Engine determines whether and how the user should see it.",
+      "Routine low-value opportunities should not consume user attention.",
+      "High-value opportunities with closing windows or required user authority may justify direct attention.",
+      "Previously surfaced opportunities should not repeatedly interrupt the user without material change."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine determines practical available execution capacity.",
+      "Opportunity Engine evaluates the capacity required for pursuit.",
+      "Unused capacity may increase opportunity feasibility but does not independently justify pursuit.",
+      "Opportunity pursuit must not assume unavailable capacity.",
+      "Material pursuit should trigger Capacity Engine reevaluation."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine determines practical execution timing.",
+      "Opportunity Engine identifies useful pursuit and decision windows.",
+      "An opportunity window is not automatically a scheduled execution window.",
+      "Approved pursuit requiring execution timing should be governed by Scheduling Engine."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises.",
+      "Opportunity pursuit may create new commitments.",
+      "Opportunity Engine must not silently create or modify commitments.",
+      "Existing commitments must be considered when evaluating pursuit tradeoffs."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine governs authorized choices.",
+      "Opportunity Engine provides supported value, feasibility, timing, and tradeoff information.",
+      "Consequential opportunity pursuit may require a formal decision.",
+      "Opportunity recommendation must remain distinguishable from the authorized decision."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine governs supported future adverse exposure.",
+      "Opportunity Engine governs supported future beneficial potential.",
+      "The same proposed path may contain both opportunity and risk.",
+      "Potential benefit must not erase associated risk.",
+      "Risk must not automatically eliminate opportunity when authorized tradeoff remains reasonable."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine governs active operational problems.",
+      "An issue may reveal an improvement opportunity.",
+      "Opportunity Engine must not distract from required corrective handling merely because improvement potential exists.",
+      "Opportunity pursuit must not be represented as issue resolution unless applicable issue closure criteria are independently satisfied."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine governs materially incompatible valid requirements or constraints.",
+      "Opportunity pursuit may create conflict with existing obligations.",
+      "Opportunity Engine must not silently choose the opportunity over committed work.",
+      "Material conflicts created by pursuit should be governed by Conflict Engine."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Opportunity ownership does not automatically establish execution delegation.",
+      "Pursuit work may be delegated after it becomes authorized actionable work.",
+      "Delegation must not be used to make opportunity pursuit appear capacity-free."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, repeated deferral, and starvation of valid work.",
+      "Opportunity age alone does not increase opportunity value.",
+      "An opportunity may become less valuable or expire with age.",
+      "Approved pursuit work may become subject to Aging Engine once it becomes valid operational work."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines when opportunity pursuit requires higher or different authority.",
+      "Not every valuable opportunity requires escalation.",
+      "A closing high-value opportunity requiring unavailable authority may justify escalation."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit of information, responses, approvals, and verification.",
+      "Opportunity assessment or pursuit may require follow-up.",
+      "Opportunity Engine determines what information or action is useful but must not independently send follow-up communication."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition.",
+      "Opportunities may resolve through capture, decline, expiration, withdrawal, supersession, or another supported disposition.",
+      "Declining or losing an opportunity must not resolve unrelated underlying work.",
+      "Opportunity closure should preserve the disposition and material outcome."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may identify opportunities from incoming information.",
+      "Opportunity Engine governs sufficiently supported beneficial possibilities.",
+      "Approved pursuit may create actionable obligations requiring Capture Engine evaluation.",
+      "Opportunity Engine must not silently convert every opportunity into a task."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new opportunity evidence appears",
+      "potential value changes",
+      "feasibility changes",
+      "capacity changes",
+      "schedule changes",
+      "commitment changes",
+      "risk changes",
+      "issue changes",
+      "conflict changes",
+      "decision authority changes",
+      "opportunity window narrows",
+      "opportunity is approved",
+      "pursuit begins",
+      "material pursuit conditions change",
+      "benefit is realized",
+      "opportunity is declined",
+      "opportunity expires",
+      "user requests opportunity review"
+    ],
+    "rules": [
+      "Reevaluation must preserve opportunity history.",
+      "Reevaluation should use current supported evidence rather than preserve obsolete value assumptions.",
+      "Changed value must remain distinguishable from changed feasibility.",
+      "Material opportunity changes may trigger Priority, Attention, Capacity, Scheduling, Commitment, Decision, Risk, Issue, Conflict, Delegation, Aging, Escalation, Follow-Up, Capture, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.opportunity",
+    "opportunity_evaluation": [
+      "work_item_id",
+      "opportunity_id",
+      "opportunity_state",
+      "opportunity_type",
+      "opportunity_statement",
+      "potential_value",
+      "feasibility",
+      "required_capacity",
+      "required_investment",
+      "opportunity_window",
+      "material_tradeoffs",
+      "recommended_disposition",
+      "decision_authority",
+      "confidence",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Opportunity output must reference the applicable work_item_id.",
+      "Potential benefit must remain distinguishable from realized benefit.",
+      "Unknown value, feasibility, timing, cost, or authority must not be fabricated.",
+      "Opportunity recommendation must remain distinguishable from authorization.",
+      "Opportunity Engine must not directly overwrite canonical priority.",
+      "Material opportunity changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not convert every interesting idea into an opportunity record.",
+    "Do not convert every opportunity into a task.",
+    "Do not represent potential benefit as guaranteed benefit.",
+    "Do not equate high potential value with Priority 1.",
+    "Do not assume unused calendar time equals capacity for pursuit.",
+    "Do not assume resources, funding, or authority are available.",
+    "Do not silently displace existing obligations.",
+    "Do not silently create commitments.",
+    "Do not represent recommendation as authorization.",
+    "Do not represent approved pursuit as realized benefit.",
+    "Do not treat a declined opportunity as task failure.",
+    "Do not treat an expired opportunity as personal or operational fault without evidence.",
+    "Do not allow attractive opportunities to obscure active critical issues.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass Capacity Engine when pursuit consumes material capacity.",
+    "Do not bypass Decision Engine when pursuit requires an authorized tradeoff.",
+    "Do not bypass Risk Engine when pursuit creates material adverse exposure.",
+    "Do not bypass Conflict Engine when pursuit becomes incompatible with existing obligations.",
+    "Do not bypass Attention Engine for user-facing presentation.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of opportunity management."
+  ]
+}
