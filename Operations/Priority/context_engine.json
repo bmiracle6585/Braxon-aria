@@ -1,0 +1,527 @@
+{
+  "engine": {
+    "id": "aria.operations.context_engine",
+    "name": "A.R.I.A. Context Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_context_management",
+    "status": "active",
+    "purpose": "Determine and maintain the supported operational context surrounding work so other engines can make better decisions about timing, attention, execution, interruption, and feasibility. The engine identifies materially relevant circumstances without allowing temporary context to rewrite canonical facts, commitments, authority, or priority.",
+    "principles": [
+      "Context describes the circumstances surrounding work; it does not redefine the work itself.",
+      "The same work may require different handling under different operational contexts.",
+      "Context should only influence decisions when it is materially relevant.",
+      "Temporary context must not permanently alter canonical priority.",
+      "A.R.I.A. should distinguish observed context from inferred context.",
+      "A.R.I.A. should distinguish current context from expected future context.",
+      "Unknown context must remain unknown rather than invented.",
+      "Location alone does not establish availability.",
+      "Calendar status alone does not establish operational context.",
+      "Device presence alone does not establish attention or execution capability.",
+      "Context may constrain interruption, communication, execution, or scheduling.",
+      "Context decisions must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "attention handling depends on current circumstances",
+      "execution feasibility depends on current circumstances",
+      "scheduling depends on operational environment",
+      "communication timing depends on context",
+      "travel or location affects execution",
+      "available resources differ by location or mode",
+      "user operational mode changes",
+      "calendar state materially affects execution",
+      "device or connectivity state materially affects execution",
+      "user requests contextual evaluation"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "capacity",
+      "scheduling",
+      "commitments",
+      "dependencies",
+      "conflicts",
+      "delegation",
+      "decisions",
+      "risks",
+      "issues",
+      "opportunities",
+      "calendar",
+      "location",
+      "travel",
+      "devices",
+      "connectivity",
+      "activity",
+      "source history"
+    ]
+  },
+
+  "context_states": {
+    "known": {
+      "description": "Material operational context is supported by sufficiently reliable evidence."
+    },
+    "partial": {
+      "description": "Some materially useful context is known while other relevant context remains unknown."
+    },
+    "inferred": {
+      "description": "Operational context is reasonably inferred but not directly established."
+    },
+    "conflicting": {
+      "description": "Available context signals materially disagree."
+    },
+    "stale": {
+      "description": "Previously supported context may no longer represent current circumstances."
+    },
+    "unknown": {
+      "description": "Available evidence is insufficient to establish useful operational context."
+    }
+  },
+
+  "context_dimensions": {
+    "location": {
+      "examples": [
+        "office",
+        "home",
+        "customer site",
+        "project site",
+        "airport",
+        "vehicle",
+        "remote location",
+        "unknown"
+      ],
+      "rule": "Location should only be represented when supported and materially useful."
+    },
+    "activity_mode": {
+      "examples": [
+        "focused work",
+        "meeting",
+        "field work",
+        "travel",
+        "driving",
+        "administrative work",
+        "planning",
+        "break",
+        "off duty",
+        "unknown"
+      ],
+      "rule": "Activity mode should describe supported current operational activity without assuming attention capability."
+    },
+    "availability_mode": {
+      "examples": [
+        "available",
+        "interruptible",
+        "limited",
+        "unavailable",
+        "unknown"
+      ],
+      "rule": "Availability should reflect practical ability to receive or act, not merely calendar openness."
+    },
+    "execution_mode": {
+      "examples": [
+        "full execution",
+        "limited execution",
+        "communication only",
+        "review only",
+        "capture only",
+        "no safe execution",
+        "unknown"
+      ],
+      "rule": "Execution mode should reflect what categories of useful work can practically occur."
+    },
+    "connectivity": {
+      "examples": [
+        "full",
+        "limited",
+        "offline",
+        "unknown"
+      ],
+      "rule": "Connectivity should only constrain work that materially depends on connectivity."
+    },
+    "device_access": {
+      "examples": [
+        "desktop",
+        "laptop",
+        "tablet",
+        "mobile",
+        "specialized equipment",
+        "unknown"
+      ],
+      "rule": "Device access should not imply that the user is available to operate the device."
+    },
+    "resource_access": {
+      "examples": [
+        "office resources",
+        "field resources",
+        "vehicle resources",
+        "technical tools",
+        "documents",
+        "personnel",
+        "unknown"
+      ],
+      "rule": "Resource access should reflect supported practical accessibility."
+    },
+    "travel_state": {
+      "examples": [
+        "not traveling",
+        "preparing to travel",
+        "in transit",
+        "between sites",
+        "arriving",
+        "unknown"
+      ],
+      "rule": "Travel state may affect timing and execution feasibility without independently determining priority."
+    }
+  },
+
+  "context_record": {
+    "fields": [
+      "context_id",
+      "subject_id",
+      "context_state",
+      "location",
+      "activity_mode",
+      "availability_mode",
+      "execution_mode",
+      "connectivity",
+      "device_access",
+      "resource_access",
+      "travel_state",
+      "effective_from",
+      "expected_until",
+      "confidence",
+      "sources",
+      "updated_at"
+    ],
+    "requirements": [
+      "Observed and inferred context must remain distinguishable.",
+      "Context should include temporal validity when materially relevant.",
+      "Stale context must not be treated as current context.",
+      "Unknown dimensions must remain unknown rather than populated from assumption.",
+      "Material context provenance must remain recoverable."
+    ]
+  },
+
+  "evidence": {
+    "sources": [
+      "explicit user statement",
+      "calendar",
+      "location evidence",
+      "travel itinerary",
+      "device state",
+      "connectivity state",
+      "active workflow",
+      "recent interaction",
+      "project assignment",
+      "authorized system state"
+    ],
+    "rules": [
+      "Explicit current user statements generally override conflicting inference.",
+      "A calendar event is evidence of planned activity, not proof of actual activity.",
+      "Location evidence is evidence of location, not proof of availability.",
+      "Recent interaction may indicate presence but does not prove continued availability.",
+      "Historical patterns may support inference but must not be treated as current fact.",
+      "Context confidence should reflect evidence quality and freshness."
+    ]
+  },
+
+  "temporal_validity": {
+    "rules": [
+      "Context should decay when its supporting evidence becomes stale.",
+      "Short-lived context should not persist indefinitely.",
+      "Expected future context must remain distinguishable from current context.",
+      "A.R.I.A. should reevaluate context when materially relevant new evidence arrives.",
+      "Context expiration should return uncertain dimensions to unknown rather than preserving obsolete values."
+    ]
+  },
+
+  "interruption_context": {
+    "purpose": "Provide Attention Engine with circumstances relevant to whether interruption is useful, safe, or appropriate.",
+    "rules": [
+      "Context Engine determines interruption conditions; Attention Engine determines whether the information merits interruption.",
+      "Driving or another no-safe-interaction condition should strongly constrain nonessential interaction.",
+      "A meeting may reduce interruptibility without proving that all interruption is inappropriate.",
+      "Critical conditions may still require attention even during constrained contexts when supported.",
+      "Deferred attention should remain available for later presentation.",
+      "Context Engine must not suppress consequential information permanently."
+    ]
+  },
+
+  "execution_context": {
+    "rules": [
+      "A.R.I.A. should distinguish work that can be fully executed from work that can only be reviewed, captured, communicated, or deferred.",
+      "Context may make one next action feasible while another is not.",
+      "Limited execution capability does not mean zero productive capability.",
+      "A.R.I.A. should avoid recommending actions requiring unavailable tools or resources when context establishes that limitation.",
+      "Context must not be used to claim work is impossible when another legitimate execution path exists."
+    ]
+  },
+
+  "contextual_batching": {
+    "purpose": "Identify work that becomes efficient to perform together because the current context supports the same execution mode, location, resource, or interaction.",
+    "rules": [
+      "Contextually compatible work may be grouped when doing so improves execution efficiency.",
+      "Batching must not override higher-consequence timing requirements.",
+      "A.R.I.A. should not create artificial batches merely because tasks share superficial characteristics.",
+      "Travel, location, device, customer, communication channel, or required resource may support batching when materially useful.",
+      "Batching recommendations must not silently change canonical priority."
+    ]
+  },
+
+  "contextual_opportunity": {
+    "rules": [
+      "Current context may temporarily make valid work easier or more efficient to perform.",
+      "A contextual execution opportunity is not the same as an Opportunity Engine business opportunity.",
+      "A.R.I.A. may recommend advancing suitable work when a useful execution context exists.",
+      "Contextual convenience must not displace materially more important obligations.",
+      "Temporary execution opportunities should be considered by Scheduling and Attention when useful."
+    ]
+  },
+
+  "safety_context": {
+    "rules": [
+      "A.R.I.A. should avoid encouraging unsafe interaction or execution.",
+      "When supported context indicates driving, hazardous field activity, or another materially unsafe interaction state, nonessential interaction should be deferred.",
+      "Safety context must not be inferred merely from location when activity is unknown.",
+      "Critical safety information may require an appropriately constrained notification even when normal interaction is unsuitable.",
+      "Context Engine does not replace specialized safety policy or authority."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines canonical operational importance.",
+      "Context Engine determines whether current circumstances affect practical handling.",
+      "Context may influence execution order among otherwise valid work without rewriting canonical priority.",
+      "Temporary inconvenience must not lower canonical priority.",
+      "Context Engine must not independently overwrite priority."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine determines what deserves user awareness.",
+      "Context Engine determines when and how interruption may be practical.",
+      "High attention value does not automatically mean immediate interruption in every context.",
+      "Context Engine must not permanently suppress attention items.",
+      "Deferred attention should be reconsidered when context changes."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine determines practical execution capacity.",
+      "Context Engine may provide evidence affecting usable capacity.",
+      "Contextual limitations such as travel, device access, or field activity may reduce usable capacity for particular work.",
+      "Context Engine must not independently manufacture or remove capacity."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine determines practical execution timing.",
+      "Context Engine provides circumstances relevant to feasible timing.",
+      "Expected future context may support candidate scheduling when sufficiently reliable.",
+      "Scheduling must not treat inferred context as guaranteed future availability."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises.",
+      "Context may affect practical ability to satisfy a commitment.",
+      "Context does not modify or release commitments.",
+      "Material context changes threatening fulfillment should trigger Commitment, Capacity, Scheduling, Risk, or Conflict reevaluation."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisite conditions.",
+      "Context may determine whether a satisfied dependency can practically be acted upon now.",
+      "Contextual inconvenience is not automatically a dependency.",
+      "Required physical presence, access, device, connectivity, or resource may become a dependency when genuinely prerequisite."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine governs materially incompatible valid requirements or constraints.",
+      "Context may reveal or remove practical incompatibility.",
+      "Temporary contextual incompatibility should not automatically become a persistent conflict.",
+      "Consequential incompatibility should be routed to Conflict Engine."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Context may inform whether the current owner or delegate can practically act.",
+      "Temporary contextual unavailability does not automatically justify reassignment.",
+      "Delegation changes require supported delegation authority."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine governs authorized choices.",
+      "Context may affect when a decision can usefully be presented or what options are currently feasible.",
+      "Context must not determine the authorized decision merely because one option is more convenient."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine governs future adverse exposure.",
+      "Context may increase or decrease supported exposure.",
+      "Temporary context should affect risk only when it changes the actual causal path or consequence.",
+      "Context alone must not manufacture risk."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine governs active operational problems.",
+      "Context may affect diagnosis, containment, workaround, or correction feasibility.",
+      "A contextual limitation is not automatically an issue.",
+      "Issue Engine should receive context that materially affects corrective handling."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine governs beneficial operational or business possibilities.",
+      "Context may affect feasibility or timing of an opportunity.",
+      "A convenient current context does not independently establish a business opportunity.",
+      "Material opportunity windows should remain governed by Opportunity Engine."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit and verification timing.",
+      "Context may affect whether follow-up should occur now or be deferred.",
+      "Context must not cause required follow-up to disappear.",
+      "A.R.I.A. should reconsider deferred follow-up when context becomes suitable."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, repeated deferral, and starvation.",
+      "Context may explain a legitimate short-term deferral.",
+      "Repeated contextual deferral should not indefinitely protect work from aging pressure.",
+      "Context Engine must not reset age."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines when higher or different authority is required.",
+      "Context may affect the practical channel or timing of escalation.",
+      "Context must not suppress required escalation beyond a useful decision window."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition.",
+      "Context does not independently establish completion or resolution.",
+      "Leaving a location, ending a meeting, or changing operational mode does not resolve underlying work.",
+      "Context history may provide supporting evidence when materially relevant."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine governs creation of operational work from incoming information.",
+      "Context may influence how captured information is handled or deferred.",
+      "Capture should remain available even when full execution is not practical.",
+      "Context Engine must not silently discard incoming obligations."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "explicit user context changes",
+      "calendar state changes",
+      "location changes",
+      "travel state changes",
+      "activity changes",
+      "device access changes",
+      "connectivity changes",
+      "resource access changes",
+      "context evidence becomes stale",
+      "execution begins",
+      "execution ends",
+      "attention item becomes consequential",
+      "user requests context review"
+    ],
+    "rules": [
+      "Reevaluation must preserve material context history where useful.",
+      "Current supported evidence should replace stale context.",
+      "Conflicting evidence should remain explicit until reasonably resolved.",
+      "Material context changes may trigger Attention, Capacity, Scheduling, Commitment, Dependency, Conflict, Delegation, Decision, Risk, Issue, Opportunity, Follow-Up, Aging, or Escalation reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_context",
+    "context_evaluation": [
+      "context_id",
+      "subject_id",
+      "context_state",
+      "location",
+      "activity_mode",
+      "availability_mode",
+      "execution_mode",
+      "connectivity",
+      "device_access",
+      "resource_access",
+      "travel_state",
+      "material_constraints",
+      "contextual_execution_options",
+      "confidence",
+      "effective_from",
+      "expected_until",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Observed and inferred context must remain distinguishable.",
+      "Unknown context must not be fabricated.",
+      "Context must include freshness or temporal validity when materially relevant.",
+      "Context Engine must not directly overwrite canonical priority.",
+      "Context Engine must not independently modify commitments, authority, or resolution state.",
+      "Material context changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not infer availability solely from calendar openness.",
+    "Do not infer activity solely from location.",
+    "Do not infer attention solely from device presence.",
+    "Do not infer execution capability solely from connectivity.",
+    "Do not treat temporary context as permanent state.",
+    "Do not preserve stale context as current fact.",
+    "Do not invent location, activity, availability, or resource access.",
+    "Do not use context to rewrite canonical priority.",
+    "Do not use contextual convenience to displace materially more important work.",
+    "Do not treat contextual limitation as a dependency unless it is genuinely prerequisite.",
+    "Do not permanently suppress attention because current context is unsuitable.",
+    "Do not encourage unsafe interaction when supported context indicates it is unsafe.",
+    "Do not silently modify commitments.",
+    "Do not silently reassign work.",
+    "Do not treat context change as work resolution.",
+    "Do not bypass Attention Engine for attention decisions.",
+    "Do not bypass Capacity Engine for practical execution capacity.",
+    "Do not bypass Scheduling Engine for authoritative execution timing.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of context management."
+  ]
+}
