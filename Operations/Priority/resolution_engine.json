@@ -1,0 +1,411 @@
+{
+  "engine": {
+    "id": "aria.operations.resolution_engine",
+    "name": "A.R.I.A. Resolution Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "work_resolution",
+    "status": "active",
+    "purpose": "Determine when operational work has been legitimately resolved and may leave the active work inventory. The engine distinguishes completion from activity, partial completion, commitment fulfillment, dependency satisfaction, delegation completion, cancellation, supersession, and other terminal outcomes.",
+    "principles": [
+      "Work is complete only when its actual operational obligation has been satisfied.",
+      "Activity is not completion.",
+      "A reply is not automatically completion.",
+      "A completed subtask is not automatically completion of its parent work item.",
+      "A satisfied dependency is not completion of the dependent work.",
+      "A fulfilled commitment is not automatically completion of all related work.",
+      "A delegate reporting completion is not always sufficient verification.",
+      "Resolution criteria should be proportional to consequence and workflow.",
+      "Terminal state changes must preserve provenance.",
+      "Work must not remain active merely because the system lacks an explicit close command when authoritative evidence establishes resolution.",
+      "Work must not be closed merely to reduce queue size or attention load.",
+      "Cancellation and supersession are legitimate resolutions but are not equivalent to successful completion.",
+      "Resolution decisions must remain explainable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+
+    "applicable_conditions": [
+      "work may have been completed",
+      "a completion claim is received",
+      "required outcome evidence appears",
+      "a commitment is fulfilled",
+      "delegated execution is completed",
+      "dependencies are satisfied",
+      "the obligation is cancelled",
+      "the obligation is superseded",
+      "the obligation is released",
+      "the work is no longer operationally required"
+    ],
+
+    "context": [
+      "current_time",
+      "work_item",
+      "status",
+      "owner",
+      "requester",
+      "commitment",
+      "delegation",
+      "dependencies",
+      "follow_up",
+      "activity",
+      "source history",
+      "related work items",
+      "authoritative system state"
+    ]
+  },
+
+  "resolution_states": {
+    "active": {
+      "description": "The underlying operational obligation remains unresolved."
+    },
+
+    "partially_resolved": {
+      "description": "A meaningful portion of the obligation has been satisfied, but required work remains."
+    },
+
+    "pending_verification": {
+      "description": "Completion has been reported or appears likely, but required verification remains outstanding."
+    },
+
+    "completed": {
+      "description": "The required operational outcome has been sufficiently achieved."
+    },
+
+    "cancelled": {
+      "description": "The obligation was legitimately terminated before completion."
+    },
+
+    "superseded": {
+      "description": "Another work item, obligation, process, or supported path has replaced this work."
+    },
+
+    "released": {
+      "description": "The party or authority entitled to require the work has legitimately removed the obligation."
+    },
+
+    "duplicate": {
+      "description": "The work item represents the same underlying obligation as another authoritative work item and should no longer remain independently active."
+    },
+
+    "invalid": {
+      "description": "The item was created from an interpretation later established to not represent a legitimate operational obligation."
+    },
+
+    "unresolved": {
+      "description": "Available information is insufficient to determine whether the work has been resolved."
+    }
+  },
+
+  "completion_criteria": {
+    "requirements": [
+      "The underlying obligation must be identified.",
+      "The expected operational outcome must be understood sufficiently to evaluate completion.",
+      "Required acceptance or verification conditions must be satisfied when applicable.",
+      "Known materially independent obligations must not be silently collapsed into one completion decision.",
+      "Resolution evidence must remain traceable when materially relevant."
+    ],
+
+    "rules": [
+      "Completion should be evaluated against the required outcome, not merely the most recent action.",
+      "A work item with multiple required outcomes remains active until all required outcomes are resolved or legitimately separated.",
+      "Optional improvements or future opportunities should not prevent completion of an otherwise satisfied obligation.",
+      "Unknown completion criteria must not be invented solely to keep work open.",
+      "Unknown completion criteria must not be ignored solely to close work.",
+      "Authoritative workflow state may establish completion when that workflow is the recognized source of truth."
+    ]
+  },
+
+  "evidence": {
+    "strong_evidence": [
+      "authoritative system state confirms required outcome",
+      "required deliverable received and accepted",
+      "required approval completed",
+      "required communication sent and no additional obligation remains",
+      "verified field or project state confirms completion",
+      "recipient confirms required outcome was satisfied",
+      "required documentation completed",
+      "explicit authorized closure with sufficient context"
+    ],
+
+    "supporting_evidence": [
+      "completion report",
+      "substantive response indicating work was performed",
+      "deliverable transmitted",
+      "delegate reports completion",
+      "dependency satisfaction",
+      "commitment fulfillment",
+      "activity consistent with completion"
+    ],
+
+    "insufficient_by_itself": [
+      "message was sent",
+      "message was received",
+      "someone replied",
+      "someone acknowledged",
+      "work was started",
+      "a meeting occurred",
+      "a dependency cleared",
+      "one subtask completed",
+      "a file was uploaded",
+      "a delegate said done when verification is required"
+    ],
+
+    "rules": [
+      "Evidence strength depends on the actual obligation.",
+      "No single evidence type is universally required.",
+      "Low-consequence work may require less verification than high-consequence work.",
+      "A.R.I.A. should prefer authoritative evidence when available.",
+      "Conflicting evidence should prevent silent closure until sufficiently reconciled."
+    ]
+  },
+
+  "partial_resolution": {
+    "rules": [
+      "Partial completion should be represented when meaningful work remains.",
+      "Completed portions should not be repeatedly presented as outstanding.",
+      "Remaining obligations should be explicit when reasonably determinable.",
+      "Materially independent remaining obligations may be split into separate work items when appropriate.",
+      "Splitting remaining work must preserve the relationship to the original work item.",
+      "Partial resolution may change priority and attention without creating a false terminal state."
+    ]
+  },
+
+  "verification": {
+    "factors": [
+      "safety consequence",
+      "financial consequence",
+      "customer consequence",
+      "contractual consequence",
+      "regulatory consequence",
+      "external commitment",
+      "quality requirement",
+      "workflow requirement",
+      "history of failed completion claims",
+      "availability of authoritative verification"
+    ],
+
+    "rules": [
+      "Verification requirements should be proportional to consequence.",
+      "A.R.I.A. should not create unnecessary verification bureaucracy for trivial work.",
+      "High-consequence work may remain pending_verification after execution is reported complete.",
+      "Verification should confirm the required outcome rather than merely confirm activity.",
+      "Follow-Up Engine may govern pursuit of missing verification.",
+      "A failed verification returns the work to an appropriate active state."
+    ]
+  },
+
+  "cancellation": {
+    "requirements": [
+      "Cancellation must be supported by an authorized person, authoritative workflow, valid scope change, or other legitimate operational basis."
+    ],
+
+    "rules": [
+      "User disinterest alone does not necessarily cancel an external obligation.",
+      "A.R.I.A. must not cancel work merely because it has been inactive.",
+      "A cancelled item should preserve why it was cancelled when known.",
+      "Cancellation of a work item does not automatically cancel related commitments.",
+      "Cancellation may create new obligations that require Capture Engine evaluation."
+    ]
+  },
+
+  "supersession": {
+    "rules": [
+      "Supersession requires a supported replacement for the underlying obligation or execution path.",
+      "The superseding reference should be preserved when known.",
+      "Superseded work should not remain independently actionable.",
+      "History must remain recoverable.",
+      "Supersession must not be used merely to hide duplicate or inconvenient work.",
+      "Any unresolved obligation not actually transferred to the successor must remain active."
+    ]
+  },
+
+  "duplicate_resolution": {
+    "rules": [
+      "Duplicate status should only be used when two records represent the same underlying obligation.",
+      "Similar subject matter does not establish duplication.",
+      "The authoritative surviving work item should be identified when possible.",
+      "Unique provenance from the duplicate should be preserved or related to the surviving item.",
+      "Closing a duplicate must not discard materially unique obligations."
+    ]
+  },
+
+  "invalid_work": {
+    "rules": [
+      "A work item may be invalidated when later evidence establishes that no legitimate obligation existed.",
+      "Invalidation should preserve why the original capture interpretation was incorrect.",
+      "Uncertainty alone does not establish invalidity.",
+      "Invalid items should remain available for audit and learning where appropriate.",
+      "Invalidation should not silently rewrite the original source."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine determines commitment state.",
+      "A fulfilled commitment may provide completion evidence for the related work item.",
+      "A fulfilled commitment does not automatically complete broader work containing additional obligations.",
+      "A work item may be complete while a separate related commitment remains active only when the obligations are genuinely distinct.",
+      "Cancellation or supersession of work must not silently release a commitment."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine determines delegated execution state.",
+      "Verified delegated completion may provide strong resolution evidence.",
+      "Reported delegated completion may require verification.",
+      "Completion of delegated execution does not automatically resolve broader obligations outside the delegated scope."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine determines dependency state.",
+      "Satisfied dependencies enable work; they do not normally resolve it.",
+      "A dependency becoming unnecessary may remove a blocked condition without completing the work.",
+      "All dependencies being satisfied does not independently prove the required outcome was achieved."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine determines when verification or continuation should be pursued.",
+      "Resolution should normally end follow-up associated solely with the resolved obligation.",
+      "A satisfied follow-up does not independently establish work completion.",
+      "Resolution may expose a new obligation that requires separate capture and follow-up."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine governs active operational priority.",
+      "Terminally resolved work should normally leave active priority ranking.",
+      "Partial or pending-verification work may remain priority-eligible.",
+      "Resolution Engine must not alter historical priority evaluations merely because work later resolved."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine governs presentation of active work.",
+      "Completed, cancelled, superseded, duplicate, released, or invalid work should normally leave current-attention views.",
+      "Pending verification may remain visible when user action is useful.",
+      "Resolution should stop unnecessary resurfacing of the resolved obligation."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine creates or updates operational work from source information.",
+      "Resolution Engine determines whether an existing obligation has legitimately reached a terminal state.",
+      "Resolution evidence may contain new obligations requiring Capture Engine evaluation.",
+      "Closing one obligation must not silently consume a new obligation contained in the same source."
+    ]
+  },
+
+  "reopening": {
+    "supported": true,
+
+    "triggers": [
+      "completion evidence proves incorrect",
+      "recipient rejects previously accepted outcome",
+      "required outcome regresses",
+      "new authoritative evidence shows work remained incomplete",
+      "cancellation is reversed",
+      "superseding path fails and original obligation becomes active again"
+    ],
+
+    "rules": [
+      "Reopening must preserve the prior resolution history.",
+      "A reopened item should receive fresh Priority, Attention, Follow-Up, Dependency, Delegation, and Commitment evaluation as applicable.",
+      "New work that merely resembles previously completed work should normally become a new work item rather than reopening old work.",
+      "Reopening should occur only when the original underlying obligation genuinely becomes active again."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "completion reported",
+      "completion evidence appears",
+      "verification completes",
+      "verification fails",
+      "commitment fulfilled",
+      "delegated work completed",
+      "dependency satisfied",
+      "scope changes",
+      "cancellation requested",
+      "replacement obligation established",
+      "duplicate discovered",
+      "capture interpretation disproven",
+      "recipient acceptance or rejection occurs",
+      "authoritative state changes",
+      "user requests resolution review"
+    ],
+
+    "rules": [
+      "Reevaluation must preserve prior state history.",
+      "Reevaluation should determine whether the underlying obligation remains active.",
+      "Terminal resolution should identify the supported resolution type.",
+      "Material resolution changes must be available to dependent operational engines."
+    ]
+  },
+
+  "output": {
+    "writes_to": [
+      "work_item.status",
+      "work_item.resolution"
+    ],
+
+    "resolution_record": [
+      "resolution_state",
+      "resolved_at",
+      "resolved_by",
+      "resolution_reason",
+      "resolution_evidence",
+      "superseded_by",
+      "verified_at"
+    ],
+
+    "evaluation_output": [
+      "work_item_id",
+      "resolution_state",
+      "remaining_obligations",
+      "verification_required",
+      "resolution_reason",
+      "resolution_evidence",
+      "recommended_reassessment",
+      "evaluated_at"
+    ],
+
+    "requirements": [
+      "Resolution must reference the applicable work_item_id.",
+      "Terminal state changes must preserve provenance.",
+      "Resolution type must remain distinguishable from successful completion.",
+      "Remaining obligations must not be silently discarded.",
+      "Material resolution changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not equate activity with completion.",
+    "Do not equate a reply with completion.",
+    "Do not equate acknowledgement with completion.",
+    "Do not equate dependency satisfaction with completion.",
+    "Do not equate commitment fulfillment with completion of unrelated obligations.",
+    "Do not equate delegated completion with broader work completion.",
+    "Do not close work merely because it is old.",
+    "Do not close work merely because it was snoozed.",
+    "Do not close work merely because the user dismissed a notification.",
+    "Do not discard remaining obligations during partial resolution.",
+    "Do not silently release commitments during cancellation.",
+    "Do not silently discard provenance when resolving duplicates.",
+    "Do not require excessive verification for trivial work.",
+    "Do not accept insufficient verification for consequential work.",
+    "Do not alter historical priority merely because work resolved.",
+    "Do not modify Core reasoning architecture as part of work resolution."
+  ]
+}
