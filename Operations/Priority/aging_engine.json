@@ -1,0 +1,371 @@
+{
+  "engine": {
+    "id": "aria.operations.aging_engine",
+    "name": "A.R.I.A. Aging Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "work_aging",
+    "status": "active",
+    "purpose": "Evaluate how unresolved operational work changes in significance as time passes. The engine prevents legitimate lower-priority work from remaining indefinitely buried while ensuring age alone does not manufacture false urgency or override actual consequence.",
+    "principles": [
+      "Age is operational evidence, not automatic urgency.",
+      "Legitimate work should not remain permanently buried because newer urgent work continually arrives.",
+      "Old low-value work must not automatically become more important than newer high-consequence work.",
+      "Aging should consider why work remains unresolved.",
+      "Waiting, delegated, blocked, snoozed, and actively progressing work age differently.",
+      "Time sensitivity and age are related but not identical.",
+      "Repeated deferral may be more meaningful than elapsed time alone.",
+      "Aging may justify priority reevaluation but does not own canonical priority.",
+      "Aging may justify renewed attention but does not own user-facing attention.",
+      "Resolved work does not continue accumulating operational age.",
+      "Aging decisions must remain explainable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "work item remains unresolved",
+      "work item has existed across multiple evaluation cycles",
+      "work item has been repeatedly deferred",
+      "work item has remained waiting",
+      "work item has remained delegated",
+      "work item has remained blocked",
+      "work item has remained snoozed",
+      "work item has received insufficient attention relative to its operational significance"
+    ],
+    "context": [
+      "current_time",
+      "created_at",
+      "updated_at",
+      "status",
+      "priority",
+      "attention",
+      "timing",
+      "follow_up",
+      "delegation",
+      "dependencies",
+      "commitment",
+      "activity",
+      "resolution",
+      "deferral history",
+      "source history"
+    ]
+  },
+
+  "aging_states": {
+    "fresh": {
+      "description": "The work is sufficiently new that elapsed age adds little or no additional operational significance."
+    },
+    "normal": {
+      "description": "The work remains within a reasonable unresolved period given its context."
+    },
+    "maturing": {
+      "description": "Elapsed time or repeated deferral is becoming operationally relevant and should influence reevaluation."
+    },
+    "stale": {
+      "description": "The work has remained unresolved long enough that its current state, ownership, need, or priority should be actively reassessed."
+    },
+    "chronic": {
+      "description": "The work has persisted through repeated opportunities for resolution or reassessment and requires explicit disposition."
+    },
+    "paused": {
+      "description": "Operational aging is intentionally limited because a supported future condition or authorized pause explains the lack of progress."
+    },
+    "resolved": {
+      "description": "The underlying work has reached a terminal state and no longer accumulates active operational age."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine the appropriate aging state."
+    }
+  },
+
+  "age_measurement": {
+    "time_references": [
+      "created_at",
+      "last_meaningful_activity_at",
+      "waiting_since",
+      "delegated_at",
+      "blocked_since",
+      "last_follow_up_at",
+      "last_priority_evaluation_at",
+      "last_attention_at",
+      "snoozed_until"
+    ],
+    "rules": [
+      "Calendar age and operational inactivity must remain distinguishable.",
+      "Meaningful progress may reduce staleness without resetting the historical age of the work item.",
+      "Administrative edits must not falsely reset meaningful inactivity.",
+      "A status change without substantive operational change must not automatically reset aging.",
+      "The most relevant aging reference depends on the current state of the work.",
+      "Missing timestamps must remain unknown rather than invented."
+    ]
+  },
+
+  "state_sensitive_aging": {
+    "active": [
+      "Unresolved actionable work should accumulate aging significance when it repeatedly loses attention to other work.",
+      "Meaningful execution progress may reduce the need for aging escalation."
+    ],
+    "waiting": [
+      "Waiting time should be evaluated against the expected response or condition when one exists.",
+      "Waiting within a reasonable supported response window should not create artificial aging pressure.",
+      "Waiting beyond reasonable expectations may increase aging significance."
+    ],
+    "delegated": [
+      "Healthy delegated work should not age merely because the user is not personally touching it.",
+      "Delegated work may become stale when expected progress, completion, or acknowledgement repeatedly fails to materialize."
+    ],
+    "blocked": [
+      "Blocked work should not become artificially urgent when no useful intervention exists.",
+      "Long-lived blockers should still trigger reassessment of alternate paths, ownership, scope, or continuing need."
+    ],
+    "snoozed": [
+      "An authorized snooze suppresses attention until its trigger or expiration.",
+      "Snoozing does not erase historical age.",
+      "Repeated snoozing may itself become an aging signal."
+    ],
+    "in_progress": [
+      "Work making meaningful progress should not be treated as stale solely because its total duration is long.",
+      "Progress should be evaluated relative to the nature and expected duration of the work."
+    ]
+  },
+
+  "deferral": {
+    "signals": [
+      "repeatedly ranked below competing work",
+      "repeatedly snoozed",
+      "repeatedly postponed by the user",
+      "follow-up repeatedly rescheduled",
+      "action repeatedly acknowledged but not performed",
+      "work repeatedly moved to a later planning period"
+    ],
+    "rules": [
+      "Repeated deferral may increase operational significance even when calendar age is modest.",
+      "Deferral caused by valid dependencies should remain distinguishable from discretionary postponement.",
+      "A.R.I.A. should not interpret every scheduling change as avoidance.",
+      "Repeated discretionary deferral should eventually force explicit reconsideration of priority, ownership, scope, or continued need.",
+      "The system should not permit indefinite deferral without periodic disposition."
+    ]
+  },
+
+  "aging_pressure": {
+    "levels": {
+      "none": "Age currently adds no meaningful pressure.",
+      "low": "Age should be considered during ordinary reevaluation.",
+      "moderate": "Age or deferral now materially supports priority or attention reassessment.",
+      "high": "The work requires explicit disposition because continued unresolved status is becoming operationally unacceptable."
+    },
+    "factors": [
+      "calendar age",
+      "meaningful inactivity",
+      "number of discretionary deferrals",
+      "missed follow-ups",
+      "missed expected dates",
+      "customer impact",
+      "business impact",
+      "financial impact",
+      "dependency impact",
+      "commitment impact",
+      "strategic value",
+      "opportunity cost",
+      "continued relevance"
+    ],
+    "rules": [
+      "Aging pressure must not be derived from elapsed time alone.",
+      "Consequential unresolved work may accumulate pressure faster than trivial work.",
+      "Strategic work may accumulate meaningful aging pressure even without a hard deadline.",
+      "Work with no continuing value should be considered for legitimate resolution rather than artificial priority escalation.",
+      "High aging pressure requires explicit reassessment, not automatic maximum priority."
+    ]
+  },
+
+  "anti_starvation": {
+    "purpose": "Prevent valid lower-priority work from being permanently displaced by an endless stream of newer urgent work.",
+    "rules": [
+      "The engine should detect work that remains valid but repeatedly receives no execution opportunity.",
+      "Repeated displacement should increase the strength of the recommendation for Priority Engine reevaluation.",
+      "Anti-starvation behavior must preserve consequence-based prioritization.",
+      "Low-priority work should not leapfrog critical work solely because it is older.",
+      "Protected execution time may be recommended for strategically valuable or chronically displaced work.",
+      "Attention Engine determines whether and when anti-starvation recommendations should be surfaced."
+    ]
+  },
+
+  "stale_work_review": {
+    "questions": [
+      "Is this work still required?",
+      "Is the original outcome still relevant?",
+      "Does the current owner remain correct?",
+      "Has the work been superseded?",
+      "Is a dependency preventing progress?",
+      "Is the work actually waiting rather than actionable?",
+      "Should the work be delegated?",
+      "Should the scope be reduced or separated?",
+      "Has completion occurred without being recognized?",
+      "Has the work become more consequential because of delay?"
+    ],
+    "possible_outcomes": [
+      "retain_current_state",
+      "priority_reevaluation",
+      "attention_reevaluation",
+      "follow_up_reevaluation",
+      "delegate",
+      "change_owner",
+      "identify_dependency",
+      "split_work_item",
+      "resume",
+      "continue_waiting",
+      "resolve_completed",
+      "resolve_cancelled",
+      "resolve_superseded",
+      "resolve_invalid"
+    ]
+  },
+
+  "strategic_work": {
+    "rules": [
+      "Strategically important work may have low immediate urgency while still suffering from repeated displacement.",
+      "Lack of an external deadline must not make strategic work invisible.",
+      "Strategic value may justify protected attention before the work becomes urgent.",
+      "Aging may strengthen the case for protected execution time when strategic work remains repeatedly displaced.",
+      "Priority Engine remains responsible for canonical priority evaluation."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Aging Engine provides aging and starvation signals to Priority Engine.",
+      "Priority Engine owns canonical priority scoring and banding.",
+      "Age may influence priority but must not independently overwrite it.",
+      "Aging must not automatically increment a priority number on a fixed schedule.",
+      "Priority changes must remain consequence-aware."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Aging Engine may identify work that deserves renewed consideration.",
+      "Attention Engine determines whether and how the user should see it.",
+      "A stale item does not automatically justify interruption.",
+      "Chronic strategically important work may justify protected attention rather than emergency interruption."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit and verification timing.",
+      "Repeatedly missed or rescheduled follow-ups may contribute to aging pressure.",
+      "Aging must not independently send or schedule follow-up communication."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine determines whether unresolved conditions block progress.",
+      "Aging Engine evaluates the significance of long-lived dependency states.",
+      "A blocked item should not become falsely urgent merely because the blocker is old.",
+      "Long-lived blockers should trigger reassessment of alternatives and continuing relevance."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs delegated execution.",
+      "Healthy delegation should not be penalized by user inactivity.",
+      "Repeated failed expectations or unexplained lack of progress may increase aging pressure."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises and commitment state.",
+      "Approaching or missed commitments may accelerate aging significance.",
+      "Aging must not redefine the terms of a commitment."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine determines whether work has legitimately reached a terminal state.",
+      "Stale or chronic work should be explicitly reviewed for legitimate resolution.",
+      "Age alone is never sufficient reason to close work.",
+      "Terminally resolved work stops accumulating active aging pressure."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "scheduled aging review",
+      "meaningful activity occurs",
+      "work is deferred",
+      "work is snoozed",
+      "snooze expires",
+      "follow-up is missed",
+      "expected date passes",
+      "dependency state changes",
+      "delegation state changes",
+      "commitment state changes",
+      "priority changes",
+      "attention state changes",
+      "work becomes stale",
+      "work becomes chronic",
+      "user requests review"
+    ],
+    "rules": [
+      "Aging reevaluation must preserve historical age and deferral history.",
+      "Reevaluation should distinguish legitimate waiting from neglect.",
+      "Reevaluation should determine whether the work remains operationally relevant.",
+      "Material aging changes may trigger Priority, Attention, Follow-Up, Dependency, Delegation, Commitment, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.aging",
+    "aging_record": [
+      "aging_state",
+      "aging_pressure",
+      "calendar_age",
+      "meaningful_inactivity",
+      "deferral_count",
+      "starvation_detected",
+      "aging_reason",
+      "evaluated_at"
+    ],
+    "evaluation_output": [
+      "work_item_id",
+      "aging_state",
+      "aging_pressure",
+      "starvation_detected",
+      "aging_reason",
+      "recommended_reassessment",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Aging output must reference the applicable work_item_id.",
+      "Aging must preserve the distinction between calendar age and meaningful inactivity.",
+      "Derived aging pressure must remain explainable.",
+      "Aging must not directly overwrite canonical priority.",
+      "Material aging changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not make work urgent solely because it is old.",
+    "Do not allow legitimate work to remain buried indefinitely.",
+    "Do not automatically increment priority on a timer.",
+    "Do not penalize healthy delegation.",
+    "Do not penalize legitimate waiting.",
+    "Do not reset meaningful age because of administrative edits.",
+    "Do not erase historical age when work is snoozed.",
+    "Do not treat every reschedule as avoidance.",
+    "Do not repeatedly surface blocked work when no useful intervention exists.",
+    "Do not close work merely because it became stale.",
+    "Do not preserve obsolete work merely because it has existed a long time.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not bypass the Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of aging management."
+  ]
+}
