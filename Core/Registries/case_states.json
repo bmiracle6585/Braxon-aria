@@ -1,447 +1,965 @@
 {
   "registry": "ARIA_CASE_STATES",
-  "version": "0.1.0",
-  "description": "Controlled vocabulary and state-machine framework defining the lifecycle of an A.R.I.A. diagnostic case. Case states describe where ARIA is in the reasoning process, not what diagnosis she currently believes.",
+  "version": "2.0.0",
+  "description": "Canonical controlled vocabulary for A.R.I.A. case reasoning states. reasoning_state identifies the current technical reasoning or diagnostic phase within a case. It is explicitly separate from case lifecycle status, which is owned by Core/Registries/case_lifecycle_statuses.json.",
 
-  "case_states": [
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "lifecycle_registry": "Core/Registries/case_lifecycle_statuses.json",
+    "role": "CONTROLLED_CASE_REASONING_STATE_VOCABULARY",
+    "owns": [
+      "case reasoning state vocabulary",
+      "reasoning state semantics",
+      "reasoning-state transition guidance"
+    ],
+    "does_not_own": [
+      "case lifecycle status",
+      "case closure disposition",
+      "hypothesis status",
+      "evidence status",
+      "action status",
+      "outcome vocabulary",
+      "probability",
+      "confidence",
+      "engine orchestration",
+      "routing algorithms",
+      "decision utility",
+      "validation criteria",
+      "learning eligibility"
+    ]
+  },
+
+  "reasoning_state_contract": {
+    "field": "reasoning_state",
+    "applies_to": "case_<UUID>",
+    "lifecycle_field": "status",
+
+    "separation_rule": "case.reasoning_state represents A.R.I.A.'s current technical reasoning phase. case.status represents the broad operational lifecycle of the case. A reasoning-state transition does not automatically imply a lifecycle transition, and a lifecycle transition does not automatically redefine reasoning state.",
+
+    "execution_model": "EVENT_DRIVEN_NONLINEAR",
+
+    "principles": [
+      "Reasoning states describe what technical reasoning function is currently dominant, not whether the case is operationally active, waiting, blocked, suspended, resolved, escalated, unresolved, cancelled, or closed.",
+      "The reasoning process is not required to move through every state.",
+      "Reasoning may revisit an earlier state when material new evidence, contradiction, context, validation, or outcome information requires reconsideration.",
+      "Historical reasoning-state transitions remain auditable.",
+      "Reasoning resumes from authoritative persisted case state rather than restarting the investigation.",
+      "A.R.I.A. may invoke multiple reasoning engines within one reasoning state.",
+      "The reasoning state Registry defines semantic phases; the Orchestration Engine determines which engines execute.",
+      "Unknown or incomplete information shall not force advancement to a later reasoning state."
+    ]
+  },
+
+  "states": [
     {
-      "id": "CASE-STATE-001",
-      "name": "INTAKE",
-      "canonical_name": "Case Intake",
-      "category": "INITIALIZATION",
-      "description": "ARIA has received a new technical question, symptom report, incident, or diagnostic request and is establishing the initial case record.",
-      "terminal": false
+      "state": "INTAKE",
+      "canonical_name": "Intake",
+      "description": "A.R.I.A. establishes the technical problem being presented and creates or initializes the diagnostic investigation.",
+      "primary_objectives": [
+        "identify the reported technical problem",
+        "capture the initial technical request or symptom",
+        "establish the minimum information required to begin",
+        "distinguish a diagnostic case from a simple informational request when applicable"
+      ],
+      "typical_inputs": [
+        "user report",
+        "system event",
+        "technical alert",
+        "initial artifact",
+        "initial observation"
+      ],
+      "typical_outputs": [
+        "initialized case",
+        "initial context requirements",
+        "initial symptom references",
+        "initial evidence references"
+      ],
+      "common_next_states": [
+        "CONTEXTUALIZATION",
+        "SYMPTOM_IDENTIFICATION",
+        "INITIAL_EVIDENCE_ASSESSMENT"
+      ]
     },
 
     {
-      "id": "CASE-STATE-002",
-      "name": "CONTEXTUALIZATION",
+      "state": "CONTEXTUALIZATION",
       "canonical_name": "Contextualization",
-      "category": "INITIALIZATION",
-      "description": "ARIA is identifying the technical context required to correctly interpret the case.",
-      "terminal": false
+      "description": "A.R.I.A. resolves the technical context necessary to determine which knowledge, experience, evidence, relationships, and diagnostic logic are applicable.",
+      "primary_objectives": [
+        "resolve manufacturer and product context",
+        "resolve product variant or revision when material",
+        "resolve configuration and topology",
+        "resolve scope",
+        "resolve environmental and operational context when material",
+        "identify context gaps that could materially affect reasoning"
+      ],
+      "typical_inputs": [
+        "case data",
+        "canonical entities",
+        "source material",
+        "user-provided technical context",
+        "retrieved knowledge",
+        "historical experience"
+      ],
+      "typical_outputs": [
+        "ctx_<UUID>",
+        "context applicability assessment",
+        "context-match confidence",
+        "material missing-context requirements"
+      ],
+      "common_next_states": [
+        "SYMPTOM_IDENTIFICATION",
+        "BASELINE_ESTABLISHMENT",
+        "INITIAL_EVIDENCE_ASSESSMENT",
+        "HYPOTHESIS_GENERATION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-003",
-      "name": "SYMPTOM_IDENTIFICATION",
+      "state": "SYMPTOM_IDENTIFICATION",
       "canonical_name": "Symptom Identification",
-      "category": "ASSESSMENT",
-      "description": "ARIA is converting reported or observed conditions into canonical symptoms while preserving the underlying raw observations.",
-      "terminal": false
+      "description": "A.R.I.A. identifies and normalizes the observable technical symptoms without prematurely converting observations into causes.",
+      "primary_objectives": [
+        "separate observed symptoms from interpretations",
+        "normalize symptom terminology",
+        "associate observations with canonical symptom entities where appropriate",
+        "identify symptom combinations and temporal patterns",
+        "preserve ambiguity where observations are insufficient"
+      ],
+      "typical_inputs": [
+        "reported observations",
+        "alarms",
+        "measurements",
+        "logs",
+        "screenshots",
+        "field observations",
+        "canonical symptom vocabulary"
+      ],
+      "typical_outputs": [
+        "normalized symptom references",
+        "symptom pattern",
+        "observation confidence",
+        "additional evidence requirements"
+      ],
+      "common_next_states": [
+        "CONTEXTUALIZATION",
+        "BASELINE_ESTABLISHMENT",
+        "INITIAL_EVIDENCE_ASSESSMENT",
+        "HYPOTHESIS_GENERATION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-004",
-      "name": "BASELINE_ESTABLISHMENT",
+      "state": "BASELINE_ESTABLISHMENT",
       "canonical_name": "Baseline Establishment",
-      "category": "ASSESSMENT",
-      "description": "ARIA is establishing the expected, engineered, historical, configured, or otherwise applicable normal condition against which observations will be evaluated.",
-      "terminal": false
+      "description": "A.R.I.A. establishes the expected, previous, reference, or otherwise technically meaningful baseline against which current behavior can be compared.",
+      "primary_objectives": [
+        "identify expected technical behavior",
+        "identify applicable manufacturer or engineering requirements",
+        "identify previous known-good behavior when available",
+        "establish relevant comparison values",
+        "separate specification from historical behavior"
+      ],
+      "typical_inputs": [
+        "manufacturer documentation",
+        "engineering documentation",
+        "historical measurements",
+        "configuration records",
+        "knowledge graph",
+        "validated experience"
+      ],
+      "typical_outputs": [
+        "baseline assertions",
+        "expected ranges or conditions",
+        "comparison relationships",
+        "baseline confidence"
+      ],
+      "common_next_states": [
+        "INITIAL_EVIDENCE_ASSESSMENT",
+        "HYPOTHESIS_GENERATION",
+        "EVIDENCE_INGESTION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-005",
-      "name": "INITIAL_EVIDENCE_ASSESSMENT",
+      "state": "INITIAL_EVIDENCE_ASSESSMENT",
       "canonical_name": "Initial Evidence Assessment",
-      "category": "ASSESSMENT",
-      "description": "ARIA is evaluating the evidence already available for reliability, applicability, provenance, completeness, contradictions, and diagnostic relevance.",
-      "terminal": false
+      "description": "A.R.I.A. evaluates the evidence currently available before committing to deeper hypothesis discrimination.",
+      "primary_objectives": [
+        "classify available evidence",
+        "evaluate evidence quality",
+        "identify duplicate or dependent evidence",
+        "identify contradictions",
+        "identify material evidence gaps",
+        "determine whether sufficient information exists for hypothesis generation"
+      ],
+      "typical_inputs": [
+        "evd_<UUID>",
+        "claims",
+        "sources",
+        "artifacts",
+        "measurements",
+        "observations"
+      ],
+      "typical_outputs": [
+        "evidence quality assessments",
+        "evidence independence assessment",
+        "contradiction flags",
+        "evidence gaps",
+        "candidate next evidence"
+      ],
+      "common_next_states": [
+        "CONTEXTUALIZATION",
+        "SYMPTOM_IDENTIFICATION",
+        "EVIDENCE_INGESTION",
+        "EVIDENCE_RECONCILIATION",
+        "HYPOTHESIS_GENERATION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-006",
-      "name": "HYPOTHESIS_GENERATION",
+      "state": "HYPOTHESIS_GENERATION",
       "canonical_name": "Hypothesis Generation",
-      "category": "REASONING",
-      "description": "ARIA is generating technically plausible candidate explanations from symptoms, context, knowledge, and historical experience.",
-      "terminal": false
+      "description": "A.R.I.A. generates technically plausible candidate explanations for the observed condition using applicable knowledge, context, evidence, and validated historical experience.",
+      "primary_objectives": [
+        "generate plausible candidate explanations",
+        "include multiple simultaneous failure modes when technically possible",
+        "avoid premature convergence",
+        "preserve an unknown or unmodeled explanation when warranted",
+        "link hypotheses to canonical technical entities"
+      ],
+      "typical_inputs": [
+        "context",
+        "symptoms",
+        "evidence",
+        "knowledge graph",
+        "manufacturer corpus",
+        "validated experience"
+      ],
+      "typical_outputs": [
+        "hyp_<UUID> candidates",
+        "hypothesis entity references",
+        "candidate evidence requirements",
+        "candidate discriminating actions"
+      ],
+      "common_next_states": [
+        "HYPOTHESIS_PRIORITIZATION",
+        "EVIDENCE_INGESTION",
+        "CONTEXTUALIZATION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-007",
-      "name": "HYPOTHESIS_PRIORITIZATION",
+      "state": "HYPOTHESIS_PRIORITIZATION",
       "canonical_name": "Hypothesis Prioritization",
-      "category": "REASONING",
-      "description": "ARIA is estimating and ranking active hypotheses using current evidence, context, prior probabilities, historical experience, and applicable technical knowledge.",
-      "terminal": false
+      "description": "A.R.I.A. establishes the current relative diagnostic priority of candidate hypotheses using probability, technical plausibility, evidence, context, and uncertainty without confusing probability with confidence.",
+      "primary_objectives": [
+        "establish or update priors",
+        "evaluate current supporting and contradicting evidence",
+        "identify high-value competing explanations",
+        "preserve unknown probability mass when appropriate",
+        "identify hypotheses requiring discrimination"
+      ],
+      "typical_inputs": [
+        "active hypotheses",
+        "historical priors",
+        "current evidence",
+        "context",
+        "probability calculations",
+        "uncertainty assessment"
+      ],
+      "typical_outputs": [
+        "prioritized hypotheses",
+        "current probabilities",
+        "probability confidence",
+        "discrimination priorities"
+      ],
+      "common_next_states": [
+        "ROUTE_SELECTION",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "EVIDENCE_INGESTION",
+        "PROBABILITY_UPDATE"
+      ]
     },
 
     {
-      "id": "CASE-STATE-008",
-      "name": "ROUTE_SELECTION",
-      "canonical_name": "Diagnostic Route Selection",
-      "category": "REASONING",
-      "description": "ARIA is evaluating candidate next actions and selecting the most appropriate diagnostic next hop.",
-      "terminal": false
+      "state": "ROUTE_SELECTION",
+      "canonical_name": "Route Selection",
+      "description": "A.R.I.A. selects the most appropriate next diagnostic path from eligible alternatives using decision utility, technical constraints, dependencies, prior route history, and expected information value.",
+      "primary_objectives": [
+        "identify eligible next actions",
+        "compare diagnostic utility",
+        "consider risk, cost, access, safety, and service impact",
+        "avoid unnecessary repetition",
+        "select a technically justified next route step"
+      ],
+      "typical_inputs": [
+        "candidate actions",
+        "decision scores",
+        "route history",
+        "current hypotheses",
+        "current uncertainty",
+        "technical constraints"
+      ],
+      "typical_outputs": [
+        "rstep_<UUID>",
+        "selected next action",
+        "route rationale",
+        "unselected alternatives where materially relevant"
+      ],
+      "common_next_states": [
+        "EVIDENCE_INGESTION",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "ISOLATION",
+        "CORRECTIVE_ACTION_SELECTION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-009",
-      "name": "AWAITING_INFORMATION",
-      "canonical_name": "Awaiting Information",
-      "category": "WAITING",
-      "description": "ARIA requires additional information, evidence, measurement, artifact, clarification, or response before the selected reasoning route can continue.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-010",
-      "name": "AWAITING_ACTION",
-      "canonical_name": "Awaiting Diagnostic Action",
-      "category": "WAITING",
-      "description": "ARIA has selected or requested a diagnostic action and is awaiting its execution and resulting evidence.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-011",
-      "name": "EVIDENCE_INGESTION",
+      "state": "EVIDENCE_INGESTION",
       "canonical_name": "Evidence Ingestion",
-      "category": "EVIDENCE",
-      "description": "ARIA has received new evidence and is parsing, validating, normalizing, classifying, and associating it with the case.",
-      "terminal": false
+      "description": "A.R.I.A. incorporates newly received technical evidence into the current investigation while preserving provenance and historical state.",
+      "primary_objectives": [
+        "ingest new evidence",
+        "preserve provenance",
+        "detect duplicates and dependencies",
+        "associate evidence with relevant hypotheses and context",
+        "identify whether material state has changed"
+      ],
+      "typical_inputs": [
+        "measurements",
+        "logs",
+        "screenshots",
+        "configuration exports",
+        "documents",
+        "observations",
+        "action results",
+        "external events"
+      ],
+      "typical_outputs": [
+        "new evd_<UUID> records",
+        "updated evidence relationships",
+        "material-change determination",
+        "reconciliation requirements"
+      ],
+      "common_next_states": [
+        "EVIDENCE_RECONCILIATION",
+        "PROBABILITY_UPDATE",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "CONTEXTUALIZATION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-012",
-      "name": "EVIDENCE_RECONCILIATION",
+      "state": "EVIDENCE_RECONCILIATION",
       "canonical_name": "Evidence Reconciliation",
-      "category": "EVIDENCE",
-      "description": "ARIA is reconciling new evidence with existing observations, evidence, hypotheses, context, and prior conclusions.",
-      "terminal": false
+      "description": "A.R.I.A. evaluates how multiple evidence items interact, including corroboration, dependence, contradiction, temporal differences, and contextual applicability.",
+      "primary_objectives": [
+        "identify independent corroboration",
+        "prevent duplicate evidence inflation",
+        "evaluate contradictions",
+        "resolve temporal or contextual differences where possible",
+        "preserve unresolved conflicting evidence"
+      ],
+      "typical_inputs": [
+        "evidence set",
+        "provenance graph",
+        "source assessments",
+        "context",
+        "claims",
+        "relationships"
+      ],
+      "typical_outputs": [
+        "reconciled evidence assessment",
+        "contradiction state",
+        "independence state",
+        "updated evidence quality",
+        "probability-update triggers"
+      ],
+      "common_next_states": [
+        "PROBABILITY_UPDATE",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "HYPOTHESIS_GENERATION",
+        "CONTEXTUALIZATION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-013",
-      "name": "PROBABILITY_UPDATE",
+      "state": "PROBABILITY_UPDATE",
       "canonical_name": "Probability Update",
-      "category": "REASONING",
-      "description": "ARIA is updating active hypothesis probabilities and associated confidence dimensions in response to new evidence.",
-      "terminal": false
+      "description": "A.R.I.A. recalculates hypothesis probabilities when material evidence, context, priors, or applicable reasoning inputs change.",
+      "primary_objectives": [
+        "apply applicable priors",
+        "incorporate current validated evidence",
+        "update posterior probabilities",
+        "preserve probability history",
+        "maintain separation between probability and confidence"
+      ],
+      "typical_inputs": [
+        "hypotheses",
+        "priors",
+        "supporting evidence",
+        "contradicting evidence",
+        "context",
+        "probability method"
+      ],
+      "typical_outputs": [
+        "updated hypothesis probabilities",
+        "probability history entries",
+        "probability confidence",
+        "changed prioritization"
+      ],
+      "common_next_states": [
+        "HYPOTHESIS_PRIORITIZATION",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "ISOLATION",
+        "ROUTE_SELECTION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-014",
-      "name": "DIAGNOSTIC_DISCRIMINATION",
+      "state": "DIAGNOSTIC_DISCRIMINATION",
       "canonical_name": "Diagnostic Discrimination",
-      "category": "REASONING",
-      "description": "ARIA is actively seeking evidence that most effectively distinguishes between remaining plausible hypotheses.",
-      "terminal": false
+      "description": "A.R.I.A. actively seeks information that distinguishes between plausible competing explanations rather than merely collecting additional data.",
+      "primary_objectives": [
+        "identify evidence with high discriminating value",
+        "separate competing hypotheses",
+        "eliminate or deprioritize unsupported explanations",
+        "avoid low-value diagnostic activity",
+        "identify when the remaining uncertainty is irreducible"
+      ],
+      "typical_inputs": [
+        "prioritized hypotheses",
+        "current evidence",
+        "uncertainty",
+        "candidate actions",
+        "decision utility",
+        "route history"
+      ],
+      "typical_outputs": [
+        "discriminating action requirements",
+        "hypothesis status changes",
+        "evidence requirements",
+        "isolation candidates"
+      ],
+      "common_next_states": [
+        "ROUTE_SELECTION",
+        "EVIDENCE_INGESTION",
+        "PROBABILITY_UPDATE",
+        "ISOLATION",
+        "DIAGNOSIS_PROVISIONAL"
+      ]
     },
 
     {
-      "id": "CASE-STATE-015",
-      "name": "ISOLATION",
-      "canonical_name": "Fault Isolation",
-      "category": "DIAGNOSIS",
-      "description": "ARIA is narrowing the abnormal condition to a specific component, path, configuration, subsystem, mechanism, or other technically meaningful boundary.",
-      "terminal": false
+      "state": "ISOLATION",
+      "canonical_name": "Isolation",
+      "description": "A.R.I.A. narrows the technical condition to a sufficiently specific component, interface, configuration, path, failure domain, or causal region to support diagnosis or targeted corrective action.",
+      "primary_objectives": [
+        "localize the failure domain",
+        "separate adjacent technical domains",
+        "identify implicated components or interfaces",
+        "establish boundaries of the observed failure",
+        "determine whether isolation is sufficient for provisional diagnosis"
+      ],
+      "typical_inputs": [
+        "discriminating evidence",
+        "measurements",
+        "topology",
+        "configuration",
+        "active hypotheses",
+        "test outcomes"
+      ],
+      "typical_outputs": [
+        "isolated failure domain",
+        "updated hypothesis support",
+        "diagnostic confidence",
+        "remaining isolation requirements"
+      ],
+      "common_next_states": [
+        "DIAGNOSTIC_DISCRIMINATION",
+        "PROBABILITY_UPDATE",
+        "DIAGNOSIS_PROVISIONAL",
+        "ROUTE_SELECTION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-016",
-      "name": "DIAGNOSIS_PROVISIONAL",
+      "state": "DIAGNOSIS_PROVISIONAL",
       "canonical_name": "Provisional Diagnosis",
-      "category": "DIAGNOSIS",
-      "description": "ARIA has identified a leading diagnosis with substantial support, but confirmation requirements have not yet been satisfied.",
-      "terminal": false
+      "description": "A.R.I.A. has a leading technical diagnosis supported sufficiently to guide further validation or carefully bounded corrective action, but confirmation criteria have not yet been fully satisfied.",
+      "primary_objectives": [
+        "state the leading diagnosis",
+        "preserve remaining alternatives",
+        "state diagnostic confidence",
+        "identify confirmation requirements",
+        "avoid representing provisional diagnosis as confirmed root cause"
+      ],
+      "typical_inputs": [
+        "leading hypothesis",
+        "probability assessment",
+        "diagnostic evidence",
+        "isolation result",
+        "uncertainty assessment"
+      ],
+      "typical_outputs": [
+        "provisional diagnosis",
+        "diagnostic confidence",
+        "confirmation requirements",
+        "candidate validation or corrective actions"
+      ],
+      "common_next_states": [
+        "VALIDATION",
+        "ROUTE_SELECTION",
+        "CORRECTIVE_ACTION_SELECTION",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "DIAGNOSIS_CONFIRMED"
+      ]
     },
 
     {
-      "id": "CASE-STATE-017",
-      "name": "DIAGNOSIS_CONFIRMED",
-      "canonical_name": "Diagnosis Confirmed",
-      "category": "DIAGNOSIS",
-      "description": "Available evidence satisfies the applicable policy for confirming the diagnosed failure condition or root cause.",
-      "terminal": false
+      "state": "DIAGNOSIS_CONFIRMED",
+      "canonical_name": "Confirmed Diagnosis",
+      "description": "A.R.I.A. has sufficient validated technical support to treat the diagnosis as confirmed within the stated context and uncertainty boundaries.",
+      "primary_objectives": [
+        "record the confirmed diagnosis",
+        "record supporting validation",
+        "record causal confidence separately where causal attribution is claimed",
+        "preserve residual uncertainty",
+        "prepare technically appropriate corrective action when required"
+      ],
+      "typical_inputs": [
+        "validated hypothesis",
+        "confirmation evidence",
+        "diagnostic confidence",
+        "causal assessment",
+        "validation outcome"
+      ],
+      "typical_outputs": [
+        "confirmed diagnosis",
+        "confirmation evidence references",
+        "diagnostic confidence",
+        "causal confidence where applicable"
+      ],
+      "common_next_states": [
+        "CORRECTIVE_ACTION_SELECTION",
+        "VALIDATION",
+        "RESOLUTION_PENDING"
+      ]
     },
 
     {
-      "id": "CASE-STATE-018",
-      "name": "CORRECTIVE_ACTION_SELECTION",
+      "state": "CORRECTIVE_ACTION_SELECTION",
       "canonical_name": "Corrective Action Selection",
-      "category": "CORRECTION",
-      "description": "ARIA is identifying an appropriate corrective action for the confirmed or sufficiently supported failure condition.",
-      "terminal": false
+      "description": "A.R.I.A. identifies and evaluates technically appropriate corrective actions based on the current diagnosis, uncertainty, safety constraints, reversibility, expected effect, and operational impact.",
+      "primary_objectives": [
+        "identify eligible corrective actions",
+        "evaluate technical appropriateness",
+        "consider risk and service impact",
+        "prefer reversible or discriminating actions when uncertainty remains",
+        "define expected technical result"
+      ],
+      "typical_inputs": [
+        "diagnosis",
+        "active hypotheses",
+        "decision utility",
+        "technical procedures",
+        "manufacturer guidance",
+        "constraints"
+      ],
+      "typical_outputs": [
+        "act_<UUID>",
+        "selected corrective action",
+        "expected outcome",
+        "post-action validation requirements"
+      ],
+      "common_next_states": [
+        "POST_ACTION_ASSESSMENT",
+        "ROUTE_SELECTION",
+        "VALIDATION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-019",
-      "name": "AWAITING_CORRECTIVE_ACTION",
-      "canonical_name": "Awaiting Corrective Action",
-      "category": "WAITING",
-      "description": "ARIA is awaiting execution of an approved corrective action.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-020",
-      "name": "POST_ACTION_ASSESSMENT",
+      "state": "POST_ACTION_ASSESSMENT",
       "canonical_name": "Post-Action Assessment",
-      "category": "CORRECTION",
-      "description": "ARIA is evaluating the immediate technical effect of a diagnostic or corrective action.",
-      "terminal": false
+      "description": "A.R.I.A. evaluates what actually occurred after a diagnostic or corrective action without assuming that action completion equals technical success.",
+      "primary_objectives": [
+        "capture actual action outcome",
+        "compare expected and observed effects",
+        "identify new evidence",
+        "determine whether the action discriminated among hypotheses",
+        "determine whether additional validation is required"
+      ],
+      "typical_inputs": [
+        "completed action",
+        "out_<UUID>",
+        "post-action measurements",
+        "observations",
+        "service behavior"
+      ],
+      "typical_outputs": [
+        "action effectiveness assessment",
+        "new evidence",
+        "updated hypothesis support",
+        "validation requirements"
+      ],
+      "common_next_states": [
+        "EVIDENCE_RECONCILIATION",
+        "PROBABILITY_UPDATE",
+        "VALIDATION",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "RESOLUTION_PENDING"
+      ]
     },
 
     {
-      "id": "CASE-STATE-021",
-      "name": "VALIDATION",
-      "canonical_name": "Resolution Validation",
-      "category": "VALIDATION",
-      "description": "ARIA is evaluating whether the original symptoms and applicable technical requirements have returned to an acceptable and sufficiently stable condition.",
-      "terminal": false
+      "state": "VALIDATION",
+      "canonical_name": "Validation",
+      "description": "A.R.I.A. evaluates whether a diagnosis, corrective action, technical assertion, or claimed resolution satisfies explicit validation criteria.",
+      "primary_objectives": [
+        "define or apply validation criteria",
+        "compare before and after state",
+        "evaluate repeatability and stability",
+        "evaluate whether alternatives remain plausible",
+        "separate operational recovery from causal proof",
+        "determine appropriate validation confidence"
+      ],
+      "typical_inputs": [
+        "validation plan",
+        "measurements",
+        "observations",
+        "outcomes",
+        "diagnosis",
+        "corrective action",
+        "acceptance criteria"
+      ],
+      "typical_outputs": [
+        "validation outcome",
+        "validation confidence",
+        "resolution confidence",
+        "causal confidence where applicable",
+        "learning restrictions"
+      ],
+      "common_next_states": [
+        "RESOLUTION_PENDING",
+        "DIAGNOSIS_CONFIRMED",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "PROBABILITY_UPDATE",
+        "CORRECTIVE_ACTION_SELECTION"
+      ]
     },
 
     {
-      "id": "CASE-STATE-022",
-      "name": "RESOLUTION_PENDING",
+      "state": "RESOLUTION_PENDING",
       "canonical_name": "Resolution Pending",
-      "category": "VALIDATION",
-      "description": "Initial evidence indicates successful correction, but additional time, monitoring, testing, or evidence is required before resolution can be validated.",
-      "terminal": false
+      "description": "A.R.I.A. has substantial evidence of technical recovery or correction, but one or more required conditions remain before the case should be treated as resolved.",
+      "primary_objectives": [
+        "identify remaining resolution criteria",
+        "observe required stability intervals",
+        "confirm sustained technical behavior",
+        "ensure required validation is complete",
+        "prevent premature lifecycle resolution"
+      ],
+      "typical_inputs": [
+        "successful validation",
+        "post-action behavior",
+        "stability requirements",
+        "acceptance criteria",
+        "remaining uncertainty"
+      ],
+      "typical_outputs": [
+        "resolution readiness assessment",
+        "remaining validation requirements",
+        "resolution confidence"
+      ],
+      "common_next_states": [
+        "VALIDATION",
+        "LEARNING_ASSESSMENT",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "POST_ACTION_ASSESSMENT"
+      ]
     },
 
     {
-      "id": "CASE-STATE-023",
-      "name": "RESOLVED",
-      "canonical_name": "Resolved",
-      "category": "CLOSURE",
-      "description": "The reported technical problem has been corrected and sufficient validation supports resolution.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-024",
-      "name": "LEARNING_ASSESSMENT",
+      "state": "LEARNING_ASSESSMENT",
       "canonical_name": "Learning Assessment",
-      "category": "LEARNING",
-      "description": "ARIA is evaluating whether and how strongly the completed case should influence future diagnostic experience.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-025",
-      "name": "CLOSED",
-      "canonical_name": "Closed",
-      "category": "CLOSURE",
-      "description": "Case processing is complete and the final outcome, evidence, diagnosis, resolution state, and learning disposition have been recorded.",
-      "terminal": true
-    },
-
-    {
-      "id": "CASE-STATE-026",
-      "name": "ESCALATION_REQUIRED",
-      "canonical_name": "Escalation Required",
-      "category": "ESCALATION",
-      "description": "ARIA has determined that continued progress requires additional authority, expertise, access, resources, safety review, manufacturer support, engineering review, or another escalation path.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-027",
-      "name": "ESCALATED",
-      "canonical_name": "Escalated",
-      "category": "ESCALATION",
-      "description": "The case has been transferred or formally escalated to another responsible party.",
-      "terminal": true
-    },
-
-    {
-      "id": "CASE-STATE-028",
-      "name": "BLOCKED",
-      "canonical_name": "Blocked",
-      "category": "WAITING",
-      "description": "Case progress is prevented by a known constraint such as access, outage authorization, equipment availability, safety, permissions, weather, documentation, or required personnel.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-029",
-      "name": "SUSPENDED",
-      "canonical_name": "Suspended",
-      "category": "WAITING",
-      "description": "Diagnostic work has intentionally paused while preserving the current reasoning state for later continuation.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-030",
-      "name": "REOPENED",
-      "canonical_name": "Reopened",
-      "category": "LIFECYCLE",
-      "description": "A previously closed or resolved case has become active again because the original or materially related condition returned or new evidence invalidated the previous closure.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-031",
-      "name": "RECURRENCE_ASSESSMENT",
-      "canonical_name": "Recurrence Assessment",
-      "category": "LIFECYCLE",
-      "description": "ARIA is determining whether a newly observed condition represents recurrence of a previous failure, a related failure, or a new independent case.",
-      "terminal": false
-    },
-
-    {
-      "id": "CASE-STATE-032",
-      "name": "UNRESOLVED_CLOSURE",
-      "canonical_name": "Unresolved Closure",
-      "category": "CLOSURE",
-      "description": "The case is being closed without technical resolution and the reason for unresolved closure must be preserved.",
-      "terminal": false
+      "description": "A.R.I.A. determines what, if anything, the completed or sufficiently mature investigation is eligible to contribute to future technical reasoning.",
+      "primary_objectives": [
+        "evaluate experience eligibility",
+        "determine learning weight",
+        "preserve source case lineage",
+        "identify attribution limitations",
+        "identify context boundaries",
+        "determine whether reusable knowledge should merely be proposed rather than automatically promoted"
+      ],
+      "typical_inputs": [
+        "case history",
+        "evidence quality",
+        "diagnostic confidence",
+        "causal confidence",
+        "resolution confidence",
+        "validation outcomes",
+        "context",
+        "learning policy"
+      ],
+      "typical_outputs": [
+        "experience eligibility decision",
+        "exp_<UUID> when eligible",
+        "learning confidence",
+        "learning restrictions",
+        "candidate knowledge proposal where warranted"
+      ],
+      "common_next_states": [
+        "CONTEXTUALIZATION",
+        "EVIDENCE_RECONCILIATION",
+        "DIAGNOSTIC_DISCRIMINATION"
+      ],
+      "rules": [
+        "LEARNING_ASSESSMENT does not itself change case lifecycle status.",
+        "A case may enter LEARNING_ASSESSMENT while lifecycle status is RESOLVED or CLOSED.",
+        "Creation of an Experience Ledger record requires Learning Engine eligibility.",
+        "Knowledge Graph promotion remains separate from Experience Ledger creation."
+      ]
     }
   ],
 
-  "transition_classes": [
+  "transition_rules": [
     {
-      "name": "FORWARD",
-      "description": "Normal progression to a new diagnostic state."
+      "rule_id": "CASE-STATE-001",
+      "rule": "Every persisted diagnostic case shall have one current reasoning_state when technical reasoning is applicable."
     },
+
     {
-      "name": "REROUTE",
-      "description": "New evidence changes the appropriate reasoning path without discarding previously valid history."
+      "rule_id": "CASE-STATE-002",
+      "rule": "Reasoning-state transitions shall remain historically auditable and shall not erase previous reasoning state."
     },
+
     {
-      "name": "WAIT",
-      "description": "Progress pauses while preserving active reasoning state."
+      "rule_id": "CASE-STATE-003",
+      "rule": "Reasoning-state progression is nonlinear. A.R.I.A. may revisit prior states when material new information requires reconsideration."
     },
+
     {
-      "name": "RESUME",
-      "description": "Reasoning continues after a waiting, blocked, or suspended condition."
+      "rule_id": "CASE-STATE-004",
+      "rule": "A.R.I.A. shall not advance reasoning state merely to make a case appear to progress."
     },
+
     {
-      "name": "ESCALATE",
-      "description": "Responsibility or diagnostic authority is transferred or expanded."
+      "rule_id": "CASE-STATE-005",
+      "rule": "WAITING, BLOCKED, SUSPENDED, RESOLVED, CLOSED, ESCALATED, UNRESOLVED, and CANCELLED are lifecycle statuses and shall not appear as reasoning states."
     },
+
     {
-      "name": "REOPEN",
-      "description": "A previously completed case becomes active again."
+      "rule_id": "CASE-STATE-006",
+      "rule": "REOPENED is a lifecycle event or transition semantic and shall not appear as a reasoning state."
     },
+
     {
-      "name": "CLOSE",
-      "description": "Case processing reaches a terminal state."
+      "rule_id": "CASE-STATE-007",
+      "rule": "The current lifecycle status may constrain whether a reasoning operation may execute, but it does not redefine the meaning of reasoning_state."
+    },
+
+    {
+      "rule_id": "CASE-STATE-008",
+      "rule": "A case in WAITING, BLOCKED, SUSPENDED, or ESCALATED lifecycle status retains its last meaningful reasoning_state unless a legitimate reasoning transition occurs."
+    },
+
+    {
+      "rule_id": "CASE-STATE-009",
+      "rule": "Reasoning-state selection shall be based on the dominant technical reasoning objective, not merely the most recently invoked engine."
+    },
+
+    {
+      "rule_id": "CASE-STATE-010",
+      "rule": "Engine invocation is owned by orchestration. This Registry shall not prescribe a mandatory one-engine-per-state execution sequence."
+    },
+
+    {
+      "rule_id": "CASE-STATE-011",
+      "rule": "HYPOTHESIS_PRIORITIZATION and PROBABILITY_UPDATE remain distinct: prioritization interprets current diagnostic priority, while probability update performs the applicable probability recalculation."
+    },
+
+    {
+      "rule_id": "CASE-STATE-012",
+      "rule": "ROUTE_SELECTION and DIAGNOSTIC_DISCRIMINATION remain distinct: discrimination identifies what information would separate hypotheses, while route selection chooses the operational next path from eligible alternatives."
+    },
+
+    {
+      "rule_id": "CASE-STATE-013",
+      "rule": "DIAGNOSIS_PROVISIONAL and DIAGNOSIS_CONFIRMED shall not be treated as equivalent."
+    },
+
+    {
+      "rule_id": "CASE-STATE-014",
+      "rule": "POST_ACTION_ASSESSMENT shall not assume that completed action means successful correction."
+    },
+
+    {
+      "rule_id": "CASE-STATE-015",
+      "rule": "VALIDATION shall distinguish technical recovery, resolution, and causal proof."
+    },
+
+    {
+      "rule_id": "CASE-STATE-016",
+      "rule": "RESOLUTION_PENDING is a reasoning state, not lifecycle RESOLVED. It exists specifically to prevent premature lifecycle resolution."
+    },
+
+    {
+      "rule_id": "CASE-STATE-017",
+      "rule": "LEARNING_ASSESSMENT evaluates learning eligibility but does not itself authorize canonical Knowledge Graph promotion."
+    },
+
+    {
+      "rule_id": "CASE-STATE-018",
+      "rule": "Historical reasoning-state transitions shall be preserved when a case is reopened."
+    },
+
+    {
+      "rule_id": "CASE-STATE-019",
+      "rule": "If materially contradictory evidence invalidates a later reasoning state, A.R.I.A. may transition back to the reasoning state necessary to reassess the case."
+    },
+
+    {
+      "rule_id": "CASE-STATE-020",
+      "rule": "Missing information shall not be treated as evidence against a hypothesis unless the absence itself is technically meaningful evidence."
     }
   ],
 
-  "required_state_memory": [
-    "current_state",
-    "previous_state",
-    "entered_at",
-    "transition_reason",
-    "active_symptoms",
-    "active_hypotheses",
-    "hypothesis_probabilities",
-    "confidence_dimensions",
-    "completed_actions",
-    "pending_actions",
-    "received_evidence",
-    "unresolved_evidence_conflicts",
-    "ruled_out_hypotheses",
-    "confirmed_findings",
-    "current_context",
-    "blocking_conditions"
-  ],
+  "state_engine_alignment": {
+    "principle": "Reasoning states describe the dominant technical reasoning objective. Engines provide capabilities. The mapping is many-to-many and does not establish exclusive engine ownership.",
 
-  "semantic_rules": [
-    {
-      "rule_id": "CASE-RULE-001",
-      "rule": "Case state describes ARIA's current reasoning phase and shall remain distinct from diagnosis, outcome, and confidence."
-    },
-
-    {
-      "rule_id": "CASE-RULE-002",
-      "rule": "ARIA is not required to traverse every case state. States shall be entered only when technically relevant to the current case."
-    },
-
-    {
-      "rule_id": "CASE-RULE-003",
-      "rule": "ARIA shall preserve prior reasoning history when transitioning between states. A state transition shall not erase previous evidence, hypotheses, actions, outcomes, or probability changes."
-    },
-
-    {
-      "rule_id": "CASE-RULE-004",
-      "rule": "When new evidence invalidates the current diagnostic route, ARIA shall reroute from the current knowledge state rather than restarting the case from the beginning."
-    },
-
-    {
-      "rule_id": "CASE-RULE-005",
-      "rule": "A previously ruled-out hypothesis shall not automatically return to active consideration unless new evidence materially changes the basis on which it was ruled out."
-    },
-
-    {
-      "rule_id": "CASE-RULE-006",
-      "rule": "ARIA shall not transition from corrective action directly to resolved status without sufficient validation unless an explicit policy defines the applicable condition as self-validating."
-    },
-
-    {
-      "rule_id": "CASE-RULE-007",
-      "rule": "Awaiting information, awaiting action, blocked, and suspended states shall preserve the exact diagnostic state required to resume without reconstructing the case."
-    },
-
-    {
-      "rule_id": "CASE-RULE-008",
-      "rule": "New evidence received in any nonterminal state may trigger evidence reconciliation, probability update, hypothesis reprioritization, or diagnostic rerouting."
-    },
-
-    {
-      "rule_id": "CASE-RULE-009",
-      "rule": "ARIA may return from a provisional diagnosis to diagnostic discrimination when contradictory or insufficient evidence prevents confirmation."
-    },
-
-    {
-      "rule_id": "CASE-RULE-010",
-      "rule": "A failed corrective action shall not cause automatic repetition of the same diagnostic route. The result shall become evidence and affected hypotheses shall be reevaluated."
-    },
-
-    {
-      "rule_id": "CASE-RULE-011",
-      "rule": "A confirmed diagnosis may be revised when sufficiently strong new evidence demonstrates that the previous diagnosis was incomplete or incorrect."
-    },
-
-    {
-      "rule_id": "CASE-RULE-012",
-      "rule": "A case may contain multiple simultaneous failure modes and may require multiple diagnostic and corrective cycles before resolution."
-    },
-
-    {
-      "rule_id": "CASE-RULE-013",
-      "rule": "Case closure and learning eligibility are separate decisions. Learning assessment shall occur before final learning weight is assigned."
-    },
-
-    {
-      "rule_id": "CASE-RULE-014",
-      "rule": "A reopened case shall retain linkage to the previous diagnosis, corrective actions, validation evidence, closure state, and elapsed time before recurrence."
-    },
-
-    {
-      "rule_id": "CASE-RULE-015",
-      "rule": "ARIA shall record why each meaningful state transition occurred so future analysis can reconstruct the diagnostic route."
-    },
-
-    {
-      "rule_id": "CASE-RULE-016",
-      "rule": "ARIA shall not force progression merely to advance the state machine. Remaining in a state is valid when required evidence has not yet been obtained."
-    },
-
-    {
-      "rule_id": "CASE-RULE-017",
-      "rule": "Escalation is a valid diagnostic outcome and shall not be treated as reasoning failure when escalation is the technically appropriate route."
-    },
-
-    {
-      "rule_id": "CASE-RULE-018",
-      "rule": "The state machine shall support deterministic software control while allowing the reasoning engine to recommend transitions based on evidence and context."
-    },
-
-    {
-      "rule_id": "CASE-RULE-019",
-      "rule": "Language-model output shall not independently mutate authoritative case state. State transitions must be validated and committed by ARIA's deterministic case engine."
-    },
-
-    {
-      "rule_id": "CASE-RULE-020",
-      "rule": "The complete case history shall remain append-only for audit and learning purposes even when current state representations are updated."
+    "typical_alignment": {
+      "INTAKE": [
+        "ORCHESTRATION_ENGINE",
+        "CASE_STATE_ENGINE"
+      ],
+      "CONTEXTUALIZATION": [
+        "CONTEXT_ENGINE",
+        "MEMORY_ENGINE"
+      ],
+      "SYMPTOM_IDENTIFICATION": [
+        "EVIDENCE_ENGINE",
+        "CONTEXT_ENGINE",
+        "MEMORY_ENGINE"
+      ],
+      "BASELINE_ESTABLISHMENT": [
+        "MEMORY_ENGINE",
+        "CONTEXT_ENGINE",
+        "EVIDENCE_ENGINE"
+      ],
+      "INITIAL_EVIDENCE_ASSESSMENT": [
+        "EVIDENCE_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "HYPOTHESIS_GENERATION": [
+        "HYPOTHESIS_ENGINE",
+        "MEMORY_ENGINE",
+        "CONTEXT_ENGINE"
+      ],
+      "HYPOTHESIS_PRIORITIZATION": [
+        "HYPOTHESIS_ENGINE",
+        "PROBABILITY_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "ROUTE_SELECTION": [
+        "DECISION_ENGINE",
+        "ROUTING_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "EVIDENCE_INGESTION": [
+        "EVIDENCE_ENGINE",
+        "ORCHESTRATION_ENGINE"
+      ],
+      "EVIDENCE_RECONCILIATION": [
+        "EVIDENCE_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "PROBABILITY_UPDATE": [
+        "PROBABILITY_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "DIAGNOSTIC_DISCRIMINATION": [
+        "HYPOTHESIS_ENGINE",
+        "DECISION_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "ISOLATION": [
+        "EVIDENCE_ENGINE",
+        "HYPOTHESIS_ENGINE",
+        "DECISION_ENGINE"
+      ],
+      "DIAGNOSIS_PROVISIONAL": [
+        "HYPOTHESIS_ENGINE",
+        "PROBABILITY_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "DIAGNOSIS_CONFIRMED": [
+        "VALIDATION_ENGINE",
+        "HYPOTHESIS_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "CORRECTIVE_ACTION_SELECTION": [
+        "DECISION_ENGINE",
+        "ROUTING_ENGINE"
+      ],
+      "POST_ACTION_ASSESSMENT": [
+        "EVIDENCE_ENGINE",
+        "VALIDATION_ENGINE",
+        "PROBABILITY_ENGINE"
+      ],
+      "VALIDATION": [
+        "VALIDATION_ENGINE",
+        "EVIDENCE_ENGINE",
+        "UNCERTAINTY_ENGINE"
+      ],
+      "RESOLUTION_PENDING": [
+        "VALIDATION_ENGINE",
+        "CASE_STATE_ENGINE"
+      ],
+      "LEARNING_ASSESSMENT": [
+        "LEARNING_ENGINE",
+        "VALIDATION_ENGINE",
+        "MEMORY_ENGINE"
+      ]
     }
+  },
+
+  "lifecycle_interaction": {
+    "registry": "Core/Registries/case_lifecycle_statuses.json",
+
+    "rules": [
+      "ACTIVE normally permits reasoning-state progression.",
+      "WAITING normally preserves the current reasoning state while an expected dependency is pending.",
+      "BLOCKED normally preserves the current reasoning state while progress is prevented.",
+      "SUSPENDED normally prevents active reasoning execution until resumed, while preserving the current reasoning state.",
+      "ESCALATED preserves reasoning history and may permit continued reasoning where technically appropriate.",
+      "RESOLVED may coexist with LEARNING_ASSESSMENT while final post-resolution processing occurs.",
+      "CLOSED preserves the final reasoning state and all reasoning-state history.",
+      "UNRESOLVED preserves the reasoning state at which the unresolved disposition was reached.",
+      "CANCELLED preserves the last valid reasoning state without implying diagnostic completion."
+    ]
+  },
+
+  "prohibited_uses": [
+    "Encoding case lifecycle status in reasoning_state.",
+    "Adding ACTIVE as a reasoning state.",
+    "Adding WAITING as a reasoning state.",
+    "Adding BLOCKED as a reasoning state.",
+    "Adding SUSPENDED as a reasoning state.",
+    "Adding RESOLVED as a reasoning state.",
+    "Adding CLOSED as a reasoning state.",
+    "Adding ESCALATED as a reasoning state.",
+    "Adding UNRESOLVED as a reasoning state.",
+    "Adding CANCELLED as a reasoning state.",
+    "Adding REOPENED as a reasoning state.",
+    "Using reasoning_state as hypothesis status.",
+    "Using reasoning_state as action status.",
+    "Using reasoning_state as evidence status.",
+    "Using reasoning_state to encode probability.",
+    "Using reasoning_state to encode confidence.",
+    "Treating reasoning states as a mandatory linear workflow.",
+    "Treating engine invocation as equivalent to reasoning-state transition.",
+    "Using LEARNING_ASSESSMENT to automatically promote canonical knowledge."
   ]
 }
