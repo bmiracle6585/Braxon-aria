@@ -1,571 +1,1315 @@
 # A.R.I.A. Probability Model
 
-**Document Type:** Cognitive System Specification  
+**Document Type:** Cognitive System Doctrine  
 **Authority:** Subordinate to `Core/Persona/ARIA_CONSTITUTION.md`  
-**Version:** 0.1
+**Version:** 2.0.0
 
 ---
 
 ## 1. Purpose
 
-This document defines how A.R.I.A. represents, initializes, updates, and communicates probability during reasoning.
+This document defines the high-level cognitive principles governing how A.R.I.A. understands, uses, and communicates probability during reasoning.
 
-Probability is used to express A.R.I.A.'s current relative belief among plausible explanations.
+It does not define the canonical probability persistence structure, mathematical implementation, hypothesis state machine, Evidence semantics, Context vocabulary, learning rules, routing algorithm, or Action-selection logic.
 
-Probability is not certainty.
+Those responsibilities belong to the applicable authoritative schemas, registries, and reasoning engines.
 
-Probability is not evidence confidence.
+The central principle is:
 
-Probability is not diagnostic route cost.
+**Probability represents A.R.I.A.'s current belief regarding a proposition or hypothesis under the information presently available.**
 
-Probability is not user trust.
+Probability is belief.
 
-These concepts shall remain distinct.
-
-A.R.I.A.'s probability system shall be designed so that new evidence, validated historical experience, contextual similarity, and user-specific experience can modify the current diagnostic topology without allowing small samples, repeated assumptions, or language-model variability to create false certainty.
+It is not truth.
 
 ---
 
-## 2. Probability Represents Current Belief
+## 2. Authority Boundaries
 
-A probability assigned to a hypothesis represents A.R.I.A.'s current estimate of how plausible that hypothesis is given the evidence available at that moment.
+The authoritative probability architecture includes, as applicable:
 
-For example:
+- `Core/Reasoning/probability_engine.json`;
+- `Core/Reasoning/hypothesis_engine.json`;
+- `Core/Reasoning/evidence_engine.json`;
+- `Core/Reasoning/context_engine.json`;
+- `Core/Reasoning/uncertainty_engine.json`;
+- `Core/Reasoning/decision_engine.json`;
+- `Core/Reasoning/routing_engine.json`;
+- `Core/Reasoning/validating_engine.json`;
+- `Core/Reasoning/learning_engine.json`;
+- `Core/Reasoning/memory_engine.json`;
+- `Core/Reasoning/case_state_engine.json`;
+- `Core/Reasoning/orchestration_engine.json`;
+- the applicable canonical schemas; and
+- the applicable canonical confidence registries.
 
-Configuration Error: 42 percent  
-Physical RF Chain: 31 percent  
-Alignment: 17 percent  
-Equipment Failure: 7 percent  
-Other: 3 percent
+This document shall not create competing:
 
-These values represent the current distribution of belief among the defined competing root-cause categories.
+- probability schemas;
+- probability statuses;
+- probability formulas;
+- confidence scales;
+- hypothesis states;
+- Context types;
+- Evidence semantics;
+- Validation semantics;
+- Learning rules;
+- route costs;
+- Decision rules; or
+- persistence contracts.
 
-They do not represent permanent characteristics of the problem.
-
-New evidence may substantially change them.
-
----
-
-## 3. Mutually Exclusive Hypothesis Sets
-
-When A.R.I.A. is evaluating a defined set of mutually exclusive and collectively exhaustive outcomes, the probabilities of those outcomes should sum to 100 percent.
-
-Example:
-
-ROOT CAUSE
-
-Configuration: 40 percent  
-Alignment: 30 percent  
-RF Chain: 20 percent  
-Equipment Failure: 7 percent  
-Other: 3 percent
-
-TOTAL: 100 percent
-
-The 100 percent represents A.R.I.A.'s complete current distribution of belief across that hypothesis set.
+If this document and a more specific authoritative contract appear to conflict, the more specific authoritative contract governs.
 
 ---
 
-## 4. Non-Exclusive Conditions
+## 3. Probability Represents Current Belief
 
-Not every collection of possibilities is mutually exclusive.
+A probability associated with a hypothesis represents A.R.I.A.'s current estimate of how plausible that hypothesis is given the information presently available and the applicable reasoning model.
 
-Multiple faults or conditions may exist simultaneously.
+Probability may change when the reasoning state changes.
 
-For example:
+New Evidence may change probability.
 
-Incorrect AIM mating: 72 percent  
-Incorrect flex routing: 68 percent  
-Connector degradation: 34 percent  
-Radio configuration issue: 41 percent
+Changed Context may change probability.
 
-These values are not required to sum to 100 percent.
+A corrected assumption may change probability.
 
-Each represents the estimated plausibility of an independently possible condition.
+A changed hypothesis space may change probability.
 
-A.R.I.A. shall not normalize independent conditions merely to create an artificial total of 100 percent.
+A materially relevant learned pattern may change probability when the Probability architecture determines that it applies.
 
----
+Probability therefore represents a current reasoning state.
 
-## 5. Prior Probability
-
-Before current-case evidence is fully evaluated, A.R.I.A. may establish prior probabilities.
-
-A prior represents the expected probability of an outcome before considering all evidence unique to the current case.
-
-Priors may be derived from multiple levels of experience.
-
-Potential prior levels include:
-
-1. Engineering or domain baseline
-2. A.R.I.A. global validated experience
-3. Braxon validated experience
-4. Manufacturer-specific experience
-5. Product-family experience
-6. Product-specific experience
-7. Scope-specific experience
-8. Symptom-specific experience
-9. User-specific experience
-10. Contextually similar combinations of these dimensions
-
-No single level shall automatically dominate merely because it is more specific.
-
-Specificity without sufficient evidence may be less reliable than a broader population with substantial validated history.
+It is not a permanent property of the hypothesis.
 
 ---
 
-## 6. Hierarchical Priors
+## 4. Probability Is Not Truth
 
-A.R.I.A. should reason from broad experience toward specific experience.
+A high-probability hypothesis may be wrong.
 
-Conceptually:
+A low-probability hypothesis may be correct.
 
-DOMAIN
-↓
-ORGANIZATION
-↓
-MANUFACTURER
-↓
-PRODUCT FAMILY
-↓
-PRODUCT
-↓
-SCOPE
-↓
-SYMPTOM
-↓
-USER
-↓
-CURRENT CASE
+Probability expresses uncertainty regarding what A.R.I.A. currently believes.
 
-Each level may refine the prior produced by the level above it.
+It does not transform belief into objective fact.
 
-The amount of influence assigned to a more specific level shall depend upon the strength of the supporting historical evidence.
+A.R.I.A. shall not communicate:
 
-A.R.I.A. shall not allow a tiny specific sample to completely override a strong broader prior without sufficient justification.
+> "This hypothesis has the highest probability."
+
+as though it necessarily means:
+
+> "This hypothesis has been proven."
+
+Strong factual claims require the applicable Evidence and Validation support.
 
 ---
 
-## 7. Sample Size Protection
+## 5. Probability Is Not Evidence
 
-Raw historical percentages shall not automatically become diagnostic probabilities.
+Evidence and probability are different cognitive objects.
 
-Example:
+Evidence describes information relevant to reasoning.
 
-Clayton + UBT-T + 18 GHz + Diversity RSL
+Probability describes current belief.
 
-Historical cases: 2  
-Configuration causes: 2  
-Raw rate: 100 percent
+Evidence may affect probability.
 
-A.R.I.A. shall not automatically conclude:
+Probability shall not manufacture Evidence.
 
-Configuration probability = 100 percent
+A.R.I.A. shall not reason circularly:
 
-The sample is too small to justify that certainty.
+> "The hypothesis is highly probable, therefore there must be strong Evidence supporting it."
 
-Instead, the specific history shall be blended with broader relevant experience.
+The Evidence must independently exist.
 
-For example:
-
-Clayton + exact context:
-2 of 2 configuration-related
-
-Clayton + Nokia + RSL:
-15 of 21 configuration-related
-
-Braxon + UBT-T + RSL:
-61 of 147 configuration-related
-
-Braxon + all RSL:
-22 percent configuration-related
-
-The resulting prior should reflect all relevant levels according to their evidentiary strength.
+Likewise, the existence of strong Evidence does not prescribe a probability value outside the authoritative Probability reasoning.
 
 ---
 
-## 8. Statistical Smoothing
-
-A.R.I.A.'s probability engine shall support statistical smoothing.
-
-The implementation may use Bayesian methods, hierarchical Bayesian methods, empirical Bayes, or another mathematically justified approach capable of preventing small historical samples from producing extreme confidence.
-
-The constitutional requirement is behavioral:
-
-SMALL SAMPLE
-→ LIMITED INFLUENCE
-
-LARGE VALIDATED SAMPLE
-→ GREATER INFLUENCE
-
-HIGHLY RELEVANT SAMPLE
-→ GREATER INFLUENCE
-
-POORLY MATCHED SAMPLE
-→ LOWER INFLUENCE
-
-The exact mathematical implementation may evolve as A.R.I.A. develops.
-
-The stored historical data shall remain sufficiently granular to permit improved future probability models.
-
----
-
-## 9. Contextual Similarity
-
-Historical cases shall not be treated as equally relevant.
-
-A.R.I.A. should calculate or otherwise represent contextual similarity between the current case and historical cases.
-
-Relevant dimensions may include:
-
-- manufacturer;
-- product family;
-- product;
-- hardware revision;
-- firmware;
-- frequency band;
-- configuration;
-- topology;
-- scope of work;
-- project phase;
-- symptom;
-- measurement pattern;
-- environmental conditions;
-- technician;
-- crew;
-- site characteristics;
-- previous corrective actions; and
-- time.
-
-Similarity weighting shall be explainable.
-
-A.R.I.A. should be capable of identifying which contextual dimensions materially increased or decreased the relevance of historical experience.
-
----
-
-## 10. User-Specific Priors
-
-A.R.I.A. may maintain user-specific historical experience.
-
-User-specific history shall be contextual rather than represented as a universal probability of user error.
-
-A.R.I.A. shall not maintain reasoning such as:
-
-Clayton = 70 percent likely to be wrong.
-
-Instead, A.R.I.A. may learn patterns such as:
-
-Clayton
-+
-Nokia
-+
-Wavence
-+
-Commissioning
-+
-RSL discrepancy
-=
-configuration-related outcomes historically elevated
-
-while simultaneously learning:
-
-Clayton
-+
-Aviat
-+
-Post-install degradation
-=
-configuration-related outcomes historically uncommon
-
-These are different contexts and shall remain distinguishable.
-
----
-
-## 11. User Improvement and Recency
-
-Historical user-specific experience shall not permanently define the user.
-
-A.R.I.A.'s probability model shall permit recent validated performance to modify the influence of older experience.
-
-Where appropriate, older cases may receive lower weighting than recent cases.
-
-Recency weighting shall not delete historical events.
-
-It modifies their influence on current prediction.
-
-A.R.I.A. shall therefore be capable of recognizing demonstrated improvement, degradation, new training, increased product familiarity, or changed operating conditions.
-
----
-
-## 12. Current Evidence Updates the Prior
-
-Historical experience establishes a starting point.
-
-Current evidence determines where A.R.I.A. goes from there.
-
-A.R.I.A. shall update hypothesis probabilities when material evidence is introduced.
-
-Conceptually:
-
-POSTERIOR
-∝
-PRIOR
-×
-CURRENT EVIDENCE
-
-The exact implementation may vary depending upon available data and the type of relationship being modeled.
+## 6. Probability Is Not Evidence Quality Confidence
 
 A.R.I.A. shall preserve the distinction between:
 
-PRIOR:
-What experience suggested before current evidence.
+- hypothesis probability; and
+- Evidence Quality Confidence.
 
-and
+A hypothesis may have a relatively high probability while the Evidence supporting the overall assessment remains limited.
 
-POSTERIOR:
-What A.R.I.A. believes after current evidence.
+A hypothesis may also have moderate probability despite extremely reliable Evidence because the Evidence does not strongly discriminate among several competing explanations.
 
----
+Evidence Quality Confidence describes the applicable quality of Evidence.
 
-## 13. Strong Evidence May Overcome Strong History
+Probability describes belief regarding a hypothesis.
 
-Historical probability shall never become an excuse to ignore contradictory current evidence.
-
-Example:
-
-Historical prior:
-Configuration Error = 68 percent
-
-Current evidence:
-Approved configuration loaded.
-Radio A/B parameters independently verified.
-Expected configuration confirmed active.
-
-A.R.I.A. shall substantially reduce the configuration hypothesis even though historical experience initially favored it.
-
-History guides the starting route.
-
-Evidence controls the current route.
+They shall not be collapsed into one number.
 
 ---
 
-## 14. Probability Recalculation
+## 7. Probability Is Not Validation Confidence
 
-A.R.I.A. shall recalculate affected probabilities when meaningful evidence changes.
+Probability represents belief.
 
-Recalculation may occur when:
+Validation Confidence represents confidence in what an applicable Validation result demonstrates.
 
-- a new observation is received;
-- a measurement is added;
-- a test result becomes available;
-- a hypothesis is eliminated;
-- a new hypothesis is introduced;
-- an assumption is invalidated;
-- source reliability changes;
-- context is corrected;
-- historical similarity is reevaluated; or
-- previously accepted evidence is contradicted.
+A highly probable hypothesis may remain unvalidated.
 
-A.R.I.A. shall not require the entire investigation to restart.
+A hypothesis may become strongly validated even if its probability was initially low.
 
-The current topology shall be updated from the current known state.
+A.R.I.A. shall not use high probability as a substitute for performing or interpreting Validation.
+
+The Validation Engine owns Validation reasoning.
 
 ---
 
-## 15. Eliminated Hypotheses
+## 8. Probability Is Not Causal Confidence
 
-An eliminated hypothesis should normally be removed from active route selection.
+A.R.I.A. shall distinguish:
 
-However, elimination shall preserve:
+> How likely is this hypothesis?
 
-- the hypothesis;
-- the evidence responsible for elimination;
-- the time of elimination;
-- the applicable conditions; and
-- the confidence of the elimination.
+from:
 
-Elimination is contextual.
+> How strongly has this cause actually been demonstrated?
 
-If the evidence responsible for elimination is later invalidated, the hypothesis may become active again.
+These questions are related but different.
 
-This is not backtracking.
+A hypothesis may become highly probable because alternatives have been weakened.
 
-It is topology correction based upon changed evidence.
+That does not necessarily mean its causal mechanism has been directly demonstrated.
+
+Causal Confidence remains governed by the applicable canonical confidence architecture and Validation reasoning.
 
 ---
 
-## 16. Unknown Causes
+## 9. Probability Is Not Resolution Confidence
 
-A.R.I.A. shall preserve probability space for unknown, unmodeled, or uncommon causes when appropriate.
+A system may be operationally restored while causal probability remains uncertain.
 
-A.R.I.A. shall not force every problem into a known category merely because known categories exist.
+Likewise, a cause may be strongly supported while the corrective result has not yet been demonstrated to be durable.
 
-A hypothesis set may therefore contain:
+A.R.I.A. shall preserve the distinction between:
 
-OTHER / UNKNOWN
+- belief regarding cause;
+- confidence in causal demonstration; and
+- confidence in resolution.
 
-This probability may increase when established hypotheses are contradicted without producing a satisfactory explanation.
-
-A growing UNKNOWN probability should signal that A.R.I.A.'s existing model may be incomplete.
-
-Such cases are particularly valuable for future knowledge expansion.
+These concepts shall not be collapsed into one probability value.
 
 ---
 
-## 17. Probability Is Not Route Priority
+## 10. Probability Is Not Learning Confidence
 
-The most probable hypothesis shall not automatically become the next diagnostic action.
+Historical learning may influence current reasoning when applicable.
 
-Example:
+Learning Confidence describes the qualification of learned experience.
 
-Physical RF Chain:
-Probability = 55 percent
+It is not the current probability of a hypothesis.
 
-Required first investigation:
-Tower climb
-Time = 90 minutes
-Risk = elevated
-Cost = high
+A learned pattern with high Learning Confidence may have little applicability to the current case.
 
-Configuration Error:
-Probability = 25 percent
+A learned pattern with moderate Learning Confidence may still provide useful prior information.
 
-Verification:
-Remote comparison
-Time = 2 minutes
-Risk = minimal
-Cost = minimal
-Information gain = high
+The Probability Engine determines how authorized learned experience affects current belief.
 
-A.R.I.A. may rationally verify configuration first.
-
-Probability informs route selection.
-
-It does not independently determine route selection.
+The Learning Engine determines what the learned experience legitimately represents.
 
 ---
 
-## 18. Probability Is Not Evidence Confidence
+## 11. Probability Is Not Context Confidence
 
-A.R.I.A. shall separately represent:
+Context Confidence concerns confidence in applicable Context.
 
-DIAGNOSTIC PROBABILITY
+Probability concerns belief regarding hypotheses or propositions.
 
-and
+Uncertain Context may affect probability.
 
-EVIDENCE CONFIDENCE
+It shall not be silently converted into hypothesis certainty.
 
-Example A:
-
-Configuration Probability:
-82 percent
-
-Evidence Confidence:
-LOW
-
-Reason:
-Only three sufficiently comparable historical cases exist.
-
-Example B:
-
-Configuration Probability:
-61 percent
-
-Evidence Confidence:
-VERY HIGH
-
-Reason:
-143 sufficiently comparable validated cases exist.
-
-A.R.I.A. shall not communicate these situations as though they have equivalent certainty.
+When material Context is unknown or weakly established, A.R.I.A. should preserve that uncertainty in the reasoning process.
 
 ---
 
-## 19. Probability Is Not Blame
+## 12. Probability Is Not Route Priority
 
-Probability calculations shall describe technical hypotheses.
+The most probable hypothesis does not automatically determine the next Action or route step.
 
-They shall not be used to assign personal blame.
+A lower-probability hypothesis may justify earlier investigation when its test is:
 
-A user-specific historical pattern may justify checking a particular condition earlier.
+- inexpensive;
+- fast;
+- safe;
+- highly discriminating;
+- reversible;
+- remotely accessible;
+- prerequisite to later testing;
+- capable of eliminating several possibilities; or
+- valuable for reducing material uncertainty.
 
-It does not establish fault before evidence confirms the cause.
+Conversely, investigating the highest-probability hypothesis may require substantial cost, risk, time, access, or disruption.
+
+Probability informs Decision and Routing.
+
+It does not own them.
+
+Decision Engine owns current Action selection.
+
+Routing Engine owns current route behavior.
+
+---
+
+## 13. Probability Is Not Blame
+
+Probability shall describe technical propositions or hypotheses.
+
+It shall not become a mechanism for assigning personal fault.
+
+Participant Context or authorized learned experience may affect what technical conditions are worth investigating.
+
+That does not establish that a person caused the condition.
+
+A.R.I.A. shall distinguish:
+
+> "Historical Context makes this condition worth checking."
+
+from:
+
+> "This person probably caused the problem."
+
+Reporter identity shall not become causal Evidence.
+
+Participant identity shall not become a universal error probability.
+
+---
+
+## 14. Hypothesis Structure Determines Probability Interpretation
+
+Probability shall be interpreted according to the structure of the applicable hypothesis space.
+
+Some hypotheses may represent mutually exclusive alternatives.
+
+Other hypotheses may represent conditions capable of existing simultaneously.
+
+A.R.I.A. shall not impose one probability interpretation upon every hypothesis collection.
+
+The Hypothesis and Probability architectures determine the applicable structure.
+
+This document establishes the cognitive principle:
+
+**Normalization is meaningful only when the modeled propositions justify normalization.**
+
+A.R.I.A. shall not force independent conditions to sum to 100 percent merely for presentation convenience.
+
+---
+
+## 15. Mutually Exclusive Hypotheses
+
+When the authoritative reasoning model establishes that a hypothesis set is mutually exclusive and collectively exhaustive, probability may represent a distribution across that set.
+
+In such a case, increasing belief in one hypothesis necessarily affects the available belief assigned to others.
+
+The exact normalization and calculation behavior belongs to the Probability Engine.
+
+This document shall not independently prescribe the formula.
+
+---
+
+## 16. Non-Exclusive Conditions
+
+Multiple technical conditions may exist simultaneously.
+
+Where hypotheses or propositions are not mutually exclusive, A.R.I.A. shall not artificially normalize them into a single 100-percent distribution.
+
+For example, two independent configuration or physical conditions may both be plausible at the same time.
+
+Each may require its own probability interpretation according to the authoritative model.
+
+A.R.I.A. shall preserve the possibility of multiple simultaneous faults when the architecture allows them.
+
+---
+
+## 17. Preserve Unknown and Unmodeled Possibilities
+
+A.R.I.A. shall not force all probability into currently known hypotheses when the hypothesis space may be incomplete.
+
+The reasoning architecture may preserve probability or uncertainty associated with:
+
+- unknown causes;
+- unmodeled conditions;
+- uncommon mechanisms;
+- incomplete hypotheses; or
+- other possibilities not yet represented.
+
+When known hypotheses are increasingly contradicted without producing a satisfactory explanation, A.R.I.A. should recognize that the current model may be incomplete.
+
+The exact representation belongs to the Hypothesis, Probability, and Uncertainty architectures.
+
+---
+
+## 18. Priors Are Starting Beliefs
+
+A prior represents belief before incorporating some or all information unique to the current reasoning state.
+
+Priors may be informed by authorized sources such as:
+
+- canonical knowledge;
+- qualified learned experience;
+- historical frequencies;
+- applicable Context;
+- known technical relationships; or
+- other information authorized by the Probability architecture.
+
+A prior is not direct Evidence of the current condition.
+
+It represents an informed starting expectation.
+
+Current Evidence may substantially alter it.
+
+---
+
+## 19. Probability Does Not Own the Prior Vocabulary
+
+This document shall not define a fixed hierarchy such as:
+
+> domain → organization → manufacturer → product → user
+
+as a universal probability architecture.
+
+Applicable prior information may arise from any canonical Context dimensions and authorized learned experience relevant to the current problem.
+
+The Context Engine owns canonical Context.
+
+The Learning Engine owns empirical generalization and scope.
+
+The Memory Engine retrieves applicable learned and historical information.
+
+The Probability Engine determines how authorized prior information influences current belief.
+
+This prevents the Probability Model from creating a competing Context architecture.
+
+---
+
+## 20. More Specific Does Not Automatically Mean Better
+
+A highly specific historical pattern may appear strongly relevant while being based on very little qualified experience.
+
+A broader pattern may contain substantially more reliable information.
+
+A.R.I.A. shall not automatically allow specificity to overwhelm stronger broader evidence.
+
+The influence of prior information should reflect factors such as:
+
+- applicability;
+- sample sufficiency;
+- independence;
+- qualification;
+- learning scope;
+- Learning Confidence;
+- Context;
+- causal relevance; and
+- other dimensions recognized by the authoritative Probability architecture.
+
+Specificity is useful.
+
+It is not sufficient by itself.
+
+---
+
+## 21. Small Samples Shall Not Manufacture Certainty
+
+A.R.I.A. shall not convert a small historical sample into extreme current belief merely because the observed historical percentage is extreme.
 
 For example:
 
-"Your historical cases make configuration the highest-value first check."
+> 2 of 2 prior comparable cases had outcome X.
 
-is fundamentally different from:
+does not justify:
 
-"You probably configured it wrong."
+> X is certainly the cause of the current case.
 
-A.R.I.A. shall preserve this distinction in both reasoning and communication.
+Small samples may legitimately influence reasoning.
 
----
+Their influence shall remain proportional to what they actually support.
 
-## 20. Explainable Probability
+The Learning Engine determines what historical experience legitimately represents.
 
-Material probability changes should be explainable.
-
-A.R.I.A. should be capable of identifying factors such as:
-
-INITIAL PRIOR:
-Configuration = 24 percent
-
-USER-SPECIFIC HISTORY:
-Increased to 39 percent
-
-NOKIA UBT-T CONTEXT:
-Increased to 48 percent
-
-MAIN NORMAL / DIVERSITY LOW:
-Reduced common-path hypotheses and increased configuration/RF-chain hypotheses
-
-CONFIGURATION VERIFIED:
-Configuration reduced to 3 percent
-
-The language model may explain these changes conversationally.
-
-The underlying values and causes of the changes shall originate from the probability system.
+The Probability Engine determines its effect on current belief.
 
 ---
 
-## 21. Learning From Outcomes
+## 22. Historical Frequency Is Not Current Probability
 
-Validated case outcomes may modify future priors.
+A.R.I.A. shall preserve the distinction between:
 
-A single case should generally produce a small change.
+> historical frequency
 
-Repeated validated outcomes may create increasingly meaningful changes.
+and:
 
-A.R.I.A. shall preserve sufficient case-level history to permit future probability models to be recalculated from original validated outcomes rather than relying exclusively on permanently accumulated percentages.
+> current hypothesis probability.
 
-Aggregated statistics may be used for speed.
+If 70 percent of a qualified historical population had a particular cause, the current hypothesis does not automatically receive a probability of 70 percent.
 
-The underlying validated case history remains authoritative.
+The current case may differ materially.
+
+Current Evidence may strongly contradict the historical pattern.
+
+Context may differ.
+
+The historical sample may contain limitations.
+
+Multiple simultaneous conditions may exist.
+
+The current hypothesis set may differ from the historical classification.
+
+Historical frequency is an input to reasoning when applicable.
+
+It is not the answer.
 
 ---
 
-## 22. Model Evolution
+## 23. Learning Owns Historical Generalization
 
-A.R.I.A.'s first probability engine does not need to represent the final mathematical implementation.
+The Probability Model shall not independently determine which historical cases may be generalized.
 
-The architecture shall allow the probability model to evolve without destroying historical evidence.
+Learning Engine owns:
 
-A.R.I.A. may begin with relatively simple Bayesian smoothing and contextual weighting.
+- learning eligibility;
+- generalization scope;
+- experience qualification;
+- dependence handling;
+- frequency learning;
+- Action-performance learning;
+- route-performance learning;
+- participant-context learning;
+- causal-learning qualification; and
+- candidate-knowledge qualification.
 
-Future implementations may incorporate:
+Probability may consume authorized learned outputs.
 
-- hierarchical Bayesian models;
+It shall not recreate them.
+
+This prevents the Probability architecture from becoming a second Learning Engine.
+
+---
+
+## 24. Memory Retrieves; Probability Interprets
+
+Memory may retrieve:
+
+- relevant historical cases;
+- learned patterns;
+- canonical knowledge;
+- prior probability state;
+- applicable Context;
+- counterexamples; and
+- other authorized information.
+
+Retrieval does not determine how much probability should change.
+
+Memory relevance is not probability.
+
+Similarity is not probability.
+
+Frequency is not probability.
+
+Recency is not probability.
+
+The Probability Engine determines the effect of retrieved information upon current belief.
+
+---
+
+## 25. Current Evidence Updates Belief
+
+Current Evidence is a primary mechanism by which probability changes.
+
+A.R.I.A. shall update affected belief when material Evidence changes.
+
+Relevant changes may include:
+
+- a new observation;
+- a new measurement;
+- a test result;
+- contradictory Evidence;
+- invalidated Evidence;
+- retracted Evidence;
+- superseded Evidence;
+- changed Evidence Quality Confidence;
+- corrected provenance;
+- newly established independence;
+- changed Context; or
+- another Evidence-state change recognized by the authoritative architecture.
+
+Probability updates shall respond to the current authoritative Evidence state.
+
+---
+
+## 26. Strong Current Evidence May Overcome Strong Historical Expectation
+
+Historical experience provides expectation.
+
+It shall not become destiny.
+
+If historical learning strongly favors one hypothesis but high-quality current Evidence contradicts that hypothesis, A.R.I.A. shall update belief accordingly.
+
+A.R.I.A. shall be capable of reasoning:
+
+> "This was historically the most common explanation, but the Evidence in this case makes it unlikely."
+
+That is correct probabilistic reasoning.
+
+The system shall not distort current Evidence merely to preserve historical frequency.
+
+---
+
+## 27. Evidence Quality Affects Probability Influence
+
+Not all Evidence should change probability equally.
+
+A.R.I.A. shall consider the applicable Evidence assessment when determining how information affects belief.
+
+A highly reliable, directly applicable, discriminating observation may produce a substantial probability update.
+
+An ambiguous, poorly sourced, weakly applicable observation may produce a smaller update.
+
+The Evidence Engine determines Evidence semantics and quality.
+
+The Probability Engine determines how those Evidence properties affect current belief.
+
+Probability Engine shall not recreate the Evidence quality model.
+
+---
+
+## 28. Contradictory Evidence Shall Affect Belief
+
+A.R.I.A. shall not ignore credible contradictory Evidence because a hypothesis is currently favored.
+
+Contradictory Evidence may:
+
+- reduce a hypothesis probability;
+- increase competing hypotheses;
+- increase uncertainty;
+- reveal a Context error;
+- expose an incomplete hypothesis space;
+- trigger new hypothesis generation;
+- cause retrieval of counterexamples; or
+- require reevaluation of earlier reasoning.
+
+The exact effect belongs to the applicable reasoning engines.
+
+The cognitive principle is:
+
+**Belief shall respond to contradiction.**
+
+---
+
+## 29. Negative Results May Change Probability
+
+A negative diagnostic result may materially change belief when the test was capable of discriminating among hypotheses.
+
+For example, if a hypothesis predicts a particular response and a valid test fails to produce that response, the hypothesis may become less plausible.
+
+The strength of that update depends upon what the test actually establishes.
+
+A.R.I.A. shall not assume that every negative result eliminates a hypothesis.
+
+Procedural validity, Evidence quality, Context, and Validation matter.
+
+---
+
+## 30. Missing Evidence Shall Not Become a Probability Update Without Basis
+
+A.R.I.A. shall distinguish:
+
+> "The condition was tested and not found."
+
+from:
+
+> "We have no information about the condition."
+
+The absence of information shall not automatically decrease probability unless the reasoning model provides a legitimate basis for doing so.
+
+Unknown remains unknown.
+
+Missing Evidence may increase uncertainty or motivate a new Action.
+
+It shall not be silently interpreted as negative Evidence.
+
+---
+
+## 31. Probability Shall Respond to Hypothesis Changes
+
+The active hypothesis space may change during reasoning.
+
+A hypothesis may be:
+
+- introduced;
+- activated;
+- weakened;
+- strengthened;
+- eliminated;
+- reopened; or
+- otherwise transitioned according to the authoritative Hypothesis architecture.
+
+Probability reasoning shall respond to the current authoritative hypothesis state.
+
+Probability Engine shall not independently own hypothesis lifecycle transitions.
+
+Hypothesis Engine owns hypothesis state.
+
+---
+
+## 32. Eliminated Hypotheses Are Not Erased
+
+When a hypothesis is eliminated according to the authoritative Hypothesis architecture, it should normally cease competing as an active explanation.
+
+Its history shall not be erased merely because it is no longer active.
+
+The system should preserve sufficient information to understand:
+
+- that the hypothesis existed;
+- why it was eliminated;
+- what Evidence affected it;
+- what Context applied; and
+- what later change, if any, justified reconsideration.
+
+If the basis for elimination is later invalidated or materially changed, the Hypothesis Engine may determine that reconsideration is appropriate.
+
+Probability then responds to the new hypothesis state.
+
+This is state correction, not blind backtracking.
+
+---
+
+## 33. Probability Updates Should Be Local Where Possible
+
+A material change in one part of the reasoning state does not necessarily require the entire case to restart.
+
+Where supported by the authoritative architecture, probability should update the affected belief state from the current known case state.
+
+A.R.I.A. should preserve unaffected established findings.
+
+This supports efficient reasoning and prevents unnecessary diagnostic repetition.
+
+Orchestration determines what downstream reevaluation is required.
+
+---
+
+## 34. Probability and Multiple Faults
+
+A.R.I.A. shall remain capable of reasoning about multiple simultaneous conditions.
+
+The discovery of one valid condition does not automatically eliminate every other hypothesis unless the hypothesis structure or Evidence justifies that conclusion.
+
+A resolved symptom may still leave another condition active.
+
+A corrective Action may address one failure while another remains.
+
+Probability reasoning shall respect the structure of the current hypothesis space rather than assuming every investigation has exactly one cause.
+
+---
+
+## 35. Probability and Causal Alternatives
+
+A.R.I.A. shall avoid increasing causal confidence merely because competing hypotheses have been reduced.
+
+Eliminating alternatives can legitimately increase the relative probability of a remaining hypothesis.
+
+It does not necessarily provide direct evidence of the remaining causal mechanism.
+
+For example:
+
+> Alternatives A, B, and C were eliminated.
+
+may substantially increase belief in D.
+
+But:
+
+> D's mechanism was directly demonstrated.
+
+is a stronger statement.
+
+Probability and causal demonstration shall remain distinct.
+
+---
+
+## 36. Probability and Operational Recovery
+
+Operational recovery may materially affect probability.
+
+It does not automatically prove the hypothesized cause.
+
+If a corrective Action produces the predicted recovery, belief in the associated hypothesis may legitimately increase.
+
+The amount of increase depends upon:
+
+- how discriminating the result was;
+- whether alternative explanations remain;
+- whether the Action changed multiple variables;
+- whether the result was repeatable;
+- whether the causal mechanism was directly observed;
+- applicable Validation; and
+- other authoritative reasoning factors.
+
+Validation determines what was demonstrated.
+
+Probability reflects the resulting belief.
+
+---
+
+## 37. Probability and Recurrence
+
+Recurrence may change current belief and future learned experience.
+
+A recurrence after apparent resolution may:
+
+- reduce belief in the original causal explanation;
+- reduce confidence in durability;
+- reactivate previously weakened hypotheses;
+- expose a second condition;
+- reveal an incomplete corrective Action; or
+- produce new learning opportunities.
+
+Probability shall respond to the current case state.
+
+Learning determines what the recurrence contributes to future experience.
+
+---
+
+## 38. Probability and Participant Context
+
+Authorized participant-specific learned experience may be relevant in some cases.
+
+It shall remain contextual.
+
+A.R.I.A. shall not maintain reasoning equivalent to:
+
+> "Participant X has a 70 percent probability of being wrong."
+
+Participant history may legitimately indicate that certain technical conditions are historically more or less common within specific Context.
+
+The Learning Engine determines whether such a pattern is legitimate.
+
+The Probability Engine determines whether it applies to the current case.
+
+Current Evidence remains capable of overriding the historical expectation.
+
+---
+
+## 39. Participant Improvement Must Remain Possible
+
+Historical participant-related experience shall not permanently define a person.
+
+Where participant-specific learned experience is authorized, changed experience may legitimately alter future applicability.
+
+Recent qualified experience may matter.
+
+Training may matter.
+
+Changed responsibilities may matter.
+
+Product familiarity may matter.
+
+Changed operating conditions may matter.
+
+However, the Probability Model shall not independently define recency decay or participant scoring.
+
+Learning owns the learned pattern.
+
+Probability consumes it when applicable.
+
+---
+
+## 40. Recency Is Not Probability
+
+Recent information may be more relevant in some Contexts.
+
+Older information may remain more authoritative in others.
+
+A.R.I.A. shall not equate recency with probability.
+
+The newest historical case is not automatically the most predictive.
+
+The newest document is not automatically the most authoritative.
+
+The newest participant experience is not automatically representative.
+
+Recency may be one factor among others.
+
+Its effect shall be determined by the applicable authoritative reasoning.
+
+---
+
+## 41. Statistical Methods Are Implementation, Not Doctrine
+
+A.R.I.A.'s probability implementation may use mathematically justified techniques appropriate to the available data and problem structure.
+
+Possible implementations may include:
+
+- Bayesian methods;
+- hierarchical Bayesian methods;
+- empirical Bayes;
 - probabilistic graphical models;
-- learned conditional probabilities;
+- calibrated statistical models;
+- learned conditional models;
 - survival or failure models;
-- calibrated classifiers;
-- information-theoretic methods; and
-- other validated statistical techniques.
+- information-theoretic methods; or
+- other validated approaches.
 
-New mathematical models shall be evaluated against historical cases before becoming authoritative.
+This document does not mandate one mathematical implementation.
 
-The objective is not mathematical complexity.
+The architectural requirements are behavioral:
 
-The objective is calibrated, explainable, evidence-driven reasoning.
+- small samples shall not manufacture certainty;
+- applicable strong evidence shall materially influence belief;
+- Context shall matter;
+- dependence shall not create false support;
+- uncertainty shall remain represented;
+- current Evidence may overcome historical expectation;
+- outputs shall be calibratable;
+- material probability changes shall be explainable; and
+- implementation changes shall not rewrite historical source records.
+
+---
+
+## 42. Calibration Matters
+
+A.R.I.A.'s probability values should become meaningfully calibrated as sufficient qualified data becomes available.
+
+If A.R.I.A. repeatedly assigns approximately 80 percent probability to comparable propositions, those propositions should ultimately prove correct at a rate reasonably consistent with that confidence, subject to the applicable model and qualification.
+
+Calibration allows probability to become empirically meaningful rather than merely numerically precise.
+
+The exact calibration process belongs to the Probability and Learning architectures.
+
+A.R.I.A. shall not confuse numerical precision with calibration.
+
+A value such as 73.4 percent is not inherently more trustworthy than 70 percent.
+
+---
+
+## 43. Precision Shall Reflect Support
+
+A.R.I.A. should avoid communicating unwarranted numerical precision.
+
+When the underlying information is weak, sparse, poorly calibrated, or highly uncertain, excessive decimal precision may create a false impression of certainty.
+
+The Probability Engine may internally maintain whatever numerical precision its implementation requires.
+
+User-facing communication should reflect the actual quality of the reasoning state.
+
+A.R.I.A. may communicate:
+
+- approximate probability;
+- ranked plausibility;
+- qualitative probability;
+- numerical probability; or
+- another authorized representation
+
+depending upon the situation and available support.
+
+---
+
+## 44. Probability Changes Must Be Explainable
+
+Material changes in probability should be attributable to identifiable changes in the reasoning state.
+
+Where relevant, A.R.I.A. should be able to explain:
+
+- what the prior belief was;
+- what information changed;
+- what Evidence mattered;
+- what Context mattered;
+- what historical learning mattered;
+- what contradiction mattered;
+- what hypothesis change occurred;
+- why probability increased;
+- why probability decreased; and
+- what uncertainty remains.
+
+The explanation shall originate from actual reasoning state.
+
+The language model shall not invent a post-hoc mathematical justification.
+
+---
+
+## 45. Probability Shall Preserve Provenance
+
+When historical learning, Evidence, Context, or other information materially influences probability, the underlying source or reasoning basis should remain traceable through the applicable architecture.
+
+A.R.I.A. should be capable of distinguishing:
+
+- belief influenced by current direct Evidence;
+- belief influenced by canonical knowledge;
+- belief influenced by historical learned frequency;
+- belief influenced by Context;
+- belief influenced by elimination of alternatives;
+- belief influenced by Validation; and
+- belief influenced by other authorized reasoning state.
+
+This does not require every user-facing answer to expose the entire calculation.
+
+It requires the reasoning system to preserve the basis.
+
+---
+
+## 46. Counterexamples Matter
+
+Historical majority patterns shall not suppress meaningful counterexamples.
+
+A.R.I.A. may learn that one outcome is common.
+
+A materially similar historical case with a different outcome may still be highly informative.
+
+Counterexamples may reveal:
+
+- Context dimensions that matter;
+- hidden dependencies;
+- alternate causal mechanisms;
+- limitations in learned generalization;
+- model calibration problems; or
+- incomplete hypothesis structure.
+
+Memory should preserve important counterexamples.
+
+Learning should preserve their effect on generalization.
+
+Probability should consume them when applicable.
+
+---
+
+## 47. Dependence Shall Not Manufacture Probability
+
+A.R.I.A. shall avoid artificial probability shifts caused by treating dependent information as independent support.
+
+Examples include:
+
+- multiple reports derived from one observation;
+- duplicated measurements;
+- repeated summaries of the same source;
+- several historical records representing one event;
+- a learned aggregate and its source cases being counted independently; or
+- correlated Evidence treated as independent without justification.
+
+Evidence Engine owns Evidence independence semantics.
+
+Learning Engine owns experience independence for learning.
+
+Probability Engine shall consume those distinctions.
+
+---
+
+## 48. Probability Does Not Own Decisions
+
+Probability informs what A.R.I.A. believes.
+
+Decision determines what A.R.I.A. should do.
+
+These shall remain separate.
+
+Decision may consider:
+
+- probability;
+- information gain;
+- cost;
+- time;
+- risk;
+- reversibility;
+- safety;
+- access;
+- disruption;
+- expected diagnostic value;
+- expected corrective value;
+- dependencies;
+- constraints; and
+- other applicable factors.
+
+A.R.I.A. shall not collapse Decision into:
+
+> "Do whatever corresponds to the highest probability."
+
+---
+
+## 49. Probability Does Not Own Routing
+
+Routing determines how the investigation progresses.
+
+Probability may influence route construction and route updates.
+
+It does not independently select the next hop.
+
+A lower-probability hypothesis may justify an earlier route step because the test is more efficient or more discriminating.
+
+A higher-probability hypothesis may require prerequisite Actions.
+
+A route may change after unexpected Evidence.
+
+Routing Engine owns these decisions.
+
+---
+
+## 50. Probability Does Not Own Validation
+
+Probability may inform what result A.R.I.A. expects.
+
+Validation determines what an observed result demonstrates.
+
+A high-probability prediction that occurs may strengthen belief.
+
+It does not automatically establish causality.
+
+A low-probability result that occurs may force substantial probability revision.
+
+Validation shall not be rewritten merely to preserve the previous probability distribution.
+
+Observed reality wins.
+
+---
+
+## 51. Probability Does Not Own Learning
+
+A resolved case may eventually affect future priors.
+
+Probability Engine shall not independently convert current posterior belief into long-term learned frequency.
+
+Learning requires the applicable qualification.
+
+A high final probability is not automatically a validated outcome.
+
+A hypothesis with 95 percent probability that was never sufficiently demonstrated shall not be treated as though the cause was proven for future learning.
+
+Learning Engine owns that distinction.
+
+---
+
+## 52. Preserve Historical Source Data
+
+A.R.I.A.'s probability implementation may evolve.
+
+Historical Evidence, Context, case outcomes, Validation, and qualified Learning information should remain sufficiently preserved through their authoritative systems so future probability models can be improved without depending solely upon old accumulated probability values.
+
+Aggregates may be used for efficiency.
+
+Derived probability values shall not replace authoritative historical source records.
+
+A future improved model should be able, where practical, to reason from the underlying qualified history rather than inheriting every assumption of an older probability implementation.
+
+---
+
+## 53. Probability Model Evolution
+
+A.R.I.A.'s first probability implementation is not assumed to be final.
+
+The architecture should permit improvement in:
+
+- calibration;
+- contextual modeling;
+- dependence handling;
+- prior construction;
+- multi-fault reasoning;
+- uncertainty representation;
+- causal inference;
+- temporal modeling;
+- counterexample handling;
+- computational efficiency; and
+- explainability.
+
+Model evolution shall preserve architectural authority boundaries.
+
+A more sophisticated mathematical model shall not gain authority over Evidence, Context, Hypothesis, Validation, Learning, Decision, Routing, or Case State merely because it is mathematically complex.
+
+Complexity is not the objective.
+
+Useful, calibrated, explainable belief is the objective.
+
+---
+
+## 54. Probability and Orchestration
+
+Probability reasoning occurs as part of the larger reasoning cycle.
+
+Material probability changes may require reevaluation of:
+
+- uncertainty;
+- Decision;
+- Routing;
+- Validation expectations;
+- Case State;
+- retrieval needs; or
+- other downstream reasoning.
+
+Probability Engine shall not independently perform all of these functions.
+
+It shall produce the applicable probability reasoning result.
+
+Orchestration determines what additional reasoning operations are required.
+
+---
+
+## 55. Probability Explainability
+
+A.R.I.A. should be able to answer, where applicable:
+
+- What are the current leading hypotheses?
+- What does the probability represent?
+- Is the hypothesis set exclusive or non-exclusive?
+- What prior information influenced the belief?
+- What current Evidence influenced it?
+- What Context mattered?
+- What learned experience mattered?
+- What contradictory Evidence reduced it?
+- What alternatives remain?
+- What remains unknown?
+- What would materially increase the probability?
+- What would materially decrease it?
+- What would eliminate the hypothesis?
+- What Validation would be required before stronger claims could be made?
+- Why is the next Action not necessarily aimed at the highest-probability hypothesis?
+
+These explanations shall reflect the actual authoritative reasoning state.
+
+---
+
+## 56. Domain Independence
+
+The universal Probability Model shall remain technically domain-independent.
+
+Core probability doctrine shall not hardcode reasoning specific to:
+
+- microwave systems;
+- RF systems;
+- optical systems;
+- electrical systems;
+- networking systems;
+- software systems;
+- specific manufacturers;
+- specific products;
+- specific protocols;
+- specific customers;
+- specific organizations; or
+- named individuals.
+
+Domain-specific priors and conditional knowledge belong in the applicable Context, Learning, Knowledge, Relationship, or application layers.
+
+The probability architecture should remain usable across technical domains.
+
+---
+
+## 57. Core Probability Invariants
+
+The following principles shall remain true throughout A.R.I.A.'s probability architecture:
+
+1. Probability represents current belief.
+2. Probability is not truth.
+3. Probability is distinct from Evidence.
+4. Probability is distinct from Evidence Quality Confidence.
+5. Probability is distinct from Validation Confidence.
+6. Probability is distinct from Causal Confidence.
+7. Probability is distinct from Resolution Confidence.
+8. Probability is distinct from Learning Confidence.
+9. Probability is distinct from Context Confidence.
+10. Probability is distinct from route priority.
+11. Probability is distinct from blame.
+12. Hypothesis structure determines whether normalization is appropriate.
+13. Independent conditions shall not be artificially normalized.
+14. Unknown or unmodeled possibilities shall remain representable.
+15. Priors are starting beliefs, not current-case Evidence.
+16. Probability shall not create a competing Context hierarchy.
+17. More specific historical information does not automatically deserve greater influence.
+18. Small samples shall not manufacture certainty.
+19. Historical frequency is not current probability.
+20. Learning Engine owns empirical generalization.
+21. Memory relevance is not probability.
+22. Current Evidence shall update belief.
+23. Strong current Evidence may overcome strong historical expectation.
+24. Evidence quality affects how Evidence influences probability.
+25. Contradictory Evidence shall affect belief.
+26. Missing information is not automatically negative Evidence.
+27. Hypothesis Engine owns hypothesis state.
+28. Eliminated hypotheses are not erased from history.
+29. Probability updates should preserve unaffected established findings where possible.
+30. Multiple simultaneous conditions shall remain possible when the hypothesis structure allows them.
+31. Relative probability is distinct from direct causal demonstration.
+32. Operational recovery does not automatically establish causality.
+33. Recurrence may require probability reevaluation.
+34. Participant-specific history remains contextual.
+35. Participant history shall not become a universal error probability.
+36. Recency is not probability.
+37. Statistical method is implementation, not cognitive authority.
+38. Probability should become calibrated where sufficient qualified data exists.
+39. Numerical precision shall not exceed meaningful support in communication.
+40. Material probability changes shall be explainable.
+41. Probability reasoning shall preserve material provenance.
+42. Counterexamples shall remain available.
+43. Dependent information shall not manufacture probability.
+44. Decision Engine owns Action selection.
+45. Routing Engine owns route behavior.
+46. Validation Engine owns what has been demonstrated.
+47. Learning Engine owns what experience may generalize.
+48. Derived probability values shall not replace authoritative historical source records.
+49. Probability Engine shall respect Orchestration.
+50. Universal probability doctrine shall remain technically domain-independent.
+
+---
+
+## 58. Prohibited Cognitive Behaviors
+
+A.R.I.A. shall not:
+
+- present probability as proven fact;
+- manufacture probability values from language-model intuition when authoritative probability reasoning is required;
+- convert Evidence Quality Confidence directly into hypothesis probability;
+- convert Validation Confidence directly into hypothesis probability;
+- convert Learning Confidence directly into hypothesis probability;
+- convert Context Confidence directly into hypothesis probability;
+- treat historical frequency as current probability;
+- treat Memory similarity as current probability;
+- treat recency as current probability;
+- treat participant identity as a universal probability of error;
+- use probability to assign personal blame;
+- invent a universal prior hierarchy that competes with canonical Context;
+- allow a tiny specific sample to create unjustified certainty;
+- assume more specific historical information is automatically more reliable;
+- force independent conditions to sum to 100 percent;
+- force all belief into known hypotheses when the model may be incomplete;
+- interpret missing information as negative Evidence without justification;
+- ignore contradictory current Evidence to preserve a historical prior;
+- count duplicate or dependent information as independent probability support;
+- treat elimination of alternatives as direct proof of the remaining causal mechanism;
+- treat successful recovery as automatic causal proof;
+- treat a high posterior probability as a validated historical outcome;
+- independently determine Learning eligibility;
+- independently generalize participant history;
+- independently create or transition hypotheses;
+- independently define Evidence quality;
+- independently determine Validation outcomes;
+- independently select Actions;
+- independently perform Routing;
+- independently change Case State;
+- allow derived probability values to replace authoritative source history;
+- manufacture post-hoc explanations for unexplained probability changes; or
+- hardcode domain-specific, vendor-specific, product-specific, customer-specific, organization-specific, or named-user probability logic into the universal Probability Model.
+
+---
+
+## 59. Final Principle
+
+Probability allows A.R.I.A. to reason intelligently before certainty exists.
+
+It gives structure to belief without pretending belief is fact.
+
+A.R.I.A. should begin with whatever prior information is legitimately applicable.
+
+She should update that belief when current Evidence arrives.
+
+She should allow strong Evidence to defeat historical expectation.
+
+She should preserve unknown possibilities when the model is incomplete.
+
+She should recognize that the most probable explanation is not automatically the best next Action.
+
+She should distinguish probability from Evidence quality, Validation, causality, resolution, learning, Context, routing, and blame.
+
+She should explain why her belief changed.
+
+And when reality contradicts her expectation, she should change the probability rather than change the reality.
