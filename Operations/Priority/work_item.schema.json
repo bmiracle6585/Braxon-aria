@@ -1,0 +1,828 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aria://operations/priority/work_item.schema.json",
+  "title": "A.R.I.A. Work Item",
+  "description": "Canonical operational object representing something that may require attention, action, monitoring, delegation, follow-up, or closure. A work item may originate from email, conversation, calendar activity, projects, users, systems, observations, or other authorized sources.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "work_item_id",
+    "title",
+    "work_type",
+    "status",
+    "created_at",
+    "updated_at",
+    "source",
+    "priority"
+  ],
+
+  "properties": {
+    "work_item_id": {
+      "type": "string",
+      "pattern": "^wi_[A-Za-z0-9_-]+$",
+      "description": "Persistent unique identifier for the work item."
+    },
+
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "description": "Short human-readable description of what requires attention."
+    },
+
+    "description": {
+      "type": ["string", "null"],
+      "description": "Expanded description of the work, request, obligation, issue, or desired outcome."
+    },
+
+    "work_type": {
+      "type": "string",
+      "enum": [
+        "task",
+        "request",
+        "commitment",
+        "follow_up",
+        "decision",
+        "review",
+        "approval",
+        "response",
+        "deliverable",
+        "meeting_action",
+        "monitoring",
+        "issue",
+        "opportunity",
+        "reminder",
+        "other"
+      ],
+      "description": "Primary operational nature of the work item."
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "captured",
+        "ready",
+        "in_progress",
+        "waiting",
+        "delegated",
+        "blocked",
+        "scheduled",
+        "completed",
+        "cancelled",
+        "superseded"
+      ],
+      "description": "Current operational state of the work item."
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "completed_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "cancelled_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+
+    "owner": {
+      "$ref": "#/$defs/party_reference"
+    },
+
+    "requester": {
+      "$ref": "#/$defs/party_reference"
+    },
+
+    "stakeholders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/party_reference"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "organization": {
+      "$ref": "#/$defs/reference"
+    },
+
+    "customer": {
+      "$ref": "#/$defs/reference"
+    },
+
+    "project": {
+      "$ref": "#/$defs/reference"
+    },
+
+    "related_entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "default": []
+    },
+
+    "priority": {
+      "$ref": "#/$defs/priority"
+    },
+
+    "timing": {
+      "$ref": "#/$defs/timing"
+    },
+
+    "commitment": {
+      "$ref": "#/$defs/commitment"
+    },
+
+    "delegation": {
+      "$ref": "#/$defs/delegation"
+    },
+
+    "waiting_on": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/waiting_dependency"
+      },
+      "default": []
+    },
+
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependency"
+      },
+      "default": []
+    },
+
+    "related_work_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/work_item_relationship"
+      },
+      "default": []
+    },
+
+    "next_action": {
+      "$ref": "#/$defs/next_action"
+    },
+
+    "follow_up": {
+      "$ref": "#/$defs/follow_up"
+    },
+
+    "attention": {
+      "$ref": "#/$defs/attention"
+    },
+
+    "activity": {
+      "$ref": "#/$defs/activity_state"
+    },
+
+    "resolution": {
+      "$ref": "#/$defs/resolution"
+    },
+
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "notes": {
+      "type": ["string", "null"]
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Non-authoritative integration or implementation metadata.",
+      "additionalProperties": true,
+      "default": {}
+    }
+  },
+
+  "$defs": {
+    "reference": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "reference_type",
+        "reference_id"
+      ],
+      "properties": {
+        "reference_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reference_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display_name": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "party_reference": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": [
+        "party_type",
+        "party_id"
+      ],
+      "properties": {
+        "party_type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "person",
+            "team",
+            "organization",
+            "external_party",
+            "system"
+          ]
+        },
+        "party_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display_name": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type"
+      ],
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "conversation",
+            "email",
+            "calendar",
+            "project",
+            "application",
+            "system",
+            "document",
+            "observation",
+            "derived",
+            "other"
+          ]
+        },
+
+        "source_system": {
+          "type": ["string", "null"]
+        },
+
+        "source_id": {
+          "type": ["string", "null"]
+        },
+
+        "source_reference": {
+          "type": ["string", "null"]
+        },
+
+        "captured_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "captured_by": {
+          "$ref": "#/$defs/party_reference"
+        },
+
+        "extraction_method": {
+          "type": ["string", "null"],
+          "enum": [
+            "manual",
+            "rule",
+            "model",
+            "integration",
+            "system_generated",
+            null
+          ]
+        }
+      }
+    },
+
+    "priority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "unevaluated",
+            "evaluated"
+          ]
+        },
+
+        "score": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Derived operational priority score. This is not a permanent property of the work item and may change as circumstances change."
+        },
+
+        "band": {
+          "type": ["string", "null"],
+          "enum": [
+            "critical",
+            "high",
+            "normal",
+            "low",
+            null
+          ]
+        },
+
+        "evaluated_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "evaluation_version": {
+          "type": ["string", "null"]
+        },
+
+        "reason_summary": {
+          "type": ["string", "null"],
+          "description": "Human-readable explanation of why the item currently has this priority."
+        },
+
+        "factors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/priority_factor"
+          },
+          "default": []
+        }
+      }
+    },
+
+    "priority_factor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factor_type",
+        "direction"
+      ],
+      "properties": {
+        "factor_type": {
+          "type": "string",
+          "enum": [
+            "deadline",
+            "commitment",
+            "urgency",
+            "importance",
+            "business_impact",
+            "customer_impact",
+            "financial_impact",
+            "safety_impact",
+            "dependency_impact",
+            "blocking_others",
+            "aging",
+            "overdue",
+            "follow_up_due",
+            "executive_attention",
+            "opportunity_value",
+            "risk",
+            "waiting_duration",
+            "external_pressure",
+            "strategic_value",
+            "other"
+          ]
+        },
+
+        "direction": {
+          "type": "string",
+          "enum": [
+            "increase",
+            "decrease",
+            "neutral"
+          ]
+        },
+
+        "weight": {
+          "type": ["number", "null"]
+        },
+
+        "value": {
+          "type": ["number", "string", "boolean", "null"]
+        },
+
+        "explanation": {
+          "type": ["string", "null"]
+        },
+
+        "source_reference": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "timing": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "due_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "start_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "scheduled_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "not_before": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "hard_deadline": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "deadline_source": {
+          "type": ["string", "null"],
+          "enum": [
+            "explicit",
+            "committed",
+            "contractual",
+            "calendar",
+            "inferred",
+            "system",
+            null
+          ]
+        },
+
+        "timezone": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "commitment": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "is_commitment": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "committed_by": {
+          "$ref": "#/$defs/party_reference"
+        },
+
+        "committed_to": {
+          "$ref": "#/$defs/party_reference"
+        },
+
+        "committed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "promised_by": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "commitment_text": {
+          "type": ["string", "null"]
+        },
+
+        "source_reference": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "delegation": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "is_delegated": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "delegated_by": {
+          "$ref": "#/$defs/party_reference"
+        },
+
+        "delegated_to": {
+          "$ref": "#/$defs/party_reference"
+        },
+
+        "delegated_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "expected_by": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "instructions": {
+          "type": ["string", "null"]
+        },
+
+        "acknowledged_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "waiting_dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "waiting_on_type"
+      ],
+      "properties": {
+        "waiting_on_type": {
+          "type": "string",
+          "enum": [
+            "person",
+            "team",
+            "organization",
+            "customer",
+            "vendor",
+            "system",
+            "document",
+            "approval",
+            "information",
+            "event",
+            "other"
+          ]
+        },
+
+        "reference": {
+          "$ref": "#/$defs/reference"
+        },
+
+        "description": {
+          "type": ["string", "null"]
+        },
+
+        "waiting_since": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "expected_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "last_followed_up_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_type",
+        "work_item_id"
+      ],
+      "properties": {
+        "dependency_type": {
+          "type": "string",
+          "enum": [
+            "blocked_by",
+            "depends_on",
+            "required_before",
+            "related"
+          ]
+        },
+
+        "work_item_id": {
+          "type": "string",
+          "pattern": "^wi_[A-Za-z0-9_-]+$"
+        },
+
+        "description": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+
+    "work_item_relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relationship_type",
+        "work_item_id"
+      ],
+      "properties": {
+        "relationship_type": {
+          "type": "string",
+          "enum": [
+            "parent",
+            "child",
+            "duplicate",
+            "supersedes",
+            "superseded_by",
+            "caused_by",
+            "resulted_in",
+            "related"
+          ]
+        },
+
+        "work_item_id": {
+          "type": "string",
+          "pattern": "^wi_[A-Za-z0-9_-]+$"
+        }
+      }
+    },
+
+    "next_action": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": ["string", "null"]
+        },
+
+        "owner": {
+          "$ref": "#/$defs/party_reference"
+        },
+
+        "actionable_now": {
+          "type": "boolean",
+          "default": true
+        },
+
+        "blocked_reason": {
+          "type": ["string", "null"]
+        },
+
+        "recommended_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "follow_up": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "follow_up_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "follow_up_with": {
+          "$ref": "#/$defs/party_reference"
+        },
+
+        "reason": {
+          "type": ["string", "null"]
+        },
+
+        "last_follow_up_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "follow_up_count": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      }
+    },
+
+    "attention": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "requires_attention": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "attention_reason": {
+          "type": ["string", "null"]
+        },
+
+        "attention_since": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "last_presented_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "snoozed_until": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "activity_state": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "last_activity_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "last_meaningful_change_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "activity_count": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      }
+    },
+
+    "resolution": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "outcome": {
+          "type": ["string", "null"],
+          "enum": [
+            "completed",
+            "fulfilled",
+            "declined",
+            "cancelled",
+            "superseded",
+            "no_longer_required",
+            "other",
+            null
+          ]
+        },
+
+        "summary": {
+          "type": ["string", "null"]
+        },
+
+        "resolved_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "resolved_by": {
+          "$ref": "#/$defs/party_reference"
+        }
+      }
+    }
+  }
+}
