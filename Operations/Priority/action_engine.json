@@ -1,0 +1,691 @@
+{
+  "engine": {
+    "id": "aria.operations.action_engine",
+    "name": "A.R.I.A. Operational Action Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_action_governance",
+    "status": "active",
+    "purpose": "Govern the transition from operational reasoning into authorized execution. The engine determines whether a proposed action is sufficiently specified, authorized, feasible, safe, current, and executable; routes eligible actions to the appropriate execution mechanism; records execution attempts and outcomes; and prevents recommendations, predictions, plans, decisions, or system access from being mistaken for completed action.",
+    "principles": [
+      "Reasoning about an action is not execution.",
+      "Recommendation is not authorization.",
+      "Authorization is not execution.",
+      "Execution attempt is not successful execution.",
+      "System access does not imply authority to use that access.",
+      "Actions must be sufficiently specified before execution.",
+      "Consequential actions require appropriate authority.",
+      "Irreversible actions require stronger safeguards than reversible actions.",
+      "Execution must use current operational state rather than stale authorization assumptions.",
+      "A.R.I.A. should verify consequential outcomes when verification is practical.",
+      "Failed or partial execution must remain distinguishable from success.",
+      "External side effects must remain traceable.",
+      "Action governance must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "action_record",
+    "sources": [
+      "work_items",
+      "recommendations",
+      "decisions",
+      "authorized user instructions",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "operational plans",
+      "priority evaluations",
+      "portfolio evaluations",
+      "capacity evaluations",
+      "scheduling evaluations",
+      "communication evaluations",
+      "follow_up evaluations",
+      "issues",
+      "risks",
+      "opportunities",
+      "conflicts",
+      "context",
+      "predictions",
+      "review findings",
+      "resolution state",
+      "available execution capabilities",
+      "authorization records"
+    ]
+  },
+
+  "action_types": {
+    "internal_state_change": {
+      "description": "Authorized modification of operational application state."
+    },
+    "communication": {
+      "description": "Authorized sending, replying, forwarding, drafting, or other communication action."
+    },
+    "task_creation": {
+      "description": "Authorized creation of actionable work in an operational system."
+    },
+    "task_update": {
+      "description": "Authorized modification of existing actionable work."
+    },
+    "assignment": {
+      "description": "Authorized establishment or change of execution responsibility."
+    },
+    "scheduling": {
+      "description": "Authorized creation, modification, or removal of execution timing or calendar state."
+    },
+    "follow_up": {
+      "description": "Authorized execution of a follow-up action."
+    },
+    "document": {
+      "description": "Authorized creation, modification, movement, or submission of operational documentation."
+    },
+    "approval": {
+      "description": "Authorized approval or rejection where the actor has appropriate authority."
+    },
+    "financial": {
+      "description": "Authorized action with direct financial consequence."
+    },
+    "customer": {
+      "description": "Authorized action affecting a customer-facing operational state."
+    },
+    "vendor": {
+      "description": "Authorized action involving a vendor or external provider."
+    },
+    "system": {
+      "description": "Authorized action against an integrated technical system."
+    },
+    "resolution": {
+      "description": "Authorized execution of an action required to effect an approved terminal disposition."
+    },
+    "other": {
+      "description": "Another authorized operational side effect not represented by a more specific type."
+    }
+  },
+
+  "action_states": {
+    "proposed": {
+      "description": "An action has been identified but execution eligibility has not been established."
+    },
+    "awaiting_information": {
+      "description": "Required execution information is missing."
+    },
+    "awaiting_authority": {
+      "description": "The action requires authority that has not yet been established."
+    },
+    "authorized": {
+      "description": "Required authority has been established but execution has not yet occurred."
+    },
+    "ready": {
+      "description": "The action is sufficiently specified, authorized, current, and practically executable."
+    },
+    "executing": {
+      "description": "An execution attempt is currently underway."
+    },
+    "executed": {
+      "description": "Supported evidence indicates the requested action was performed."
+    },
+    "verified": {
+      "description": "Supported evidence confirms the intended material side effect occurred."
+    },
+    "partially_executed": {
+      "description": "Only part of the intended action was successfully performed."
+    },
+    "failed": {
+      "description": "Execution was attempted but did not successfully produce the intended action."
+    },
+    "blocked": {
+      "description": "A material operational condition currently prevents execution."
+    },
+    "cancelled": {
+      "description": "The action is no longer intended to execute."
+    },
+    "expired": {
+      "description": "The authorized or useful execution window passed."
+    },
+    "superseded": {
+      "description": "A newer action or changed operational state replaced this action."
+    },
+    "rolled_back": {
+      "description": "A previously executed reversible action was materially reversed."
+    }
+  },
+
+  "action_record": {
+    "fields": [
+      "action_id",
+      "action_type",
+      "subject_type",
+      "subject_reference",
+      "requested_action",
+      "intended_effect",
+      "action_state",
+      "initiating_source",
+      "recommendation_reference",
+      "decision_reference",
+      "authorization_reference",
+      "authority_class",
+      "authorized_actor",
+      "execution_actor",
+      "execution_mechanism",
+      "required_inputs",
+      "preconditions",
+      "reversibility",
+      "risk_level",
+      "execution_window",
+      "attempt_count",
+      "execution_started_at",
+      "execution_completed_at",
+      "verification_state",
+      "result",
+      "failure_details",
+      "rollback_capability",
+      "source_references"
+    ],
+    "requirements": [
+      "The requested action must be explicit enough to execute safely.",
+      "The intended effect must be identifiable.",
+      "Authorization and execution evidence must remain distinguishable.",
+      "Execution actor and execution mechanism must be traceable when materially relevant.",
+      "Failures and partial outcomes must not be represented as success.",
+      "Material external side effects must remain auditable."
+    ]
+  },
+
+  "execution_eligibility": {
+    "checks": [
+      "action_is_sufficiently_specified",
+      "subject_is_identified",
+      "required_inputs_are_available",
+      "required_authority_is_established",
+      "authorization_is_current",
+      "preconditions_are_satisfied",
+      "dependencies_allow_execution",
+      "execution_capability_is_available",
+      "current_state_still_supports_action",
+      "material_conflicts_are_resolved_or_authorized",
+      "risk_is_within_authorized_bounds",
+      "execution_window_is_valid"
+    ],
+    "rules": [
+      "All material execution requirements must be evaluated before consequential execution.",
+      "Missing required information should move the action to awaiting_information.",
+      "Missing required authority should move the action to awaiting_authority.",
+      "A failed prerequisite should block execution rather than be silently ignored.",
+      "Current operational state should be rechecked when material time has passed since authorization.",
+      "Eligibility does not itself execute the action."
+    ]
+  },
+
+  "authority_model": {
+    "classes": [
+      "user_authority",
+      "delegated_user_authority",
+      "manager_authority",
+      "organizational_authority",
+      "customer_authority",
+      "contractual_authority",
+      "financial_authority",
+      "technical_authority",
+      "system_authority",
+      "no_additional_authority_required",
+      "unknown_authority"
+    ],
+    "rules": [
+      "Authority must be appropriate to the specific action.",
+      "Authentication proves identity or access, not necessarily authority.",
+      "Prior authority for one action must not automatically authorize materially different action.",
+      "Broad standing authority should be applied only within its supported scope.",
+      "Unknown authority must remain unknown.",
+      "Consequential action must not proceed under unknown authority.",
+      "Revoked or expired authority must not remain usable."
+    ]
+  },
+
+  "authorization_sources": {
+    "supported": [
+      "explicit_current_user_instruction",
+      "authorized_decision",
+      "standing_user_authorization",
+      "authorized_role_policy",
+      "approved_operational_workflow",
+      "authorized organizational policy"
+    ],
+    "rules": [
+      "Authorization source must support the specific action or action class.",
+      "Recommendation is not an authorization source.",
+      "Prediction is not an authorization source.",
+      "Priority is not an authorization source.",
+      "Plan inclusion is not an authorization source.",
+      "Past user approval does not automatically authorize materially different future action.",
+      "Ambiguous authorization should not be broadened."
+    ]
+  },
+
+  "action_risk": {
+    "levels": {
+      "low": "The action has limited material downside and is readily reversible or recoverable.",
+      "moderate": "The action has meaningful operational consequence but reasonable recovery capability.",
+      "high": "The action has substantial operational, customer, contractual, financial, or technical consequence.",
+      "critical": "Incorrect execution could create severe or difficult-to-recover consequence.",
+      "unknown": "Available information is insufficient to classify action risk."
+    },
+    "factors": [
+      "financial_consequence",
+      "customer_consequence",
+      "contractual_consequence",
+      "operational_consequence",
+      "technical_consequence",
+      "data_consequence",
+      "reversibility",
+      "blast_radius",
+      "uncertainty",
+      "authority_sensitivity"
+    ],
+    "rules": [
+      "Higher-risk actions require stronger validation and authority.",
+      "Unknown risk should not be treated as low risk.",
+      "Risk classification governs execution safeguards, not canonical work priority.",
+      "Action risk must remain distinguishable from Risk Engine's future adverse exposure state."
+    ]
+  },
+
+  "reversibility": {
+    "levels": {
+      "high": "The action can be reversed easily with limited material consequence.",
+      "moderate": "The action can be reversed with meaningful effort or consequence.",
+      "low": "Reversal is difficult, costly, disruptive, or incomplete.",
+      "irreversible": "The material side effect cannot practically be undone.",
+      "unknown": "Reversibility cannot be adequately established."
+    },
+    "rules": [
+      "Lower reversibility requires stronger pre-execution validation.",
+      "Irreversible consequential actions require explicit appropriate authority.",
+      "Rollback capability must not be assumed merely because an action appears reversible.",
+      "Where practical, reversible preparation should be preferred over premature irreversible action."
+    ]
+  },
+
+  "execution_modes": {
+    "manual": {
+      "description": "A human performs the action outside A.R.I.A.'s direct execution capability."
+    },
+    "assisted": {
+      "description": "A.R.I.A. prepares or stages the action but a human performs or confirms the final side effect."
+    },
+    "authorized_automatic": {
+      "description": "A.R.I.A. may execute the action automatically within established standing authority and safeguards."
+    },
+    "explicit_confirmation": {
+      "description": "A.R.I.A. may prepare the action but requires explicit confirmation before the consequential side effect."
+    },
+    "rules": [
+      "Execution mode must reflect actual authority and available capability.",
+      "Automatic execution must not be inferred merely because a connector or API is available.",
+      "High-consequence or low-reversibility actions may require stronger confirmation even when technical automation exists.",
+      "Manual execution should remain traceable when A.R.I.A. depends on evidence of completion."
+    ]
+  },
+
+  "pre_execution_validation": {
+    "questions": [
+      "Is this still the correct action?",
+      "Is the target correct?",
+      "Are all material inputs current?",
+      "Is the actor authorized?",
+      "Is the execution mechanism appropriate?",
+      "Have material dependencies changed?",
+      "Has the operational context materially changed?",
+      "Could this action conflict with a newer decision or commitment?",
+      "Is rollback available if needed?",
+      "Does the action require explicit confirmation?"
+    ],
+    "rules": [
+      "Consequential actions should be validated immediately before execution when practical.",
+      "Validation depth should increase with consequence, irreversibility, and uncertainty.",
+      "A stale recommendation or decision should not be executed blindly.",
+      "Material target ambiguity must block execution."
+    ]
+  },
+
+  "execution": {
+    "rules": [
+      "Action state should become executing only when a real execution attempt begins.",
+      "Execution should use the authorized mechanism and scope.",
+      "Execution must not exceed the authorized action.",
+      "Unexpected materially consequential side effects should stop further execution when practical.",
+      "Execution result must be captured accurately.",
+      "A timeout or ambiguous connector response must not automatically be represented as failure or success.",
+      "Retry behavior must consider idempotency and duplicate-side-effect risk."
+    ]
+  },
+
+  "idempotency_and_retry": {
+    "rules": [
+      "Actions capable of duplicate side effects should use idempotency protection when available.",
+      "A.R.I.A. must not blindly retry an ambiguous consequential action.",
+      "Before retrying, execution state should be checked when practical.",
+      "Retry count and material failure information should remain traceable.",
+      "Repeated failure may trigger Issue, Risk, Recommendation, Attention, or Escalation evaluation."
+    ]
+  },
+
+  "verification": {
+    "states": {
+      "not_required": "No separate verification is materially necessary.",
+      "pending": "Execution occurred but the intended side effect has not yet been independently confirmed.",
+      "verified": "Supported evidence confirms the intended side effect occurred.",
+      "failed": "Verification shows the intended side effect did not occur as expected.",
+      "partial": "Verification confirms only part of the intended effect.",
+      "unknown": "Available evidence cannot establish the resulting state."
+    },
+    "rules": [
+      "Execution response and resulting state should remain distinguishable when materially relevant.",
+      "Consequential actions should be verified when practical.",
+      "A successful API response is not always proof of the intended business outcome.",
+      "Unknown verification must remain unknown.",
+      "Verification failure may require correction, rollback, Issue evaluation, or user attention."
+    ]
+  },
+
+  "rollback": {
+    "rules": [
+      "Rollback should occur only when authorized and operationally appropriate.",
+      "Rollback itself is an action and must be governed accordingly.",
+      "A.R.I.A. must not assume rollback restores every consequence.",
+      "Rollback outcome should be verified when material.",
+      "Irreversible actions must never be represented as rollback-capable."
+    ]
+  },
+
+  "action_outcomes": {
+    "supported": [
+      "successful",
+      "successful_pending_verification",
+      "partially_successful",
+      "failed_no_side_effect",
+      "failed_possible_side_effect",
+      "blocked_before_execution",
+      "cancelled_before_execution",
+      "expired_before_execution",
+      "rolled_back",
+      "unknown_outcome"
+    ],
+    "rules": [
+      "Outcome must reflect supported evidence.",
+      "Unknown outcome must not be converted into success for workflow convenience.",
+      "Partial success must identify remaining intended effect when known.",
+      "Possible side effect after apparent failure should be treated cautiously to avoid duplication."
+    ]
+  },
+
+  "relationship_to_recommendation": {
+    "rules": [
+      "Recommendation Engine determines what action appears useful.",
+      "Action Engine determines whether an action may and can actually proceed.",
+      "A recommendation does not authorize execution.",
+      "Accepted recommendation may become an action candidate when authority and execution requirements are satisfied."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine owns authorized choices where a decision is required.",
+      "Action Engine consumes the resulting authorized decision.",
+      "Decision does not prove execution occurred.",
+      "Action Engine must not reinterpret an explicit decision into materially broader authority."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine owns canonical operational importance.",
+      "Priority may affect when execution should occur but does not itself authorize action.",
+      "Action Engine must not change priority merely because an action executed or failed.",
+      "Material execution outcomes may trigger Priority reevaluation."
+    ]
+  },
+
+  "relationship_to_planning": {
+    "rules": [
+      "Planning Engine owns intended execution paths.",
+      "Plan inclusion does not authorize action.",
+      "Action outcomes should be available to Planning Engine to compare plan against reality.",
+      "Material execution failure may trigger replanning."
+    ]
+  },
+
+  "relationship_to_portfolio": {
+    "rules": [
+      "Portfolio Engine owns cross-item operational posture.",
+      "Action Engine should respect material portfolio constraints communicated through governed state.",
+      "Action Engine must not independently rebalance work merely because an execution mechanism is available."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine owns practical execution timing and schedule recommendations.",
+      "Action Engine should respect authoritative execution windows when applicable.",
+      "Action Engine must not interpret scheduled time as proof of authorization.",
+      "Actual execution timing should be returned to Scheduling and Planning when materially useful."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine owns practical execution capacity.",
+      "Action Engine should not initiate work requiring unavailable capacity unless appropriately authorized as exceptional execution.",
+      "Execution capability availability and organizational capacity must remain distinguishable."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine owns promises and commitment terms.",
+      "Action Engine may execute authorized actions intended to fulfill or modify operational handling of a commitment.",
+      "Action Engine must not create, alter, or release a commitment without appropriate governed authority.",
+      "Execution outcome may affect commitment status but does not independently redefine commitment terms."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine owns execution responsibility.",
+      "Action Engine may effect an authorized assignment or reassignment.",
+      "A recommended assignee is not an established assignee until the authorized action occurs.",
+      "Action Engine must not silently transfer responsibility."
+    ]
+  },
+
+  "relationship_to_communication": {
+    "rules": [
+      "Communication Engine owns communication need, recipient, intent, form, and content recommendation.",
+      "Action Engine governs the actual external side effect of sending when authorized.",
+      "Drafting and sending must remain distinguishable.",
+      "A prepared message must not be represented as sent.",
+      "A send attempt must not be represented as delivered unless supported."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine owns whether and when follow-up is needed.",
+      "Action Engine may execute an authorized follow-up action.",
+      "Follow-up recommendation or due state does not itself authorize communication."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine owns dependency existence and state.",
+      "Action Engine may execute authorized prerequisite-advancement actions.",
+      "Execution of a prerequisite action does not prove the dependency is satisfied.",
+      "Dependency state must be updated from supported resulting evidence."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine owns active operational problem state.",
+      "Action Engine may execute authorized containment, correction, recovery, or workaround.",
+      "Execution of corrective action does not automatically resolve the issue.",
+      "Issue state should change only from supported resulting evidence."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine owns future adverse exposure.",
+      "Action Engine may execute authorized mitigation or exposure-reduction actions.",
+      "Execution of mitigation does not automatically eliminate risk.",
+      "Residual exposure requires Risk Engine reevaluation."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine owns opportunity qualification and state.",
+      "Action Engine may execute authorized pursuit actions.",
+      "Opportunity qualification does not authorize spending, commitment, communication, or execution.",
+      "Realized value must be supported by actual outcome evidence."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal disposition.",
+      "Action Engine may perform authorized actions necessary to effect a terminal disposition.",
+      "Execution of a closure action does not independently prove every underlying obligation is resolved.",
+      "Resolution Engine determines canonical terminal state from supported evidence."
+    ]
+  },
+
+  "relationship_to_prediction": {
+    "rules": [
+      "Prediction Engine forecasts future conditions.",
+      "Prediction alone must never authorize execution.",
+      "Low-cost reversible preparation may be proposed from supported prediction but still requires appropriate action governance.",
+      "Predicted outcomes must not be represented as execution results."
+    ]
+  },
+
+  "relationship_to_learning": {
+    "rules": [
+      "Learning Engine owns reusable operational knowledge.",
+      "Action outcomes provide evidence about actual execution behavior and results.",
+      "Learning Engine may consume action outcomes without changing their historical execution state."
+    ]
+  },
+
+  "relationship_to_review": {
+    "rules": [
+      "Review Engine determines when operational understanding requires reassessment.",
+      "Review may identify stale authorization, incomplete execution, or unverified outcomes.",
+      "Review Engine does not independently execute corrective action."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Action Engine should expose states requiring user authorization, confirmation, intervention, or awareness.",
+      "Routine successful automatic execution should not necessarily interrupt the user.",
+      "Consequential failure, ambiguity, or unexpected side effect may warrant immediate Attention evaluation."
+    ]
+  },
+
+  "relationship_to_briefing": {
+    "rules": [
+      "Briefing Engine owns executive presentation.",
+      "Material action outcomes, failures, pending approvals, and consequential side effects may appear in briefing.",
+      "Routine successful execution should normally be compressed unless materially useful."
+    ]
+  },
+
+  "action_refresh": {
+    "triggers": [
+      "authorization changes",
+      "target state changes",
+      "recommendation changes",
+      "decision changes",
+      "dependency changes",
+      "commitment changes",
+      "schedule changes",
+      "capacity changes",
+      "context changes",
+      "risk changes",
+      "issue changes",
+      "execution capability changes",
+      "execution window advances",
+      "execution attempt occurs",
+      "verification evidence arrives",
+      "user cancels or changes instruction"
+    ],
+    "rules": [
+      "Pending actions should be reevaluated when material execution conditions change.",
+      "Authorized actions should not remain indefinitely executable after their context materially changes.",
+      "Minor irrelevant state changes should not create action churn.",
+      "Superseded actions must not remain eligible for execution."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_action",
+    "action_evaluation": [
+      "action_id",
+      "action_type",
+      "subject",
+      "requested_action",
+      "intended_effect",
+      "action_state",
+      "execution_eligibility",
+      "authority_class",
+      "authorization_reference",
+      "execution_mode",
+      "execution_actor",
+      "execution_mechanism",
+      "reversibility",
+      "action_risk",
+      "preconditions",
+      "execution_window",
+      "result",
+      "verification_state",
+      "failure_details",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Action output must distinguish proposed, authorized, executing, executed, and verified states.",
+      "Authorization must remain traceable.",
+      "Execution mechanism and actor must remain traceable when materially relevant.",
+      "Failure, partial execution, and ambiguous outcomes must remain explicit.",
+      "External side effects must not be fabricated.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not execute without appropriate authority.",
+    "Do not treat recommendation as authorization.",
+    "Do not treat prediction as authorization.",
+    "Do not treat priority as authorization.",
+    "Do not treat plan inclusion as authorization.",
+    "Do not treat system access as authority.",
+    "Do not treat authorization as proof of execution.",
+    "Do not treat execution attempt as success.",
+    "Do not treat API success as proof of business outcome when verification is materially required.",
+    "Do not fabricate external side effects.",
+    "Do not silently broaden authorization.",
+    "Do not execute against an ambiguous target.",
+    "Do not blindly retry consequential actions with uncertain prior outcome.",
+    "Do not exceed authorized scope.",
+    "Do not silently create or modify commitments.",
+    "Do not silently reassign responsibility.",
+    "Do not silently communicate externally.",
+    "Do not silently create or modify calendar state.",
+    "Do not silently perform financial actions.",
+    "Do not mark underlying work resolved merely because an action executed.",
+    "Do not ignore materially changed conditions after authorization.",
+    "Do not modify Core reasoning architecture as part of operational action governance."
+  ]
+}
