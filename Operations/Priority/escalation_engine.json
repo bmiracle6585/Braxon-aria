@@ -1,0 +1,431 @@
+{
+  "engine": {
+    "id": "aria.operations.escalation_engine",
+    "name": "A.R.I.A. Escalation Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_escalation",
+    "status": "active",
+    "purpose": "Determine when an operational condition requires a higher or different level of authority, ownership, intervention, communication, or decision-making. The engine governs escalation without confusing urgency, priority, follow-up, notification, or ordinary management with escalation.",
+    "principles": [
+      "Escalation is a change in handling level, not merely an increase in urgency.",
+      "High-priority work does not automatically require escalation.",
+      "Low-priority work may require escalation when the current handling path cannot resolve a consequential condition.",
+      "Escalation should occur because a useful higher-level intervention exists.",
+      "A.R.I.A. should escalate early enough to preserve meaningful options when supported evidence justifies doing so.",
+      "Escalation must not be used as punishment.",
+      "A missed expectation does not automatically justify escalation.",
+      "Repeated unsuccessful handling may strengthen the case for escalation.",
+      "Escalation should identify what decision, authority, resource, or intervention is needed.",
+      "Escalation may be internal or external.",
+      "Escalation should stop when the higher-level intervention is no longer necessary.",
+      "Escalation decisions must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "current owner cannot resolve a consequential condition",
+      "required authority exceeds current authority",
+      "follow-up repeatedly fails to produce required progress",
+      "a commitment is materially at risk",
+      "a dependency requires intervention beyond current handling",
+      "a conflict requires higher authority",
+      "delegated work becomes materially at risk",
+      "a blocker cannot be removed through the normal path",
+      "consequence is increasing while resolution options are shrinking",
+      "a required decision remains unresolved"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "follow_up",
+      "commitment",
+      "delegation",
+      "dependencies",
+      "conflicts",
+      "aging",
+      "timing",
+      "owner",
+      "authority",
+      "activity",
+      "resolution",
+      "source history"
+    ]
+  },
+
+  "escalation_states": {
+    "none": {
+      "description": "Normal handling remains sufficient."
+    },
+    "watch": {
+      "description": "Conditions warrant monitoring for possible escalation, but escalation is not yet justified."
+    },
+    "recommended": {
+      "description": "Supported conditions indicate escalation would now be operationally useful."
+    },
+    "required": {
+      "description": "The current handling path is insufficient and consequential risk requires escalation."
+    },
+    "active": {
+      "description": "The condition has been escalated and higher-level handling is underway."
+    },
+    "acknowledged": {
+      "description": "The escalation has been received or accepted by the appropriate escalation target."
+    },
+    "mitigated": {
+      "description": "Escalated intervention has sufficiently reduced the condition, although the underlying work may remain active."
+    },
+    "resolved": {
+      "description": "The reason for escalation no longer exists."
+    },
+    "declined": {
+      "description": "The escalation target has explicitly declined the requested intervention or determined another handling path should govern."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine escalation state."
+    }
+  },
+
+  "escalation_types": {
+    "authority": "A decision or action requires authority beyond the current handler.",
+    "management": "Management intervention is required to protect the operational outcome.",
+    "resource": "Additional or differently authorized resources are required.",
+    "customer": "Customer involvement or decision is required.",
+    "vendor": "Vendor or supplier intervention beyond the normal working path is required.",
+    "technical": "Higher technical expertise or authority is required.",
+    "contractual": "Contractual interpretation, authorization, or intervention is required.",
+    "regulatory": "Regulatory or compliance authority must become involved.",
+    "safety": "Safety consequence requires higher-level intervention.",
+    "financial": "Financial authority or intervention is required.",
+    "executive": "Executive-level decision or intervention is required.",
+    "other": "A supported escalation requirement not represented by another canonical type."
+  },
+
+  "establishment": {
+    "questions": [
+      "What condition cannot be adequately resolved through the current path?",
+      "What consequence exists if the condition remains unresolved?",
+      "What higher or different intervention could materially improve the outcome?",
+      "Who or what role has the required authority, capability, or resource?",
+      "When does escalation become necessary to preserve meaningful options?"
+    ],
+    "rules": [
+      "Escalation should identify a specific unresolved condition.",
+      "Escalation should identify the needed intervention when reasonably determinable.",
+      "Unknown escalation targets must not be invented.",
+      "Escalation should not occur merely because an item is important.",
+      "Escalation should not occur merely because someone has not responded once.",
+      "Normal operational friction should remain in normal handling when that handling remains adequate.",
+      "A.R.I.A. should distinguish escalation need from escalation execution."
+    ]
+  },
+
+  "trigger_evaluation": {
+    "signals": [
+      "required authority unavailable at current level",
+      "normal follow-up exhausted or repeatedly ineffective",
+      "deadline or commitment increasingly threatened",
+      "customer consequence materially increasing",
+      "financial consequence materially increasing",
+      "safety consequence emerging",
+      "regulatory consequence emerging",
+      "contractual consequence emerging",
+      "blocker persists beyond reasonable handling",
+      "conflict cannot be resolved within current authority",
+      "delegate reports inability to proceed",
+      "critical dependency cannot be influenced through current path",
+      "decision window is closing",
+      "remaining alternatives are materially shrinking"
+    ],
+    "rules": [
+      "No single generic trigger automatically requires escalation.",
+      "Trigger strength depends on consequence, available alternatives, authority, and time remaining.",
+      "Repeated failure of the same handling path may strengthen escalation justification.",
+      "A.R.I.A. should not require repeated failure when severe consequence makes earlier escalation appropriate.",
+      "Escalation should be evaluated before an avoidable failure becomes irreversible."
+    ]
+  },
+
+  "levels": {
+    "level_0_normal": {
+      "description": "Normal ownership, delegation, and follow-up remain sufficient."
+    },
+    "level_1_operational": {
+      "description": "A different operational owner, specialist, coordinator, or immediate supervisor is needed."
+    },
+    "level_2_management": {
+      "description": "Management authority, resource allocation, cross-functional decision, or customer/vendor management is needed."
+    },
+    "level_3_executive": {
+      "description": "Executive authority or consequential business decision is needed."
+    },
+    "level_4_critical": {
+      "description": "Immediate safety, legal, regulatory, severe contractual, or severe business intervention is required."
+    }
+  },
+
+  "level_selection": {
+    "rules": [
+      "Use the lowest escalation level capable of resolving the condition.",
+      "Do not escalate through every level sequentially when consequence requires a higher level immediately.",
+      "Do not escalate to executive level merely because work is important.",
+      "Known authority structures should govern escalation targets.",
+      "Unknown authority structures must not be invented.",
+      "Escalation level may increase or decrease as conditions change."
+    ]
+  },
+
+  "escalation_record": {
+    "fields": [
+      "escalation_id",
+      "work_item_id",
+      "escalation_type",
+      "escalation_state",
+      "escalation_level",
+      "reason",
+      "required_intervention",
+      "escalated_from",
+      "escalated_to",
+      "recommended_at",
+      "escalated_at",
+      "acknowledged_at",
+      "resolved_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Each materially independent escalation should have a persistent identity.",
+      "The reason for escalation must remain distinguishable from general work-item importance.",
+      "The required intervention should be preserved when known.",
+      "Escalation target should reference a supported person, role, organization, or authority.",
+      "Escalation history must remain recoverable after resolution."
+    ]
+  },
+
+  "execution": {
+    "rules": [
+      "A recommendation to escalate is not proof that escalation occurred.",
+      "Escalation execution must be supported by an authorized action or communication.",
+      "A.R.I.A. may prepare escalation context without representing it as sent.",
+      "A.R.I.A. must respect communication and authority permissions before executing an escalation.",
+      "Executed escalation should preserve what was communicated and to whom when materially relevant.",
+      "Escalation communication should identify the required decision or intervention rather than merely express urgency."
+    ]
+  },
+
+  "deescalation": {
+    "triggers": [
+      "required authority becomes available",
+      "blocker is removed",
+      "conflict is reconciled",
+      "required decision is made",
+      "commitment risk materially decreases",
+      "resource becomes available",
+      "normal handling becomes sufficient again",
+      "underlying work resolves"
+    ],
+    "rules": [
+      "Deescalation does not mean the underlying work is complete.",
+      "An active escalation should not remain elevated after its reason disappears.",
+      "Deescalation should preserve escalation history.",
+      "A.R.I.A. should avoid repeatedly resurfacing a resolved escalation.",
+      "A new materially different escalation condition should receive a new or clearly distinguishable escalation record."
+    ]
+  },
+
+  "failed_escalation": {
+    "conditions": [
+      "escalation target cannot provide required intervention",
+      "escalation is declined",
+      "escalation receives no useful response within a consequential window",
+      "requested intervention proves insufficient",
+      "authority remains unresolved"
+    ],
+    "rules": [
+      "Failed escalation should trigger reevaluation of available alternatives.",
+      "Failure at one escalation level may justify a higher or different escalation path.",
+      "A failed escalation does not automatically establish fault.",
+      "A.R.I.A. should preserve what intervention was attempted.",
+      "Repeated escalation must not become meaningless notification spam."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines operational importance.",
+      "Escalation Engine determines whether the current handling level is sufficient.",
+      "High priority does not automatically mean escalation.",
+      "Escalation may provide new consequence or constraint information for Priority reevaluation.",
+      "Escalation Engine must not independently overwrite canonical priority."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Escalation Engine determines whether higher-level intervention is justified.",
+      "Attention Engine determines whether and how the user should see the escalation condition.",
+      "An escalation requiring the user's authority may justify direct attention.",
+      "Escalations handled appropriately by others should not unnecessarily consume the user's attention.",
+      "Critical escalation conditions may justify immediate Attention reevaluation."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs ordinary pursuit and verification timing.",
+      "Escalation becomes relevant when ordinary handling is insufficient or consequence requires a different intervention level.",
+      "Repeated ineffective follow-up may support escalation.",
+      "Escalation does not eliminate follow-up requirements after escalation occurs."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises and commitment state.",
+      "Commitment risk may justify escalation when higher intervention could protect fulfillment.",
+      "Escalation does not modify or release a commitment.",
+      "Renegotiation resulting from escalation must still be governed by Commitment Engine."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "A delegate may appropriately request escalation without surrendering execution responsibility.",
+      "Escalation may change ownership or authority only when legitimately authorized.",
+      "A blocker outside a delegate's control must not automatically be treated as delegate failure."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisite conditions.",
+      "A dependency may justify escalation when its resolution requires higher authority or intervention.",
+      "Escalation does not itself satisfy the dependency."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine identifies operational incompatibility.",
+      "Escalation Engine determines whether resolving that conflict requires higher or different authority.",
+      "Not every conflict requires escalation.",
+      "Authority conflicts may strongly support escalation to an authorized decision-maker."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, repeated deferral, and starvation.",
+      "Age alone does not justify escalation.",
+      "Chronic unresolved work may support escalation when the current handling path has proven inadequate."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition of the underlying work.",
+      "Resolving an escalation does not automatically resolve the work item.",
+      "Resolving the underlying work should normally resolve associated escalation need."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may identify evidence that escalation is required.",
+      "Escalation Engine governs sufficiently supported escalation conditions.",
+      "An escalation response may create new obligations requiring Capture Engine evaluation.",
+      "Escalation Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new consequential risk appears",
+      "priority changes",
+      "follow-up repeatedly fails",
+      "commitment risk changes",
+      "delegation state changes",
+      "dependency state changes",
+      "conflict state changes",
+      "aging state changes",
+      "authority information changes",
+      "resource availability changes",
+      "deadline approaches",
+      "decision window narrows",
+      "escalation occurs",
+      "escalation is acknowledged",
+      "escalation is declined",
+      "intervention occurs",
+      "underlying condition improves",
+      "underlying work resolves",
+      "user requests escalation review"
+    ],
+    "rules": [
+      "Reevaluation must preserve escalation history.",
+      "Reevaluation should determine whether normal handling remains insufficient.",
+      "Reevaluation should determine whether the escalation level remains appropriate.",
+      "Reevaluation should determine whether deescalation is justified.",
+      "Material escalation changes may trigger Priority, Attention, Follow-Up, Commitment, Delegation, Dependency, Conflict, Aging, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.escalation",
+    "escalation_record": [
+      "escalation_id",
+      "escalation_state",
+      "escalation_type",
+      "escalation_level",
+      "reason",
+      "required_intervention",
+      "escalated_to",
+      "escalated_at",
+      "acknowledged_at",
+      "resolved_at"
+    ],
+    "evaluation_output": [
+      "work_item_id",
+      "escalation_state",
+      "escalation_type",
+      "recommended_level",
+      "reason",
+      "required_intervention",
+      "recommended_target",
+      "decision_authority_required",
+      "recommended_reassessment",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Escalation output must reference the applicable work_item_id.",
+      "Recommendation and executed escalation must remain distinguishable.",
+      "Escalation reason must be explainable from supported operational conditions.",
+      "Unknown escalation targets must remain unknown.",
+      "Material escalation changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not equate priority with escalation.",
+    "Do not escalate merely because work is urgent.",
+    "Do not escalate merely because someone has not responded once.",
+    "Do not use escalation as punishment.",
+    "Do not invent escalation targets.",
+    "Do not invent authority hierarchy.",
+    "Do not represent recommended escalation as executed escalation.",
+    "Do not silently modify commitments during escalation.",
+    "Do not automatically blame an owner or delegate when escalation becomes necessary.",
+    "Do not escalate through unnecessary organizational levels.",
+    "Do not assume every conflict requires escalation.",
+    "Do not allow resolved escalation conditions to remain permanently elevated.",
+    "Do not create repeated escalation noise without a meaningful change in condition.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not bypass the Resolution Engine for terminal work disposition.",
+    "Do not modify Core reasoning architecture as part of escalation management."
+  ]
+}
