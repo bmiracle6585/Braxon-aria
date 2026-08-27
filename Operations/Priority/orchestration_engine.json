@@ -1,0 +1,508 @@
+{
+  "engine": {
+    "id": "aria.operations.orchestration_engine",
+    "name": "A.R.I.A. Operations Orchestration Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_orchestration",
+    "status": "active",
+    "purpose": "Coordinate operational reasoning across A.R.I.A. engines. The orchestrator determines which engines should evaluate a work item, establishes execution order, routes material state changes, prevents circular reevaluation, preserves engine authority boundaries, and produces a coherent operational recommendation without allowing one engine to silently override another.",
+    "principles": [
+      "The orchestrator coordinates reasoning; it does not replace specialized engines.",
+      "Each engine retains authority over its canonical domain.",
+      "Not every engine must run for every work item.",
+      "Engine invocation should be driven by supported relevance and material state changes.",
+      "A changed fact should propagate only to engines whose reasoning may materially change.",
+      "Reevaluation must converge rather than create infinite loops.",
+      "Canonical state and derived recommendations must remain distinguishable.",
+      "Conflicting engine outputs must be reconciled through authority boundaries rather than arbitrary overwrite.",
+      "A.R.I.A. should perform enough reasoning to protect the operational outcome without creating unnecessary latency.",
+      "User attention should be the result of operational reasoning, not the default destination of every state change.",
+      "Unknown information must remain unknown through orchestration.",
+      "Orchestration decisions must remain explainable and traceable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "sources": [
+      "capture events",
+      "work item changes",
+      "engine evaluation outputs",
+      "source activity",
+      "user instructions",
+      "authorized system changes",
+      "scheduled reevaluation events"
+    ]
+  },
+
+  "registered_engines": {
+    "capture": "capture_engine",
+    "priority": "priority_engine",
+    "attention": "attention_engine",
+    "follow_up": "follow_up_engine",
+    "commitment": "commitment_engine",
+    "delegation": "delegation_engine",
+    "dependency": "dependency_engine",
+    "resolution": "resolution_engine",
+    "aging": "aging_engine",
+    "conflict": "conflict_engine",
+    "escalation": "escalation_engine",
+    "capacity": "capacity_engine",
+    "scheduling": "scheduling_engine",
+    "decision": "decision_engine",
+    "risk": "risk_engine",
+    "issue": "issue_engine",
+    "opportunity": "opportunity_engine",
+    "context": "context_engine",
+    "communication": "communication_engine"
+  },
+
+  "authority_map": {
+    "capture": [
+      "creation of work from source information",
+      "materially new obligation detection"
+    ],
+    "priority": [
+      "canonical priority score",
+      "canonical priority band",
+      "relative operational importance"
+    ],
+    "attention": [
+      "whether user attention is warranted",
+      "attention mode",
+      "interruption recommendation"
+    ],
+    "follow_up": [
+      "follow-up need",
+      "follow-up timing",
+      "follow-up state"
+    ],
+    "commitment": [
+      "commitment existence",
+      "commitment state",
+      "commitment terms"
+    ],
+    "delegation": [
+      "delegated execution responsibility",
+      "delegation state"
+    ],
+    "dependency": [
+      "dependency existence",
+      "dependency state",
+      "blocking state"
+    ],
+    "resolution": [
+      "terminal work disposition",
+      "completion state"
+    ],
+    "aging": [
+      "aging state",
+      "aging pressure",
+      "starvation detection"
+    ],
+    "conflict": [
+      "operational incompatibility",
+      "conflict state"
+    ],
+    "escalation": [
+      "escalation need",
+      "escalation level"
+    ],
+    "capacity": [
+      "practical execution capacity",
+      "capacity constraint"
+    ],
+    "scheduling": [
+      "recommended execution timing",
+      "schedule feasibility"
+    ],
+    "decision": [
+      "decision requirement",
+      "decision state",
+      "decision recommendation"
+    ],
+    "risk": [
+      "future adverse exposure",
+      "risk state",
+      "risk treatment recommendation"
+    ],
+    "issue": [
+      "active problem state",
+      "issue handling state"
+    ],
+    "opportunity": [
+      "beneficial opportunity state",
+      "opportunity qualification"
+    ],
+    "context": [
+      "operational context",
+      "context freshness",
+      "practical contextual constraints"
+    ],
+    "communication": [
+      "communication need",
+      "communication purpose",
+      "communication recommendation"
+    ]
+  },
+
+  "initial_evaluation": {
+    "default_sequence": [
+      "capture",
+      "commitment",
+      "delegation",
+      "dependency",
+      "issue",
+      "risk",
+      "opportunity",
+      "resolution",
+      "priority",
+      "capacity",
+      "conflict",
+      "decision",
+      "scheduling",
+      "follow_up",
+      "aging",
+      "escalation",
+      "context",
+      "attention",
+      "communication"
+    ],
+    "rules": [
+      "The default sequence is a dependency-safe reasoning order, not a requirement to execute every engine.",
+      "Irrelevant engines should be skipped.",
+      "Capture should establish the work representation before downstream operational evaluation.",
+      "Resolution should be evaluated before unnecessary planning when evidence indicates work may already be terminal.",
+      "Priority should evaluate supported operational state rather than raw source text alone.",
+      "Attention should normally occur after material operational evaluation so the user sees synthesized significance rather than raw engine events.",
+      "Communication should normally evaluate after the operational purpose and authority are understood."
+    ]
+  },
+
+  "selective_invocation": {
+    "rules": [
+      "Run an engine only when its canonical domain is materially implicated.",
+      "A simple informational capture should not invoke every operational engine.",
+      "A state change should trigger only dependent engines whose output may materially change.",
+      "Engines may explicitly request reevaluation by another engine.",
+      "An engine request for reevaluation is not authority to modify the receiving engine's state.",
+      "Low-confidence or immaterial signals should not create unnecessary full-system reasoning cycles."
+    ]
+  },
+
+  "routing": {
+    "material_change_routes": {
+      "commitment_changed": [
+        "priority",
+        "risk",
+        "conflict",
+        "scheduling",
+        "follow_up",
+        "attention",
+        "communication"
+      ],
+      "delegation_changed": [
+        "capacity",
+        "dependency",
+        "scheduling",
+        "follow_up",
+        "attention"
+      ],
+      "dependency_changed": [
+        "issue",
+        "risk",
+        "priority",
+        "capacity",
+        "conflict",
+        "scheduling",
+        "follow_up",
+        "resolution",
+        "attention"
+      ],
+      "issue_changed": [
+        "risk",
+        "priority",
+        "capacity",
+        "conflict",
+        "decision",
+        "scheduling",
+        "escalation",
+        "attention",
+        "communication",
+        "resolution"
+      ],
+      "risk_changed": [
+        "priority",
+        "decision",
+        "scheduling",
+        "escalation",
+        "attention",
+        "communication"
+      ],
+      "opportunity_changed": [
+        "priority",
+        "capacity",
+        "risk",
+        "conflict",
+        "decision",
+        "scheduling",
+        "attention"
+      ],
+      "priority_changed": [
+        "capacity",
+        "conflict",
+        "scheduling",
+        "attention"
+      ],
+      "capacity_changed": [
+        "risk",
+        "conflict",
+        "decision",
+        "scheduling",
+        "escalation",
+        "attention"
+      ],
+      "conflict_changed": [
+        "priority",
+        "decision",
+        "scheduling",
+        "escalation",
+        "attention"
+      ],
+      "decision_changed": [
+        "capture",
+        "commitment",
+        "delegation",
+        "dependency",
+        "capacity",
+        "scheduling",
+        "communication",
+        "resolution"
+      ],
+      "schedule_changed": [
+        "risk",
+        "conflict",
+        "follow_up",
+        "aging",
+        "attention",
+        "communication"
+      ],
+      "follow_up_changed": [
+        "aging",
+        "escalation",
+        "attention",
+        "communication"
+      ],
+      "aging_changed": [
+        "priority",
+        "decision",
+        "scheduling",
+        "escalation",
+        "attention"
+      ],
+      "escalation_changed": [
+        "decision",
+        "attention",
+        "communication"
+      ],
+      "context_changed": [
+        "capacity",
+        "scheduling",
+        "follow_up",
+        "attention",
+        "communication"
+      ],
+      "resolution_changed": [
+        "priority",
+        "attention",
+        "follow_up",
+        "scheduling",
+        "communication"
+      ]
+    }
+  },
+
+  "cycle_control": {
+    "purpose": "Prevent mutually dependent engines from producing infinite reevaluation loops.",
+    "rules": [
+      "Each orchestration cycle must have a persistent cycle_id.",
+      "An engine should not rerun within the same cycle unless materially relevant input to that engine changed.",
+      "Identical outputs must not generate new reevaluation events.",
+      "Cosmetic or timestamp-only changes must not trigger dependent reasoning.",
+      "A repeated engine state with no new evidence is considered stable.",
+      "The orchestrator should terminate when no material engine output changes remain.",
+      "A maximum iteration safeguard should stop pathological cycles and mark the item for diagnostic review rather than continuing indefinitely."
+    ],
+    "default_max_iterations": 8
+  },
+
+  "materiality": {
+    "material_changes": [
+      "canonical state changed",
+      "new obligation discovered",
+      "new commitment discovered",
+      "priority materially changed",
+      "new blocker established",
+      "blocker cleared",
+      "risk exposure materially changed",
+      "active issue materially changed",
+      "conflict established or resolved",
+      "decision became required or was made",
+      "capacity feasibility changed",
+      "schedule feasibility changed",
+      "escalation need changed",
+      "resolution state changed",
+      "user attention requirement changed",
+      "communication need materially changed"
+    ],
+    "non_material_changes": [
+      "evaluation timestamp changed",
+      "formatting changed",
+      "equivalent wording changed",
+      "duplicate source activity",
+      "confidence changed insignificantly without changing recommended handling"
+    ]
+  },
+
+  "conflict_resolution": {
+    "rules": [
+      "When engine outputs appear contradictory, authority_map determines which engine owns the disputed canonical field.",
+      "An engine may provide evidence to another engine but must not overwrite that engine's canonical state.",
+      "Priority does not override commitments.",
+      "Attention does not override priority.",
+      "Scheduling does not rewrite deadlines or commitments.",
+      "Context does not rewrite priority.",
+      "Communication does not create authority.",
+      "Capacity does not cancel work.",
+      "Resolution is the authority for terminal work state.",
+      "Unresolved cross-engine contradictions should be represented explicitly rather than arbitrarily resolved."
+    ]
+  },
+
+  "state_protection": {
+    "rules": [
+      "Canonical user-authored facts must not be overwritten by inference without supported correction.",
+      "Authoritative system state should remain distinguishable from model-derived interpretation.",
+      "Historical states must remain recoverable where required by the owning engine.",
+      "Unknown values must remain unknown.",
+      "Derived recommendations must not be stored as authoritative external facts."
+    ]
+  },
+
+  "attention_strategy": {
+    "rules": [
+      "Individual engines should not independently flood the user with notifications.",
+      "Attention Engine should receive synthesized operational changes from the orchestration cycle.",
+      "Multiple related engine conditions should be consolidated into one useful user-facing item when appropriate.",
+      "The user should normally see the consequence, required action, or decision rather than internal engine chatter.",
+      "A.R.I.A. should avoid repeatedly surfacing an unchanged condition."
+    ]
+  },
+
+  "assistant_synthesis": {
+    "purpose": "Convert coordinated engine output into a concise operational understanding.",
+    "preferred_questions": [
+      "What happened?",
+      "What does it affect?",
+      "What matters now?",
+      "What can wait?",
+      "What is blocked?",
+      "What is delegated?",
+      "What decision is required?",
+      "What commitment is threatened?",
+      "What should happen next?",
+      "Does the user personally need to act?"
+    ],
+    "rules": [
+      "Synthesis should prioritize actionable operational meaning over engine terminology.",
+      "A.R.I.A. should not expose internal orchestration complexity unless useful or requested.",
+      "When no user action is needed, A.R.I.A. should be capable of saying so and remaining quiet.",
+      "When user action is required, the required action should be explicit.",
+      "Recommendations must remain distinguishable from authorized actions."
+    ]
+  },
+
+  "execution_boundary": {
+    "rules": [
+      "The Orchestration Engine coordinates reasoning and recommended actions.",
+      "It does not independently send communication.",
+      "It does not independently modify calendars.",
+      "It does not independently make external commitments.",
+      "It does not independently authorize spending.",
+      "It does not independently make decisions reserved for another authority.",
+      "External actions require the applicable authorized execution capability."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new source information",
+      "work item created",
+      "material work item update",
+      "engine emits material change",
+      "scheduled evaluation becomes due",
+      "follow-up point arrives",
+      "deadline or decision window changes",
+      "context materially changes",
+      "user provides new instruction",
+      "authorized external state changes"
+    ],
+    "rules": [
+      "Reevaluation should begin with the engines directly implicated by the trigger.",
+      "Dependent engines should run only when upstream material changes warrant it.",
+      "A full-system reevaluation should be reserved for materially broad changes or explicit diagnostic review."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.orchestration",
+    "orchestration_record": [
+      "cycle_id",
+      "work_item_id",
+      "trigger",
+      "engines_invoked",
+      "engines_skipped",
+      "material_changes",
+      "stable_states",
+      "pending_reevaluations",
+      "user_action_required",
+      "recommended_next_action",
+      "cycle_state",
+      "started_at",
+      "completed_at"
+    ],
+    "cycle_states": [
+      "running",
+      "stable",
+      "awaiting_information",
+      "awaiting_authority",
+      "awaiting_external_event",
+      "diagnostic_required",
+      "completed"
+    ],
+    "requirements": [
+      "Every orchestration cycle must be traceable.",
+      "Engine invocation decisions must remain explainable.",
+      "Material state changes must identify their owning engine.",
+      "The orchestrator must not overwrite canonical state owned by another engine.",
+      "Stable cycles must terminate rather than continuously reevaluate."
+    ]
+  },
+
+  "guardrails": [
+    "Do not run every engine merely because it exists.",
+    "Do not create infinite engine-to-engine reevaluation loops.",
+    "Do not allow one engine to overwrite another engine's canonical authority.",
+    "Do not confuse derived recommendations with authoritative facts.",
+    "Do not surface internal engine noise directly to the user.",
+    "Do not create user attention for every state change.",
+    "Do not rerun engines when their material inputs have not changed.",
+    "Do not treat timestamps or cosmetic updates as material operational changes.",
+    "Do not silently resolve contradictory engine outputs.",
+    "Do not fabricate missing state to make orchestration converge.",
+    "Do not make external decisions or actions merely because reasoning converged.",
+    "Do not modify Core reasoning architecture as part of operational orchestration."
+  ]
+}
