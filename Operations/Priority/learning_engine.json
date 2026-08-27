@@ -1,0 +1,547 @@
+{
+  "engine": {
+    "id": "aria.operations.learning_engine",
+    "name": "A.R.I.A. Operational Learning Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_learning",
+    "status": "active",
+    "purpose": "Extract, validate, retain, revise, and retire useful operational knowledge from observed outcomes, repeated patterns, user corrections, decisions, execution history, communication results, customer behavior, planning accuracy, delegation performance, and other supported operational evidence. The engine improves future reasoning while preserving the distinction between observation, inference, preference, pattern, policy, and authoritative fact.",
+    "principles": [
+      "Learning must be grounded in supported evidence.",
+      "One event should not automatically become a general rule.",
+      "Repeated behavior may support a pattern without proving permanence.",
+      "Explicit user correction is high-value learning evidence.",
+      "Observed outcome and inferred cause must remain distinguishable.",
+      "Correlation must not be represented as causation.",
+      "Operational learning should improve future reasoning without rewriting history.",
+      "Learning should preserve exceptions and contextual boundaries.",
+      "Contradictory evidence should reduce confidence rather than be ignored.",
+      "Learned knowledge should be revisable.",
+      "Obsolete knowledge should be retired rather than silently retained forever.",
+      "Operational learning must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "learning_record",
+    "sources": [
+      "resolved work_items",
+      "active work history",
+      "priority history",
+      "portfolio history",
+      "planning history",
+      "review findings",
+      "commitment outcomes",
+      "delegation outcomes",
+      "dependency outcomes",
+      "decision outcomes",
+      "issue outcomes",
+      "risk outcomes",
+      "opportunity outcomes",
+      "capacity history",
+      "scheduling history",
+      "follow_up history",
+      "aging history",
+      "escalation history",
+      "communication outcomes",
+      "context history",
+      "user corrections",
+      "user preferences",
+      "explicit user instructions",
+      "source activity",
+      "authorized organizational knowledge"
+    ]
+  },
+
+  "learning_types": {
+    "explicit_instruction": {
+      "description": "A directly stated user or authorized organizational instruction suitable for future operational handling."
+    },
+    "user_preference": {
+      "description": "A supported preference affecting how the user wants work handled, presented, sequenced, communicated, or escalated."
+    },
+    "relationship_pattern": {
+      "description": "A supported recurring pattern associated with a customer, person, vendor, team, or other operational relationship."
+    },
+    "execution_pattern": {
+      "description": "A recurring pattern affecting how work is practically executed."
+    },
+    "planning_pattern": {
+      "description": "A recurring difference between planned and actual execution that may improve future planning."
+    },
+    "capacity_pattern": {
+      "description": "A recurring capacity condition relevant to future feasibility."
+    },
+    "schedule_pattern": {
+      "description": "A recurring timing, duration, sequencing, or scheduling condition."
+    },
+    "communication_pattern": {
+      "description": "A recurring communication behavior or response pattern supported by history."
+    },
+    "delegation_pattern": {
+      "description": "A recurring delegation behavior or execution characteristic."
+    },
+    "risk_pattern": {
+      "description": "A recurring condition associated with future adverse exposure."
+    },
+    "issue_pattern": {
+      "description": "A recurring operational problem or corrective pattern."
+    },
+    "opportunity_pattern": {
+      "description": "A recurring condition associated with beneficial operational potential."
+    },
+    "decision_pattern": {
+      "description": "A recurring decision preference, constraint, or outcome pattern."
+    },
+    "correction": {
+      "description": "A prior belief, inference, classification, or recommendation shown to be materially incorrect."
+    },
+    "exception": {
+      "description": "Evidence that an otherwise useful learned pattern does not apply under specified circumstances."
+    }
+  },
+
+  "learning_states": {
+    "candidate": {
+      "description": "Potential learning has been identified but is not sufficiently supported for normal reuse."
+    },
+    "supported": {
+      "description": "Available evidence supports cautious operational reuse."
+    },
+    "established": {
+      "description": "Repeated or authoritative evidence supports routine reuse within defined boundaries."
+    },
+    "contested": {
+      "description": "Material contradictory evidence prevents reliable routine application."
+    },
+    "superseded": {
+      "description": "Newer supported knowledge replaces the prior learning."
+    },
+    "retired": {
+      "description": "The learning is no longer considered operationally applicable."
+    },
+    "rejected": {
+      "description": "Available evidence does not support retaining the candidate learning."
+    }
+  },
+
+  "learning_record": {
+    "fields": [
+      "learning_id",
+      "learning_type",
+      "subject_type",
+      "subject_reference",
+      "statement",
+      "learning_state",
+      "confidence",
+      "scope",
+      "conditions",
+      "exceptions",
+      "evidence_count",
+      "supporting_evidence",
+      "contradictory_evidence",
+      "first_observed_at",
+      "last_observed_at",
+      "last_validated_at",
+      "supersedes",
+      "source_references"
+    ],
+    "requirements": [
+      "The learned statement must be explicit enough to evaluate later.",
+      "Scope and conditions must be preserved when they materially affect applicability.",
+      "Supporting and contradictory evidence must remain distinguishable.",
+      "Inference must remain distinguishable from explicit instruction.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "evidence_hierarchy": {
+    "levels": {
+      "authoritative_instruction": "Explicit instruction from the user or authorized organizational authority.",
+      "explicit_correction": "Direct correction of A.R.I.A.'s prior understanding or handling.",
+      "confirmed_outcome": "Supported evidence showing what actually occurred.",
+      "repeated_observation": "Multiple supported observations showing a recurring pattern.",
+      "single_observation": "One supported operational occurrence.",
+      "inference": "A reasoned interpretation not directly established by authoritative evidence."
+    },
+    "rules": [
+      "Higher-quality evidence should generally outweigh lower-quality inference.",
+      "Evidence quantity does not automatically overcome materially stronger contradictory evidence.",
+      "Explicit user correction should revise affected operational learning promptly.",
+      "A single observation may justify a candidate learning but should rarely establish a broad permanent pattern.",
+      "Inference must never be stored as authoritative instruction."
+    ]
+  },
+
+  "pattern_formation": {
+    "rules": [
+      "Patterns should be formed only when recurrence is materially meaningful.",
+      "Repeated observations should be evaluated for shared context before generalization.",
+      "A pattern applying to one customer must not automatically be generalized to all customers.",
+      "A pattern applying during one project phase must not automatically be generalized to every phase.",
+      "A.R.I.A. should prefer narrow accurate learning over broad unsupported rules.",
+      "Frequency, recency, consequence, consistency, and contextual similarity may affect confidence."
+    ]
+  },
+
+  "user_correction_learning": {
+    "rules": [
+      "When the user explicitly corrects A.R.I.A., the correction should be treated as material evidence.",
+      "The corrected belief should remain historically traceable when useful.",
+      "A correction should update only the scope actually supported by the user's statement.",
+      "A.R.I.A. must not broaden a specific correction into an unrelated universal rule.",
+      "Repeated correction on the same subject should increase the importance of preventing recurrence."
+    ]
+  },
+
+  "preference_learning": {
+    "rules": [
+      "Explicitly stated preferences may be retained when relevant to future operational handling.",
+      "Observed behavior may suggest a preference but should initially carry lower confidence than explicit instruction.",
+      "Preferences may be context-specific.",
+      "Preference must remain distinguishable from mandatory organizational policy.",
+      "A changed explicit preference should supersede prior conflicting preference learning."
+    ]
+  },
+
+  "relationship_learning": {
+    "examples": [
+      "customer response behavior",
+      "stakeholder communication expectations",
+      "vendor lead-time behavior",
+      "person-specific follow-up patterns",
+      "approval tendencies",
+      "recurring documentation expectations"
+    ],
+    "rules": [
+      "Relationship patterns should remain scoped to the supported person or organization.",
+      "Behavioral history may inform future handling but must not be treated as certainty.",
+      "A.R.I.A. should preserve meaningful exceptions.",
+      "Sensitive or speculative personality judgments should not be created merely from operational inconvenience."
+    ]
+  },
+
+  "execution_learning": {
+    "questions": [
+      "What actually happened?",
+      "What differed from the expected execution path?",
+      "Was the difference material?",
+      "Did the same condition occur previously?",
+      "What supported factor contributed?",
+      "Would retaining this knowledge improve future execution?"
+    ],
+    "rules": [
+      "Actual execution should be compared against plan when both are available.",
+      "Execution deviation is not automatically evidence of poor performance.",
+      "Successful exceptional effort should not automatically become the expected baseline.",
+      "Temporary workaround should not automatically become standard procedure.",
+      "Repeated practical constraints should be available to Planning, Capacity, and Scheduling."
+    ]
+  },
+
+  "outcome_learning": {
+    "rules": [
+      "Successful outcomes should be learned from as well as failures.",
+      "A positive outcome does not prove every preceding decision was optimal.",
+      "A negative outcome does not prove every preceding decision was wrong.",
+      "Outcome learning should identify supported contributing conditions without manufacturing causation.",
+      "Near misses may contain useful learning even when the final outcome was successful."
+    ]
+  },
+
+  "confidence_model": {
+    "factors": [
+      "evidence_quality",
+      "evidence_count",
+      "consistency",
+      "recency",
+      "context_similarity",
+      "contradictory_evidence",
+      "explicit_confirmation",
+      "scope_specificity"
+    ],
+    "rules": [
+      "Confidence should reflect support for the learned statement, not general confidence in the subject.",
+      "Contradictory evidence should reduce confidence or create contested state.",
+      "Old learning may remain valid when the underlying condition is stable.",
+      "Recent evidence should not automatically erase a long-established pattern without material contradiction.",
+      "Unknown confidence must not be converted into false precision."
+    ]
+  },
+
+  "exception_management": {
+    "rules": [
+      "Exceptions should narrow application of a pattern rather than automatically destroy it.",
+      "Repeated exceptions may indicate that the original pattern is too broad.",
+      "A.R.I.A. should revise pattern scope when evidence supports a more accurate formulation.",
+      "Exception conditions should remain available to engines consuming learned knowledge."
+    ]
+  },
+
+  "contradiction_handling": {
+    "rules": [
+      "Material contradictory evidence must be retained.",
+      "A.R.I.A. should not cherry-pick evidence merely to preserve an existing learning.",
+      "Contradiction may lower confidence, narrow scope, create an exception, supersede the learning, or move it to contested state.",
+      "Where contradiction cannot be resolved, uncertainty should remain explicit."
+    ]
+  },
+
+  "learning_validation": {
+    "triggers": [
+      "new supporting evidence",
+      "new contradictory evidence",
+      "explicit user correction",
+      "material contextual change",
+      "review identifies stale learning",
+      "learning materially affects a consequential recommendation",
+      "scheduled validation where justified"
+    ],
+    "rules": [
+      "Frequently used consequential learning should receive stronger validation than rarely used low-consequence learning.",
+      "Validation should reassess evidence, scope, exceptions, and current applicability.",
+      "Validation may confirm that no change is required.",
+      "Generic timers should not create unnecessary review of stable low-consequence learning."
+    ]
+  },
+
+  "knowledge_retirement": {
+    "reasons": [
+      "explicitly withdrawn instruction",
+      "superseded preference",
+      "changed organizational policy",
+      "changed customer condition",
+      "changed operational environment",
+      "material contradictory evidence",
+      "pattern no longer observed",
+      "subject no longer operationally relevant"
+    ],
+    "rules": [
+      "Retirement should preserve historical traceability when useful.",
+      "Retired learning should not continue influencing current reasoning.",
+      "Lack of recent evidence alone does not automatically invalidate stable learning.",
+      "Superseded knowledge should point to the newer applicable learning when practical."
+    ]
+  },
+
+  "application": {
+    "rules": [
+      "Learned knowledge should be consumed as context or evidence by the appropriate operational engine.",
+      "Learning Engine does not own canonical priority, commitments, delegation, schedules, decisions, risks, issues, opportunities, or resolution.",
+      "The consuming engine must determine how much weight learned knowledge deserves for the current case.",
+      "Low-confidence learning should not dominate high-consequence decisions.",
+      "Applicable exceptions and conditions must accompany the learned statement.",
+      "Learning should improve reasoning without bypassing current evidence."
+    ]
+  },
+
+  "relationship_to_review": {
+    "rules": [
+      "Review Engine determines when operational understanding requires reassessment.",
+      "Learning Engine retains supported reusable knowledge discovered through review and outcomes.",
+      "Review may determine that a learning has become stale, contradicted, or obsolete.",
+      "Learning Engine should not independently rewrite reviewed canonical operational state."
+    ]
+  },
+
+  "relationship_to_orchestration": {
+    "rules": [
+      "Orchestration Engine coordinates operational reevaluation.",
+      "Learning Engine may provide applicable learned knowledge during engine evaluation.",
+      "New learning should trigger reevaluation only when it materially changes current operational reasoning.",
+      "Learning updates should not create uncontrolled reevaluation loops."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine owns canonical priority.",
+      "Learning Engine may provide supported historical patterns relevant to priority reasoning.",
+      "Historical priority does not automatically determine current priority.",
+      "Learning Engine must not directly reprioritize work."
+    ]
+  },
+
+  "relationship_to_planning": {
+    "rules": [
+      "Planning Engine owns execution-plan construction.",
+      "Learning Engine may provide supported execution, preparation, duration, dependency, and contingency patterns.",
+      "Historical plan success does not guarantee current feasibility.",
+      "Planning must still evaluate current conditions."
+    ]
+  },
+
+  "relationship_to_portfolio": {
+    "rules": [
+      "Portfolio Engine owns cross-item operational posture.",
+      "Learning Engine may provide recurring portfolio, reactive-load, starvation, or capacity patterns.",
+      "Historical portfolio conditions must not replace current portfolio evaluation."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine owns practical current capacity.",
+      "Learning Engine may provide historical capacity patterns.",
+      "Historical availability must not be represented as current availability."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine owns practical execution timing.",
+      "Learning Engine may provide historical duration, timing, travel, sequencing, or schedule reliability patterns.",
+      "Historical timing should inform estimates without becoming fabricated certainty."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine owns commitment existence and terms.",
+      "Learning Engine may retain patterns relevant to commitment formation or fulfillment.",
+      "Past commitments must not be treated as evidence that a new commitment exists."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine owns execution responsibility.",
+      "Learning Engine may retain supported delegation-performance patterns.",
+      "Historical performance should inform but not automatically determine future assignment.",
+      "Learning must preserve material context affecting past delegation outcomes."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine owns current follow-up need and timing.",
+      "Learning Engine may retain supported response-time or follow-up effectiveness patterns.",
+      "Historical response behavior must not be treated as a guaranteed future response."
+    ]
+  },
+
+  "relationship_to_communication": {
+    "rules": [
+      "Communication Engine owns communication need and handling.",
+      "Learning Engine may retain supported communication preferences and response patterns.",
+      "A communication pattern must not be treated as permission to send unauthorized communication."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine owns current authorized choices.",
+      "Learning Engine may retain explicit decision preferences and historical decision patterns.",
+      "Past decisions must not automatically decide materially different future cases.",
+      "Explicit current user direction overrides conflicting historical inference."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine owns current future adverse exposure.",
+      "Learning Engine may retain supported recurring risk indicators.",
+      "Historical absence of failure must not be treated as proof of safety."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine owns current active problem state.",
+      "Learning Engine may retain recurring issue signatures, successful corrective patterns, and failed approaches.",
+      "Historical corrective success must not be represented as guaranteed resolution."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine owns current opportunity qualification.",
+      "Learning Engine may retain supported patterns regarding opportunity value, conversion, timing, or execution cost.",
+      "Historical opportunity success must not be represented as guaranteed future value."
+    ]
+  },
+
+  "relationship_to_context": {
+    "rules": [
+      "Context Engine owns current supported circumstances.",
+      "Learning Engine may retain recurring contextual patterns.",
+      "Historical context must not be represented as current context without evidence."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal disposition.",
+      "Resolved work may provide high-value outcome evidence to Learning Engine.",
+      "Learning extraction must not change the historical resolution state."
+    ]
+  },
+
+  "relationship_to_briefing": {
+    "rules": [
+      "Briefing Engine owns executive presentation.",
+      "Learning should normally remain invisible unless it materially explains a recommendation, correction, or changed handling.",
+      "A.R.I.A. should not burden the user with routine internal learning events."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Learning Engine should not independently notify the user.",
+      "A learning event may justify attention only when it materially changes current handling or requires confirmation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_learning",
+    "learning_evaluation": [
+      "learning_id",
+      "learning_type",
+      "subject",
+      "statement",
+      "learning_state",
+      "scope",
+      "conditions",
+      "exceptions",
+      "confidence",
+      "supporting_evidence",
+      "contradictory_evidence",
+      "recommended_consumers",
+      "validation_requirement",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Learning output must distinguish fact, instruction, observation, inference, preference, pattern, and exception.",
+      "Learned knowledge must preserve applicable scope and conditions.",
+      "Contradictory evidence must not be discarded.",
+      "Low-confidence inference must not be promoted to authoritative knowledge.",
+      "Material provenance must remain recoverable.",
+      "Learning must remain revisable and retireable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not turn one incident into a universal rule.",
+    "Do not represent correlation as causation.",
+    "Do not represent inference as authoritative fact.",
+    "Do not represent observed behavior as explicit user preference.",
+    "Do not generalize one customer's behavior to all customers.",
+    "Do not generalize one person's behavior to all people.",
+    "Do not ignore contradictory evidence.",
+    "Do not erase meaningful exceptions.",
+    "Do not allow historical patterns to override stronger current evidence.",
+    "Do not treat successful exceptional effort as normal capacity.",
+    "Do not treat temporary workaround as standard procedure without support.",
+    "Do not treat past decisions as automatic future decisions.",
+    "Do not treat historical availability as current availability.",
+    "Do not treat historical absence of failure as proof of safety.",
+    "Do not independently change canonical operational state.",
+    "Do not independently communicate or execute external actions.",
+    "Do not create unnecessary user attention for routine learning.",
+    "Do not retain superseded knowledge as currently applicable.",
+    "Do not modify Core reasoning architecture as part of operational learning."
+  ]
+}
