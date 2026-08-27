@@ -1,778 +1,975 @@
 {
   "specification": "ARIA_EVIDENCE_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. creates, classifies, validates, weights, relates, preserves, contradicts, supersedes, and applies evidence during diagnostic reasoning.",
+  "version": "2.0.0",
+  "description": "Canonical evidence reasoning behavior for A.R.I.A. The Evidence Engine interprets, normalizes, verifies, relates, and evaluates canonical evidence while preserving provenance, dependency, contradiction, uncertainty, and historical traceability. Evidence vocabulary is owned by the Evidence Types Registry and persisted evidence structure is owned by the Evidence Schema.",
+
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "evidence_schema": "Core/Schemas/evidence.schema.json",
+    "evidence_registry": "Core/Registries/evidence_types.json",
+
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "validation": "Core/Reasoning/validating_engine.json"
+    },
+
+    "role": "EVIDENCE_INTERPRETATION_AND_QUALITY_REASONING",
+
+    "owns": [
+      "candidate evidence extraction",
+      "evidence normalization",
+      "observation and interpretation separation",
+      "evidence provenance assessment",
+      "evidence source assessment",
+      "evidence verification reasoning",
+      "evidence quality assessment",
+      "evidence freshness assessment",
+      "evidence applicability assessment",
+      "evidence independence assessment",
+      "evidence dependency detection",
+      "duplicate evidence detection",
+      "derived evidence traceability",
+      "negative evidence reasoning",
+      "contradiction detection",
+      "corroboration reasoning",
+      "evidence supersession assessment",
+      "evidence invalidation assessment",
+      "evidence gap identification",
+      "evidence diagnostic-effect explanation"
+    ],
+
+    "does_not_own": [
+      "evidence type vocabulary",
+      "evidence persistence schema",
+      "confidence vocabulary",
+      "canonical source identity",
+      "canonical artifact identity",
+      "canonical measurement identity",
+      "canonical context identity",
+      "hypothesis probability",
+      "hypothesis confirmation",
+      "candidate action selection",
+      "action execution",
+      "route progression",
+      "rerouting",
+      "case lifecycle status",
+      "case reasoning state",
+      "validation semantics",
+      "engine invocation",
+      "learning eligibility",
+      "technical ontology",
+      "manufacturer requirements"
+    ]
+  },
 
   "core_principle": {
-    "statement": "ARIA shall distinguish what was observed from what was reported, interpreted, inferred, calculated, or concluded. Evidence must preserve provenance and shall influence reasoning according to reliability, directness, applicability, independence, freshness, and technical relevance.",
+    "statement": "Evidence is a traceable observation or information-bearing technical record relevant to reasoning. Evidence is not automatically fact, interpretation is not observation, correlation is not causation, and A.R.I.A.'s own inference does not become independent evidence merely because A.R.I.A. generated it.",
+
     "rules": [
-      "Evidence is not automatically fact.",
-      "A source and the information supplied by that source are separate concepts.",
-      "Interpretation shall remain traceable to the original artifact or observation.",
-      "Repeated representations of the same underlying information shall not become independent corroboration.",
-      "Contradictory evidence shall be preserved rather than silently discarded.",
-      "Current validated direct evidence may outweigh historical expectation.",
-      "ARIA's own inference shall never become independent evidence merely because ARIA generated it."
+      "Persisted evidence shall conform to Core/Schemas/evidence.schema.json.",
+      "Evidence classification shall use Core/Registries/evidence_types.json.",
+      "Evidence shall preserve provenance.",
+      "Observation shall remain distinguishable from interpretation.",
+      "Evidence may be valid while supporting, weakening, or contradicting different hypotheses.",
+      "Evidence persistence status shall not encode diagnostic support or confidence.",
+      "Evidence shall not establish causality merely because it correlates with an observed condition.",
+      "Derived evidence shall remain traceable to its parent evidence and required source values.",
+      "Duplicate representations of the same underlying observation shall not become independent corroboration.",
+      "Contradictory evidence shall remain visible.",
+      "Historical experience is not current-case evidence.",
+      "A.R.I.A.-generated interpretation shall not self-validate.",
+      "Missing evidence shall not be represented as observed evidence.",
+      "Evidence uncertainty shall remain explicit.",
+      "The Evidence Engine shall remain technically domain-independent."
     ]
   },
 
-  "evidence_record": {
-    "required_fields": [
-      "evidence_id",
-      "case_id",
-      "evidence_type",
-      "source_type",
-      "source_id",
-      "created_at",
-      "observed_at",
-      "received_at",
-      "raw_value",
-      "normalized_value",
-      "unit",
-      "context",
-      "provenance",
-      "reliability_score",
-      "directness_score",
-      "applicability_score",
-      "freshness_score",
-      "independence_score",
-      "extraction_confidence",
-      "overall_evidence_confidence",
-      "status"
+  "canonical_identity_model": {
+    "evidence": "evd_<UUID>",
+    "case": "case_<UUID>",
+    "source": "src_<UUID>",
+    "artifact": "art_<UUID>",
+    "measurement": "meas_<UUID>",
+    "context": "ctx_<UUID>",
+    "hypothesis": "hyp_<UUID>",
+    "action": "act_<UUID>",
+    "event": "evt_<UUID>",
+
+    "rules": [
+      "Evidence Engine shall not create an alternate evidence identity model.",
+      "Canonical sources, artifacts, measurements, contexts, hypotheses, actions, and events shall be referenced when canonical identity exists.",
+      "Multiple records derived from the same underlying observation shall preserve dependency relationships.",
+      "Evidence identity shall not be duplicated solely because the same observation is represented in multiple formats."
+    ]
+  },
+
+  "classification_boundary": {
+    "registry": "Core/Registries/evidence_types.json",
+
+    "rules": [
+      "Evidence Engine shall consume evidence_type from the canonical Evidence Types Registry.",
+      "Evidence Engine shall not maintain a competing evidence-type list.",
+      "Evidence type describes what kind of evidence the record represents and does not establish truth, confidence, independence, or causal significance.",
+      "New evidence classifications shall be introduced through the Registry rather than embedded in Evidence Engine logic."
+    ]
+  },
+
+  "persistence_boundary": {
+    "schema": "Core/Schemas/evidence.schema.json",
+
+    "persistence_statuses": [
+      "ACTIVE",
+      "SUPERSEDED",
+      "INVALIDATED",
+      "RETRACTED"
     ],
 
-    "optional_fields": [
-      "artifact_id",
-      "measurement_method",
-      "instrument_id",
-      "instrument_model",
-      "calibration_state",
-      "user_id",
-      "site_id",
-      "path_id",
-      "endpoint_id",
-      "equipment_id",
-      "component_id",
-      "configuration_parameter",
-      "alarm_id",
-      "log_reference",
-      "image_region",
-      "source_quote",
-      "derived_from_evidence_ids",
-      "supersedes_evidence_id",
-      "superseded_by_evidence_id",
-      "notes"
+    "rules": [
+      "Evidence Engine shall not define a competing evidence_record structure.",
+      "Persisted evidence status shall conform to evidence.schema.json.",
+      "ACTIVE does not mean proven or supportive.",
+      "SUPERSEDED means a more applicable representation has replaced the evidence for current reasoning without erasing history.",
+      "INVALIDATED means the evidence has been determined unsuitable as valid evidence.",
+      "RETRACTED means the originating authority or responsible process withdrew the evidence.",
+      "Contradiction shall not be encoded as persistence status.",
+      "Confidence shall not be encoded as persistence status.",
+      "Diagnostic effect shall not be encoded as persistence status."
     ]
   },
 
-  "evidence_types": [
+  "evidence_processing_pipeline": [
     {
-      "name": "DIRECT_MEASUREMENT",
-      "description": "A measured technical value obtained directly from equipment, an instrument, telemetry, or another measurement system.",
-      "examples": [
-        "RSL",
-        "Transmit power",
-        "BER",
-        "SNR",
-        "Voltage",
-        "Frequency"
-      ]
+      "step": 1,
+      "name": "IDENTIFY_CANDIDATE_EVIDENCE",
+      "description": "Identify an observation, measurement, report, artifact, configuration state, system output, or other information-bearing item that may warrant canonical Evidence representation."
     },
-
     {
-      "name": "SYSTEM_STATE",
-      "description": "Directly retrieved operational or configuration state from the applicable system."
+      "step": 2,
+      "name": "PRESERVE_RAW_OBSERVATION",
+      "description": "Preserve the original observation, artifact, value, statement, or source representation before interpretation."
     },
-
     {
-      "name": "CONFIGURATION_VALUE",
-      "description": "A specific configured parameter obtained from equipment, management software, configuration export, or other authoritative configuration source."
+      "step": 3,
+      "name": "CLASSIFY_EVIDENCE",
+      "description": "Assign the applicable canonical evidence_type from the Evidence Types Registry."
     },
-
     {
-      "name": "ALARM",
-      "description": "Alarm, event, or fault indication generated by applicable equipment or management software."
+      "step": 4,
+      "name": "RESOLVE_PROVENANCE",
+      "description": "Resolve source, artifact, measurement, action, event, context, and other provenance references where available."
     },
-
     {
-      "name": "LOG_ENTRY",
-      "description": "Timestamped system or equipment log information."
+      "step": 5,
+      "name": "NORMALIZE_OBSERVATION",
+      "description": "Normalize representation, units, formatting, timestamps, identifiers, or terminology without altering technical meaning."
     },
-
     {
-      "name": "VISUAL_OBSERVATION",
-      "description": "Condition visible in a photograph, screenshot, video, live view, or direct human observation."
+      "step": 6,
+      "name": "ASSESS_VERIFICATION",
+      "description": "Determine what aspects of the evidence have been verified and what remain reported, inferred, ambiguous, or unverified."
     },
-
     {
-      "name": "USER_REPORT",
-      "description": "Technical information reported by a human participant."
+      "step": 7,
+      "name": "ASSESS_CONTEXT_APPLICABILITY",
+      "description": "Determine whether the evidence is applicable to the technical subject and reasoning operation under the relevant context."
     },
-
     {
-      "name": "PROCEDURE_RESULT",
-      "description": "Result produced by executing a defined diagnostic or validation procedure."
+      "step": 8,
+      "name": "ASSESS_QUALITY",
+      "description": "Evaluate relevant quality factors without creating a competing confidence vocabulary."
     },
-
     {
-      "name": "CHANGE_EVENT",
-      "description": "Verified change to equipment, configuration, topology, cabling, software, alignment, or another relevant technical state."
+      "step": 9,
+      "name": "ASSESS_DEPENDENCY",
+      "description": "Determine whether the evidence is independent, derived, duplicated, correlated through a common source, or otherwise dependent on other evidence."
     },
-
     {
-      "name": "ENGINEERING_REFERENCE",
-      "description": "Applicable design, engineering, expected value, link budget, drawing, or baseline reference."
+      "step": 10,
+      "name": "ASSESS_RELATIONSHIPS",
+      "description": "Identify corroboration, contradiction, supersession, invalidation, derivation, or other diagnostically relevant evidence relationships."
     },
-
     {
-      "name": "DOCUMENTED_TECHNICAL_FACT",
-      "description": "Technical fact obtained from an applicable authoritative document."
+      "step": 11,
+      "name": "ASSESS_DIAGNOSTIC_EFFECT",
+      "description": "Describe how the evidence may affect applicable hypotheses without directly calculating hypothesis probability."
     },
-
     {
-      "name": "HISTORICAL_CASE_EVIDENCE",
-      "description": "Validated information originating from a previous case and used as contextual experience."
+      "step": 12,
+      "name": "IDENTIFY_EVIDENCE_GAPS",
+      "description": "Identify missing observations whose acquisition could materially discriminate important technical possibilities."
     },
-
     {
-      "name": "DERIVED_EVIDENCE",
-      "description": "Evidence mathematically or logically derived from one or more underlying evidence records."
+      "step": 13,
+      "name": "PROPOSE_EVIDENCE_PERSISTENCE",
+      "description": "Create, update, supersede, invalidate, or retract canonical evd_<UUID> state when warranted."
     },
-
     {
-      "name": "NEGATIVE_EVIDENCE",
-      "description": "Validated absence of an expected condition where that absence has diagnostic meaning."
+      "step": 14,
+      "name": "RETURN_EVIDENCE_RESULT",
+      "description": "Return evidence state, quality, relationships, contradictions, gaps, and material changes to Orchestration."
     }
   ],
 
-  "source_types": [
-    {
-      "name": "EQUIPMENT_DIRECT",
-      "description": "Information retrieved directly from applicable equipment."
-    },
+  "observation_interpretation_boundary": {
+    "principle": "What was observed and what A.R.I.A. believes the observation means shall remain distinguishable.",
 
-    {
-      "name": "NETWORK_MANAGEMENT_SYSTEM",
-      "description": "Information retrieved from an applicable NMS, EMS, controller, or management platform."
-    },
+    "rules": [
+      "Raw observations shall be preserved whenever practical.",
+      "Normalization shall not silently add interpretation.",
+      "Interpretation shall remain attributable to the evidence from which it was derived.",
+      "A screenshot showing a value is evidence of what was displayed, not automatically proof that the underlying physical state matched the display.",
+      "A user statement is evidence of what the user reported and may also describe a technical observation when appropriately represented.",
+      "A diagnostic conclusion derived from evidence is not itself independent evidence.",
+      "Interpretation may change as context changes while the original observation remains historically stable."
+    ]
+  },
 
-    {
-      "name": "TEST_INSTRUMENT",
-      "description": "Information produced by an applicable test instrument."
-    },
+  "provenance": {
+    "principle": "Evidence strength and meaning depend on where the evidence came from and how it was produced.",
 
-    {
-      "name": "CONFIGURATION_EXPORT",
-      "description": "Configuration information exported from applicable equipment or management software."
-    },
+    "consider": [
+      "source identity",
+      "source authority",
+      "observation method",
+      "measurement method",
+      "artifact origin",
+      "collection time",
+      "collection conditions",
+      "related action",
+      "related event",
+      "applicable context",
+      "transformation history",
+      "derivation history"
+    ],
 
-    {
-      "name": "SCREENSHOT",
-      "description": "Image capture of a system, measurement, configuration, alarm, or other displayed information."
-    },
+    "rules": [
+      "Evidence without complete provenance may still be useful when limitations are preserved.",
+      "Unknown provenance shall not be silently converted into trusted provenance.",
+      "Evidence derived from another evidence item shall preserve parent references.",
+      "A copied artifact shall not automatically become independent evidence.",
+      "Evidence provenance shall remain available after supersession or invalidation."
+    ]
+  },
 
-    {
-      "name": "PHOTO",
-      "description": "Photographic evidence of physical equipment, installation, routing, condition, or environment."
-    },
+  "normalization": {
+    "principle": "Normalization improves comparability while preserving the original technical observation.",
 
-    {
-      "name": "VIDEO",
-      "description": "Video evidence of physical or operational conditions."
-    },
+    "may_normalize": [
+      "units",
+      "timestamps",
+      "numeric representation",
+      "identifier formatting",
+      "recognized technical abbreviations",
+      "controlled terminology",
+      "boolean representation",
+      "structured configuration representation"
+    ],
 
-    {
-      "name": "USER",
-      "description": "Information provided by a human participant."
-    },
+    "rules": [
+      "Raw and normalized values shall remain distinguishable when both are material.",
+      "Unit conversion shall preserve the original unit and canonical measurement relationship when applicable.",
+      "Normalization shall not increase evidence certainty.",
+      "Ambiguous values shall remain ambiguous.",
+      "Normalization shall not manufacture missing precision."
+    ]
+  },
 
-    {
-      "name": "MANUFACTURER_DOCUMENT",
-      "description": "Manufacturer-issued technical documentation."
-    },
+  "verification_reasoning": {
+    "principle": "Verification describes what has been checked about an evidence item without turning verification into a second persistence-status system.",
 
-    {
-      "name": "ENGINEERING_DOCUMENT",
-      "description": "Applicable engineering design or reference documentation."
-    },
+    "consider": [
+      "source verified",
+      "artifact verified",
+      "measurement method verified",
+      "timestamp verified",
+      "subject identity verified",
+      "context verified",
+      "value reproduced",
+      "observation independently repeated"
+    ],
 
-    {
-      "name": "CUSTOMER_STANDARD",
-      "description": "Applicable customer specification, standard, procedure, or acceptance criterion."
-    },
+    "rules": [
+      "Verification shall use the verification structure provided by evidence.schema.json.",
+      "An unverified evidence item may remain ACTIVE.",
+      "Verified provenance does not prove the technical interpretation.",
+      "Independent reproduction may strengthen confidence but does not automatically establish cause.",
+      "Verification limitations shall remain explicit."
+    ]
+  },
 
-    {
-      "name": "ARIA_CALCULATION",
-      "description": "A deterministic calculation performed by ARIA from traceable source evidence."
-    },
+  "quality_assessment": {
+    "principle": "Evidence quality is multidimensional and shall feed the shared confidence architecture without creating a second confidence contract.",
 
-    {
-      "name": "ARIA_INTERPRETATION",
-      "description": "An interpretation produced by ARIA from source information. This source type shall not be treated as independent corroborating evidence."
-    },
-
-    {
-      "name": "HISTORICAL_CASE",
-      "description": "Evidence originating from a previous diagnostic case."
-    }
-  ],
-
-  "evidence_statuses": [
-    {
-      "name": "RECEIVED",
-      "description": "Evidence has been received but has not completed validation."
-    },
-
-    {
-      "name": "VALIDATING",
-      "description": "Evidence is being checked for provenance, interpretation, applicability, reliability, and consistency."
-    },
-
-    {
-      "name": "VALID",
-      "description": "Evidence is sufficiently valid for diagnostic use at its assigned confidence."
-    },
-
-    {
-      "name": "QUESTIONABLE",
-      "description": "Evidence may be useful but contains unresolved reliability, applicability, interpretation, or provenance concerns."
-    },
-
-    {
-      "name": "CONTRADICTED",
-      "description": "Evidence materially conflicts with other credible evidence and the conflict remains unresolved."
-    },
-
-    {
-      "name": "SUPERSEDED",
-      "description": "A newer or more authoritative evidence record represents the applicable technical state."
-    },
-
-    {
-      "name": "INVALID",
-      "description": "Evidence is known to be technically unreliable, incorrectly interpreted, inapplicable, corrupted, or otherwise unsuitable for diagnostic use."
-    },
-
-    {
-      "name": "EXPIRED",
-      "description": "Evidence was valid when obtained but no longer reliably represents the current technical state."
-    }
-  ],
-
-  "evidence_quality_dimensions": [
-    {
-      "name": "SOURCE_RELIABILITY",
-      "description": "Expected reliability of the originating source for this specific type of information.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    },
-
-    {
-      "name": "DIRECTNESS",
-      "description": "Degree to which the evidence directly observes or measures the condition being evaluated.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    },
-
-    {
-      "name": "APPLICABILITY",
-      "description": "Degree to which the evidence applies to the exact equipment, endpoint, configuration, time, topology, and technical question.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    },
-
-    {
-      "name": "FRESHNESS",
-      "description": "Degree to which the evidence remains representative of the current technical state.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    },
-
-    {
-      "name": "INDEPENDENCE",
-      "description": "Degree to which the evidence provides information independent from other evidence already considered.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    },
-
-    {
-      "name": "PROVENANCE_QUALITY",
-      "description": "Degree to which origin, custody, transformations, and interpretation history are known.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    },
-
-    {
-      "name": "EXTRACTION_CONFIDENCE",
-      "description": "Confidence that information was correctly extracted from its source.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    },
-
-    {
-      "name": "MEASUREMENT_QUALITY",
-      "description": "Quality of the measurement process, instrument, method, calibration state, and operating conditions.",
-      "range": {
-        "minimum": 0.0,
-        "maximum": 1.0
-      }
-    }
-  ],
-
-  "overall_confidence_model": {
-    "method": "CONFIGURABLE_WEIGHTED_MODEL",
-
-    "description": "Evidence confidence shall combine relevant evidence-quality dimensions without implying that all dimensions are equally important in every context.",
-
-    "candidate_inputs": [
-      "source_reliability",
+    "candidate_factors": [
       "directness",
-      "applicability",
+      "source reliability",
+      "provenance quality",
+      "measurement quality",
+      "verification quality",
+      "context applicability",
       "freshness",
-      "provenance_quality",
-      "extraction_confidence",
-      "measurement_quality"
+      "specificity",
+      "reproducibility",
+      "independence",
+      "artifact integrity",
+      "collection conditions"
     ],
 
     "rules": [
-      "Independence shall primarily control corroboration weight rather than whether the evidence itself is true.",
-      "A severe weakness in a critical dimension may cap overall evidence confidence.",
-      "Exact weighting shall remain configurable and calibratable.",
-      "ARIA shall preserve component scores rather than only the combined score."
+      "Not every quality factor applies to every evidence type.",
+      "Evidence Engine shall not require all factors to be scored.",
+      "Quality assessment shall not imply false numerical precision.",
+      "Applicable shared confidence levels and structures shall be used where confidence is persisted.",
+      "Evidence type alone shall not determine confidence.",
+      "Direct evidence may still be poor quality.",
+      "Indirect evidence may still be useful when its limitations are understood.",
+      "High-quality evidence may still be irrelevant if context does not match."
     ]
   },
 
-  "source_reliability": {
-    "description": "Source reliability is contextual. No source type is universally authoritative for every technical question.",
+  "freshness": {
+    "principle": "Evidence applicability may change as the technical system changes.",
 
-    "rules": [
-      "Direct equipment data may be highly reliable for displayed state while still being misleading if the wrong endpoint or interface is being viewed.",
-      "A screenshot may strongly establish what was displayed but not necessarily whether the displayed value represents physical reality.",
-      "A photograph may strongly establish visible routing but may not establish internal configuration.",
-      "A user statement may be highly reliable when the user directly performed and observed the action.",
-      "Manufacturer documentation may strongly establish intended product behavior but does not prove the current equipment is behaving accordingly.",
-      "Historical experience may influence probability but does not establish the current case condition."
-    ]
-  },
-
-  "user_report_handling": {
-    "description": "Human statements are legitimate evidence but shall preserve attribution and distinguish observation from interpretation.",
-
-    "report_components": [
-      "REPORTER",
-      "RAW_STATEMENT",
-      "CLAIMED_OBSERVATION",
-      "CLAIMED_ACTION",
-      "CLAIMED_RESULT",
-      "REPORTER_INTERPRETATION",
-      "ARIA_INTERPRETATION"
+    "consider": [
+      "observed_at",
+      "effective technical state",
+      "configuration changes",
+      "component changes",
+      "software or firmware changes",
+      "topology changes",
+      "environment changes",
+      "service-state changes",
+      "corrective actions performed after observation"
     ],
 
     "rules": [
-      "ARIA shall preserve what the user actually reported when practical.",
-      "A user's technical conclusion shall not automatically become a confirmed fact.",
-      "The statement 'I checked the configuration and it is correct' contains both a claimed action and a claimed interpretation.",
-      "ARIA may ask for direct supporting evidence when doing so has sufficient diagnostic value.",
-      "Validated user-specific history may modify expected report reliability for specific action types, but shall not become a universal credibility score."
+      "Old evidence is not automatically invalid.",
+      "Recent evidence is not automatically superior.",
+      "Freshness matters when the represented technical property could have changed.",
+      "Historical evidence shall remain available for historical reconstruction.",
+      "Evidence collected before a material context change may require reduced current applicability rather than invalidation."
     ]
   },
 
-  "artifact_interpretation": {
-    "description": "Information extracted from screenshots, photos, videos, documents, configuration files, and logs shall preserve both the original artifact and the interpreted evidence.",
+  "independence_and_dependency": {
+    "principle": "Multiple evidence records increase corroboration only to the extent they represent genuinely independent information.",
 
-    "rules": [
-      "The original artifact shall remain linked to all derived evidence.",
-      "Multiple facts extracted from one artifact may exist as separate evidence records while remaining members of the same provenance family.",
-      "Extraction confidence shall be recorded when interpretation is uncertain.",
-      "ARIA shall distinguish text visibly present in an artifact from conclusions inferred from that text.",
-      "If an artifact is unreadable or ambiguous, ARIA shall preserve uncertainty rather than invent values."
-    ]
-  },
-
-  "provenance_model": {
-    "required_fields": [
-      "origin_type",
-      "origin_id",
-      "capture_method",
-      "transformations",
-      "derived_from",
-      "provenance_family_id"
-    ],
-
-    "rules": [
-      "Every evidence record shall have traceable origin.",
-      "Derived evidence shall identify all underlying evidence records.",
-      "Transformations shall not sever linkage to original source material.",
-      "Evidence sharing a common underlying source shall be identifiable as dependent."
-    ]
-  },
-
-  "independence_model": {
-    "description": "ARIA shall distinguish corroboration from repetition.",
-
-    "relationship_types": [
+    "dependency_classes": [
       "INDEPENDENT",
       "PARTIALLY_DEPENDENT",
-      "SAME_SOURCE",
-      "DERIVED_FROM",
-      "DUPLICATE",
+      "DERIVED",
+      "DUPLICATE_REPRESENTATION",
+      "COMMON_SOURCE",
       "UNKNOWN_DEPENDENCY"
     ],
 
-    "examples": [
-      {
-        "evidence_a": "Technician reports RSL of -58 dBm after reading radio GUI.",
-        "evidence_b": "Screenshot of the same GUI showing -58 dBm.",
-        "relationship": "PARTIALLY_DEPENDENT"
-      },
+    "rules": [
+      "Two screenshots of the same underlying display are not automatically independent.",
+      "A calculated value derived from a measurement is dependent on that measurement.",
+      "A summary generated from an artifact is dependent on the artifact.",
+      "Two people repeating information from the same original source are not fully independent.",
+      "Independent observations may provide stronger corroboration than dependent observations.",
+      "Partially dependent evidence may provide limited additional support.",
+      "Unknown dependency shall be treated conservatively.",
+      "Dependency affects corroborative weight but does not automatically invalidate the evidence."
+    ]
+  },
 
-      {
-        "evidence_a": "Radio GUI reports RSL of -58 dBm.",
-        "evidence_b": "Independent calibrated field measurement supports the same condition.",
-        "relationship": "INDEPENDENT"
-      },
+  "duplicate_detection": {
+    "principle": "Duplicate representations shall not create artificial evidence volume.",
 
-      {
-        "evidence_a": "Screenshot uploaded twice.",
-        "evidence_b": "Second copy of same screenshot.",
-        "relationship": "DUPLICATE"
-      }
+    "consider": [
+      "same source artifact",
+      "same measurement identity",
+      "same timestamp and technical value",
+      "same underlying system event",
+      "same user report copied across channels",
+      "same log line represented in multiple extracts",
+      "same screenshot embedded in multiple documents",
+      "derived summaries of the same underlying observation"
     ],
 
     "rules": [
-      "Duplicate evidence shall not increase corroboration.",
-      "Derived evidence shall not independently corroborate its source.",
-      "Partially dependent evidence may add limited confidence but shall not receive full independent weight.",
-      "Unknown dependency shall be treated conservatively."
-    ]
-  },
-
-  "evidence_relationships": [
-    {
-      "name": "SUPPORTS",
-      "description": "Evidence increases support for another evidence interpretation, hypothesis, finding, or conclusion."
-    },
-
-    {
-      "name": "CONTRADICTS",
-      "description": "Evidence is materially inconsistent with another evidence record, hypothesis, finding, or conclusion."
-    },
-
-    {
-      "name": "CORROBORATES",
-      "description": "Independent or sufficiently independent evidence supports the same material condition."
-    },
-
-    {
-      "name": "REFINES",
-      "description": "Evidence provides greater specificity without invalidating the broader evidence."
-    },
-
-    {
-      "name": "SUPERSEDES",
-      "description": "Evidence more accurately represents the applicable current state than an older record."
-    },
-
-    {
-      "name": "DERIVED_FROM",
-      "description": "Evidence is calculated or interpreted from another evidence record."
-    },
-
-    {
-      "name": "DUPLICATES",
-      "description": "Evidence represents materially the same underlying information."
-    },
-
-    {
-      "name": "VALIDATES",
-      "description": "Evidence verifies the correctness or expected outcome of an action, measurement, correction, or prior observation."
-    },
-
-    {
-      "name": "INVALIDATES",
-      "description": "Evidence demonstrates that another evidence record or interpretation is unreliable or incorrect."
-    }
-  ],
-
-  "contradiction_handling": {
-    "enabled": true,
-
-    "process": [
-      "DETECT_CONFLICT",
-      "IDENTIFY_EVIDENCE_FAMILIES",
-      "COMPARE_CONTEXT",
-      "COMPARE_TIMESTAMPS",
-      "COMPARE_SOURCE_RELIABILITY",
-      "COMPARE_DIRECTNESS",
-      "COMPARE_PROVENANCE",
-      "CHECK_FOR_STATE_CHANGE",
-      "ATTEMPT_RECONCILIATION",
-      "PRESERVE_UNRESOLVED_CONTRADICTION"
-    ],
-
-    "rules": [
-      "Contradictory evidence shall not automatically cancel mathematically.",
-      "Apparent contradiction may represent a technical state change over time.",
-      "Evidence from different endpoints, radios, paths, or interfaces may appear contradictory while both are valid.",
-      "ARIA shall attempt to determine whether evidence actually refers to the same technical state before declaring conflict.",
-      "Unresolved contradictions shall reduce diagnostic confidence."
-    ]
-  },
-
-  "temporal_evidence": {
-    "description": "Evidence validity may depend on when it was observed relative to configuration changes, component changes, outages, weather, corrective actions, and other events.",
-
-    "rules": [
-      "Evidence shall preserve observed time when known.",
-      "Evidence obtained before a material state change shall not automatically represent the post-change state.",
-      "Older evidence remains historically valid even when superseded for current-state reasoning.",
-      "Time-sensitive evidence may expire without being deleted.",
-      "Stable technical facts shall not expire solely due to age."
-    ]
-  },
-
-  "negative_evidence": {
-    "description": "Absence of an expected observation may have diagnostic value only when the observation would reasonably have been expected and detectable.",
-
-    "rules": [
-      "Failure to observe something is not automatically evidence of absence.",
-      "Negative evidence requires an expectation model.",
-      "Detection capability must be sufficient.",
-      "A missing alarm is weak evidence against a failure when the failure does not reliably generate that alarm.",
-      "A clean discriminating test may strongly weaken a hypothesis when the hypothesis predicts a detectable abnormal result."
+      "Duplicate evidence may remain separately persisted when operationally necessary.",
+      "Duplicate evidence shall not receive independent corroborative weight.",
+      "Duplicate detection shall preserve traceability to all representations.",
+      "Similarity alone shall not prove duplication when independent observations could legitimately agree."
     ]
   },
 
   "derived_evidence": {
-    "description": "ARIA may create deterministic derived evidence from validated source evidence.",
-
-    "examples": [
-      "Calculated Main-to-Diversity RSL delta",
-      "Difference between engineered and measured RSL",
-      "Elapsed time between configuration change and failure onset",
-      "Calculated fade margin"
-    ],
+    "principle": "Derived evidence may be diagnostically valuable but shall remain traceable to all evidence required to reproduce the derivation.",
 
     "rules": [
-      "Derived evidence shall preserve formulas and source evidence IDs.",
-      "Derived evidence confidence shall not exceed what is justified by its source evidence.",
-      "A calculation from uncertain inputs remains uncertain.",
-      "Derived evidence shall not independently corroborate its own source data."
+      "Derived evidence shall reference its parent evidence.",
+      "Derived evidence shall preserve the derivation method when material.",
+      "Derived evidence shall not be treated as independent corroboration of its own parents.",
+      "If a required parent is invalidated, dependent derived evidence shall be reevaluated.",
+      "Derived evidence may combine multiple independent parents without becoming independent of those parents.",
+      "A.R.I.A.'s narrative summary of evidence is not automatically a new evidence item."
     ]
   },
 
-  "evidence_to_hypothesis_application": {
-    "required_fields": [
-      "evidence_id",
-      "hypothesis_id",
-      "relationship",
-      "raw_effect",
-      "effective_effect",
-      "applicability",
-      "confidence",
-      "reason"
+  "negative_evidence": {
+    "principle": "The absence of an expected observation can be evidence when the observation would reasonably have been expected under the relevant conditions.",
+
+    "rules": [
+      "Failure to observe something is not automatically evidence of absence.",
+      "Negative evidence requires an expectation that the condition would have been observable.",
+      "Observation method sensitivity and coverage shall be considered.",
+      "Negative evidence shall preserve the conditions under which the absence was observed.",
+      "Negative evidence may weaken a hypothesis without proving an alternative."
+    ]
+  },
+
+  "corroboration": {
+    "principle": "Corroboration increases support only when evidence items provide materially distinct information.",
+
+    "consider": [
+      "independence",
+      "different observation methods",
+      "different sources",
+      "different times",
+      "different technical vantage points",
+      "reproducibility",
+      "context compatibility"
     ],
 
     "rules": [
-      "The same evidence may affect different hypotheses differently.",
-      "Evidence may strongly support one hypothesis while being neutral to another.",
+      "Evidence count alone shall not determine corroboration.",
+      "Dependent evidence shall receive reduced additional weight.",
+      "Independent evidence agreeing on a material technical property may strengthen confidence.",
+      "Corroboration does not automatically establish causality.",
+      "Corroboration relationships shall remain explainable."
+    ]
+  },
+
+  "contradiction_handling": {
+    "principle": "Contradictory evidence shall be preserved and investigated rather than silently discarded.",
+
+    "process": [
+      "DETECT_CONFLICT",
+      "IDENTIFY_EVIDENCE_FAMILIES",
+      "ASSESS_CONTEXT_DIFFERENCE",
+      "ASSESS_TEMPORAL_DIFFERENCE",
+      "ASSESS_SOURCE_AND_METHOD",
+      "ASSESS_DEPENDENCY",
+      "ASSESS_POSSIBLE_STATE_CHANGE",
+      "ASSESS_POSSIBLE_INVALIDATION",
+      "PRESERVE_UNRESOLVED_CONTRADICTION"
+    ],
+
+    "rules": [
+      "Contradiction is not a persistence status.",
+      "Two evidence items may conflict because the technical system changed between observations.",
+      "Context differences may explain apparent contradiction.",
+      "Measurement error may explain contradiction but shall not be assumed without support.",
+      "The evidence favoring the leading hypothesis shall not automatically win.",
+      "Unresolved contradiction shall remain visible to Hypothesis, Probability, Uncertainty, Decision, and Validation through Orchestration.",
+      "Contradictory evidence shall not be deleted."
+    ]
+  },
+
+  "diagnostic_effect": {
+    "principle": "Evidence may affect hypotheses in different ways without Evidence Engine owning hypothesis probability.",
+
+    "effect_classes": [
+      "SUPPORTS",
+      "WEAKENS",
+      "CONTRADICTS",
+      "DISCRIMINATES",
+      "CONTEXTUALIZES",
+      "NO_MATERIAL_EFFECT",
+      "EFFECT_UNKNOWN"
+    ],
+
+    "rules": [
+      "Diagnostic effect shall be evaluated relative to a specific hypothesis or technical question.",
+      "The same evidence may support one hypothesis and contradict another.",
       "Evidence may weaken multiple competing hypotheses simultaneously.",
-      "ARIA shall record why evidence has a particular diagnostic effect."
+      "Evidence Engine shall explain the technical basis of the effect.",
+      "Probability Engine remains authoritative for probability updates.",
+      "Evidence Engine shall not convert effect classes directly into fixed probability changes."
     ]
   },
 
-  "evidence_request_policy": {
-    "description": "ARIA shall request additional evidence according to expected diagnostic utility rather than demanding exhaustive information.",
+  "evidence_relationships": {
+    "relationship_classes": [
+      "CORROBORATES",
+      "CONTRADICTS",
+      "DERIVED_FROM",
+      "DUPLICATES",
+      "SUPERSEDES",
+      "INVALIDATES",
+      "CONTEXTUALIZES",
+      "TEMPORALLY_RELATED",
+      "COMMON_SOURCE"
+    ],
 
     "rules": [
-      "Do not request evidence already available and sufficiently reliable.",
-      "Request higher-quality evidence when existing evidence uncertainty materially affects diagnosis.",
-      "Prefer evidence capable of discriminating between important competing hypotheses.",
-      "The burden of obtaining evidence shall be considered by the routing engine.",
-      "ARIA may accept lower-confidence evidence temporarily when higher-quality evidence is impractical."
+      "Relationship classes describe Evidence reasoning and shall not replace canonical relationship identity when a persisted relationship object is required.",
+      "Relationships shall remain directional when direction is technically meaningful.",
+      "SUPERSEDES is distinct from INVALIDATES.",
+      "CONTRADICTS is distinct from INVALIDATES.",
+      "DERIVED_FROM implies dependency.",
+      "DUPLICATES implies no independent corroborative weight."
     ]
   },
 
-  "evidence_supersession": {
+  "supersession": {
+    "principle": "Supersession preserves history while identifying evidence that more appropriately represents the applicable current technical state.",
+
     "rules": [
       "Superseded evidence shall remain in case history.",
-      "New evidence shall supersede older evidence only when both represent the same technical property and the newer evidence more appropriately represents the applicable state.",
+      "New evidence shall supersede older evidence only when they represent sufficiently comparable technical properties and the newer evidence more appropriately represents the applicable state.",
       "Supersession is not invalidation.",
-      "Historical reasoning shall remain reconstructable using the evidence available at the time."
+      "Supersession shall preserve supersedes_evidence_ids and superseded_by_evidence_id according to the Evidence Schema.",
+      "Historical reasoning shall remain reconstructable using the evidence available at the time.",
+      "A newer observation shall not automatically supersede an older observation when both remain relevant to a changing or intermittent condition."
     ]
   },
 
-  "evidence_invalidation": {
-    "valid_reasons": [
-      "WRONG_EQUIPMENT",
-      "WRONG_ENDPOINT",
-      "WRONG_PATH",
-      "WRONG_TIMESTAMP",
-      "MISREAD_VALUE",
-      "CORRUPTED_ARTIFACT",
-      "INVALID_MEASUREMENT_METHOD",
-      "INSTRUMENT_PROBLEM",
-      "INCORRECT_EXTRACTION",
-      "SOURCE_RETRACTED",
-      "PROVENANCE_FAILURE",
-      "OTHER_VALIDATED_REASON"
+  "invalidation": {
+    "principle": "Invalidation means an evidence item is no longer suitable to serve as valid evidence for the represented observation or interpretation.",
+
+    "possible_bases": [
+      "corrupted artifact",
+      "wrong subject",
+      "wrong measurement association",
+      "demonstrated collection error",
+      "invalid measurement method",
+      "misidentified source",
+      "fabricated or falsified content",
+      "incorrect transformation",
+      "broken derivation dependency"
     ],
 
     "rules": [
-      "Invalidation requires a recorded reason.",
-      "Invalid evidence shall not be deleted.",
-      "Probability changes caused by invalid evidence shall be recalculated through a new auditable event.",
-      "ARIA shall preserve when and why the evidence was originally believed."
+      "Contradiction alone does not invalidate evidence.",
+      "Age alone does not invalidate evidence.",
+      "Low confidence alone does not invalidate evidence.",
+      "Invalidated evidence shall remain historically traceable.",
+      "Dependent evidence shall be reevaluated when a parent is invalidated.",
+      "Invalidation reason shall remain explainable."
     ]
   },
 
-  "example": {
-    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+  "retraction": {
+    "principle": "Retraction preserves that an evidence item was withdrawn without erasing its historical role.",
 
-    "evidence": [
-      {
-        "id": "E-001",
-        "type": "USER_REPORT",
-        "observation": "Technician reports Main RSL -44 dBm and Diversity RSL -63 dBm.",
-        "overall_evidence_confidence": 0.72
-      },
-
-      {
-        "id": "E-002",
-        "type": "VISUAL_OBSERVATION",
-        "source": "SCREENSHOT",
-        "observation": "Radio management screenshot displays Main -44.2 dBm and Diversity -63.1 dBm.",
-        "overall_evidence_confidence": 0.94,
-        "relationship_to_E001": "PARTIALLY_DEPENDENT"
-      },
-
-      {
-        "id": "E-003",
-        "type": "DERIVED_EVIDENCE",
-        "observation": "Main-to-Diversity RSL delta equals 18.9 dB.",
-        "derived_from": [
-          "E-002"
-        ],
-        "relationship_to_E002": "DERIVED_FROM"
-      }
-    ],
-
-    "interpretation": "ARIA now has strong evidence that the RSL imbalance exists, but none of these three records independently establishes why it exists."
+    "rules": [
+      "Retraction shall use the canonical RETRACTED persistence status.",
+      "Retraction shall preserve provenance and prior historical use.",
+      "Retraction is distinct from supersession.",
+      "Retraction is distinct from invalidation.",
+      "Downstream reasoning materially dependent on retracted evidence shall be reevaluated through Orchestration."
+    ]
   },
 
-  "semantic_rules": [
-    {
-      "rule_id": "EVID-RULE-001",
-      "rule": "Evidence of a symptom is not automatically evidence of its cause."
-    },
+  "human_report_processing": {
+    "principle": "Human reports may contain observations, interpretations, diagnoses, chronology, uncertainty, and requested actions that must remain distinguishable.",
 
-    {
-      "rule_id": "EVID-RULE-002",
-      "rule": "ARIA shall preserve the distinction between observation, interpretation, inference, and conclusion."
-    },
+    "extract": [
+      "what the person directly observed",
+      "what the person was told",
+      "what the person believes caused the condition",
+      "what changed",
+      "when it occurred",
+      "what actions were already attempted",
+      "what outcomes were observed",
+      "what remains uncertain"
+    ],
 
-    {
-      "rule_id": "EVID-RULE-003",
-      "rule": "Every material evidence record shall preserve provenance."
-    },
+    "rules": [
+      "A person's proposed diagnosis shall not be persisted as though it were a direct observation.",
+      "Reported technical values shall preserve their reported provenance.",
+      "A technically skilled reporter may justify greater source confidence but not automatic truth.",
+      "Repeated reports derived from the same original observation shall not become independent evidence."
+    ]
+  },
 
-    {
-      "rule_id": "EVID-RULE-004",
-      "rule": "Evidence quality shall be evaluated in relation to the technical question it is being used to answer."
-    },
+  "artifact_processing": {
+    "principle": "Artifacts are evidence-bearing objects whose contents may generate one or more canonical evidence records.",
 
-    {
-      "rule_id": "EVID-RULE-005",
-      "rule": "Repeated representations of the same underlying information shall not be treated as independent corroboration."
-    },
+    "artifact_examples": [
+      "log",
+      "screenshot",
+      "photograph",
+      "video",
+      "configuration export",
+      "test report",
+      "document",
+      "packet capture",
+      "system report"
+    ],
 
-    {
-      "rule_id": "EVID-RULE-006",
-      "rule": "ARIA's interpretation of evidence shall not become an independent source of evidence."
-    },
+    "rules": [
+      "The original artifact shall remain referenced.",
+      "Extracted observations shall preserve artifact provenance.",
+      "Multiple observations extracted from one artifact may be distinct evidence while remaining source-dependent.",
+      "Artifact interpretation shall distinguish visible content from inferred meaning.",
+      "Artifact corruption or incompleteness shall be preserved as a limitation."
+    ]
+  },
 
-    {
-      "rule_id": "EVID-RULE-007",
-      "rule": "Contradictory evidence shall be preserved and investigated rather than silently discarded."
-    },
+  "measurement_processing": {
+    "principle": "Measurements should reference canonical Measurement objects when the measurement architecture provides canonical identity.",
 
-    {
-      "rule_id": "EVID-RULE-008",
-      "rule": "Evidence may be valid historically while no longer representing the current technical state."
-    },
+    "rules": [
+      "Evidence shall not recreate canonical measurement identity.",
+      "Measurement value, unit, method, instrument, tolerance, and timestamp should remain available through the applicable canonical measurement structure.",
+      "Evidence may interpret a measurement without changing the underlying measured value.",
+      "Converted units shall not create independent evidence.",
+      "Measurement uncertainty shall remain distinct from diagnostic uncertainty."
+    ]
+  },
 
-    {
-      "rule_id": "EVID-RULE-009",
-      "rule": "A screenshot establishes what was displayed with greater confidence than it establishes the physical mechanism responsible for the display."
-    },
+  "evidence_gap_reasoning": {
+    "principle": "Evidence Engine identifies missing evidence that could materially improve discrimination; it does not select the Action used to obtain it.",
 
-    {
-      "rule_id": "EVID-RULE-010",
-      "rule": "A user report may be diagnostically valuable without being treated as unquestionable fact."
-    },
+    "gap_outputs": [
+      "missing_observation",
+      "technical_question",
+      "hypotheses_discriminated",
+      "expected_information_value",
+      "required_context",
+      "preferred_evidence_characteristics",
+      "known_collection_constraints"
+    ],
 
-    {
-      "rule_id": "EVID-RULE-011",
-      "rule": "User-specific evidence reliability shall be contextual to evidence and action type rather than represented as a universal personal credibility score."
-    },
+    "rules": [
+      "Do not identify evidence as missing when sufficiently applicable evidence already exists.",
+      "Prefer gaps capable of discriminating important competing hypotheses.",
+      "A gap may remain unresolved when acquisition burden exceeds diagnostic value.",
+      "Evidence Engine shall not choose the collection Action.",
+      "Decision Engine determines whether obtaining additional evidence is worth the required Action.",
+      "Routing Engine does not own evidence-acquisition utility scoring.",
+      "Orchestration coordinates reevaluation after new evidence arrives."
+    ]
+  },
 
-    {
-      "rule_id": "EVID-RULE-012",
-      "rule": "Direct current evidence may outweigh historical patterns when evidence quality and applicability justify doing so."
-    },
+  "context_boundary": {
+    "principle": "Context determines evidence applicability; Evidence remains responsible for evidence-specific interpretation and quality.",
 
-    {
-      "rule_id": "EVID-RULE-013",
-      "rule": "Negative evidence has diagnostic value only when the absent condition was reasonably expected and detectable."
-    },
+    "rules": [
+      "Evidence Engine shall consume canonical ctx_<UUID> context where applicable.",
+      "Evidence Engine shall not recreate the Context Engine.",
+      "Context mismatch may reduce applicability without invalidating the observation.",
+      "Evidence collected under historical context shall preserve that historical applicability.",
+      "Material context uncertainty shall remain visible in evidence assessment."
+    ]
+  },
 
-    {
-      "rule_id": "EVID-RULE-014",
-      "rule": "Derived evidence shall remain traceable to every source value required to reproduce it."
-    },
+  "hypothesis_boundary": {
+    "principle": "Evidence informs hypotheses but does not own hypothesis state or probability.",
 
-    {
-      "rule_id": "EVID-RULE-015",
-      "rule": "Invalidation, contradiction, expiration, and supersession are distinct evidence states and shall not be conflated."
-    },
+    "rules": [
+      "Evidence Engine may describe whether evidence supports, weakens, contradicts, or discriminates hypotheses.",
+      "Hypothesis Engine owns hypothesis reasoning semantics.",
+      "Probability Engine owns probability updates.",
+      "Evidence Engine shall not confirm a hypothesis solely because supporting evidence exists.",
+      "Evidence Engine shall not eliminate a hypothesis solely through a fixed evidence-effect rule."
+    ]
+  },
 
-    {
-      "rule_id": "EVID-RULE-016",
-      "rule": "Evidence shall not be deleted merely because it was incorrect; its role in prior reasoning shall remain auditable."
-    },
+  "decision_boundary": {
+    "principle": "Evidence identifies information needs; Decision determines which candidate Action should be selected.",
 
-    {
-      "rule_id": "EVID-RULE-017",
-      "rule": "When evidence quality cannot be established, ARIA shall represent that uncertainty explicitly."
-    },
+    "rules": [
+      "Evidence Engine may identify the expected diagnostic value of additional evidence.",
+      "Evidence Engine may identify collection constraints known from the evidence requirement.",
+      "Decision Engine compares diagnostic value with action cost, burden, risk, service impact, feasibility, and other decision factors.",
+      "Evidence Engine shall not select act_<UUID>.",
+      "Evidence Engine shall not bypass Decision by directly requesting execution of a collection procedure."
+    ]
+  },
 
-    {
-      "rule_id": "EVID-RULE-018",
-      "rule": "The language model may extract or interpret evidence but deterministic ARIA services shall control authoritative evidence records and relationships."
-    },
+  "routing_boundary": {
+    "principle": "Routing manages progression around selected Actions and does not own evidence utility.",
 
-    {
-      "rule_id": "EVID-RULE-019",
-      "rule": "ARIA shall seek better evidence when the expected diagnostic benefit justifies the additional burden."
-    },
+    "rules": [
+      "Evidence Engine shall not create route steps.",
+      "Evidence Engine shall not select next hops.",
+      "Evidence Engine shall not reroute.",
+      "Routing may expose route state relevant to evidence collection.",
+      "New evidence may cause Orchestration to determine that route reevaluation is required."
+    ]
+  },
 
+  "validation_boundary": {
+    "principle": "Validation may use evidence to determine whether required technical outcomes have been demonstrated; Evidence Engine does not own validation semantics.",
+
+    "rules": [
+      "Validation evidence remains canonical Evidence.",
+      "Evidence quality and applicability remain relevant during validation.",
+      "Validation Engine determines whether applicable validation criteria are satisfied.",
+      "Successful validation does not retroactively make all prior interpretations correct.",
+      "Failed validation may generate new evidence and trigger renewed reasoning."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Case State projects which evidence is currently material to the case.",
+
+    "rules": [
+      "Evidence Engine owns evidence reasoning.",
+      "Case State owns assembled case projection.",
+      "Case State may project active, superseded, invalidated, and material evidence references.",
+      "Evidence Engine shall not directly change lifecycle status.",
+      "Material evidence change shall be reported to Orchestration for case-state reconciliation."
+    ]
+  },
+
+  "orchestration_boundary": {
+    "principle": "Evidence Engine returns evidence reasoning results; Orchestration coordinates downstream effects.",
+
+    "rules": [
+      "Evidence Engine shall not directly invoke every downstream engine.",
+      "Material new evidence shall be reported to Orchestration.",
+      "Evidence invalidation, retraction, supersession, contradiction, or material reinterpretation shall be reported to Orchestration.",
+      "Orchestration determines whether Context, Hypothesis, Probability, Uncertainty, Decision, Routing, Validation, or Case State require reevaluation.",
+      "Evidence Engine shall not publish complete Case State."
+    ]
+  },
+
+  "historical_integrity": {
+    "principle": "Evidence history shall preserve what was available to reasoning at each historical point.",
+
+    "rules": [
+      "Superseded evidence shall remain historically available.",
+      "Invalidated evidence shall remain historically available with invalidation state.",
+      "Retracted evidence shall remain historically available with retraction state.",
+      "Later evidence shall not rewrite earlier observations.",
+      "Later interpretation may supersede an earlier interpretation without altering the original raw observation.",
+      "Historical decisions shall remain reconstructable from evidence available at the time."
+    ]
+  },
+
+  "evidence_result": {
+    "recommended_outputs": [
+      "evidence_id",
+      "proposed_evidence_record",
+      "classification",
+      "provenance_assessment",
+      "verification_assessment",
+      "quality_assessment",
+      "freshness_assessment",
+      "context_applicability",
+      "dependency_assessment",
+      "related_evidence_ids",
+      "diagnostic_effects",
+      "contradictions",
+      "supersession_recommendation",
+      "invalidation_recommendation",
+      "evidence_gaps",
+      "material_change_detected",
+      "reasoning_summary"
+    ],
+
+    "rules": [
+      "Outputs shall distinguish persisted state from proposed state.",
+      "Outputs shall preserve uncertainty.",
+      "Outputs shall not claim hypothesis probability.",
+      "Outputs shall not select Actions.",
+      "Outputs shall return material changes to Orchestration."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "rule_id": "EVID-RULE-020",
-      "rule": "ARIA shall never convert repetition, confidence of tone, or agreement into technical corroboration."
+      "failure_mode": "SECOND_EVIDENCE_REGISTRY",
+      "description": "Evidence Engine defines a competing evidence-type vocabulary.",
+      "prevention": "Consume Core/Registries/evidence_types.json."
+    },
+    {
+      "failure_mode": "SECOND_EVIDENCE_SCHEMA",
+      "description": "Evidence Engine defines a competing persistence record.",
+      "prevention": "Persist through Core/Schemas/evidence.schema.json."
+    },
+    {
+      "failure_mode": "STATUS_OVERLOAD",
+      "description": "Persistence status is used to encode contradiction, confidence, diagnostic support, or workflow state.",
+      "prevention": "Use only canonical persistence status semantics."
+    },
+    {
+      "failure_mode": "SECOND_CONFIDENCE_SYSTEM",
+      "description": "Evidence Engine creates a competing mandatory confidence vocabulary or scoring contract.",
+      "prevention": "Use shared confidence architecture and evidence-specific quality factors."
+    },
+    {
+      "failure_mode": "INTERPRETATION_AS_OBSERVATION",
+      "description": "A.R.I.A.'s interpretation is persisted as though directly observed.",
+      "prevention": "Preserve observation and interpretation separately."
+    },
+    {
+      "failure_mode": "SELF_VALIDATING_INFERENCE",
+      "description": "A.R.I.A.-generated inference becomes independent evidence supporting itself.",
+      "prevention": "Preserve derivation and dependency."
+    },
+    {
+      "failure_mode": "DUPLICATE_CORROBORATION",
+      "description": "Multiple representations of the same observation are counted as independent evidence.",
+      "prevention": "Detect duplicate and dependent evidence families."
+    },
+    {
+      "failure_mode": "CONTRADICTION_SUPPRESSION",
+      "description": "Evidence conflicting with the leading hypothesis is ignored or removed.",
+      "prevention": "Preserve and surface contradictory evidence."
+    },
+    {
+      "failure_mode": "SUPERSESSION_EQUALS_INVALIDATION",
+      "description": "Historical evidence is marked invalid merely because newer evidence exists.",
+      "prevention": "Keep supersession and invalidation distinct."
+    },
+    {
+      "failure_mode": "RECENCY_EQUALS_TRUTH",
+      "description": "Newer evidence is automatically considered more accurate.",
+      "prevention": "Assess freshness, quality, context, method, and represented state separately."
+    },
+    {
+      "failure_mode": "EVIDENCE_EQUALS_CAUSE",
+      "description": "An observation correlated with a condition is treated as causal proof.",
+      "prevention": "Keep evidence, hypothesis, probability, and validation responsibilities separate."
+    },
+    {
+      "failure_mode": "HISTORICAL_EXPERIENCE_AS_EVIDENCE",
+      "description": "A similar prior case is treated as an observation in the current case.",
+      "prevention": "Use experience as prior reasoning input, not current-case evidence."
+    },
+    {
+      "failure_mode": "EVIDENCE_SELECTS_ACTION",
+      "description": "Evidence Engine directly chooses how missing evidence will be obtained.",
+      "prevention": "Return evidence gaps to Decision through Orchestration."
+    },
+    {
+      "failure_mode": "ROUTING_UTILITY_LEAK",
+      "description": "Routing is assigned responsibility for deciding whether evidence acquisition is worth its burden.",
+      "prevention": "Decision owns competitive action utility."
+    },
+    {
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Evidence Engine hardcodes microwave, RF, optical, vendor, product, customer, or named-user evidence semantics.",
+      "prevention": "Keep universal Evidence reasoning domain-independent."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "EVID-INV-001",
+      "statement": "Evidence type vocabulary is owned by Core/Registries/evidence_types.json."
+    },
+    {
+      "invariant_id": "EVID-INV-002",
+      "statement": "Persisted evidence structure is owned by Core/Schemas/evidence.schema.json."
+    },
+    {
+      "invariant_id": "EVID-INV-003",
+      "statement": "Canonical evidence uses evd_<UUID> identity."
+    },
+    {
+      "invariant_id": "EVID-INV-004",
+      "statement": "Observation and interpretation remain distinguishable."
+    },
+    {
+      "invariant_id": "EVID-INV-005",
+      "statement": "Evidence persistence status does not encode confidence or diagnostic effect."
+    },
+    {
+      "invariant_id": "EVID-INV-006",
+      "statement": "Evidence does not automatically establish technical truth or causality."
+    },
+    {
+      "invariant_id": "EVID-INV-007",
+      "statement": "A.R.I.A.-generated interpretation does not become independent evidence merely because A.R.I.A. generated it."
+    },
+    {
+      "invariant_id": "EVID-INV-008",
+      "statement": "Derived evidence remains traceable to its parents."
+    },
+    {
+      "invariant_id": "EVID-INV-009",
+      "statement": "Duplicate representations do not receive independent corroborative weight."
+    },
+    {
+      "invariant_id": "EVID-INV-010",
+      "statement": "Contradictory evidence remains preserved."
+    },
+    {
+      "invariant_id": "EVID-INV-011",
+      "statement": "Supersession is distinct from invalidation."
+    },
+    {
+      "invariant_id": "EVID-INV-012",
+      "statement": "Retraction is distinct from supersession and invalidation."
+    },
+    {
+      "invariant_id": "EVID-INV-013",
+      "statement": "Historical experience is not current-case evidence."
+    },
+    {
+      "invariant_id": "EVID-INV-014",
+      "statement": "Evidence Engine does not own hypothesis probability."
+    },
+    {
+      "invariant_id": "EVID-INV-015",
+      "statement": "Evidence Engine does not select competitive Actions."
+    },
+    {
+      "invariant_id": "EVID-INV-016",
+      "statement": "Evidence Engine does not perform route progression or rerouting."
+    },
+    {
+      "invariant_id": "EVID-INV-017",
+      "statement": "Evidence gaps describe information needs rather than selected collection Actions."
+    },
+    {
+      "invariant_id": "EVID-INV-018",
+      "statement": "Material evidence changes are returned to Orchestration for downstream coordination."
+    },
+    {
+      "invariant_id": "EVID-INV-019",
+      "statement": "Historical evidence state remains reconstructable."
+    },
+    {
+      "invariant_id": "EVID-INV-020",
+      "statement": "Evidence Engine remains technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a second evidence-type Registry inside Evidence Engine.",
+    "Defining a competing evidence persistence schema.",
+    "Using evidence persistence status to represent contradiction.",
+    "Using evidence persistence status to represent confidence.",
+    "Using evidence persistence status to represent hypothesis support.",
+    "Creating a mandatory Evidence-specific confidence vocabulary that competes with shared confidence contracts.",
+    "Treating interpretation as direct observation.",
+    "Treating A.R.I.A.'s inference as independent evidence supporting itself.",
+    "Treating duplicate artifacts as independent corroboration.",
+    "Treating derived evidence as independent of its parents.",
+    "Deleting evidence because it contradicts the leading hypothesis.",
+    "Invalidating evidence merely because newer evidence exists.",
+    "Treating newer evidence as automatically superior.",
+    "Treating a user report as automatically verified fact.",
+    "Treating a screenshot as proof of an underlying physical condition beyond what the screenshot establishes.",
+    "Treating correlation as causality.",
+    "Treating historical experience as current-case evidence.",
+    "Directly calculating hypothesis probability.",
+    "Directly confirming or eliminating hypotheses.",
+    "Directly selecting act_<UUID>.",
+    "Directly creating route steps.",
+    "Directly rerouting.",
+    "Assigning evidence-acquisition utility selection to Routing.",
+    "Directly changing case lifecycle status.",
+    "Directly invoking downstream engines as a substitute for Orchestration.",
+    "Rewriting historical evidence using later knowledge.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, or named-user evidence logic into universal Evidence Engine semantics."
   ]
 }
