@@ -1,659 +1,1073 @@
 {
   "specification": "ARIA_PROBABILITY_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. initializes, updates, normalizes, regularizes, preserves, and explains diagnostic probabilities across competing and coexisting hypotheses.",
+  "version": "2.0.0",
+  "description": "Canonical probability reasoning behavior for A.R.I.A. The Probability Engine initializes, updates, regularizes, normalizes, calibrates, preserves, and explains numerical belief across case-specific hypotheses. It consumes canonical Hypothesis, Evidence, Context, Experience, Relationship, and Confidence contracts without redefining their semantics.",
 
-  "core_principle": {
-    "statement": "ARIA shall treat probability as a dynamic representation of current belief, not as certainty, truth, confidence, blame, or route priority.",
-    "rules": [
-      "Historical experience establishes priors.",
-      "Current evidence updates priors into posteriors.",
-      "Strong current evidence may overcome strong historical priors.",
-      "Small samples shall not create extreme certainty.",
-      "Unknown probability mass shall be preserved when the hypothesis set may be incomplete.",
-      "Probability changes must be explainable."
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "hypothesis_schema": "Core/Schemas/hypothesis.schema.json",
+    "confidence_registry": "Core/Registries/confidence_levels.json",
+
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "validation": "Core/Reasoning/validating_engine.json",
+      "memory": "Core/Reasoning/memory_engine.json"
+    },
+
+    "role": "DIAGNOSTIC_PROBABILITY_CALCULATION_AND_CALIBRATION",
+
+    "owns": [
+      "hypothesis probability initialization",
+      "prior construction",
+      "prior component weighting",
+      "prior regularization",
+      "historical frequency weighting",
+      "effective sample size calculation",
+      "probability evidence updates",
+      "likelihood treatment",
+      "dependent evidence probability treatment",
+      "mutually exclusive probability normalization",
+      "coexisting hypothesis probability treatment",
+      "hierarchical probability treatment",
+      "unknown probability treatment",
+      "probability floors and ceilings",
+      "probability confidence assessment",
+      "probability history generation",
+      "probability calibration",
+      "probability explanation",
+      "probability recalculation"
+    ],
+
+    "does_not_own": [
+      "hypothesis persistence schema",
+      "hypothesis generation",
+      "hypothesis status transitions",
+      "hypothesis confirmation",
+      "hypothesis elimination",
+      "evidence persistence",
+      "evidence quality semantics",
+      "evidence dependency semantics",
+      "evidence verification",
+      "confidence vocabulary",
+      "context dimension vocabulary",
+      "context resolution",
+      "experience validation",
+      "learning eligibility",
+      "canonical relationship persistence",
+      "candidate action selection",
+      "action execution",
+      "route progression",
+      "rerouting",
+      "validation semantics",
+      "case lifecycle status",
+      "case reasoning state",
+      "engine invocation"
     ]
   },
 
-  "probability_domains": [
-    {
-      "name": "MUTUALLY_EXCLUSIVE",
-      "description": "Hypotheses represent competing explanations where only one member of the defined set may be true for the modeled condition.",
+  "core_principle": {
+    "statement": "Probability is a dynamic numerical representation of current belief about a hypothesis under the available evidence, context, and applicable prior information. Probability is not truth, certainty, confidence, blame, technical severity, action priority, or route priority.",
+
+    "rules": [
+      "Probability values shall remain within the inclusive range 0.0 through 1.0.",
+      "Probability shall remain distinct from confidence.",
+      "Historical information may influence priors but is not current-case evidence.",
+      "Current applicable evidence may update prior belief.",
+      "Strong applicable current evidence may overcome strong historical priors.",
+      "Small or weak historical samples shall not create unsupported extreme priors.",
+      "Dependent evidence shall not be multiplied as though independent.",
+      "Unknown probability shall be preserved when the modeled hypothesis set may be incomplete.",
+      "Mutually exclusive and coexisting hypotheses shall not be treated identically.",
+      "Hierarchical hypotheses shall not be double counted.",
+      "Probability changes shall remain explainable and historically reconstructable.",
+      "Probability Engine shall not independently confirm or eliminate hypotheses.",
+      "The Probability Engine shall remain technically domain-independent."
+    ]
+  },
+
+  "persistence_boundary": {
+    "schema": "Core/Schemas/hypothesis.schema.json",
+
+    "owned_probability_fields": [
+      "initial_probability",
+      "current_probability",
+      "probability_confidence",
+      "prior",
+      "probability_history"
+    ],
+
+    "rules": [
+      "Probability Engine shall not define a competing hypothesis_probability_record.",
+      "Probability state shall be persisted through the canonical Hypothesis Schema.",
+      "Probability Engine may propose updates to probability-owned fields without owning the complete Hypothesis record.",
+      "Probability history shall conform to hypothesis.schema.json.",
+      "Probability Engine shall not create a second probability persistence object unless a future canonical schema explicitly establishes one.",
+      "Hypothesis Engine remains authoritative for hypothesis reasoning state and status transitions."
+    ]
+  },
+
+  "confidence_boundary": {
+    "registry": "Core/Registries/confidence_levels.json",
+
+    "principle": "Probability confidence describes confidence in the quality and calibration of a probability estimate and shall never be interpreted as the probability itself.",
+
+    "rules": [
+      "Probability Engine shall consume the canonical confidence contract.",
+      "Probability Engine shall not define competing qualitative confidence levels.",
+      "Probability confidence shall reflect uncertainty in the probability estimate.",
+      "A hypothesis may have high probability with low probability confidence.",
+      "A hypothesis may have moderate probability with high probability confidence.",
+      "Confidence shall not be used as a substitute for probability.",
+      "Probability shall not be used as a substitute for confidence.",
+      "Unknown confidence shall remain unknown rather than being assigned an invented numeric value.",
+      "Confidence precision shall not exceed the quality of the underlying basis."
+    ]
+  },
+
+  "probability_domains": {
+    "MUTUALLY_EXCLUSIVE": {
+      "description": "A defined hypothesis group in which only one member may explain the modeled condition under the applicable technical model.",
       "normalization_required": true,
       "target_total": 1.0
     },
 
-    {
-      "name": "COEXISTING",
-      "description": "Hypotheses represent conditions that may simultaneously be true.",
+    "COEXISTING": {
+      "description": "Hypotheses representing conditions that may simultaneously be true.",
       "normalization_required": false
     },
 
-    {
-      "name": "HIERARCHICAL",
-      "description": "Hypotheses represent different levels of specificity within the same causal branch.",
-      "normalization_required": false,
+    "HIERARCHICAL": {
+      "description": "Hypotheses representing different levels or branches of specificity within a causal hierarchy.",
+      "normalization_required": "CONDITIONAL",
       "special_handling_required": true
+    },
+
+    "UNKNOWN_RELATIONSHIP": {
+      "description": "Hypotheses for which exclusivity, coexistence, or hierarchical dependency has not yet been sufficiently established.",
+      "normalization_required": false
+    }
+  },
+
+  "probability_pipeline": [
+    {
+      "step": 1,
+      "name": "RECEIVE_HYPOTHESIS_SET",
+      "description": "Receive canonical case-specific hyp_<UUID> records requiring probability initialization or recalculation."
+    },
+    {
+      "step": 2,
+      "name": "RESOLVE_PROBABILITY_STRUCTURE",
+      "description": "Determine whether relevant hypotheses are mutually exclusive, coexisting, hierarchical, dependent, or insufficiently characterized."
+    },
+    {
+      "step": 3,
+      "name": "RETRIEVE_APPLICABLE_PRIOR_INFORMATION",
+      "description": "Retrieve validated historical information and applicable prior components without treating historical information as current-case evidence."
+    },
+    {
+      "step": 4,
+      "name": "ASSESS_PRIOR_APPLICABILITY",
+      "description": "Consume canonical Context and Experience assessments to determine how strongly historical populations apply."
+    },
+    {
+      "step": 5,
+      "name": "REGULARIZE_PRIORS",
+      "description": "Apply Bayesian or equivalent shrinkage so sparse or weak historical samples do not create unsupported extreme priors."
+    },
+    {
+      "step": 6,
+      "name": "INITIALIZE_PROBABILITY",
+      "description": "Calculate initial probability and probability confidence for newly active hypotheses."
+    },
+    {
+      "step": 7,
+      "name": "RETRIEVE_APPLICABLE_EVIDENCE_EFFECTS",
+      "description": "Consume Evidence assessments, canonical relationships, quality, applicability, independence, and contradiction information relevant to each hypothesis."
+    },
+    {
+      "step": 8,
+      "name": "CALCULATE_EVIDENCE_UPDATES",
+      "description": "Update belief using calibrated likelihood treatment or another explicitly identified probability method."
+    },
+    {
+      "step": 9,
+      "name": "CONTROL_DEPENDENCY",
+      "description": "Prevent duplicated or dependent evidence from producing artificial probability amplification."
+    },
+    {
+      "step": 10,
+      "name": "NORMALIZE_WHERE_REQUIRED",
+      "description": "Normalize only within valid mutually exclusive probability groups while preserving unknown probability when the group is not exhaustive."
+    },
+    {
+      "step": 11,
+      "name": "ASSESS_PROBABILITY_CONFIDENCE",
+      "description": "Assess confidence in the resulting probability estimate using the canonical confidence architecture."
+    },
+    {
+      "step": 12,
+      "name": "APPLY_CERTAINTY_GUARDS",
+      "description": "Prevent unsupported mathematical certainty and preserve explicit deterministic exceptions."
+    },
+    {
+      "step": 13,
+      "name": "GENERATE_PROBABILITY_HISTORY",
+      "description": "Record material probability changes, their basis, method, and applicable evidence or prior influences."
+    },
+    {
+      "step": 14,
+      "name": "RETURN_PROBABILITY_RESULT",
+      "description": "Return probability updates and material changes to Orchestration for Hypothesis, Uncertainty, Decision, Validation, and Case State coordination."
     }
   ],
 
-  "hypothesis_probability_record": {
-    "required_fields": [
-      "hypothesis_id",
-      "case_id",
-      "probability_domain",
-      "prior_probability",
-      "current_probability",
-      "probability_confidence",
-      "sample_support",
-      "evidence_updates",
-      "calculation_method",
-      "updated_at"
+  "prior_model": {
+    "principle": "Priors represent belief before incorporating the current update set and shall be based only on sufficiently applicable and eligible historical information.",
+
+    "canonical_prior_components": [
+      "domain_prior",
+      "manufacturer_prior",
+      "product_family_prior",
+      "product_prior",
+      "product_variant_prior",
+      "configuration_prior",
+      "scope_prior",
+      "team_prior",
+      "user_prior"
+    ],
+
+    "rules": [
+      "Canonical prior components shall conform to hypothesis.schema.json.",
+      "Probability Engine shall not invent additional persisted prior fields outside the schema.",
+      "Not every prior component is required for every hypothesis.",
+      "Unavailable prior components shall remain unavailable rather than being fabricated.",
+      "More specific prior information shall not automatically override broader prior information.",
+      "Specific historical populations require sufficient applicable support before receiving substantial influence.",
+      "Sparse specific populations shall shrink toward broader applicable populations.",
+      "Historical information excluded from learning shall not silently influence learned priors.",
+      "Historical frequency shall never be represented as current-case evidence.",
+      "Prior construction shall preserve provenance and method."
     ]
   },
 
-  "prior_sources": [
-    {
-      "name": "DOMAIN_BASELINE",
-      "description": "Broad microwave backhaul experience."
-    },
-
-    {
-      "name": "ORGANIZATION_HISTORY",
-      "description": "Validated Braxon historical experience."
-    },
-
-    {
-      "name": "MANUFACTURER_HISTORY",
-      "description": "Validated cases involving the applicable manufacturer."
-    },
-
-    {
-      "name": "PRODUCT_FAMILY_HISTORY",
-      "description": "Validated cases involving the applicable product family."
-    },
-
-    {
-      "name": "PRODUCT_HISTORY",
-      "description": "Validated cases involving the applicable product."
-    },
-
-    {
-      "name": "PRODUCT_VARIANT_HISTORY",
-      "description": "Validated cases involving the applicable product variant."
-    },
-
-    {
-      "name": "TOPOLOGY_HISTORY",
-      "description": "Validated cases involving the applicable topology."
-    },
-
-    {
-      "name": "FREQUENCY_BAND_HISTORY",
-      "description": "Validated cases involving the applicable frequency band."
-    },
-
-    {
-      "name": "SCOPE_HISTORY",
-      "description": "Validated cases involving the applicable scope of work or project phase."
-    },
-
-    {
-      "name": "SYMPTOM_HISTORY",
-      "description": "Validated cases involving the applicable symptom or symptom pattern."
-    },
-
-    {
-      "name": "USER_HISTORY",
-      "description": "Validated user-specific experience relevant to the current context."
-    },
-
-    {
-      "name": "TEAM_HISTORY",
-      "description": "Validated team-level experience relevant to the current context."
-    },
-
-    {
-      "name": "SIMILAR_CASE_HISTORY",
-      "description": "Cases selected by contextual similarity rather than a single dimension."
-    }
-  ],
-
-  "prior_component": {
-    "required_fields": [
-      "source_type",
-      "probability",
-      "sample_size",
-      "effective_sample_size",
-      "context_similarity",
-      "learning_confidence",
-      "weight"
+  "prior_component_assessment": {
+    "candidate_factors": [
+      "raw sample size",
+      "effective sample size",
+      "learning confidence",
+      "context applicability",
+      "validation quality",
+      "recency applicability",
+      "independence",
+      "population specificity",
+      "population stability"
     ],
 
-    "optional_fields": [
-      "source_case_ids",
-      "time_window",
-      "recency_weight",
-      "validation_quality",
-      "notes"
+    "rules": [
+      "Probability Engine may calculate statistical influence from canonical assessments supplied by other engines.",
+      "Probability Engine shall not recreate Evidence quality semantics.",
+      "Probability Engine shall not recreate Context dimension semantics.",
+      "Probability Engine shall not independently declare historical cases eligible for learning.",
+      "Missing applicability information shall reduce confidence rather than be assumed favorable."
     ]
   },
 
   "hierarchical_prior_model": {
-    "description": "ARIA shall blend broad and specific prior populations rather than allowing a small specific population to dominate solely because it is more specific.",
+    "enabled": true,
 
-    "conceptual_order": [
-      "DOMAIN_BASELINE",
-      "ORGANIZATION_HISTORY",
-      "MANUFACTURER_HISTORY",
-      "PRODUCT_FAMILY_HISTORY",
-      "PRODUCT_HISTORY",
-      "PRODUCT_VARIANT_HISTORY",
-      "TOPOLOGY_HISTORY",
-      "SCOPE_HISTORY",
-      "SYMPTOM_HISTORY",
-      "USER_HISTORY",
-      "SIMILAR_CASE_HISTORY"
-    ],
+    "principle": "Broad and specific historical populations may be combined using hierarchical shrinkage so specificity increases influence only when supported by sufficient applicable data.",
 
     "rules": [
-      "The conceptual order describes increasing specificity, not automatic precedence.",
-      "A more specific prior receives greater influence only when sufficient reliable evidence supports it.",
-      "A broad population may outweigh a highly specific population when the specific sample is extremely small.",
-      "Context similarity and effective sample size shall influence prior weighting.",
-      "Specific priors shall shrink toward broader applicable priors when sample support is limited."
+      "Conceptual specificity does not imply automatic precedence.",
+      "A broad population may outweigh a highly specific population when the specific sample is weak.",
+      "A strong sufficiently sized specific population may increasingly dominate broader populations.",
+      "Context applicability and effective sample size shall influence prior weighting.",
+      "The combined prior shall preserve the method used.",
+      "Prior construction shall avoid double counting historical cases appearing in multiple overlapping populations.",
+      "Nested historical populations shall be modeled as hierarchical information rather than independent evidence."
     ]
   },
 
-  "bayesian_smoothing": {
+  "bayesian_regularization": {
     "enabled": true,
 
-    "default_method": "BETA_BINOMIAL_SHRINKAGE",
+    "supported_methods": [
+      "BETA_BINOMIAL_SHRINKAGE",
+      "DIRICHLET_MULTINOMIAL_SHRINKAGE",
+      "HIERARCHICAL_BAYESIAN_SHRINKAGE",
+      "EMPIRICAL_BAYES",
+      "CALIBRATED_EQUIVALENT_METHOD"
+    ],
 
-    "description": "Initial implementation may use Beta-Binomial smoothing for binary historical rates and related Bayesian shrinkage methods for multinomial hypothesis sets.",
+    "default_binary_method": "BETA_BINOMIAL_SHRINKAGE",
+    "default_multiclass_method": "DIRICHLET_MULTINOMIAL_SHRINKAGE",
 
-    "binary_model": {
-      "posterior_mean_formula": "(successes + alpha) / (successes + failures + alpha + beta)",
-
-      "parameters": {
-        "alpha": "Derived from broader applicable prior strength.",
-        "beta": "Derived from broader applicable prior strength."
-      }
-    },
-
-    "multinomial_model": {
-      "default_method": "DIRICHLET_MULTINOMIAL_SHRINKAGE",
-      "description": "For mutually exclusive multi-class failure outcomes, observed counts may be regularized using a Dirichlet prior derived from broader experience."
-    },
+    "binary_conceptual_formula": "(successes + alpha) / (successes + failures + alpha + beta)",
 
     "rules": [
-      "Exact smoothing parameters shall remain configurable.",
-      "Smoothing shall prevent 1 of 1 from becoming 100 percent certainty.",
-      "Smoothing strength may decrease as validated sample size increases.",
-      "The unsmoothed raw historical rate shall remain available for audit."
+      "Regularization shall prevent small samples from producing unsupported certainty.",
+      "Regularization strength may decrease as sufficiently validated effective sample size increases.",
+      "Hyperparameters shall remain traceable to their basis.",
+      "Raw historical rates shall remain available for audit when calculated.",
+      "The selected method shall be recorded in the persisted prior or probability history where applicable.",
+      "A.R.I.A. shall not claim Bayesian precision when the required data is unavailable."
     ]
   },
 
   "effective_sample_size": {
-    "description": "Historical records shall contribute according to quality and similarity rather than simple raw count alone.",
+    "enabled": true,
 
-    "conceptual_formula": "ESS = SUM(case_weight_i)",
+    "conceptual_formula": "ESS = SUM(applicable_case_weight_i)",
 
-    "case_weight_factors": [
-      "LEARNING_CONFIDENCE",
-      "CONTEXT_SIMILARITY",
-      "VALIDATION_QUALITY",
-      "RECENCY",
-      "INDEPENDENCE"
+    "candidate_weight_inputs": [
+      "learning confidence",
+      "context applicability",
+      "validation quality",
+      "recency applicability",
+      "independence",
+      "data completeness"
     ],
 
     "rules": [
-      "A case with learning confidence 0 contributes less than a fully validated case.",
-      "A poorly matched historical case contributes less than an exact-context case.",
-      "Duplicate or dependent records shall not inflate effective sample size.",
-      "Raw sample size and effective sample size shall both remain available."
+      "Raw sample size and effective sample size shall remain distinguishable.",
+      "Duplicate historical records shall not inflate effective sample size.",
+      "Dependent historical records shall receive reduced independent influence.",
+      "Low-learning-confidence experience shall contribute less than strongly validated experience.",
+      "Poorly applicable historical cases shall contribute less than strongly applicable cases.",
+      "Effective sample size shall not exceed what the underlying independent information reasonably supports."
     ]
   },
 
-  "context_similarity_weighting": {
-    "enabled": true,
-
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "candidate_dimensions": [
-      "manufacturer",
-      "product_family",
-      "product",
-      "product_variant",
-      "hardware_revision",
-      "firmware",
-      "frequency_band",
-      "topology",
-      "diversity_mode",
-      "scope_of_work",
-      "project_phase",
-      "symptom_pattern",
-      "recent_change",
-      "environment",
-      "user"
-    ],
+  "context_boundary": {
+    "principle": "Probability consumes context applicability; it does not own the universal Context model.",
 
     "rules": [
-      "Dimension importance may vary by hypothesis.",
-      "A firmware match may matter greatly to a firmware hypothesis and minimally to physical waveguide damage.",
-      "Critical context conflicts may sharply reduce similarity.",
-      "Missing context shall reduce certainty in similarity rather than being assumed to match."
+      "Context Engine owns context dimensions and context resolution.",
+      "Probability Engine may consume context-match values, applicable context references, and material context differences.",
+      "Probability Engine shall not hardcode manufacturer, product, firmware, topology, environment, user, or other dimensions as a competing universal Context contract.",
+      "The importance of context differences may vary by hypothesis.",
+      "Missing context shall reduce probability confidence when materially relevant.",
+      "Material context changes may require prior and posterior recalculation."
     ]
   },
 
-  "user_specific_probability": {
-    "enabled": true,
-
-    "description": "Validated user-specific history may adjust priors when the user's role and applicable technical context are relevant.",
+  "experience_boundary": {
+    "principle": "Validated Experience may influence priors only to the extent permitted by learning eligibility, applicability, and confidence.",
 
     "rules": [
-      "User history shall be tied to actual case attribution.",
-      "Reporter identity alone shall not assign technical fault to the reporter.",
-      "User history shall be contextual rather than universal.",
-      "User-specific samples shall be smoothed toward broader experience.",
-      "Recent validated improvement may reduce the influence of older user patterns.",
-      "User history shall never override strong contradictory current evidence."
-    ],
-
-    "example": {
-      "current_case": {
-        "user": "Clayton",
-        "manufacturer": "Nokia",
-        "product": "UBT-T",
-        "scope": "Commissioning",
-        "symptom": "RSL Discrepancy"
-      },
-
-      "history": {
-        "comparable_cases": 13,
-        "configuration_related": 9,
-        "raw_rate": 0.6923
-      },
-
-      "interpretation": "This history may increase the configuration prior, but shall not directly set the current configuration probability to 69.23 percent."
-    }
+      "Experience is not current-case evidence.",
+      "Probability Engine shall not create Experience records.",
+      "Probability Engine shall not determine learning eligibility.",
+      "Experience excluded from statistical learning shall not silently contribute to empirical priors.",
+      "Experience may contribute differently to different hypotheses depending on applicability.",
+      "Historical attribution shall not be converted into blame.",
+      "User-specific or team-specific history shall be used only when technically relevant and statistically defensible.",
+      "Protected, sensitive, or irrelevant personal characteristics shall never influence technical probability."
+    ]
   },
 
   "recency_model": {
     "enabled": true,
 
-    "description": "Historical influence may decay with time when older records are less predictive of current competency, procedures, firmware, products, or failure behavior.",
+    "principle": "Historical predictive influence may change with time when the underlying technical population, process, product, competency, or environment changes.",
 
-    "default_method": "EXPONENTIAL_DECAY",
+    "supported_methods": [
+      "NO_DECAY",
+      "EXPONENTIAL_DECAY",
+      "WINDOWED_DECAY",
+      "REVISION_AWARE_DECAY",
+      "CONTEXT_CHANGE_DECAY",
+      "CALIBRATED_DECAY"
+    ],
 
-    "conceptual_formula": "recency_weight = exp(-lambda * age)",
+    "conceptual_exponential_formula": "recency_weight = exp(-lambda * age)",
 
     "rules": [
-      "Recency modifies influence, not historical truth.",
-      "Decay rate may vary by context.",
-      "Stable engineering facts shall not decay merely because they are old.",
-      "User-performance history may decay faster than fundamental physical knowledge.",
-      "Product behavior may require revision-aware rather than purely time-based decay."
+      "Recency modifies predictive influence, not historical truth.",
+      "Stable technical facts shall not decay merely because they are old.",
+      "Decay shall be applied only when time plausibly changes predictive applicability.",
+      "Revision-aware applicability may be more appropriate than simple time decay.",
+      "Decay parameters shall remain configurable and explainable.",
+      "Recency shall not silently erase historical records."
+    ]
+  },
+
+  "evidence_boundary": {
+    "principle": "Evidence Engine determines what evidence represents and assesses its quality, applicability, provenance, verification, independence, and diagnostic effect; Probability Engine determines how applicable evidence changes numerical belief.",
+
+    "rules": [
+      "Probability Engine shall consume canonical evd_<UUID> references and applicable relationship semantics.",
+      "Probability Engine shall not recreate Evidence records.",
+      "Probability Engine shall not independently reclassify evidence type.",
+      "Probability Engine shall not independently override Evidence dependency assessments without an explicit reasoning conflict being surfaced.",
+      "Evidence confidence and hypothesis probability shall remain distinct.",
+      "Contradictory evidence shall not be discarded because it conflicts with the leading hypothesis.",
+      "Evidence updates shall remain attributable to the evidence that caused them."
     ]
   },
 
   "evidence_update_model": {
     "default_method": "LIKELIHOOD_RATIO",
 
-    "description": "Evidence shall modify hypothesis belief according to how expected that evidence is when the hypothesis is true compared with relevant alternatives.",
+    "supported_methods": [
+      "LIKELIHOOD_RATIO",
+      "BAYES_FACTOR",
+      "EMPIRICAL_CONDITIONAL_PROBABILITY",
+      "CALIBRATED_QUALITATIVE_UPDATE",
+      "DETERMINISTIC_CONSTRAINT",
+      "CALIBRATED_EQUIVALENT_METHOD"
+    ],
 
     "conceptual_binary_formula": "posterior_odds = prior_odds * likelihood_ratio",
 
-    "likelihood_ratio": {
-      "conceptual_formula": "LR = P(evidence | hypothesis) / P(evidence | alternative)",
-
-      "rules": [
-        "Likelihood ratios may initially be hand-calibrated or derived from validated experience.",
-        "Likelihood values shall preserve provenance and confidence.",
-        "ARIA shall not invent precise likelihood ratios when insufficient data exists.",
-        "Qualitative evidence effects may be mapped to conservative bounded likelihood ranges during early implementation."
-      ]
-    }
-  },
-
-  "qualitative_evidence_mapping": {
-    "description": "Initial implementation may map qualitative evidence effects to conservative likelihood-ratio ranges before sufficient empirical data exists.",
-
-    "default_ranges": {
-      "STRONGLY_SUPPORTS": {
-        "minimum_lr": 5.0,
-        "maximum_lr": 20.0
-      },
-
-      "SUPPORTS": {
-        "minimum_lr": 2.0,
-        "maximum_lr": 5.0
-      },
-
-      "WEAKLY_SUPPORTS": {
-        "minimum_lr": 1.1,
-        "maximum_lr": 2.0
-      },
-
-      "NEUTRAL": {
-        "minimum_lr": 0.95,
-        "maximum_lr": 1.05
-      },
-
-      "WEAKENS": {
-        "minimum_lr": 0.5,
-        "maximum_lr": 0.9
-      },
-
-      "STRONGLY_WEAKENS": {
-        "minimum_lr": 0.1,
-        "maximum_lr": 0.5
-      },
-
-      "CONTRADICTS": {
-        "minimum_lr": 0.01,
-        "maximum_lr": 0.1
-      }
-    },
+    "likelihood_ratio_formula": "LR = P(evidence | hypothesis) / P(evidence | relevant_alternative)",
 
     "rules": [
-      "These ranges are initial calibration aids, not immutable physical constants.",
-      "Evidence quality shall moderate the effective likelihood ratio.",
-      "Low-confidence evidence shall move probabilities less strongly than high-confidence evidence.",
-      "Future empirical calibration may replace generic ranges with context-specific learned likelihoods."
+      "Likelihood values shall preserve provenance or calibration basis.",
+      "A.R.I.A. shall not invent precise likelihood ratios when insufficient information exists.",
+      "Empirically learned likelihoods shall be used only when learning eligibility and calibration support them.",
+      "Qualitative evidence effects may be converted into conservative probability updates when empirical likelihoods are unavailable.",
+      "The selected update method shall remain explainable.",
+      "Evidence updates shall not exceed what evidence quality and applicability reasonably support."
+    ]
+  },
+
+  "qualitative_update_policy": {
+    "enabled": true,
+
+    "principle": "When quantitative likelihood data is unavailable, qualitative evidence effects may produce conservative bounded updates without pretending that arbitrary constants are universal physical laws.",
+
+    "effect_classes": [
+      "SUPPORTS",
+      "WEAKENS",
+      "CONTRADICTS",
+      "DISCRIMINATES",
+      "CONTEXTUALIZES",
+      "NO_MATERIAL_EFFECT",
+      "EFFECT_UNKNOWN"
+    ],
+
+    "rules": [
+      "Qualitative effect classes shall align with Evidence Engine semantics.",
+      "Generic fixed likelihood-ratio ranges shall not be treated as canonical universal constants.",
+      "Implementation calibration may define bounded mappings outside the universal reasoning contract.",
+      "Weak or uncertain evidence shall produce conservative movement.",
+      "EFFECT_UNKNOWN shall not produce an invented directional update.",
+      "NO_MATERIAL_EFFECT shall not materially move probability.",
+      "CONTEXTUALIZES may alter applicability or confidence without directly changing probability."
     ]
   },
 
   "evidence_quality_modulation": {
     "enabled": true,
 
-    "description": "The strength of an evidence update shall be moderated by confidence in the evidence itself.",
+    "principle": "Evidence update strength shall be moderated by the quality and applicability of the evidence without conflating those factors with hypothesis probability.",
 
-    "conceptual_method": "Shrink the evidence likelihood effect toward neutral as evidence confidence decreases.",
+    "conceptual_method": "Shrink an evidence update toward neutral as confidence in the update basis decreases.",
 
-    "conceptual_formula": "effective_log_lr = evidence_confidence * log(raw_lr)",
+    "conceptual_formula": "effective_log_lr = update_reliability * log(raw_lr)",
 
-    "equivalent_formula": "effective_lr = exp(evidence_confidence * log(raw_lr))",
+    "equivalent_formula": "effective_lr = exp(update_reliability * log(raw_lr))",
 
     "rules": [
-      "Evidence confidence of 1.0 preserves the full likelihood effect.",
-      "Evidence confidence approaching 0 moves the effective likelihood ratio toward 1.0.",
-      "Low-quality evidence shall not produce extreme posterior movement.",
-      "Evidence confidence and hypothesis probability shall remain separately stored."
+      "update_reliability is a probability-calculation factor derived from applicable canonical confidence assessments and shall not create a new persisted confidence dimension.",
+      "High-quality applicable evidence may preserve more of the raw likelihood effect.",
+      "Low-quality or poorly applicable evidence shall move probability less strongly.",
+      "Unknown quality shall not be assumed equivalent to perfect quality.",
+      "Evidence confidence values shall not be interpreted as probability that the evidence is true.",
+      "The modulation method shall remain auditable."
     ]
   },
 
   "dependent_evidence_handling": {
     "enabled": true,
 
-    "description": "Evidence derived from the same underlying source shall not be multiplied as though each item were independent.",
+    "principle": "Evidence sharing an underlying information source shall not receive the full multiplicative treatment appropriate to independent evidence.",
+
+    "strategies": [
+      "EVIDENCE_FAMILY_GROUPING",
+      "DEPENDENCY_DISCOUNTING",
+      "PARENT_ONLY_UPDATE",
+      "JOINT_LIKELIHOOD_MODEL",
+      "CONSERVATIVE_MAX_EFFECT",
+      "CALIBRATED_DEPENDENCY_MODEL"
+    ],
 
     "rules": [
-      "Evidence items shall preserve provenance lineage.",
-      "Dependent evidence may be grouped into one evidence family.",
-      "Repeated screenshots of the same unchanged value shall not multiply confidence indefinitely.",
-      "A technician statement and a screenshot supplied solely to substantiate that same statement may be partially dependent.",
-      "Independent instrument measurements may provide genuine corroboration."
+      "Evidence dependency assessments shall originate from Evidence reasoning and canonical relationships.",
+      "Duplicate representations shall not multiply probability.",
+      "Derived evidence shall not independently multiply the effect of its parents.",
+      "Partially dependent evidence may provide limited additional information.",
+      "Independent corroboration may legitimately increase probability movement.",
+      "When dependency cannot be quantified reliably, Probability Engine shall use conservative treatment."
     ]
   },
 
   "mutually_exclusive_normalization": {
     "enabled": true,
 
-    "description": "When a hypothesis group is explicitly modeled as mutually exclusive and sufficiently exhaustive, posterior values shall be normalized within the group.",
-
     "formula": "P_i_normalized = raw_weight_i / SUM(raw_weight_j)",
 
     "rules": [
-      "Unknown or Other shall be included when the known hypothesis set is not exhaustive.",
-      "Parent and child hypotheses representing the same branch shall not compete independently.",
-      "Normalization shall occur only within a defined probability group."
+      "Normalization shall occur only within a technically valid mutually exclusive probability group.",
+      "The group shall not be assumed exhaustive without sufficient technical basis.",
+      "Unknown or Other shall preserve probability mass when known hypotheses are not exhaustive.",
+      "Parent and child hypotheses representing the same causal branch shall not compete as independent peers.",
+      "Eliminated hypotheses may be excluded from active normalization when elimination is technically established.",
+      "Normalization shall not convert weak evidence into strong confidence.",
+      "The normalization group and method shall remain explainable."
     ]
   },
 
   "coexisting_probability_handling": {
-    "description": "Potentially simultaneous faults shall maintain independent probability estimates.",
+    "principle": "Hypotheses capable of simultaneously being true shall maintain probability estimates that are not constrained to sum to one.",
 
     "rules": [
-      "Independent coexisting probabilities are not required to sum to 1.0.",
-      "Dependencies between coexisting hypotheses should be modeled explicitly where known.",
-      "Confirmation of one fault does not automatically reduce unrelated coexisting fault probability."
+      "Coexisting hypothesis probabilities are not required to sum to 1.0.",
+      "Confirmation of one coexisting condition shall not automatically reduce unrelated coexisting probability.",
+      "Known dependency between coexisting hypotheses shall be modeled rather than ignored.",
+      "Conditional probabilities may be used where one condition changes the likelihood of another.",
+      "Probability Engine shall not force coexistence into mutual exclusivity for computational convenience."
     ]
   },
 
   "hierarchical_probability_handling": {
-    "description": "Broad and specific hypotheses within the same causal branch shall not be double counted.",
+    "principle": "Probabilities within a causal hierarchy shall preserve parent-child dependency and avoid double counting the same underlying explanation.",
 
     "rules": [
-      "A child's probability is conditional on the parent branch where appropriate.",
-      "A specific child may inherit probability mass from its parent as evidence refines the branch.",
-      "When a child is confirmed, the broader parent may become superseded rather than remain a separate competing diagnosis.",
-      "Sibling hypotheses may form a normalized mutually exclusive group beneath a parent when technically appropriate."
-    ]
-  },
-
-  "probability_floors_and_ceilings": {
-    "description": "ARIA may use configurable bounds to prevent unsupported mathematical certainty.",
-
-    "defaults": {
-      "minimum_active_probability": 0.001,
-      "maximum_unconfirmed_probability": 0.995
-    },
-
-    "rules": [
-      "A probability of exactly zero should normally require exclusion by validated technical evidence.",
-      "A probability of exactly one should normally require confirmation or deterministic logical consequence.",
-      "These defaults may be overridden by explicit technical rules."
+      "A child probability may be conditional on its parent branch.",
+      "Sibling hypotheses may form a normalized mutually exclusive set beneath a parent when technically appropriate.",
+      "Child probabilities shall not independently add to the parent as though unrelated.",
+      "Probability mass may be refined from a broad branch into more specific children as evidence discriminates the branch.",
+      "Hypothesis Engine owns whether a broader hypothesis becomes SUPERSEDED.",
+      "Probability Engine shall preserve the probability logic used during refinement."
     ]
   },
 
   "unknown_probability": {
     "enabled": true,
 
+    "principle": "Unknown probability represents belief assigned to explanations not adequately represented by the currently modeled known hypothesis set.",
+
     "rules": [
-      "Unknown probability shall represent unmodeled or insufficiently understood causes.",
-      "Unknown probability may increase when known explanations are repeatedly contradicted.",
-      "Unknown probability may decrease as evidence supports comprehensive known explanations.",
-      "Persistently high unknown probability should trigger broader retrieval or escalation."
+      "Unknown probability shall be preserved when the known mutually exclusive hypothesis group may be incomplete.",
+      "Unknown probability may increase when known hypotheses are repeatedly weakened without an adequate alternative.",
+      "Unknown probability may decrease when evidence supports a sufficiently comprehensive known explanation set.",
+      "Unknown probability shall not be forced to zero merely because one known hypothesis leads.",
+      "Unknown probability shall not be used as a dumping ground for numerical rounding error.",
+      "Persistent material unknown probability shall be surfaced to Orchestration.",
+      "Hypothesis Engine owns generation of additional known or unknown hypotheses."
     ]
   },
 
-  "probability_history": {
-    "append_only": true,
+  "certainty_guards": {
+    "principle": "Mathematical certainty shall require stronger justification than ordinary probabilistic preference.",
 
-    "required_fields": [
-      "hypothesis_id",
-      "previous_probability",
-      "new_probability",
-      "change_reason",
-      "trigger_evidence_ids",
-      "prior_components",
-      "calculation_method",
-      "timestamp"
+    "default_guardrails": {
+      "minimum_nonexcluded_probability": 0.001,
+      "maximum_unconfirmed_probability": 0.995
+    },
+
+    "rules": [
+      "Guardrails are implementation defaults rather than universal technical constants.",
+      "Probability exactly 0.0 should normally require deterministic incompatibility or sufficiently validated exclusion.",
+      "Probability exactly 1.0 should normally require deterministic implication or sufficiently validated confirmation basis.",
+      "Hypothesis status remains owned by Hypothesis Engine.",
+      "Guardrails shall not override explicit deterministic technical rules.",
+      "Guardrails may be calibrated based on validated system behavior."
+    ]
+  },
+
+  "probability_confidence_model": {
+    "principle": "Probability confidence expresses how well supported, calibrated, applicable, and stable the probability estimate itself is.",
+
+    "candidate_inputs": [
+      "effective historical sample size",
+      "prior calibration quality",
+      "evidence quality",
+      "evidence independence",
+      "evidence completeness",
+      "context applicability",
+      "likelihood calibration quality",
+      "alternative hypothesis coverage",
+      "unknown probability",
+      "contradiction burden",
+      "model stability",
+      "sensitivity to assumptions"
     ],
 
     "rules": [
-      "Material probability changes shall be auditable.",
-      "Previous probability states shall not be overwritten.",
-      "Recalculation due to corrected evidence shall create a new probability event."
+      "Probability confidence shall use the canonical confidence contract.",
+      "Probability confidence shall not be calculated merely from the magnitude of current_probability.",
+      "Extreme probability with weak basis may have low confidence.",
+      "Stable probability under multiple reasonable assumptions may justify greater confidence.",
+      "High unknown probability may reduce confidence in individual known-hypothesis probabilities.",
+      "Unresolved evidence dependency may reduce probability confidence.",
+      "Insufficient calibration data shall reduce confidence in numerically precise updates.",
+      "Probability confidence shall remain explainable."
+    ]
+  },
+
+  "sensitivity_analysis": {
+    "enabled": true,
+
+    "principle": "When probability materially depends on uncertain assumptions, A.R.I.A. should assess whether reasonable changes to those assumptions would change the diagnostic ranking or decision relevance.",
+
+    "candidate_variables": [
+      "prior strength",
+      "context applicability",
+      "likelihood ratio",
+      "evidence quality modulation",
+      "dependency discount",
+      "unknown probability",
+      "historical weighting"
+    ],
+
+    "rules": [
+      "Sensitivity analysis is most important when a decision materially depends on close probability differences.",
+      "A result highly sensitive to weak assumptions shall receive lower probability confidence.",
+      "Sensitivity analysis shall not manufacture precision.",
+      "Material rank instability shall be surfaced to Uncertainty and Decision through Orchestration."
     ]
   },
 
   "calibration": {
     "enabled": true,
 
-    "description": "ARIA shall evaluate whether predicted probabilities correspond to actual validated outcomes over time.",
+    "principle": "Probability estimates should become empirically calibrated over time using sufficiently validated, learning-eligible outcomes.",
 
-    "metrics": [
+    "candidate_methods": [
+      "RELIABILITY_DIAGRAM",
       "BRIER_SCORE",
       "LOG_LOSS",
+      "EXPECTED_CALIBRATION_ERROR",
       "CALIBRATION_CURVE",
-      "EXPECTED_CALIBRATION_ERROR"
+      "CONTEXT_SPECIFIC_CALIBRATION"
     ],
 
     "rules": [
-      "Calibration shall be measured using validated cases.",
-      "A hypothesis assigned approximately 70 percent probability should, across sufficiently comparable cases, be correct approximately 70 percent of the time.",
-      "Systematic overconfidence shall trigger recalibration.",
-      "Systematic underconfidence shall also be detectable.",
-      "Calibration may be evaluated globally and within important contexts."
+      "Calibration shall use learning-eligible validated outcomes.",
+      "Cases excluded from learning shall not silently influence calibration.",
+      "Calibration shall compare predicted probability with validated outcomes rather than subjective retrospective confidence.",
+      "Calibration may be global or context-specific when sufficient sample support exists.",
+      "Small calibration samples shall not justify aggressive model correction.",
+      "Calibration changes shall remain versioned and auditable.",
+      "Probability Engine shall not redefine learning eligibility."
     ]
   },
 
-  "example_update": {
-    "case": "RSL discrepancy",
+  "probability_history": {
+    "principle": "Material probability changes shall remain reconstructable.",
 
-    "initial_state": {
-      "configuration": 0.35,
-      "physical_rf_chain": 0.30,
-      "alignment": 0.20,
-      "radio_failure": 0.10,
-      "unknown": 0.05
-    },
+    "record_when": [
+      "initial probability is established",
+      "material new evidence is incorporated",
+      "material evidence is invalidated or retracted",
+      "context materially changes",
+      "prior basis materially changes",
+      "hypothesis structure changes",
+      "dependency treatment materially changes",
+      "calibration method materially changes",
+      "unknown probability materially changes"
+    ],
 
-    "new_evidence": {
-      "observation": "Main RSL is normal while Diversity RSL is materially degraded.",
-      "confidence": 0.95
-    },
+    "rules": [
+      "Probability history shall conform to hypothesis.schema.json.",
+      "Historical probability entries shall not be rewritten using later knowledge.",
+      "Each material update shall preserve its calculation method and basis.",
+      "Applicable evidence references shall be preserved.",
+      "Prior changes and evidence-driven changes shall remain distinguishable.",
+      "Probability history shall support reconstruction of what A.R.I.A. believed at the time."
+    ]
+  },
 
-    "post_update_state_example": {
-      "configuration": 0.27,
-      "physical_rf_chain": 0.51,
-      "alignment": 0.07,
-      "radio_failure": 0.10,
-      "unknown": 0.05
-    },
+  "recalculation_triggers": [
+    "HYPOTHESIS_CREATED",
+    "HYPOTHESIS_REACTIVATED",
+    "HYPOTHESIS_SUPERSEDED",
+    "HYPOTHESIS_ELIMINATED",
+    "NEW_MATERIAL_EVIDENCE",
+    "EVIDENCE_SUPERSEDED",
+    "EVIDENCE_INVALIDATED",
+    "EVIDENCE_RETRACTED",
+    "EVIDENCE_DEPENDENCY_CHANGED",
+    "MATERIAL_CONTEXT_CHANGE",
+    "PRIOR_BASIS_CHANGED",
+    "LEARNING_MODEL_CHANGED",
+    "CALIBRATION_CHANGED",
+    "PROBABILITY_GROUP_CHANGED",
+    "UNKNOWN_MODEL_CHANGED"
+  ],
 
-    "note": "Values are illustrative only. Production values shall be calculated from calibrated likelihood and prior models."
+  "recalculation_rules": [
+    "Probability shall be recalculated when a material input to the previous calculation changes.",
+    "Recalculation shall preserve prior probability history.",
+    "Invalidated or retracted evidence shall no longer contribute as active probability support.",
+    "Superseded evidence shall be treated according to current applicability rather than deleted from history.",
+    "A changed hypothesis group may require renormalization.",
+    "A material context change may require both prior and evidence applicability reevaluation.",
+    "Recalculation shall not silently alter historical entries."
+  ],
+
+  "hypothesis_boundary": {
+    "principle": "Probability Engine calculates numerical belief; Hypothesis Engine owns hypothesis semantics and state.",
+
+    "rules": [
+      "Probability Engine shall not generate canonical hypotheses.",
+      "Probability Engine shall not directly set CANDIDATE, ACTIVE, DEPRIORITIZED, UNLIKELY, ELIMINATED, CONFIRMED, or SUPERSEDED status.",
+      "Probability Engine may report probability conditions relevant to Hypothesis state reevaluation.",
+      "Low probability alone shall not eliminate a hypothesis.",
+      "High probability alone shall not confirm a hypothesis.",
+      "Probability Engine shall respect coexistence and hierarchy supplied by Hypothesis and canonical relationships.",
+      "Material probability changes shall be returned to Orchestration."
+    ]
+  },
+
+  "uncertainty_boundary": {
+    "principle": "Probability quantifies belief among hypotheses; Uncertainty Engine reasons about what remains unknown, unresolved, incomplete, ambiguous, or insufficiently discriminated.",
+
+    "rules": [
+      "Probability Engine shall not redefine uncertainty state.",
+      "Unknown probability may be an input to uncertainty reasoning.",
+      "Low probability confidence may be an input to uncertainty reasoning.",
+      "Sensitivity and calibration limitations may be surfaced to Uncertainty.",
+      "A normalized probability distribution does not imply low uncertainty.",
+      "A leading hypothesis does not imply adequate diagnostic certainty."
+    ]
+  },
+
+  "decision_boundary": {
+    "principle": "Probability informs Decision but does not select Actions.",
+
+    "rules": [
+      "Decision Engine may consume current_probability and probability_confidence.",
+      "Probability Engine shall not choose act_<UUID>.",
+      "Highest probability does not automatically imply the corresponding corrective Action should be selected.",
+      "Decision may consider probability together with information value, consequence, cost, burden, reversibility, service impact, and risk.",
+      "Probability Engine shall not convert probability directly into route priority."
+    ]
+  },
+
+  "routing_boundary": {
+    "principle": "Probability does not own operational progression.",
+
+    "rules": [
+      "Probability Engine shall not create route steps.",
+      "Probability Engine shall not select next hops.",
+      "Probability Engine shall not reroute.",
+      "Probability changes may cause Decision reevaluation through Orchestration.",
+      "Routing Engine remains responsible for route progression after Action selection."
+    ]
+  },
+
+  "validation_boundary": {
+    "principle": "Validation results may materially update probability, but Probability Engine does not define validation success.",
+
+    "rules": [
+      "Validation Engine owns validation semantics.",
+      "Validation-generated evidence may update hypothesis probability.",
+      "Successful validation may strongly support a hypothesis when causally discriminating.",
+      "Symptom improvement alone shall not automatically produce probability 1.0.",
+      "Failed validation may reduce a hypothesis probability or increase alternatives and unknown probability.",
+      "Probability changes from validation shall remain attributable to resulting evidence and relationships."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Case State projects current probability information but does not calculate it.",
+
+    "rules": [
+      "Probability Engine owns probability calculation.",
+      "Case State may project current_probability and probability_confidence from canonical Hypothesis records.",
+      "Probability Engine shall not change case lifecycle status.",
+      "Probability Engine shall not change case reasoning state.",
+      "Probability alone shall not resolve or close a case."
+    ]
+  },
+
+  "orchestration_boundary": {
+    "principle": "Probability Engine returns probability reasoning results; Orchestration coordinates downstream effects.",
+
+    "rules": [
+      "Probability Engine shall not directly invoke every downstream engine.",
+      "Material probability changes shall be returned to Orchestration.",
+      "Orchestration determines whether Hypothesis, Uncertainty, Decision, Routing, Validation, or Case State require reevaluation.",
+      "Probability Engine shall not publish complete Case State.",
+      "Probability recalculation may be invoked repeatedly as evidence, context, hypothesis structure, or learning state changes."
+    ]
+  },
+
+  "probability_result": {
+    "recommended_outputs": [
+      "hypothesis_id",
+      "initial_probability",
+      "previous_probability",
+      "current_probability",
+      "probability_confidence",
+      "prior",
+      "probability_domain",
+      "probability_group",
+      "evidence_updates",
+      "dependency_treatment",
+      "unknown_probability",
+      "calculation_method",
+      "calibration_basis",
+      "sensitivity_assessment",
+      "probability_history_entry",
+      "material_change_detected",
+      "reasoning_summary"
+    ],
+
+    "rules": [
+      "Outputs shall distinguish persisted fields from calculation metadata.",
+      "Outputs shall not change Hypothesis status directly.",
+      "Outputs shall not fabricate precision unsupported by the calculation basis.",
+      "Outputs shall preserve uncertainty.",
+      "Outputs shall not select Actions.",
+      "Material changes shall be returned to Orchestration."
+    ]
   },
 
   "explainability": {
-    "required_capabilities": [
-      "Explain the starting prior.",
-      "Identify historical populations materially affecting the prior.",
-      "Show sample size and effective sample size.",
-      "Identify evidence that changed the probability.",
-      "Explain whether evidence supported or contradicted the hypothesis.",
-      "Explain the effect of evidence quality.",
-      "Identify whether normalization occurred.",
-      "Distinguish probability from diagnostic confidence."
+    "required_questions": [
+      "What was the previous probability?",
+      "What prior information influenced the calculation?",
+      "What current evidence changed the probability?",
+      "How was evidence dependency handled?",
+      "Was normalization applied and why?",
+      "Was unknown probability preserved?",
+      "What calculation method was used?",
+      "How confident is A.R.I.A. in the probability estimate?",
+      "What assumptions materially influence the result?"
     ],
 
-    "example": "Configuration began at 38 percent because similar Nokia commissioning cases historically showed elevated configuration failures. The probability fell to 4 percent after current configuration evidence was independently verified and strongly contradicted the hypothesis."
+    "rules": [
+      "Probability explanations shall distinguish historical prior influence from current evidence influence.",
+      "Probability explanations shall not imply certainty when probability confidence is limited.",
+      "Probability explanations shall identify major assumptions and limitations.",
+      "Human-readable explanations shall remain consistent with persisted calculation history."
+    ]
   },
 
-  "anti_bias_rules": [
-    "Do not preserve a high prior merely because ARIA historically expected a failure.",
-    "Do not increase probability because a user agrees with ARIA.",
-    "Do not reduce probability solely because a user rejects the hypothesis.",
-    "Do not use user identity as a substitute for technical evidence.",
-    "Do not count ARIA's own inference as independent evidence.",
-    "Do not repeatedly reuse the same historical cases as multiple independent priors.",
-    "Do not create false precision when calibration data is sparse."
+  "failure_modes": [
+    {
+      "failure_mode": "SECOND_PROBABILITY_RECORD",
+      "description": "Probability Engine creates a competing persisted hypothesis probability record.",
+      "prevention": "Persist probability through Core/Schemas/hypothesis.schema.json."
+    },
+    {
+      "failure_mode": "PROBABILITY_CONFIDENCE_COLLAPSE",
+      "description": "Probability and confidence are treated as the same quantity.",
+      "prevention": "Use current_probability separately from canonical probability_confidence."
+    },
+    {
+      "failure_mode": "SECOND_CONFIDENCE_SYSTEM",
+      "description": "Probability Engine defines competing confidence levels or semantics.",
+      "prevention": "Consume Core/Registries/confidence_levels.json."
+    },
+    {
+      "failure_mode": "CONTEXT_DUPLICATION",
+      "description": "Probability Engine hardcodes a competing universal context model.",
+      "prevention": "Consume canonical Context applicability."
+    },
+    {
+      "failure_mode": "EVIDENCE_DUPLICATION",
+      "description": "Probability Engine independently redefines evidence quality, provenance, or dependency.",
+      "prevention": "Consume Evidence Engine assessments."
+    },
+    {
+      "failure_mode": "HISTORICAL_INFORMATION_AS_EVIDENCE",
+      "description": "Historical cases are treated as current-case observations.",
+      "prevention": "Use historical information only through priors and calibration."
+    },
+    {
+      "failure_mode": "SMALL_SAMPLE_CERTAINTY",
+      "description": "Sparse historical observations create extreme priors.",
+      "prevention": "Use hierarchical Bayesian regularization and effective sample size."
+    },
+    {
+      "failure_mode": "DUPLICATE_EVIDENCE_MULTIPLICATION",
+      "description": "Dependent or duplicate evidence is multiplied as though independent.",
+      "prevention": "Apply dependency-aware evidence treatment."
+    },
+    {
+      "failure_mode": "FALSE_EXHAUSTIVENESS",
+      "description": "Known hypotheses are normalized to 1.0 despite an incomplete candidate set.",
+      "prevention": "Preserve unknown probability."
+    },
+    {
+      "failure_mode": "FORCED_MUTUAL_EXCLUSIVITY",
+      "description": "Coexisting hypotheses are incorrectly normalized to sum to one.",
+      "prevention": "Use probability-domain-specific treatment."
+    },
+    {
+      "failure_mode": "HIERARCHICAL_DOUBLE_COUNTING",
+      "description": "Parent and child hypotheses are treated as independent competing causes.",
+      "prevention": "Use conditional hierarchical probability treatment."
+    },
+    {
+      "failure_mode": "ARBITRARY_LIKELIHOOD_PRECISION",
+      "description": "A.R.I.A. invents precise likelihood ratios without empirical or calibrated basis.",
+      "prevention": "Use conservative qualitative updates and preserve calibration limitations."
+    },
+    {
+      "failure_mode": "PROBABILITY_EQUALS_CONFIRMATION",
+      "description": "High probability directly confirms a hypothesis.",
+      "prevention": "Hypothesis Engine owns confirmation."
+    },
+    {
+      "failure_mode": "PROBABILITY_EQUALS_ELIMINATION",
+      "description": "Low probability directly eliminates a hypothesis.",
+      "prevention": "Hypothesis Engine owns elimination."
+    },
+    {
+      "failure_mode": "PROBABILITY_SELECTS_ACTION",
+      "description": "Highest probability automatically determines the selected Action.",
+      "prevention": "Decision Engine owns Action selection."
+    },
+    {
+      "failure_mode": "PROBABILITY_DRIVES_ROUTING",
+      "description": "Probability Engine directly changes route progression.",
+      "prevention": "Return material changes through Orchestration."
+    },
+    {
+      "failure_mode": "UNCALIBRATED_LEARNING",
+      "description": "Historical outcomes influence future probability without sufficient validation or learning eligibility.",
+      "prevention": "Use only learning-eligible validated historical information."
+    },
+    {
+      "failure_mode": "USER_BLAME_MODEL",
+      "description": "User-specific historical probability is interpreted as blame or universal fault propensity.",
+      "prevention": "Use only technically relevant, contextual, statistically defensible historical information."
+    },
+    {
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal Probability Engine logic hardcodes specific technologies, vendors, products, customers, organizations, or named users.",
+      "prevention": "Keep universal probability reasoning domain-independent."
+    }
   ],
 
-  "semantic_rules": [
+  "invariants": [
     {
-      "rule_id": "PROB-RULE-001",
-      "rule": "Probability represents ARIA's current belief regarding a hypothesis and shall remain distinct from evidence confidence, diagnostic confidence, route value, and source authority."
+      "invariant_id": "PROB-INV-001",
+      "statement": "Probability values remain within the inclusive range 0.0 through 1.0."
     },
-
     {
-      "rule_id": "PROB-RULE-002",
-      "rule": "Historical experience establishes priors; current evidence establishes whether those priors remain justified."
+      "invariant_id": "PROB-INV-002",
+      "statement": "Probability and confidence remain distinct."
     },
-
     {
-      "rule_id": "PROB-RULE-003",
-      "rule": "ARIA shall regularize small historical samples toward broader applicable experience."
+      "invariant_id": "PROB-INV-003",
+      "statement": "Probability persistence is owned by Core/Schemas/hypothesis.schema.json."
     },
-
     {
-      "rule_id": "PROB-RULE-004",
-      "rule": "ARIA shall preserve the underlying validated case records used to generate historical probabilities."
+      "invariant_id": "PROB-INV-004",
+      "statement": "Confidence vocabulary is owned by Core/Registries/confidence_levels.json."
     },
-
     {
-      "rule_id": "PROB-RULE-005",
-      "rule": "Current high-quality contradictory evidence may substantially overcome a strong historical prior."
+      "invariant_id": "PROB-INV-005",
+      "statement": "Historical information influences priors but is not current-case evidence."
     },
-
     {
-      "rule_id": "PROB-RULE-006",
-      "rule": "Probability changes shall be attributable to evidence, context, prior adjustment, or an explicit mathematical operation."
+      "invariant_id": "PROB-INV-006",
+      "statement": "Sparse historical samples do not create unsupported certainty."
     },
-
     {
-      "rule_id": "PROB-RULE-007",
-      "rule": "ARIA shall distinguish raw historical rate from smoothed diagnostic prior."
+      "invariant_id": "PROB-INV-007",
+      "statement": "Dependent evidence is not multiplied as though independent."
     },
-
     {
-      "rule_id": "PROB-RULE-008",
-      "rule": "Mutually exclusive hypotheses may be normalized to a total probability of 1.0 only within a defined exhaustive hypothesis group."
+      "invariant_id": "PROB-INV-008",
+      "statement": "Mutually exclusive hypotheses are normalized only within technically valid probability groups."
     },
-
     {
-      "rule_id": "PROB-RULE-009",
-      "rule": "Coexisting hypotheses shall not be artificially normalized against one another."
+      "invariant_id": "PROB-INV-009",
+      "statement": "Coexisting hypothesis probabilities are not required to sum to one."
     },
-
     {
-      "rule_id": "PROB-RULE-010",
-      "rule": "Parent and child hypotheses shall not independently consume probability mass when they represent the same causal branch at different levels of specificity."
+      "invariant_id": "PROB-INV-010",
+      "statement": "Hierarchical hypotheses are not double counted."
     },
-
     {
-      "rule_id": "PROB-RULE-011",
-      "rule": "Unknown probability mass shall remain available when ARIA cannot justify that her modeled hypothesis set is complete."
+      "invariant_id": "PROB-INV-011",
+      "statement": "Unknown probability is preserved when the modeled hypothesis set may be incomplete."
     },
-
     {
-      "rule_id": "PROB-RULE-012",
-      "rule": "ARIA shall prefer conservative calibrated probability over unsupported precise-looking percentages."
+      "invariant_id": "PROB-INV-012",
+      "statement": "Probability Engine does not independently confirm hypotheses."
     },
-
     {
-      "rule_id": "PROB-RULE-013",
-      "rule": "User-specific historical priors shall require relevant attribution and contextual similarity."
+      "invariant_id": "PROB-INV-013",
+      "statement": "Probability Engine does not independently eliminate hypotheses."
     },
-
     {
-      "rule_id": "PROB-RULE-014",
-      "rule": "User improvement and changing technical conditions shall be capable of changing the predictive influence of older experience."
+      "invariant_id": "PROB-INV-014",
+      "statement": "Probability Engine consumes rather than recreates Evidence quality and dependency semantics."
     },
-
     {
-      "rule_id": "PROB-RULE-015",
-      "rule": "Probability shall guide diagnosis but shall not independently determine the next diagnostic action."
+      "invariant_id": "PROB-INV-015",
+      "statement": "Probability Engine consumes rather than recreates Context semantics."
     },
-
     {
-      "rule_id": "PROB-RULE-016",
-      "rule": "ARIA shall measure and improve probability calibration against validated outcomes over time."
+      "invariant_id": "PROB-INV-016",
+      "statement": "Probability Engine does not determine learning eligibility."
     },
-
     {
-      "rule_id": "PROB-RULE-017",
-      "rule": "Evidence dependence shall be modeled sufficiently to prevent duplicated evidence from creating artificial confidence."
+      "invariant_id": "PROB-INV-017",
+      "statement": "Probability Engine does not select competitive Actions."
     },
-
     {
-      "rule_id": "PROB-RULE-018",
-      "rule": "Probability of exactly zero or one shall require substantially stronger justification than merely low or high historical frequency."
+      "invariant_id": "PROB-INV-018",
+      "statement": "Probability Engine does not perform route progression or rerouting."
     },
-
     {
-      "rule_id": "PROB-RULE-019",
-      "rule": "When probabilities are displayed to users, ARIA should communicate material uncertainty and sample limitations when relevant."
+      "invariant_id": "PROB-INV-019",
+      "statement": "Material probability changes remain historically reconstructable."
     },
-
     {
-      "rule_id": "PROB-RULE-020",
-      "rule": "The mathematical implementation may evolve, but all future implementations shall preserve case-level provenance, explainability, calibration capability, and separation between prior and current evidence."
+      "invariant_id": "PROB-INV-020",
+      "statement": "Probability Engine remains technically domain-independent."
     }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing hypothesis probability persistence record.",
+    "Defining competing confidence levels or confidence semantics.",
+    "Treating probability as confidence.",
+    "Treating confidence as probability.",
+    "Treating probability as truth or certainty.",
+    "Treating historical experience as current-case evidence.",
+    "Using learning-ineligible historical cases in learned priors without explicit authorization.",
+    "Allowing sparse samples to create unsupported extreme priors.",
+    "Treating more specific historical populations as automatically superior to broader populations.",
+    "Double counting overlapping historical populations.",
+    "Hardcoding a competing Context dimension vocabulary.",
+    "Recreating Evidence quality, provenance, verification, or dependency semantics.",
+    "Multiplying duplicate or dependent evidence as though independent.",
+    "Inventing precise likelihood ratios without sufficient basis.",
+    "Treating generic qualitative likelihood mappings as immutable technical constants.",
+    "Normalizing coexisting hypotheses to sum to one.",
+    "Normalizing an incomplete known hypothesis set without preserving unknown probability.",
+    "Treating parent and child hypotheses as independent competing causes.",
+    "Forcing unknown probability to zero because a known hypothesis leads.",
+    "Setting a hypothesis to CONFIRMED solely because probability is high.",
+    "Setting a hypothesis to ELIMINATED solely because probability is low.",
+    "Directly selecting act_<UUID>.",
+    "Directly creating route steps.",
+    "Directly rerouting.",
+    "Directly changing case lifecycle status.",
+    "Directly changing case reasoning state.",
+    "Using user-specific historical patterns as blame.",
+    "Using irrelevant or protected personal characteristics to influence technical probability.",
+    "Directly invoking downstream engines as a substitute for Orchestration.",
+    "Rewriting historical probability entries using later knowledge.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, organization-specific, or named-user probability logic into the universal Probability Engine."
   ]
 }
