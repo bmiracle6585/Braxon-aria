@@ -1,0 +1,521 @@
+{
+  "engine": {
+    "id": "aria.operations.risk_engine",
+    "name": "A.R.I.A. Risk Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_risk_management",
+    "status": "active",
+    "purpose": "Identify, characterize, monitor, and govern supported future operational uncertainty that could materially affect objectives, obligations, commitments, execution, customers, finances, safety, compliance, or other consequential outcomes. The engine distinguishes risk from active issues and enables proportionate mitigation without manufacturing urgency from mere possibility.",
+    "principles": [
+      "Risk concerns a materially uncertain future outcome.",
+      "An event that has already occurred is not merely a risk and may require issue, conflict, dependency, commitment, or other operational handling.",
+      "Possibility alone does not establish meaningful risk.",
+      "Risk significance depends on both plausible consequence and supported likelihood.",
+      "Low-likelihood severe consequences may still deserve deliberate treatment.",
+      "A.R.I.A. should detect material risk early enough to preserve useful mitigation options.",
+      "Risk does not automatically become canonical priority.",
+      "Risk mitigation should be proportionate to the exposure.",
+      "Mitigation may reduce likelihood, consequence, or both.",
+      "Accepted risk must remain distinguishable from ignored risk.",
+      "Risk should stop consuming attention when exposure is no longer materially actionable.",
+      "Risk decisions must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "future uncertainty could materially affect work",
+      "a commitment may become threatened",
+      "a dependency may fail or arrive late",
+      "capacity may become insufficient",
+      "a schedule contains material uncertainty",
+      "a conflict may develop",
+      "a customer outcome may be threatened",
+      "financial exposure exists",
+      "safety or compliance exposure exists",
+      "a decision includes materially uncertain consequences",
+      "user requests risk evaluation"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "commitments",
+      "dependencies",
+      "capacity",
+      "scheduling",
+      "conflicts",
+      "delegation",
+      "aging",
+      "escalation",
+      "decisions",
+      "follow_up",
+      "resolution",
+      "activity",
+      "source history"
+    ]
+  },
+
+  "risk_states": {
+    "identified": {
+      "description": "A supported future uncertainty with potential material consequence has been identified."
+    },
+    "assessing": {
+      "description": "Material information needed to characterize the exposure is being evaluated."
+    },
+    "active": {
+      "description": "The risk remains materially relevant and requires monitoring, mitigation, acceptance, transfer, avoidance, or another supported treatment."
+    },
+    "mitigating": {
+      "description": "Actions intended to reduce the risk are underway."
+    },
+    "monitored": {
+      "description": "The risk remains valid but current exposure does not justify additional intervention beyond appropriate monitoring."
+    },
+    "accepted": {
+      "description": "An authorized party has knowingly accepted the residual exposure."
+    },
+    "transferred": {
+      "description": "Material responsibility for the exposure has been legitimately transferred or contractually shifted."
+    },
+    "avoided": {
+      "description": "The underlying path creating the exposure has been legitimately removed."
+    },
+    "realized": {
+      "description": "The uncertain event has occurred and must transition to the appropriate active operational handling."
+    },
+    "expired": {
+      "description": "The relevant uncertainty window passed without the risk occurring."
+    },
+    "resolved": {
+      "description": "The exposure no longer materially exists."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine current risk state."
+    }
+  },
+
+  "risk_types": {
+    "schedule": "Future uncertainty may materially affect required or desired timing.",
+    "capacity": "Future uncertainty may leave insufficient practical execution capacity.",
+    "dependency": "A prerequisite may not become satisfied as required.",
+    "commitment": "A promise may become difficult or impossible to fulfill.",
+    "customer": "A future condition may materially affect a customer relationship, deliverable, expectation, or outcome.",
+    "financial": "A future condition may create material financial loss, cost, cash-flow pressure, or exposure.",
+    "commercial": "A future condition may materially affect pricing, purchasing, vendor, contractual, or business outcomes.",
+    "technical": "A technical uncertainty may materially affect execution or outcome.",
+    "resource": "A required person, crew, equipment, vehicle, system, facility, or other resource may become unavailable or insufficient.",
+    "safety": "A future condition may create material safety consequence.",
+    "regulatory": "A future condition may create material regulatory or compliance consequence.",
+    "legal": "A future condition may create material legal consequence.",
+    "reputation": "A future condition may materially affect organizational or customer trust and reputation.",
+    "operational": "A future condition may materially disrupt operations.",
+    "strategic": "A future condition may materially affect a supported strategic objective.",
+    "other": "A supported operational risk not represented by another canonical type."
+  },
+
+  "risk_record": {
+    "fields": [
+      "risk_id",
+      "work_item_id",
+      "risk_type",
+      "risk_state",
+      "risk_statement",
+      "cause",
+      "uncertain_event",
+      "potential_consequence",
+      "likelihood",
+      "impact",
+      "exposure",
+      "time_horizon",
+      "risk_owner",
+      "treatment",
+      "residual_risk",
+      "identified_at",
+      "review_by",
+      "resolved_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Each materially independent risk should have a persistent identity.",
+      "The uncertain event and potential consequence should be distinguishable.",
+      "Risk statements should identify what may happen and why it matters.",
+      "Unknown likelihood or impact must remain unknown rather than invented.",
+      "Risk history must remain recoverable after closure."
+    ]
+  },
+
+  "establishment": {
+    "questions": [
+      "What uncertain future event or condition is supported?",
+      "What could cause it?",
+      "What material consequence could result?",
+      "How plausible is the event based on available evidence?",
+      "When could the exposure become consequential?",
+      "Can useful action still reduce the exposure?"
+    ],
+    "rules": [
+      "A.R.I.A. must distinguish a supported risk from generic speculation.",
+      "A risk should have a plausible causal path to a material consequence.",
+      "Known active problems should not remain represented only as future risks.",
+      "Unknown probability must not be fabricated.",
+      "Risk significance should reflect the evidence available at evaluation time."
+    ]
+  },
+
+  "likelihood": {
+    "levels": {
+      "rare": "Supported evidence indicates occurrence is possible but unusual.",
+      "unlikely": "Occurrence is plausible but not currently expected.",
+      "possible": "Occurrence has a meaningful plausible chance under current conditions.",
+      "likely": "Available evidence indicates occurrence is more likely than not or is otherwise strongly expected.",
+      "near_certain": "Available evidence indicates occurrence is expected absent meaningful intervention.",
+      "unknown": "Evidence is insufficient for a useful likelihood classification."
+    },
+    "rules": [
+      "Likelihood should be evidence-based rather than emotionally inferred.",
+      "Repeated historical occurrence may inform likelihood when circumstances are sufficiently comparable.",
+      "Absence of evidence does not establish low likelihood.",
+      "Unknown likelihood should remain unknown."
+    ]
+  },
+
+  "impact": {
+    "levels": {
+      "minor": "Limited consequence with little effect on consequential outcomes.",
+      "moderate": "Meaningful consequence requiring operational adjustment.",
+      "major": "Substantial consequence to commitments, customers, finances, operations, or strategic outcomes.",
+      "severe": "Very substantial consequence with limited tolerance or difficult recovery.",
+      "critical": "Potential safety, legal, regulatory, existential, or similarly extreme consequence.",
+      "unknown": "Evidence is insufficient for a useful impact classification."
+    },
+    "factors": [
+      "safety",
+      "legal",
+      "regulatory",
+      "contractual",
+      "customer",
+      "financial",
+      "operational",
+      "strategic",
+      "reputation",
+      "reversibility",
+      "recovery difficulty"
+    ],
+    "rules": [
+      "Impact should represent plausible consequence if the risk occurs.",
+      "Impact must not be reduced merely because likelihood is low.",
+      "Unknown consequence must not be assigned arbitrary severity."
+    ]
+  },
+
+  "exposure_evaluation": {
+    "levels": {
+      "low": "Current combined likelihood, consequence, and time horizon justify routine handling.",
+      "moderate": "Exposure deserves deliberate monitoring or proportionate mitigation.",
+      "high": "Exposure threatens consequential outcomes and warrants active treatment.",
+      "critical": "Exposure requires immediate or near-immediate treatment, authority, or intervention because potential consequence and current conditions leave little tolerance."
+    },
+    "rules": [
+      "Exposure should consider likelihood, impact, time horizon, mitigation opportunity, and uncertainty.",
+      "A.R.I.A. must not rely on simplistic numeric multiplication when qualitative evidence is more appropriate.",
+      "Severe low-likelihood risks may justify treatment even when aggregate exposure is not otherwise high.",
+      "High uncertainty around severe consequence may justify information gathering or precautionary mitigation.",
+      "Exposure level must remain distinguishable from canonical priority."
+    ]
+  },
+
+  "time_horizon": {
+    "categories": {
+      "immediate": "Risk could materialize within the current operational window.",
+      "near_term": "Risk could materialize soon enough to affect active planning or commitments.",
+      "medium_term": "Risk could materially affect upcoming operations but does not yet require immediate intervention.",
+      "long_term": "Risk concerns a later supported operational or strategic horizon.",
+      "unknown": "Materialization timing cannot currently be determined."
+    },
+    "rules": [
+      "Time horizon should influence when treatment or review becomes useful.",
+      "Long-term risk should not automatically consume immediate attention.",
+      "A distant risk may still require present action when mitigation lead time is long.",
+      "Unknown timing must remain unknown."
+    ]
+  },
+
+  "treatment": {
+    "strategies": {
+      "mitigate": "Reduce likelihood, consequence, or both.",
+      "avoid": "Change the operational path so the exposure no longer exists.",
+      "transfer": "Legitimately shift material responsibility or consequence to another party or mechanism.",
+      "accept": "Knowingly retain the residual exposure under appropriate authority.",
+      "monitor": "Observe the exposure because additional intervention is not currently justified.",
+      "investigate": "Obtain material information needed to characterize or treat the risk.",
+      "contingency": "Prepare an executable response if the uncertain event occurs.",
+      "escalate": "Seek higher or different authority when treatment exceeds current authority.",
+      "unresolved": "No supported treatment has yet been determined."
+    },
+    "rules": [
+      "Treatment should be proportionate to exposure.",
+      "Mitigation should address the actual causal path or consequence.",
+      "Risk acceptance requires appropriate authority when consequence is material.",
+      "Ignoring a risk is not the same as accepting it.",
+      "Transfer must reflect a legitimate shift in responsibility or consequence rather than merely delegation of work.",
+      "A contingency plan does not reduce likelihood unless it actually changes the causal conditions.",
+      "Treatment may create new work requiring Capture Engine evaluation."
+    ]
+  },
+
+  "mitigation": {
+    "rules": [
+      "Mitigation actions should identify which aspect of exposure they intend to reduce.",
+      "Mitigation work must remain independently trackable when consequential.",
+      "Starting mitigation does not prove the risk has been reduced.",
+      "Mitigation effectiveness should be reevaluated from evidence.",
+      "Failed mitigation should trigger reassessment of exposure and available treatments.",
+      "Mitigation cost and operational consequence should be considered when materially relevant."
+    ]
+  },
+
+  "residual_risk": {
+    "rules": [
+      "Risk treatment may leave residual exposure.",
+      "Residual risk should be reevaluated after material mitigation.",
+      "A risk should not be marked resolved merely because mitigation was attempted.",
+      "Accepted residual risk should preserve who or what authority accepted it when materially required.",
+      "Material residual risk may still require monitoring or contingency."
+    ]
+  },
+
+  "risk_realization": {
+    "rules": [
+      "When the uncertain event occurs, the risk state should become realized.",
+      "Realized risk should transition into the appropriate active operational representation.",
+      "Realization may create issues, dependencies, conflicts, commitment breaches, schedule failures, capacity shortages, decisions, or other work.",
+      "Capture Engine should evaluate materially new obligations created by realization.",
+      "The original risk record should remain preserved for provenance and later learning.",
+      "A realized risk must not remain presented merely as something that might happen."
+    ]
+  },
+
+  "risk_owner": {
+    "rules": [
+      "Risk ownership identifies responsibility for ensuring the exposure is appropriately monitored or treated.",
+      "Risk ownership does not necessarily mean the owner performs every mitigation action.",
+      "Risk owner must not be invented when unsupported.",
+      "Delegation of mitigation work does not automatically transfer risk ownership.",
+      "Risk ownership may change through supported authority or workflow."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines relative operational importance.",
+      "Risk Engine determines supported future exposure.",
+      "Risk exposure may contribute to Priority reevaluation.",
+      "Risk Engine must not independently overwrite canonical priority.",
+      "A high-impact risk does not automatically mean the underlying work is Priority 1."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Risk Engine determines whether meaningful exposure exists.",
+      "Attention Engine determines whether and how the user should see it.",
+      "Routine monitored risks should not repeatedly consume user attention.",
+      "High or critical exposure requiring user authority or intervention may justify direct attention.",
+      "Material change in exposure may justify renewed attention."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises.",
+      "Risk Engine may identify future conditions threatening fulfillment.",
+      "Risk does not itself modify or release a commitment.",
+      "A realized commitment risk may trigger Commitment Engine reevaluation."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisite conditions.",
+      "Risk Engine may identify uncertainty about whether a dependency will be satisfied.",
+      "A currently unsatisfied prerequisite is not merely a risk when it is already blocking work.",
+      "Dependency-risk realization should trigger Dependency Engine reevaluation."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine determines practical execution capacity.",
+      "Risk Engine may identify uncertainty that future capacity will become insufficient.",
+      "Current supported overload should be handled as a capacity condition rather than only a risk.",
+      "Capacity risk realization should trigger Capacity Engine reevaluation."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine determines practical execution timing.",
+      "Risk Engine may identify uncertainty threatening a schedule.",
+      "Known schedule infeasibility is not merely schedule risk.",
+      "Schedule risk may justify additional buffer, contingency, or earlier execution when supported."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine identifies current or developing material incompatibility.",
+      "Risk Engine may identify uncertainty that a conflict could arise.",
+      "Once supported conditions establish developing or active incompatibility, Conflict Engine should govern that condition.",
+      "Risk history should remain preserved after transition."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine governs authorized choices.",
+      "Risk Engine supplies supported uncertainty and consequence information relevant to those choices.",
+      "Decision Engine may govern whether to accept, avoid, transfer, or materially mitigate a risk when authority is required.",
+      "A.R.I.A. must not treat risk scoring as a substitute for judgment."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Risk Engine may identify exposure associated with delegated execution.",
+      "Delegation does not transfer risk ownership unless legitimately established.",
+      "Risk must not be used to unfairly attribute fault to a delegate."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, repeated deferral, and starvation.",
+      "Risk may increase, decrease, or remain unchanged with age depending on actual conditions.",
+      "Age alone must not increase risk exposure.",
+      "Repeatedly deferred mitigation may increase exposure when evidence supports that conclusion."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines when treatment requires higher or different authority.",
+      "Not every high risk requires escalation if appropriate treatment is already within current authority.",
+      "Critical exposure or unavailable treatment authority may justify escalation."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit and verification timing.",
+      "Risk treatment may require follow-up for information, mitigation progress, or trigger conditions.",
+      "Risk Engine should determine what needs monitoring but must not independently send follow-up communication."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition of underlying work.",
+      "Closing a risk does not automatically resolve the underlying work item.",
+      "Resolving the underlying work may eliminate associated risk exposure.",
+      "Risk closure should preserve whether the risk was avoided, expired, accepted, transferred, realized, or otherwise resolved."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may identify evidence of new risks.",
+      "Risk Engine governs sufficiently supported future operational exposure.",
+      "Risk treatment or realization may create new obligations requiring Capture Engine evaluation.",
+      "Risk Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new risk evidence appears",
+      "likelihood changes",
+      "impact changes",
+      "time horizon changes",
+      "mitigation begins",
+      "mitigation completes",
+      "mitigation fails",
+      "dependency changes",
+      "capacity changes",
+      "schedule changes",
+      "commitment changes",
+      "conflict changes",
+      "decision changes",
+      "resource availability changes",
+      "risk review point arrives",
+      "risk is accepted",
+      "risk is transferred",
+      "risk is realized",
+      "underlying work resolves",
+      "user requests risk review"
+    ],
+    "rules": [
+      "Reevaluation must preserve risk history.",
+      "Reevaluation should use current supported evidence rather than mechanically preserve old ratings.",
+      "Changed likelihood should remain distinguishable from changed consequence.",
+      "Material risk changes may trigger Priority, Attention, Commitment, Dependency, Capacity, Scheduling, Conflict, Decision, Delegation, Aging, Escalation, Follow-Up, Capture, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.risk",
+    "risk_evaluation": [
+      "work_item_id",
+      "risk_id",
+      "risk_state",
+      "risk_type",
+      "risk_statement",
+      "likelihood",
+      "impact",
+      "exposure",
+      "time_horizon",
+      "recommended_treatment",
+      "risk_owner",
+      "residual_risk",
+      "confidence",
+      "next_review",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Risk output must reference the applicable work_item_id.",
+      "Likelihood, impact, and exposure must remain distinguishable.",
+      "Unknown values must not be fabricated.",
+      "Risk treatment must remain distinguishable from completed mitigation.",
+      "Risk Engine must not directly overwrite canonical priority.",
+      "Material risk changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat every possibility as meaningful risk.",
+    "Do not represent generic speculation as supported exposure.",
+    "Do not keep an event represented only as risk after it has occurred.",
+    "Do not invent likelihood.",
+    "Do not invent consequence.",
+    "Do not confuse impact with probability.",
+    "Do not equate high risk with Priority 1.",
+    "Do not equate mitigation started with mitigation effective.",
+    "Do not equate ignored risk with accepted risk.",
+    "Do not transfer risk merely by delegating mitigation work.",
+    "Do not allow risk scoring to replace operational judgment.",
+    "Do not automatically increase risk because an item is old.",
+    "Do not silently modify commitments as risk treatment.",
+    "Do not silently resolve underlying work when risk closes.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not bypass the Decision Engine when treatment requires an authorized choice.",
+    "Do not bypass the Escalation Engine when treatment requires higher authority.",
+    "Do not bypass the Resolution Engine for terminal work disposition.",
+    "Do not modify Core reasoning architecture as part of risk management."
+  ]
+}
