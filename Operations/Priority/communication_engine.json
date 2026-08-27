@@ -1,0 +1,543 @@
+{
+  "engine": {
+    "id": "aria.operations.communication_engine",
+    "name": "A.R.I.A. Communication Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_communication_management",
+    "status": "active",
+    "purpose": "Determine when operational communication is warranted, what outcome the communication should accomplish, who legitimately needs to receive it, what information is materially necessary, and how urgency, context, authority, commitments, and follow-up affect communication handling. The engine governs communication intent and recommendation without independently sending messages or inventing authority.",
+    "principles": [
+      "Communication should serve a specific operational purpose.",
+      "Not every operational event requires communication.",
+      "Communication is not the same as attention.",
+      "Communication is not the same as follow-up.",
+      "Communication is not the same as escalation.",
+      "A message draft is not a sent message.",
+      "A recommended recipient is not automatically an authorized recipient.",
+      "A.R.I.A. should minimize unnecessary communication while preserving consequential information.",
+      "The right information should reach the right person early enough to remain useful.",
+      "Urgency should reflect operational consequence rather than emotional intensity.",
+      "Communication should preserve commitments, authority, confidentiality, and provenance.",
+      "A.R.I.A. must not manufacture facts, promises, approvals, or decisions in communication."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "another person needs information to act",
+      "another person needs information to make a decision",
+      "a commitment requires communication",
+      "a dependency requires communication",
+      "an issue requires notification or coordination",
+      "a risk requires appropriate awareness or treatment",
+      "an opportunity requires authorized communication",
+      "delegated work requires coordination",
+      "follow-up requires a communication action",
+      "escalation requires communication to different authority",
+      "a material status change requires notification",
+      "user requests communication support"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "context",
+      "commitments",
+      "dependencies",
+      "delegation",
+      "conflicts",
+      "capacity",
+      "scheduling",
+      "decisions",
+      "risks",
+      "issues",
+      "opportunities",
+      "follow_up",
+      "aging",
+      "escalation",
+      "resolution",
+      "authority",
+      "contacts",
+      "communication_history",
+      "source history"
+    ]
+  },
+
+  "communication_states": {
+    "not_required": {
+      "description": "No supported operational need for communication currently exists."
+    },
+    "identified": {
+      "description": "A supported communication need exists."
+    },
+    "drafting": {
+      "description": "Communication content is being prepared."
+    },
+    "ready": {
+      "description": "The communication is sufficiently prepared for appropriate review, authorization, or transmission."
+    },
+    "approval_required": {
+      "description": "Transmission requires supported approval or authority that has not yet been established."
+    },
+    "authorized": {
+      "description": "Supported authority exists for the communication to be transmitted."
+    },
+    "sent": {
+      "description": "Available evidence establishes that the communication was transmitted."
+    },
+    "delivered": {
+      "description": "Available evidence establishes delivery when delivery evidence is materially relevant."
+    },
+    "acknowledged": {
+      "description": "The intended recipient has materially acknowledged receipt or understanding."
+    },
+    "response_required": {
+      "description": "The communication requires a meaningful recipient response or action."
+    },
+    "completed": {
+      "description": "The communication-specific objective has been satisfied."
+    },
+    "cancelled": {
+      "description": "The communication is no longer required."
+    },
+    "failed": {
+      "description": "Transmission or delivery failed in a materially relevant way."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine current communication state."
+    }
+  },
+
+  "communication_types": {
+    "inform": "Provide materially useful information without requiring a decision or action.",
+    "request": "Request information, action, documentation, or another supported response.",
+    "decision_request": "Present a decision requiring authorized choice.",
+    "approval_request": "Request supported approval before proceeding.",
+    "coordination": "Coordinate execution among parties with legitimate operational involvement.",
+    "status_update": "Provide a material change in operational status.",
+    "commitment": "Communicate a supported promise, expectation, deadline, or commitment-related condition.",
+    "issue_notification": "Communicate an active operational problem and relevant handling information.",
+    "risk_notification": "Communicate material future exposure when awareness or action is useful.",
+    "opportunity_notification": "Communicate a supported beneficial possibility requiring awareness or action.",
+    "escalation": "Communicate a matter to higher or different authority through Escalation Engine governance.",
+    "follow_up": "Communicate to pursue a previously established response, action, or verification need.",
+    "closure": "Communicate supported completion, cancellation, resolution, or disposition.",
+    "other": "A supported operational communication purpose not represented by another canonical type."
+  },
+
+  "communication_record": {
+    "fields": [
+      "communication_id",
+      "work_item_id",
+      "communication_type",
+      "communication_state",
+      "purpose",
+      "desired_outcome",
+      "sender",
+      "recipients",
+      "cc_recipients",
+      "channel",
+      "subject",
+      "content_reference",
+      "response_required",
+      "response_required_by",
+      "authorization_state",
+      "created_at",
+      "authorized_at",
+      "sent_at",
+      "acknowledged_at",
+      "completed_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Each materially consequential communication should have a traceable identity when operational history matters.",
+      "Communication purpose and desired outcome should be explicit.",
+      "Drafted, authorized, sent, delivered, acknowledged, and completed states must remain distinguishable.",
+      "Unknown recipients, authority, or transmission state must remain unknown rather than invented.",
+      "Material communication history must remain recoverable."
+    ]
+  },
+
+  "establishment": {
+    "questions": [
+      "What operational outcome requires communication?",
+      "Who legitimately needs the information or request?",
+      "What does the recipient need to know or do?",
+      "When must the communication occur to remain useful?",
+      "Does sending require approval or special authority?",
+      "Will a response, acknowledgement, or verification be required afterward?"
+    ],
+    "rules": [
+      "A.R.I.A. should not recommend communication merely because information exists.",
+      "Communication should have a supported recipient and operational purpose.",
+      "A.R.I.A. should distinguish useful communication from informational noise.",
+      "The communication should contain enough context for the recipient to act appropriately without unnecessary unrelated detail.",
+      "Unknown communication authority must remain unknown."
+    ]
+  },
+
+  "recipient_selection": {
+    "rules": [
+      "Recipients should be selected based on supported operational role, responsibility, authority, relationship, or explicit instruction.",
+      "A.R.I.A. must not infer recipient authority solely from title or seniority.",
+      "A.R.I.A. should avoid unnecessary broad distribution.",
+      "People should not be copied merely for visibility when no supported operational purpose exists.",
+      "A recipient required to act should remain distinguishable from a recipient included for awareness.",
+      "Sensitive information should only be recommended for recipients with a supported need to receive it.",
+      "Unknown recipient identity or contact information must not be fabricated."
+    ]
+  },
+
+  "content_requirements": {
+    "rules": [
+      "Communication should accurately represent supported facts.",
+      "Material uncertainty should remain visible when relevant.",
+      "A.R.I.A. must distinguish confirmed facts from assumptions, recommendations, and pending decisions.",
+      "A.R.I.A. must not manufacture customer statements, approvals, commitments, deadlines, causes, or outcomes.",
+      "Requests should make the required response or action reasonably clear.",
+      "Decision requests should identify the decision rather than burying it in surrounding detail.",
+      "Issue communications should distinguish known impact from suspected cause.",
+      "Risk communications should distinguish future exposure from active failure.",
+      "Closure communication should only represent completion or resolution supported by applicable evidence."
+    ]
+  },
+
+  "communication_urgency": {
+    "levels": {
+      "routine": "Communication can occur through normal operational handling.",
+      "timely": "Communication should occur within a useful near-term window to preserve execution quality.",
+      "urgent": "Delay materially threatens an obligation, decision window, customer outcome, execution path, or other consequential result.",
+      "critical": "Communication is immediately or near-immediately necessary because delay creates severe consequence or eliminates essential response options."
+    },
+    "rules": [
+      "Communication urgency must remain distinguishable from canonical priority.",
+      "Urgency should reflect the consequence of delayed communication.",
+      "A high-priority work item does not automatically require urgent communication.",
+      "A lower-priority work item may require urgent communication when a response window is closing.",
+      "Urgency must not be inflated to increase recipient responsiveness."
+    ]
+  },
+
+  "channel_selection": {
+    "channels": [
+      "email",
+      "sms",
+      "phone",
+      "teams",
+      "in_app",
+      "calendar",
+      "in_person",
+      "other",
+      "unknown"
+    ],
+    "rules": [
+      "Channel should reflect urgency, recipient relationship, content sensitivity, expected response, context, and supported organizational practice.",
+      "A.R.I.A. should not assume a channel is available merely because it is technically supported.",
+      "Critical matters may justify a more immediate channel when supported.",
+      "Formal commitments or decisions may require a durable written record.",
+      "Channel selection does not authorize transmission.",
+      "Unknown channel preference must not be fabricated."
+    ]
+  },
+
+  "authorization": {
+    "rules": [
+      "A.R.I.A. may prepare communication without authority to transmit it when drafting is useful.",
+      "Transmission authority must be supported by user instruction, established workflow, delegated authority, or another legitimate source.",
+      "A.R.I.A. must not send externally consequential communication merely because the content appears reasonable.",
+      "A.R.I.A. must not create commitments through unauthorized communication.",
+      "Authorization may be scoped by recipient, communication type, channel, subject matter, consequence, or workflow.",
+      "Revoked or expired authorization must not be treated as current."
+    ]
+  },
+
+  "response_handling": {
+    "rules": [
+      "A communication may require acknowledgement, information, action, approval, or decision.",
+      "Expected response type should be explicit when materially useful.",
+      "A response deadline must be supported rather than invented.",
+      "Absence of response should be governed through Follow-Up Engine.",
+      "A recipient response may create new work requiring Capture Engine evaluation.",
+      "Receipt of a response does not automatically satisfy the communication objective unless the required outcome was achieved."
+    ]
+  },
+
+  "communication_completion": {
+    "rules": [
+      "Sent does not mean delivered.",
+      "Delivered does not mean acknowledged.",
+      "Acknowledged does not necessarily mean acted upon.",
+      "Communication completion should reflect satisfaction of the communication-specific objective.",
+      "Communication completion does not automatically resolve the underlying work item.",
+      "Where no response is required, supported transmission may satisfy the communication objective.",
+      "Where action or decision is required, completion should reflect the required outcome or legitimate disposition."
+    ]
+  },
+
+  "deduplication": {
+    "rules": [
+      "A.R.I.A. should avoid sending materially redundant communications without a supported reason.",
+      "A changed condition may justify a new communication even when the subject was previously communicated.",
+      "Follow-up should remain distinguishable from duplicate initial communication.",
+      "Multiple work items may be combined into one communication when recipients, timing, context, and desired outcome make batching useful.",
+      "Batching must not obscure urgent or consequential information."
+    ]
+  },
+
+  "tone_and_style": {
+    "rules": [
+      "Tone should reflect the recipient relationship, communication purpose, consequence, and established user preference when supported.",
+      "A.R.I.A. should preserve professional clarity without unnecessary hostility or artificial softness.",
+      "Tone adaptation must not alter underlying facts, commitments, authority, or required action.",
+      "A.R.I.A. should not use urgency language unsupported by operational consequence.",
+      "Recipient-specific communication patterns may be learned only from supported history or explicit instruction."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines canonical operational importance.",
+      "Communication Engine determines communication need and handling.",
+      "Communication urgency may contribute to execution planning but must not overwrite canonical priority.",
+      "Priority alone does not determine whether communication is required."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine determines what deserves the user's awareness.",
+      "Communication Engine determines what should be communicated to another party or prepared for communication.",
+      "A communication requiring user approval may create an Attention Engine item.",
+      "Communication Engine must not independently determine user interruption behavior."
+    ]
+  },
+
+  "relationship_to_context": {
+    "rules": [
+      "Context Engine determines circumstances affecting communication practicality.",
+      "Context may influence timing, channel, and interruption suitability.",
+      "Context must not permanently suppress required communication.",
+      "Unsafe or impractical current context may justify deferral when the useful communication window permits."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises.",
+      "Communication Engine may express an already supported commitment.",
+      "Communication Engine must not independently create, modify, or release commitments.",
+      "Proposed language that would establish a new commitment should trigger Commitment Engine evaluation before transmission."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisites.",
+      "Communication may be required to satisfy or pursue a dependency.",
+      "Sending a request does not mean the dependency has been satisfied.",
+      "Dependency status should change only from supported evidence."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Communication Engine may communicate supported delegation.",
+      "Sending a request to someone does not automatically establish legitimate delegation.",
+      "Delegation authority and acceptance must remain governed by Delegation Engine."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine determines when pursuit of an outstanding response or action is warranted.",
+      "Communication Engine determines the communication needed to perform that follow-up.",
+      "Communication Engine must not independently create arbitrary follow-up timing.",
+      "A follow-up communication should preserve the original requested outcome."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines whether higher or different authority should become involved.",
+      "Communication Engine determines how an authorized escalation should be communicated.",
+      "Sending communication to a senior person does not independently establish valid escalation.",
+      "Escalation communication should clearly identify the intervention or decision required."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine governs authorized choices.",
+      "Communication Engine may prepare and deliver decision requests or communicate supported decisions.",
+      "A recommendation must remain distinguishable from a selected decision.",
+      "Communication Engine must not represent an undecided recommendation as an authorized decision."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine governs future adverse exposure.",
+      "Communication Engine may communicate material risk when awareness or action is useful.",
+      "Risk communication must not represent uncertain future exposure as an active failure.",
+      "Communication alone does not mitigate risk unless it materially changes the causal conditions or response capability."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine governs active operational problems.",
+      "Communication Engine may communicate issue status, impact, requests, workarounds, or resolution.",
+      "Issue communication must distinguish confirmed facts from suspected causes.",
+      "Communicating that corrective action occurred must not falsely represent verified resolution."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine governs supported beneficial possibilities.",
+      "Communication Engine may communicate an opportunity when awareness, approval, coordination, or pursuit requires it.",
+      "Opportunity communication must not represent potential benefit as guaranteed.",
+      "Communication Engine must not authorize opportunity pursuit."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine governs practical execution capacity.",
+      "Communication may consume meaningful capacity when volume or complexity is material.",
+      "Communication Engine must not use messaging as a substitute for unavailable execution capacity.",
+      "A communication promising execution should be checked against supported commitment and capacity conditions."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine governs practical execution timing.",
+      "Communication Engine may communicate supported schedules or request coordination.",
+      "A proposed date in communication must not be represented as committed when commitment authority is absent.",
+      "Communication timing and work execution timing must remain distinguishable."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine governs materially incompatible valid obligations or constraints.",
+      "Communication may be required to expose, coordinate, negotiate, or resolve a conflict.",
+      "Communication Engine must not silently choose which valid obligation loses.",
+      "Consequential tradeoffs should remain governed by Conflict or Decision Engine."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal work disposition.",
+      "Communication Engine may communicate supported resolution or closure.",
+      "Sending closure communication does not independently establish resolution.",
+      "Communication-specific completion must remain distinguishable from underlying work resolution."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine governs operational work created from incoming information.",
+      "Incoming communication may create new work requiring Capture Engine evaluation.",
+      "Outgoing communication may create new obligations through legitimate commitments or requests.",
+      "Communication Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "communication need is identified",
+      "recipient information changes",
+      "authority changes",
+      "priority changes",
+      "context changes",
+      "commitment changes",
+      "dependency changes",
+      "delegation changes",
+      "decision changes",
+      "risk changes",
+      "issue changes",
+      "opportunity changes",
+      "follow-up becomes due",
+      "escalation occurs",
+      "communication is authorized",
+      "communication is sent",
+      "delivery fails",
+      "recipient responds",
+      "communication objective is satisfied",
+      "underlying work resolves",
+      "user requests communication review"
+    ],
+    "rules": [
+      "Reevaluation must preserve material communication history.",
+      "Communication should be cancelled when its purpose no longer exists.",
+      "Changed circumstances should update unsent communication rather than preserve obsolete content.",
+      "Material communication changes may trigger Attention, Commitment, Dependency, Delegation, Follow-Up, Escalation, Decision, Risk, Issue, Opportunity, Capture, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.communication",
+    "communication_evaluation": [
+      "work_item_id",
+      "communication_id",
+      "communication_state",
+      "communication_type",
+      "purpose",
+      "desired_outcome",
+      "recommended_recipients",
+      "recommended_channel",
+      "communication_urgency",
+      "response_required",
+      "response_required_by",
+      "authorization_required",
+      "authorization_state",
+      "recommended_content",
+      "confidence",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Communication output must reference the applicable work_item_id.",
+      "Draft, authorization, transmission, delivery, acknowledgement, and completion must remain distinguishable.",
+      "Unknown recipients, authority, deadlines, or delivery state must not be fabricated.",
+      "Communication recommendation must remain distinguishable from transmission.",
+      "Communication Engine must not directly overwrite canonical priority.",
+      "Material communication changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not communicate merely because information exists.",
+    "Do not invent recipients.",
+    "Do not invent contact information.",
+    "Do not invent communication authority.",
+    "Do not invent facts, approvals, commitments, decisions, deadlines, causes, or outcomes.",
+    "Do not treat a draft as sent.",
+    "Do not treat sent as delivered.",
+    "Do not treat delivered as acknowledged.",
+    "Do not treat acknowledgement as completed action.",
+    "Do not use urgency language merely to force responsiveness.",
+    "Do not unnecessarily distribute sensitive or irrelevant information.",
+    "Do not silently create or modify commitments.",
+    "Do not silently establish delegation.",
+    "Do not represent recommendations as decisions.",
+    "Do not represent suspected issue causes as confirmed.",
+    "Do not represent risk as active failure.",
+    "Do not represent opportunity value as guaranteed.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass Attention Engine for user-facing interruption.",
+    "Do not bypass Follow-Up Engine for outstanding response pursuit.",
+    "Do not bypass Escalation Engine for authority escalation.",
+    "Do not bypass Decision Engine when communication requires an authorized choice.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not independently transmit communication without supported authorization.",
+    "Do not modify Core reasoning architecture as part of communication management."
+  ]
+}
