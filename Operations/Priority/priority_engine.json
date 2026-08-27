@@ -1,0 +1,453 @@
+{
+  "engine": {
+    "id": "aria.operations.priority_engine",
+    "name": "A.R.I.A. Priority Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "priority",
+    "status": "active",
+
+    "purpose": "Evaluate the current operational importance of work items and determine which items most warrant attention. Priority is dynamic and must be recalculated as deadlines, commitments, dependencies, business conditions, activity, risk, and other relevant circumstances change.",
+
+    "principles": [
+      "Priority is current state, not a permanent property of a work item.",
+      "Urgency and importance are related but distinct.",
+      "A deadline alone does not determine priority.",
+      "An old item does not automatically outrank a newer important item.",
+      "A recently created item may immediately become critical.",
+      "Explicit commitments materially affect priority.",
+      "Work blocking other people or work may warrant elevated priority.",
+      "Waiting items remain active obligations when follow-up or monitoring is required.",
+      "Delegation does not remove accountability or follow-up responsibility.",
+      "Customer, financial, safety, strategic, and operational consequences may materially affect priority.",
+      "Priority must remain explainable.",
+      "Priority evaluation must distinguish known facts from inferred conditions.",
+      "Missing information must not be silently converted into negative or positive priority evidence.",
+      "Snoozing presentation does not erase the underlying work item or its objective importance.",
+      "Completed, cancelled, and superseded items are not active priority candidates unless specifically requested for historical analysis."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+
+    "required_fields": [
+      "work_item_id",
+      "status",
+      "created_at",
+      "updated_at",
+      "priority"
+    ],
+
+    "evaluation_context": {
+      "current_time": {
+        "required": true,
+        "description": "Authoritative time at which priority is being evaluated."
+      },
+
+      "user_context": {
+        "required": false,
+        "description": "Authorized context concerning the person whose attention is being prioritized."
+      },
+
+      "organizational_context": {
+        "required": false,
+        "description": "Current organizational conditions relevant to the work item."
+      },
+
+      "project_context": {
+        "required": false,
+        "description": "Current project conditions relevant to the work item."
+      },
+
+      "related_work_items": {
+        "required": false,
+        "description": "Related active work items needed to evaluate dependencies, blocking relationships, duplication, or downstream impact."
+      }
+    }
+  },
+
+  "active_statuses": [
+    "captured",
+    "ready",
+    "in_progress",
+    "waiting",
+    "delegated",
+    "blocked",
+    "scheduled"
+  ],
+
+  "inactive_statuses": [
+    "completed",
+    "cancelled",
+    "superseded"
+  ],
+
+  "evaluation": {
+    "method": "factor_based_dynamic_evaluation",
+
+    "score_range": {
+      "minimum": 0,
+      "maximum": 100
+    },
+
+    "bands": {
+      "critical": {
+        "minimum_score": 85,
+        "maximum_score": 100,
+        "meaning": "Requires immediate or near-immediate attention because delay creates substantial consequence, violates a critical commitment, blocks important work, or presents another high-impact condition."
+      },
+
+      "high": {
+        "minimum_score": 65,
+        "maximum_score": 84.999,
+        "meaning": "Should receive attention soon because consequence, commitment, timing, dependency, opportunity, or other material factors make postponement increasingly undesirable."
+      },
+
+      "normal": {
+        "minimum_score": 35,
+        "maximum_score": 64.999,
+        "meaning": "Legitimate active work that should remain visible and progress normally but does not currently warrant displacement of materially higher-priority work."
+      },
+
+      "low": {
+        "minimum_score": 0,
+        "maximum_score": 34.999,
+        "meaning": "Valid work with limited current consequence or timing pressure. It remains tracked so it does not disappear."
+      }
+    },
+
+    "factor_categories": {
+      "deadline": {
+        "description": "Evaluates proximity to an applicable due date or deadline and the consequence of missing it.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "commitment": {
+        "description": "Evaluates explicit promises or obligations made to another party.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "urgency": {
+        "description": "Evaluates how quickly the work requires action independent of its broader importance.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "importance": {
+        "description": "Evaluates the significance of the work independent of immediate timing pressure.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "business_impact": {
+        "description": "Evaluates material effect on company operations, execution, reputation, or organizational performance.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "customer_impact": {
+        "description": "Evaluates consequence to a customer or customer relationship.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "financial_impact": {
+        "description": "Evaluates meaningful revenue, cost, cash-flow, loss, penalty, or financial-opportunity consequence.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "safety_impact": {
+        "description": "Evaluates potential consequence to human or operational safety.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "dependency_impact": {
+        "description": "Evaluates whether other work depends upon this item.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "blocking_others": {
+        "description": "Evaluates whether delay prevents other people or systems from progressing.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "aging": {
+        "description": "Evaluates how long legitimate active work has remained unresolved. Aging prevents low-urgency obligations from disappearing indefinitely but shall not independently create artificial emergency.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "overdue": {
+        "description": "Evaluates whether an applicable due date or commitment has already been missed.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "follow_up_due": {
+        "description": "Evaluates whether a required follow-up has become due or overdue.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "executive_attention": {
+        "description": "Evaluates whether the item legitimately requires direct attention from the relevant executive or owner rather than ordinary delegation.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "opportunity_value": {
+        "description": "Evaluates the value and time sensitivity of a positive opportunity that may be lost through inaction.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "risk": {
+        "description": "Evaluates credible downside exposure associated with delay or inaction.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "waiting_duration": {
+        "description": "Evaluates how long an item has remained dependent upon an external response or condition and whether intervention or follow-up is becoming appropriate.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "external_pressure": {
+        "description": "Evaluates legitimate external timing or escalation pressure from customers, vendors, regulators, contractual obligations, or other parties.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "strategic_value": {
+        "description": "Evaluates contribution to important longer-term objectives that might otherwise be displaced indefinitely by urgent short-term work.",
+        "direction": "increase",
+        "dynamic": true
+      },
+
+      "other": {
+        "description": "Allows a supported priority factor not represented by another canonical category.",
+        "direction": "contextual",
+        "dynamic": true
+      }
+    }
+  },
+
+  "factor_assessment": {
+    "levels": {
+      "none": {
+        "value": 0
+      },
+
+      "minor": {
+        "value": 1
+      },
+
+      "moderate": {
+        "value": 2
+      },
+
+      "material": {
+        "value": 3
+      },
+
+      "major": {
+        "value": 4
+      },
+
+      "severe": {
+        "value": 5
+      }
+    },
+
+    "requirements": [
+      "A factor may only influence priority when supported by available information.",
+      "Unknown factor state must remain unknown rather than being treated as zero.",
+      "The same underlying circumstance should not be counted repeatedly under multiple factors without recognizing the shared basis.",
+      "Factor assessment must preserve source or reasoning support where available.",
+      "Inferred factors must remain distinguishable from explicit facts.",
+      "Factors may change as circumstances change."
+    ]
+  },
+
+  "priority_dynamics": {
+    "deadline_behavior": {
+      "enabled": true,
+      "rules": [
+        "Priority pressure may increase as a meaningful deadline approaches.",
+        "Deadline proximity must be interpreted together with consequence.",
+        "A distant high-consequence deadline may outrank a near trivial deadline.",
+        "A missed deadline should trigger overdue evaluation rather than automatically assigning maximum priority."
+      ]
+    },
+
+    "aging_behavior": {
+      "enabled": true,
+      "rules": [
+        "Active unresolved work may gradually gain attention pressure as it ages.",
+        "Aging exists primarily to prevent forgotten work.",
+        "Aging alone shall not transform trivial work into a critical emergency.",
+        "Meaningful recent activity may alter aging interpretation without resetting the original creation history."
+      ]
+    },
+
+    "waiting_behavior": {
+      "enabled": true,
+      "rules": [
+        "Waiting status does not remove an item from priority evaluation.",
+        "A waiting item may become important because follow-up is due.",
+        "Long external silence may increase the value of intervention.",
+        "A waiting item with a known future response date may remain low-attention until that date approaches."
+      ]
+    },
+
+    "delegation_behavior": {
+      "enabled": true,
+      "rules": [
+        "Delegation changes who is expected to perform the work but does not automatically close the obligation.",
+        "Delegated work may require follow-up.",
+        "Priority may increase when a delegated commitment approaches its expected completion date without evidence of progress.",
+        "Delegated work should not unnecessarily occupy executive attention while progressing normally."
+      ]
+    },
+
+    "strategic_work_behavior": {
+      "enabled": true,
+      "rules": [
+        "Important long-term work must not be permanently displaced by recurring urgent work.",
+        "Strategic value may preserve visibility for work without immediate deadlines.",
+        "Strategic importance does not automatically make an item urgent."
+      ]
+    }
+  },
+
+  "attention_logic": {
+    "purpose": "Determine whether an active work item should currently be surfaced to the relevant user.",
+
+    "considerations": [
+      "priority band",
+      "priority score",
+      "due date proximity",
+      "overdue state",
+      "commitment state",
+      "follow-up state",
+      "blocking relationships",
+      "meaningful change",
+      "risk escalation",
+      "opportunity timing",
+      "snooze state",
+      "whether user action is currently possible",
+      "whether another party currently owns the next action"
+    ],
+
+    "rules": [
+      "High priority does not always require immediate presentation if no user action is currently possible.",
+      "A lower-scoring item may warrant presentation when a small immediate action prevents future escalation.",
+      "Snoozed items should normally remain hidden from ordinary presentation until the snooze expires unless a materially changed condition justifies resurfacing.",
+      "A material new development may cause an item to require attention before its previous presentation schedule.",
+      "Attention state and underlying priority are related but distinct."
+    ]
+  },
+
+  "ranking": {
+    "purpose": "Order active work items for presentation and action planning.",
+
+    "primary_basis": "current_priority",
+
+    "secondary_considerations": [
+      "actionability",
+      "deadline proximity",
+      "commitment proximity",
+      "blocking impact",
+      "follow-up due state",
+      "consequence of delay",
+      "strategic preservation",
+      "aging",
+      "recent material change"
+    ],
+
+    "rules": [
+      "Ranking is contextual to the person and moment for whom it is generated.",
+      "Ranking must not modify the canonical work item merely because its presentation position changes.",
+      "Items with identical scores need not have identical practical priority.",
+      "The engine may use secondary considerations to resolve materially meaningful ties.",
+      "Presentation ranking should remain explainable."
+    ]
+  },
+
+  "reevaluation": {
+    "required_when": [
+      "a work item is created",
+      "status changes",
+      "due date changes",
+      "a deadline approaches",
+      "a deadline is missed",
+      "a commitment is created or changed",
+      "a commitment becomes overdue",
+      "delegation changes",
+      "a dependency changes",
+      "a blocking relationship changes",
+      "a required follow-up becomes due",
+      "new meaningful activity occurs",
+      "new information changes expected consequence",
+      "risk materially changes",
+      "customer impact materially changes",
+      "financial impact materially changes",
+      "strategic relevance materially changes",
+      "a snooze expires",
+      "the work item is requested for current ranking"
+    ],
+
+    "scheduled_reevaluation": {
+      "supported": true,
+      "description": "Active work items may be periodically reevaluated so time-dependent priority changes are detected even when no external event updates the item."
+    }
+  },
+
+  "output": {
+    "writes_to": "work_item.priority",
+
+    "fields": [
+      "state",
+      "score",
+      "band",
+      "evaluated_at",
+      "evaluation_version",
+      "reason_summary",
+      "factors"
+    ],
+
+    "requirements": [
+      "An evaluated item must record evaluated_at.",
+      "An evaluated item must identify the engine or evaluation version responsible for the result.",
+      "reason_summary must explain the material reasons for the current priority in useful natural language.",
+      "Stored factors must correspond to supported conditions used in evaluation.",
+      "Priority output must remain reproducible or explainable from available inputs to the practical extent supported by the implementation."
+    ]
+  },
+
+  "guardrails": [
+    "Do not permanently assign priority based solely on source type.",
+    "Do not assume every email creates a work item.",
+    "Do not assume every message from an important person is high priority.",
+    "Do not assume every customer request is critical.",
+    "Do not assume every overdue item is critical.",
+    "Do not assume every old item is important.",
+    "Do not suppress strategic work indefinitely because urgent work exists.",
+    "Do not treat delegated work as completed.",
+    "Do not treat waiting work as forgotten work.",
+    "Do not create urgency merely because information is missing.",
+    "Do not manufacture precision unsupported by the available information.",
+    "Do not hide the reason an item was elevated.",
+    "Do not allow priority ranking to become a permanent judgment about a person, customer, project, or work category.",
+    "Do not modify completed, cancelled, or superseded items solely to keep them in active rankings."
+  ]
+}
