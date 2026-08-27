@@ -1,0 +1,1574 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/action.schema.json",
+  "title": "A.R.I.A. Technical Action",
+  "description": "Authoritative persistence schema for a case-specific technical action proposed, requested, authorized, executed, observed, or evaluated by A.R.I.A. An action represents a concrete technical operation within a diagnostic case. Universal action-class vocabulary is owned by Core/Registries/action_types.json. This schema does not own routing decisions, decision utility, evidence semantics, outcome vocabulary, hypothesis probability, or domain-specific procedure definitions.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "action_id",
+    "case_id",
+    "action_type",
+    "execution_status",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "action_id": {
+      "$ref": "#/$defs/action_id"
+    },
+
+    "case_id": {
+      "$ref": "#/$defs/case_id",
+      "description": "Diagnostic case in which this action exists."
+    },
+
+    "action_type": {
+      "type": "string",
+      "description": "Universal technical action class governed by Core/Registries/action_types.json. This schema intentionally does not duplicate the complete action-type vocabulary."
+    },
+
+    "procedure_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/runtime_id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Optional reference to a domain, manufacturer, product, technology, or other technical procedure definition governing the specific operation."
+    },
+
+    "procedure_key": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Stable human-readable or machine-readable procedure key when the applicable procedure is not represented by a persisted runtime object."
+    },
+
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable name of the concrete technical action."
+    },
+
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable description of the concrete operation to be performed or that was performed."
+    },
+
+    "purpose": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Technical purpose of the action. This may explain what information, discrimination, verification, correction, validation, or operational result is sought without replacing Decision or Routing reasoning."
+    },
+
+    "target_entity_ids": {
+      "type": "array",
+      "description": "Canonical technical entities directly targeted by the action.",
+      "items": {
+        "$ref": "#/$defs/runtime_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "context_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/context_id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Authoritative persisted technical context applicable to the action. Context structure is owned by Core/Schemas/context.schema.json."
+    },
+
+    "related_hypothesis_ids": {
+      "type": "array",
+      "description": "Case hypotheses materially associated with this action. Association does not itself imply support, contradiction, confirmation, or elimination.",
+      "items": {
+        "$ref": "#/$defs/hypothesis_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "requested_by": {
+      "$ref": "#/$defs/actor_reference"
+    },
+
+    "requested_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+
+    "request_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable reason the action was requested. Formal candidate scoring and route selection remain owned by Decision and Routing behavior."
+    },
+
+    "authorization": {
+      "$ref": "#/$defs/authorization"
+    },
+
+    "execution_status": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "AUTHORIZED",
+        "READY",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "BLOCKED",
+        "SKIPPED",
+        "CANCELLED",
+        "SUPERSEDED"
+      ],
+      "description": "Execution state governed by the action execution semantics established in Core/Registries/action_types.json. Execution status is distinct from case lifecycle status and technical outcome."
+    },
+
+    "execution": {
+      "$ref": "#/$defs/execution"
+    },
+
+    "prerequisites": {
+      "type": "array",
+      "description": "Technical, operational, access, tooling, safety, authorization, or informational prerequisites for execution.",
+      "items": {
+        "$ref": "#/$defs/prerequisite"
+      },
+      "default": []
+    },
+
+    "required_tool_ids": {
+      "type": "array",
+      "description": "Canonical tools required or expected for execution.",
+      "items": {
+        "$ref": "#/$defs/tool_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "required_evidence_ids": {
+      "type": "array",
+      "description": "Existing evidence that must be available before the action can be appropriately performed or evaluated.",
+      "items": {
+        "$ref": "#/$defs/evidence_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "input_evidence_ids": {
+      "type": "array",
+      "description": "Evidence materially used as an input to this action.",
+      "items": {
+        "$ref": "#/$defs/evidence_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "expected_evidence": {
+      "type": "array",
+      "description": "Expected evidence classes, measurements, observations, test results, or other evidence products anticipated from the action. These expectations do not create evidence records.",
+      "items": {
+        "$ref": "#/$defs/expected_evidence"
+      },
+      "default": []
+    },
+
+    "produced_evidence_ids": {
+      "type": "array",
+      "description": "Evidence records actually produced, collected, or established through execution of this action.",
+      "items": {
+        "$ref": "#/$defs/evidence_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "produced_measurement_ids": {
+      "type": "array",
+      "description": "Canonical measurements actually produced through execution of this action.",
+      "items": {
+        "$ref": "#/$defs/measurement_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "risk": {
+      "$ref": "#/$defs/risk"
+    },
+
+    "reversibility": {
+      "$ref": "#/$defs/reversibility"
+    },
+
+    "service_impact": {
+      "$ref": "#/$defs/service_impact"
+    },
+
+    "safety": {
+      "$ref": "#/$defs/safety"
+    },
+
+    "rollback": {
+      "$ref": "#/$defs/rollback"
+    },
+
+    "before_state": {
+      "$ref": "#/$defs/state_snapshot"
+    },
+
+    "after_state": {
+      "$ref": "#/$defs/state_snapshot"
+    },
+
+    "outcome": {
+      "$ref": "#/$defs/outcome_reference",
+      "description": "Observed technical result of the action. Outcome semantics are owned by the applicable outcome contract or Registry rather than this schema."
+    },
+
+    "validation": {
+      "$ref": "#/$defs/validation"
+    },
+
+    "diagnostic_value": {
+      "$ref": "#/$defs/diagnostic_value",
+      "description": "Post-execution assessment of the information produced by the action. This is distinct from pre-execution Decision utility and from hypothesis probability."
+    },
+
+    "blocking_conditions": {
+      "type": "array",
+      "description": "Conditions preventing or materially constraining execution.",
+      "items": {
+        "$ref": "#/$defs/blocking_condition"
+      },
+      "default": []
+    },
+
+    "skip_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Reason an otherwise relevant action was intentionally skipped."
+    },
+
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Reason execution failed. Execution failure does not itself determine whether an associated hypothesis is true or false."
+    },
+
+    "supersedes_action_ids": {
+      "type": "array",
+      "description": "Earlier runtime actions superseded by this action.",
+      "items": {
+        "$ref": "#/$defs/action_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "superseded_by_action_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/action_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+
+    "parent_action_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/action_id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Parent action when this action is a sub-action of a larger technical operation."
+    },
+
+    "child_action_ids": {
+      "type": "array",
+      "description": "Runtime sub-actions composing or supporting this action.",
+      "items": {
+        "$ref": "#/$defs/action_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "route_step_ids": {
+      "type": "array",
+      "description": "Route steps that proposed, selected, requested, executed, revisited, or evaluated this action.",
+      "items": {
+        "$ref": "#/$defs/route_step_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+
+    "updated_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable technical notes that do not replace structured action, evidence, outcome, routing, or reasoning fields."
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Non-authoritative extensibility metadata. Canonical technical meaning shall not depend on metadata fields.",
+      "additionalProperties": true,
+      "default": {}
+    }
+  },
+
+  "$defs": {
+    "runtime_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "action_id": {
+      "type": "string",
+      "pattern": "^act_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "case_id": {
+      "type": "string",
+      "pattern": "^case_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "context_id": {
+      "type": "string",
+      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^hyp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "measurement_id": {
+      "type": "string",
+      "pattern": "^meas_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "tool_id": {
+      "type": "string",
+      "pattern": "^tool_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "route_step_id": {
+      "type": "string",
+      "pattern": "^rstep_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "source_id": {
+      "type": "string",
+      "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^art_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "actor_reference": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+
+      "properties": {
+        "actor_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/runtime_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "actor_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "USER",
+            "TECHNICIAN",
+            "ENGINEER",
+            "SYSTEM",
+            "AUTOMATION",
+            "EXTERNAL_SOURCE",
+            "OTHER",
+            null
+          ]
+        },
+
+        "role": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "system_identifier": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "authorization": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Authorization state governing whether the action may be executed.",
+      "additionalProperties": false,
+
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "NOT_REQUIRED",
+            "PENDING",
+            "AUTHORIZED",
+            "DENIED",
+            "REVOKED",
+            "EXPIRED",
+            "UNKNOWN",
+            null
+          ]
+        },
+
+        "authorized_by": {
+          "$ref": "#/$defs/actor_reference"
+        },
+
+        "authorized_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+
+        "scope": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "execution": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Structured record of actual action execution.",
+      "additionalProperties": false,
+
+      "properties": {
+        "performed_by": {
+          "$ref": "#/$defs/actor_reference"
+        },
+
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+
+        "completed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+
+        "execution_method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "instructions_used": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "procedure_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "execution_notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "prerequisite": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "type",
+        "description"
+      ],
+
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "TECHNICAL_STATE",
+            "EVIDENCE",
+            "TOOL",
+            "ACCESS",
+            "AUTHORIZATION",
+            "SAFETY",
+            "SERVICE_WINDOW",
+            "DEPENDENCY",
+            "SKILL",
+            "INFORMATION",
+            "OTHER"
+          ]
+        },
+
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "satisfied": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "satisfied_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+
+        "reference_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/runtime_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "expected_evidence": {
+      "type": "object",
+      "description": "Description of evidence expected from successful or meaningful execution. This object does not itself constitute evidence.",
+      "additionalProperties": false,
+
+      "properties": {
+        "evidence_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Expected evidence type governed by Core/Registries/evidence_types.json."
+        },
+
+        "measurement_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Expected canonical measurement type when applicable."
+        },
+
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "required_for_evaluation": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+
+    "risk": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Context-specific execution risk. Risk shall not be inferred solely from the generic action class.",
+      "additionalProperties": false,
+
+      "properties": {
+        "class": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "PASSIVE",
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "CRITICAL",
+            "UNKNOWN",
+            null
+          ]
+        },
+
+        "basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "hazards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "mitigations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "reversibility": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Context-specific reversibility of the concrete action.",
+      "additionalProperties": false,
+
+      "properties": {
+        "level": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "FULLY_REVERSIBLE",
+            "EASILY_REVERSIBLE",
+            "REVERSIBLE_WITH_EFFORT",
+            "DIFFICULT_TO_REVERSE",
+            "IRREVERSIBLE",
+            "NOT_APPLICABLE",
+            "UNKNOWN",
+            null
+          ]
+        },
+
+        "basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "original_state_preserved": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "service_impact": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Expected and actual operational service impact associated with execution.",
+      "additionalProperties": false,
+
+      "properties": {
+        "expected": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "NONE",
+            "NEGLIGIBLE",
+            "DEGRADED_SERVICE",
+            "PARTIAL_OUTAGE",
+            "FULL_OUTAGE",
+            "UNKNOWN",
+            null
+          ]
+        },
+
+        "actual": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "NONE",
+            "NEGLIGIBLE",
+            "DEGRADED_SERVICE",
+            "PARTIAL_OUTAGE",
+            "FULL_OUTAGE",
+            "UNKNOWN",
+            null
+          ]
+        },
+
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "safety": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Safety constraints applicable to the concrete action.",
+      "additionalProperties": false,
+
+      "properties": {
+        "safety_review_required": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "approved": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "prohibitions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "rollback": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Rollback requirements and execution information for actions that modify technical state.",
+      "additionalProperties": false,
+
+      "properties": {
+        "available": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "required": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "instructions": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "target_state_description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "rollback_action_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/action_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "performed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "performed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "state_snapshot": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "References and description of relevant technical state before or after execution. This is not a replacement for canonical evidence.",
+      "additionalProperties": false,
+
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "measurement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/measurement_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "captured_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "outcome_reference": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Reference to the observed technical outcome without redefining the authoritative outcome vocabulary.",
+      "additionalProperties": false,
+
+      "properties": {
+        "outcome_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Outcome classification governed by the applicable Core outcome Registry."
+        },
+
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "objective_achieved": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Whether the immediate technical objective of the action was achieved. This does not imply causal proof."
+        },
+
+        "observed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "validation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Post-action technical validation. Validation remains distinct from execution completion and causal proof.",
+      "additionalProperties": false,
+
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "performed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "validation_action_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "validation_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/validation_criterion"
+          },
+          "default": []
+        },
+
+        "result": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "PASSED",
+            "FAILED",
+            "PARTIAL",
+            "INCONCLUSIVE",
+            "NOT_PERFORMED",
+            "NOT_REQUIRED",
+            "UNKNOWN",
+            null
+          ]
+        },
+
+        "validated_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "validation_criterion": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "description"
+      ],
+
+      "properties": {
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "satisfied": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "measurement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/measurement_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "diagnostic_value": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+
+      "properties": {
+        "informative": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "discriminating": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "affected_hypothesis_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hypothesis_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "blocking_condition": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "type",
+        "description"
+      ],
+
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "SAFETY",
+            "AUTHORIZATION",
+            "ACCESS",
+            "TOOL",
+            "PREREQUISITE",
+            "SERVICE_IMPACT",
+            "DEPENDENCY",
+            "TECHNICAL_STATE",
+            "INFORMATION",
+            "OTHER"
+          ]
+        },
+
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "resolved": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "resolved_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "provenance": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Lineage describing where the concrete action originated.",
+      "additionalProperties": false,
+
+      "properties": {
+        "origin_class": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "USER_REQUESTED",
+            "TECHNICIAN_REQUESTED",
+            "ENGINEER_REQUESTED",
+            "ARIA_PROPOSED",
+            "PROCEDURE_DERIVED",
+            "MANUFACTURER_DERIVED",
+            "SYSTEM_GENERATED",
+            "EXTERNAL_SOURCE",
+            "OTHER",
+            null
+          ]
+        },
+
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "artifact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "source_action_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "execution_status": {
+            "const": "IN_PROGRESS"
+          }
+        },
+        "required": [
+          "execution_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "execution"
+        ],
+        "properties": {
+          "execution": {
+            "type": "object",
+            "required": [
+              "started_at"
+            ]
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "execution_status": {
+            "const": "COMPLETED"
+          }
+        },
+        "required": [
+          "execution_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "execution"
+        ],
+        "properties": {
+          "execution": {
+            "type": "object",
+            "required": [
+              "completed_at"
+            ]
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "execution_status": {
+            "const": "FAILED"
+          }
+        },
+        "required": [
+          "execution_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "failure_reason"
+        ],
+        "properties": {
+          "failure_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "execution_status": {
+            "const": "BLOCKED"
+          }
+        },
+        "required": [
+          "execution_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "blocking_conditions"
+        ],
+        "properties": {
+          "blocking_conditions": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "execution_status": {
+            "const": "SKIPPED"
+          }
+        },
+        "required": [
+          "execution_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "skip_reason"
+        ],
+        "properties": {
+          "skip_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "execution_status": {
+            "const": "SUPERSEDED"
+          }
+        },
+        "required": [
+          "execution_status"
+        ]
+      },
+      "then": {
+        "required": [
+          "superseded_by_action_id"
+        ],
+        "properties": {
+          "superseded_by_action_id": {
+            "$ref": "#/$defs/action_id"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "authorization": {
+            "type": "object",
+            "properties": {
+              "required": {
+                "const": true
+              }
+            },
+            "required": [
+              "required"
+            ]
+          }
+        },
+        "required": [
+          "authorization"
+        ]
+      },
+      "then": {
+        "properties": {
+          "authorization": {
+            "type": "object",
+            "required": [
+              "status"
+            ]
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "execution_status": {
+            "enum": [
+              "AUTHORIZED",
+              "READY",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ]
+          },
+          "authorization": {
+            "type": "object",
+            "properties": {
+              "required": {
+                "const": true
+              }
+            },
+            "required": [
+              "required"
+            ]
+          }
+        },
+        "required": [
+          "execution_status",
+          "authorization"
+        ]
+      },
+      "then": {
+        "properties": {
+          "authorization": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "const": "AUTHORIZED"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "action_type": {
+            "enum": [
+              "CONFIGURE",
+              "ADJUST",
+              "REPAIR",
+              "REPLACE",
+              "RESEAT",
+              "RESTART",
+              "ENABLE",
+              "DISABLE",
+              "ROLLBACK"
+            ]
+          }
+        },
+        "required": [
+          "action_type"
+        ]
+      },
+      "then": {
+        "description": "Implementations should evaluate risk, reversibility, service impact, safety, rollback requirements, before-state preservation, and post-action validation for actions expected to modify technical state."
+      }
+    }
+  ]
+}
