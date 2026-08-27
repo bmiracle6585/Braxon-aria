@@ -1,0 +1,440 @@
+{
+  "engine": {
+    "id": "aria.operations.conflict_engine",
+    "name": "A.R.I.A. Conflict Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_conflict_management",
+    "status": "active",
+    "purpose": "Detect, characterize, and govern operational conflicts in which valid obligations, commitments, schedules, resources, instructions, priorities, or execution paths cannot all be satisfied as currently represented. The engine exposes conflicts early enough for useful resolution without silently choosing winners or manufacturing contradictions.",
+    "principles": [
+      "Two important work items are not automatically in conflict.",
+      "Conflict exists when supported constraints make simultaneous satisfaction materially incompatible.",
+      "A.R.I.A. should detect conflicts before failure when reasonably possible.",
+      "Priority difference does not make the lower-priority obligation disappear.",
+      "A higher-priority item may justify displacement but does not silently cancel displaced work.",
+      "Conflicting commitments must remain visible until legitimately reconciled.",
+      "Resource contention is a conflict only when the resource cannot satisfy the competing requirements.",
+      "Different instructions are not necessarily contradictory if both can be satisfied.",
+      "A.R.I.A. must distinguish confirmed conflicts from suspected conflicts.",
+      "Conflict resolution must preserve the consequences of the chosen path.",
+      "A.R.I.A. may recommend resolution but must respect authority boundaries.",
+      "Conflict decisions must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "multiple obligations compete for a constrained resource",
+      "multiple commitments appear incompatible",
+      "deadlines cannot all reasonably be satisfied",
+      "instructions materially contradict each other",
+      "execution of one work item prevents execution of another",
+      "priority decisions displace consequential work",
+      "schedule changes create incompatible obligations",
+      "resource availability changes",
+      "new work creates contention with existing work"
+    ],
+    "context": [
+      "current_time",
+      "work_items",
+      "priority",
+      "attention",
+      "timing",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "resources",
+      "owners",
+      "activity",
+      "aging",
+      "resolution",
+      "source history"
+    ]
+  },
+
+  "conflict_types": {
+    "time": {
+      "description": "Required actions or outcomes compete for incompatible time windows."
+    },
+    "resource": {
+      "description": "Multiple obligations require the same limited resource beyond available capacity."
+    },
+    "person": {
+      "description": "A person is expected to perform incompatible obligations within the same practical execution window."
+    },
+    "commitment": {
+      "description": "Two or more supported promises cannot all be satisfied under current conditions."
+    },
+    "instruction": {
+      "description": "Supported instructions require materially incompatible actions or outcomes."
+    },
+    "dependency": {
+      "description": "Dependency requirements create incompatible execution conditions."
+    },
+    "scope": {
+      "description": "Different supported definitions of the required outcome cannot all govern simultaneously."
+    },
+    "authority": {
+      "description": "Different authorized parties or authoritative sources provide incompatible requirements."
+    },
+    "priority": {
+      "description": "Competing consequential work cannot all receive the execution opportunity implied by current priority expectations."
+    },
+    "capacity": {
+      "description": "Total valid workload exceeds available execution capacity within required windows."
+    },
+    "other": {
+      "description": "A supported operational incompatibility not represented by another canonical conflict type."
+    }
+  },
+
+  "conflict_states": {
+    "suspected": {
+      "description": "Available information suggests a conflict may exist, but material facts remain unresolved."
+    },
+    "confirmed": {
+      "description": "Supported evidence establishes that current obligations or conditions are materially incompatible."
+    },
+    "developing": {
+      "description": "No unavoidable conflict exists yet, but current trajectory is likely to create one without adjustment."
+    },
+    "active": {
+      "description": "The conflict currently requires or constrains operational decisions."
+    },
+    "mitigated": {
+      "description": "The conflict remains structurally present, but an authorized mitigation currently permits acceptable operation."
+    },
+    "resolved": {
+      "description": "The incompatibility has been legitimately removed or reconciled."
+    },
+    "superseded": {
+      "description": "A changed scope, obligation, schedule, or authoritative decision has replaced the original conflict condition."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine current conflict state."
+    }
+  },
+
+  "establishment": {
+    "requirements": [
+      "At least two supported requirements, obligations, constraints, or execution paths must be identifiable.",
+      "The specific incompatibility must be sufficiently clear to govern operationally.",
+      "The source of each material requirement should remain traceable.",
+      "The consequence of leaving the conflict unresolved should be identified when reasonably determinable.",
+      "Suspected incompatibility must not be silently represented as confirmed conflict."
+    ],
+    "rules": [
+      "Similarity in timing does not independently establish conflict.",
+      "Shared resources do not establish conflict when sufficient capacity exists.",
+      "Different priorities do not independently establish conflict.",
+      "Different preferences do not establish conflict when both outcomes remain achievable.",
+      "A.R.I.A. should evaluate practical execution capacity rather than assume theoretical maximum capacity.",
+      "Authoritative constraints should outweigh unsupported assumptions."
+    ]
+  },
+
+  "conflict_record": {
+    "fields": [
+      "conflict_id",
+      "conflict_type",
+      "state",
+      "involved_work_item_ids",
+      "involved_parties",
+      "involved_resources",
+      "description",
+      "constraint",
+      "detected_at",
+      "resolution_required_by",
+      "resolution",
+      "resolved_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Each materially independent conflict should have a persistent identity.",
+      "The involved work items must remain independently represented.",
+      "Conflict description should identify the incompatibility rather than merely list the work items.",
+      "Unknown resolution timing must remain unknown rather than invented.",
+      "Conflict history must remain recoverable after resolution."
+    ]
+  },
+
+  "detection": {
+    "signals": [
+      "overlapping hard deadlines",
+      "same person assigned to incompatible execution windows",
+      "same crew required in different locations simultaneously",
+      "same equipment required by multiple operations simultaneously",
+      "available funding insufficient for simultaneous obligations",
+      "commitments exceed available capacity",
+      "new urgent work displaces previously committed work",
+      "one instruction requires an action another prohibits",
+      "dependency resolution for one item prevents another required condition",
+      "schedule change creates impossible sequencing",
+      "scope definitions materially disagree"
+    ],
+    "rules": [
+      "Conflict detection should occur whenever material scheduling, assignment, commitment, resource, or scope information changes.",
+      "A.R.I.A. should detect developing conflicts before deadlines are actually missed when evidence supports doing so.",
+      "Detection should identify the constrained element whenever possible.",
+      "A.R.I.A. must not create false conflicts merely because execution will be difficult."
+    ]
+  },
+
+  "severity": {
+    "levels": {
+      "low": "Conflict can likely be reconciled with minor operational adjustment and little consequence.",
+      "moderate": "Conflict requires an explicit choice or adjustment to avoid meaningful operational impact.",
+      "high": "Conflict threatens consequential commitments, customers, finances, operations, or strategic outcomes.",
+      "critical": "Conflict threatens severe or immediate safety, legal, regulatory, contractual, financial, or operational consequence."
+    },
+    "factors": [
+      "safety consequence",
+      "legal consequence",
+      "regulatory consequence",
+      "contractual consequence",
+      "customer consequence",
+      "financial consequence",
+      "operational consequence",
+      "commitment consequence",
+      "number of affected work items",
+      "availability of alternatives",
+      "time remaining for resolution",
+      "reversibility of the decision"
+    ],
+    "rules": [
+      "Conflict severity must reflect consequence, not merely inconvenience.",
+      "The number of affected items must not independently determine severity.",
+      "Severity does not independently overwrite canonical priority.",
+      "Critical conflict conditions may justify immediate Attention reevaluation."
+    ]
+  },
+
+  "resolution_strategies": {
+    "supported_strategies": [
+      "reschedule",
+      "reprioritize",
+      "reassign",
+      "add_capacity",
+      "substitute_resource",
+      "change_execution_path",
+      "split_scope",
+      "renegotiate_commitment",
+      "obtain_authoritative_decision",
+      "remove_invalid_requirement",
+      "cancel_authorized_work",
+      "supersede_obligation",
+      "accept_documented_consequence"
+    ],
+    "rules": [
+      "Resolution must address the actual incompatibility.",
+      "A.R.I.A. should prefer solutions that preserve the greatest consequential value while respecting authority and commitments.",
+      "A.R.I.A. must not silently renegotiate an external commitment.",
+      "A.R.I.A. must not cancel legitimate work without appropriate authority.",
+      "Adding capacity should only be recommended when operationally plausible.",
+      "Changing execution path must respect safety, regulatory, contractual, and authority constraints.",
+      "A resolution may create new obligations requiring Capture Engine evaluation.",
+      "A chosen resolution should preserve what consequence, if any, remains."
+    ]
+  },
+
+  "displacement": {
+    "purpose": "Govern legitimate cases where one obligation must temporarily displace another.",
+    "rules": [
+      "Displacement is not cancellation.",
+      "Displaced work remains active unless legitimately resolved.",
+      "The reason for displacement should be preserved when materially relevant.",
+      "Displacement should trigger timing, aging, priority, and follow-up reevaluation for the affected work.",
+      "Repeated displacement may become an Aging Engine starvation signal.",
+      "A commitment affected by displacement must remain governed by Commitment Engine.",
+      "A.R.I.A. should identify when displacement requires renegotiation rather than silently accepting a likely miss."
+    ]
+  },
+
+  "capacity_conflict": {
+    "rules": [
+      "Capacity conflict exists when valid workload exceeds practical available execution capacity within required windows.",
+      "Capacity evaluation should consider skills, location, equipment, access, travel, duration, and other real constraints when available.",
+      "Nominal headcount alone does not establish available capacity.",
+      "A.R.I.A. should not assume overtime, unsafe workload, or impossible utilization as ordinary available capacity.",
+      "Persistent capacity conflict may indicate a structural operational issue rather than a one-time scheduling problem."
+    ]
+  },
+
+  "authority_conflict": {
+    "rules": [
+      "A.R.I.A. should preserve which source or party issued each conflicting requirement.",
+      "A.R.I.A. must not invent authority hierarchy when none is established.",
+      "Known organizational or contractual authority rules may determine which requirement governs.",
+      "When authority cannot be resolved, the conflict should be surfaced for an authorized decision.",
+      "A lower-authority instruction must not silently overwrite a higher-authority requirement when hierarchy is known."
+    ]
+  },
+
+  "commitment_conflict": {
+    "rules": [
+      "Conflicting commitments remain independently valid until legitimately modified, released, superseded, or otherwise resolved.",
+      "Priority alone does not release a lower-priority commitment.",
+      "A.R.I.A. should identify when fulfilling one commitment makes another likely to fail.",
+      "Commitment Engine governs the state and modification of each promise.",
+      "Conflict Engine governs the incompatibility between them."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Conflict Engine identifies operational incompatibility.",
+      "Priority Engine determines relative operational importance.",
+      "Priority may inform conflict resolution but does not itself resolve the conflict.",
+      "Conflict conditions may provide factors for Priority reevaluation.",
+      "Conflict Engine must not independently overwrite canonical priority."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Conflict Engine determines whether meaningful incompatibility exists.",
+      "Attention Engine determines when and how the user should see it.",
+      "Developing conflicts should remain quiet when automated or delegated resolution remains appropriate.",
+      "Conflicts requiring user authority or consequential tradeoffs may justify direct attention."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Repeated displacement may contribute to starvation and aging pressure.",
+      "Aging Engine determines the significance of unresolved duration and repeated deferral.",
+      "Age alone does not establish conflict."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs individual promises.",
+      "Conflict Engine identifies incompatibility between promises or between a promise and another operational requirement.",
+      "Conflict resolution must not silently rewrite commitment terms."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Conflict Engine may detect incompatible assignments to the same delegate or resource.",
+      "A delegate should not be treated as failing when assigned structurally incompatible obligations."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisite conditions.",
+      "Conflict Engine may identify when dependency requirements are mutually incompatible.",
+      "A dependency conflict should identify the specific conditions that cannot coexist."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit and verification timing.",
+      "Conflict may justify accelerated follow-up when information or decisions are needed for resolution.",
+      "Conflict Engine must not independently send or schedule follow-up communication."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition of individual work items.",
+      "Resolving a conflict does not automatically resolve the involved work items.",
+      "Cancellation, supersession, or invalidation used as conflict resolutions must still satisfy Resolution Engine requirements."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may detect evidence of conflict in incoming information.",
+      "Conflict Engine governs sufficiently supported operational incompatibility.",
+      "Conflict resolution may create materially new obligations requiring Capture Engine evaluation.",
+      "Conflict Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new work item created",
+      "priority changes",
+      "commitment changes",
+      "delegation changes",
+      "dependency changes",
+      "schedule changes",
+      "resource availability changes",
+      "scope changes",
+      "authority information changes",
+      "capacity changes",
+      "work is displaced",
+      "conflict mitigation occurs",
+      "conflict resolution occurs",
+      "user requests conflict review"
+    ],
+    "rules": [
+      "Reevaluation must preserve conflict history.",
+      "Reevaluation should determine whether the incompatibility still exists.",
+      "Reevaluation should identify newly available resolution paths.",
+      "Resolved conflicts should stop unnecessary conflict attention.",
+      "Material conflict changes may trigger Priority, Attention, Aging, Follow-Up, Commitment, Delegation, Dependency, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.conflicts",
+    "conflict_record": [
+      "conflict_id",
+      "conflict_type",
+      "conflict_state",
+      "severity",
+      "involved_work_item_ids",
+      "constraint",
+      "resolution_options",
+      "selected_resolution",
+      "remaining_consequence",
+      "evaluated_at"
+    ],
+    "evaluation_output": [
+      "conflict_id",
+      "conflict_state",
+      "severity",
+      "affected_work_items",
+      "constraint",
+      "resolution_options",
+      "decision_authority_required",
+      "recommended_reassessment",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Conflict output must identify the materially incompatible requirements.",
+      "Conflict state must remain distinguishable from individual work-item state.",
+      "Resolution recommendations must preserve authority boundaries.",
+      "Conflict resolution must not silently discard obligations.",
+      "Material conflict changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not manufacture conflict merely because work is difficult.",
+    "Do not treat every shared resource as a conflict.",
+    "Do not treat every overlapping schedule as impossible.",
+    "Do not silently choose one legitimate obligation and discard another.",
+    "Do not assume lower priority means optional.",
+    "Do not silently renegotiate commitments.",
+    "Do not invent authority hierarchy.",
+    "Do not assume unlimited capacity.",
+    "Do not assume unsafe or unreasonable workload is available capacity.",
+    "Do not blame a delegate for structurally incompatible assignments.",
+    "Do not treat displacement as cancellation.",
+    "Do not resolve individual work items merely because the conflict between them was resolved.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not bypass the Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of conflict management."
+  ]
+}
