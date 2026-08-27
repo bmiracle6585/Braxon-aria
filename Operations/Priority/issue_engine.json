@@ -1,0 +1,524 @@
+{
+  "engine": {
+    "id": "aria.operations.issue_engine",
+    "name": "A.R.I.A. Issue Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_issue_management",
+    "status": "active",
+    "purpose": "Identify, characterize, contain, correct, monitor, and resolve active operational problems that are materially affecting or have materially affected execution, obligations, customers, systems, resources, safety, finances, compliance, or other consequential outcomes. The engine distinguishes realized problems from future risk and ensures that temporary workarounds are not confused with verified resolution.",
+    "principles": [
+      "An issue is an active or realized operational problem, not merely something that might happen.",
+      "A symptom is not necessarily the underlying issue.",
+      "Issue severity and canonical priority are related but distinct.",
+      "Containment is not the same as correction.",
+      "A workaround is not automatically a resolution.",
+      "Correction is not proven until the relevant outcome is verified.",
+      "A.R.I.A. should identify operational impact without inventing root cause.",
+      "Unknown root cause must remain unknown until supported evidence exists.",
+      "Issues should have clear ownership when ownership is supported.",
+      "Issues may create new obligations, dependencies, conflicts, decisions, commitments, risks, or follow-up requirements.",
+      "Resolved issues should preserve history for learning and recurrence detection.",
+      "Issue handling must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "an operational failure has occurred",
+      "expected execution is materially impaired",
+      "a risk has realized",
+      "a defect or malfunction is active",
+      "a customer-impacting problem exists",
+      "a commitment has been materially affected",
+      "a resource or system is not functioning as required",
+      "a safety or compliance problem exists",
+      "a schedule failure requires corrective handling",
+      "a recurring problem requires investigation",
+      "user reports an active problem",
+      "user requests issue evaluation"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "risk",
+      "commitments",
+      "dependencies",
+      "capacity",
+      "scheduling",
+      "conflicts",
+      "decisions",
+      "delegation",
+      "aging",
+      "escalation",
+      "follow_up",
+      "resolution",
+      "activity",
+      "source history"
+    ]
+  },
+
+  "issue_states": {
+    "identified": {
+      "description": "A supported active operational problem has been identified."
+    },
+    "triaging": {
+      "description": "The problem, impact, ownership, and immediate handling requirements are being established."
+    },
+    "active": {
+      "description": "The issue remains materially unresolved and requires active handling."
+    },
+    "contained": {
+      "description": "Immediate consequence or propagation has been limited, but the underlying issue remains unresolved."
+    },
+    "workaround_active": {
+      "description": "An alternate operating path is allowing partial or continued execution while the underlying issue remains unresolved."
+    },
+    "correcting": {
+      "description": "Corrective action intended to remove the supported cause or restore the required condition is underway."
+    },
+    "verification": {
+      "description": "Corrective action has occurred and the resulting operational condition is being verified."
+    },
+    "resolved": {
+      "description": "Supported evidence establishes that the issue no longer materially exists and applicable closure criteria have been satisfied."
+    },
+    "recurring": {
+      "description": "A materially similar issue has reappeared after prior correction or resolution."
+    },
+    "superseded": {
+      "description": "The issue has been legitimately replaced by a more accurate or encompassing operational representation."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine the current issue state."
+    }
+  },
+
+  "issue_types": {
+    "technical": "An active technical defect, malfunction, configuration problem, or technical execution failure.",
+    "operational": "An active problem materially affecting normal operations or execution.",
+    "customer": "An active problem materially affecting a customer deliverable, expectation, interaction, or outcome.",
+    "schedule": "An active timing or execution failure requiring corrective handling.",
+    "capacity": "An active capacity shortage or overload producing material operational consequence.",
+    "resource": "A required person, crew, equipment, vehicle, facility, system, or other resource is actively unavailable or unsuitable.",
+    "dependency": "A prerequisite condition is actively preventing or materially impairing execution.",
+    "quality": "Delivered or performed work materially fails supported quality requirements.",
+    "financial": "An active financial problem materially affecting execution or business outcome.",
+    "commercial": "An active purchasing, pricing, vendor, contractual, or business problem.",
+    "safety": "An active safety condition requiring operational handling.",
+    "regulatory": "An active regulatory or compliance problem.",
+    "legal": "An active legal problem requiring supported operational handling.",
+    "personnel": "An active personnel-related operational problem.",
+    "communication": "A material communication failure is actively affecting execution or outcome.",
+    "other": "A supported active operational issue not represented by another canonical type."
+  },
+
+  "issue_record": {
+    "fields": [
+      "issue_id",
+      "work_item_id",
+      "issue_type",
+      "issue_state",
+      "issue_statement",
+      "symptoms",
+      "known_impact",
+      "suspected_causes",
+      "confirmed_cause",
+      "issue_owner",
+      "containment",
+      "workaround",
+      "corrective_actions",
+      "verification_requirements",
+      "opened_at",
+      "contained_at",
+      "corrected_at",
+      "verified_at",
+      "resolved_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Each materially independent issue should have a persistent identity.",
+      "Issue statements should describe the active problem and material effect.",
+      "Symptoms, suspected causes, and confirmed cause must remain distinguishable.",
+      "Unknown cause must remain unknown rather than invented.",
+      "Issue history must remain recoverable after resolution."
+    ]
+  },
+
+  "establishment": {
+    "questions": [
+      "What has actually gone wrong or is currently not functioning as required?",
+      "What supported evidence establishes that the condition is active or realized?",
+      "What is being materially affected?",
+      "Does immediate containment matter?",
+      "Can meaningful work continue through a workaround?",
+      "Who has supported responsibility for handling the issue?"
+    ],
+    "rules": [
+      "A.R.I.A. must distinguish active problems from future uncertainty.",
+      "A complaint or symptom should not automatically establish root cause.",
+      "A.R.I.A. should define the issue narrowly enough to permit useful corrective handling.",
+      "Multiple independent problems should not be collapsed into one issue merely because they appeared together.",
+      "Multiple symptoms of the same supported problem may remain under one issue.",
+      "Unknown issue ownership must remain unknown rather than invented."
+    ]
+  },
+
+  "impact_evaluation": {
+    "dimensions": [
+      "safety",
+      "legal",
+      "regulatory",
+      "customer",
+      "commitment",
+      "financial",
+      "schedule",
+      "quality",
+      "operational",
+      "capacity",
+      "resource",
+      "reputation",
+      "strategic"
+    ],
+    "levels": {
+      "minor": "Limited active consequence that can be handled through routine correction.",
+      "moderate": "Meaningful active consequence requiring deliberate corrective handling.",
+      "major": "Substantial active consequence affecting consequential execution or outcomes.",
+      "severe": "Very substantial active consequence with limited tolerance or difficult recovery.",
+      "critical": "Active consequence involving immediate safety, legal, regulatory, severe business, or similarly extreme impact.",
+      "unknown": "Available evidence is insufficient for a useful impact classification."
+    },
+    "rules": [
+      "Impact should reflect supported current consequence rather than hypothetical worst-case consequence.",
+      "Potential future consequence created by the issue may additionally require Risk Engine evaluation.",
+      "Impact must remain distinguishable from canonical priority.",
+      "Unknown impact must not be assigned arbitrary severity."
+    ]
+  },
+
+  "triage": {
+    "purpose": "Determine the immediate handling path before complete diagnosis is necessarily available.",
+    "questions": [
+      "Does the issue require immediate containment?",
+      "Can execution safely continue?",
+      "Is a workaround available?",
+      "What downstream obligations are currently affected?",
+      "Is specialized or higher authority required?",
+      "What information is necessary for useful diagnosis?"
+    ],
+    "rules": [
+      "Triage should prioritize protection of consequential outcomes before exhaustive diagnosis when appropriate.",
+      "Critical safety or compliance conditions should not wait for complete root-cause analysis before protective action.",
+      "Triage should not manufacture a root cause merely to select an immediate response.",
+      "A.R.I.A. should identify materially affected downstream work when reasonably possible."
+    ]
+  },
+
+  "containment": {
+    "purpose": "Limit immediate consequence or propagation while preserving the distinction between temporary control and actual correction.",
+    "rules": [
+      "Containment should address the active consequence or prevent further spread when possible.",
+      "Containment does not establish that the underlying cause has been corrected.",
+      "Contained issues remain active unless applicable resolution criteria are independently satisfied.",
+      "Containment may create temporary constraints requiring Scheduling, Capacity, Dependency, or Risk reevaluation.",
+      "Containment actions should remain traceable when materially relevant."
+    ]
+  },
+
+  "workaround": {
+    "rules": [
+      "A workaround is an alternate operational path that permits some useful execution despite the unresolved issue.",
+      "A workaround must remain distinguishable from correction.",
+      "A workaround may introduce additional cost, risk, capacity demand, quality limitation, or schedule consequence.",
+      "A.R.I.A. should evaluate material consequences introduced by a workaround.",
+      "A workaround should not become permanent merely because it temporarily succeeds.",
+      "If a workaround is intentionally adopted as the permanent operating method, that decision should be explicitly governed and the underlying issue disposition should be resolved appropriately."
+    ]
+  },
+
+  "diagnosis": {
+    "cause_states": {
+      "unknown": "No sufficiently supported cause has been established.",
+      "suspected": "One or more plausible causes are supported but not confirmed.",
+      "probable": "Evidence strongly supports a cause, but material uncertainty remains.",
+      "confirmed": "Available evidence sufficiently establishes the operational cause for corrective handling."
+    },
+    "rules": [
+      "A.R.I.A. must distinguish correlation from supported causation.",
+      "Suspected cause must not be represented as confirmed cause.",
+      "Historical similarity may inform diagnosis but does not independently prove cause.",
+      "Diagnosis should seek enough confidence for safe and effective correction rather than perfect theoretical certainty.",
+      "Material contradictory evidence should trigger diagnosis reevaluation."
+    ]
+  },
+
+  "corrective_action": {
+    "rules": [
+      "Corrective action should address the supported cause or restore the required operational condition.",
+      "Corrective work should remain independently trackable when consequential.",
+      "Starting corrective action does not establish correction.",
+      "Completing an action does not establish issue resolution until required verification succeeds.",
+      "Corrective action may create dependencies, capacity demand, schedule changes, commitments, decisions, or risks.",
+      "Failed corrective action should trigger renewed diagnosis and issue reevaluation."
+    ]
+  },
+
+  "verification": {
+    "purpose": "Establish whether corrective action actually restored the required operational condition.",
+    "rules": [
+      "Verification criteria should reflect the original supported failure condition.",
+      "Verification should use observable evidence when reasonably available.",
+      "Absence of a new complaint alone does not always establish resolution.",
+      "Temporary recovery should not be treated as permanent correction when recurrence remains materially plausible.",
+      "Verification failure returns the issue to active diagnostic or corrective handling.",
+      "Verified recovery may satisfy issue-specific closure criteria but does not automatically resolve unrelated work."
+    ]
+  },
+
+  "recurrence": {
+    "rules": [
+      "A materially similar problem reappearing after correction should trigger recurrence evaluation.",
+      "Recurrence should preserve links to relevant prior issue history.",
+      "Repeated recurrence may justify deeper root-cause investigation, Risk, Aging, Decision, or Escalation evaluation.",
+      "Recurrence does not automatically prove the original diagnosis was wrong.",
+      "A.R.I.A. should distinguish recurrence from a new unrelated issue with similar symptoms."
+    ]
+  },
+
+  "issue_owner": {
+    "rules": [
+      "Issue ownership identifies responsibility for ensuring the issue reaches appropriate disposition.",
+      "Issue ownership does not mean the owner must personally perform every corrective action.",
+      "Issue owner must not be invented.",
+      "Delegating corrective work does not automatically transfer issue ownership.",
+      "Issue ownership may change through supported authority or workflow."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine governs materially uncertain future exposure.",
+      "Issue Engine governs active or realized operational problems.",
+      "When a risk realizes, its resulting active problem should transition into Issue Engine or another appropriate active operational representation.",
+      "An active issue may create new future risks.",
+      "The original risk record should remain preserved after realization."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines relative operational importance.",
+      "Issue Engine determines the state and handling requirements of an active problem.",
+      "Issue impact may contribute to Priority reevaluation.",
+      "A severe issue does not automatically become canonical Priority 1 when other supported factors govern differently.",
+      "Issue Engine must not independently overwrite canonical priority."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Issue Engine determines active issue state and material consequence.",
+      "Attention Engine determines whether and how the user should see the issue.",
+      "Critical issues requiring immediate user authority may justify direct attention.",
+      "Routine corrective progress should not repeatedly interrupt the user when no intervention is useful.",
+      "Material deterioration, failed correction, or recurrence may justify renewed attention."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisite conditions.",
+      "An issue may create or constitute an active dependency for downstream work.",
+      "Resolving an issue may satisfy a dependency but does not automatically complete dependent work.",
+      "Issue Engine must not hide blocked downstream work."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises.",
+      "An issue may threaten or breach a commitment.",
+      "Issue handling does not silently modify or release a commitment.",
+      "Commitment consequences should be reevaluated when issue conditions materially change."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine governs practical execution capacity.",
+      "Issues may consume additional corrective capacity or make existing capacity unavailable.",
+      "Issue Engine must not assume corrective resources are available.",
+      "Material corrective workload should trigger Capacity Engine reevaluation."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine governs practical execution timing.",
+      "An issue may invalidate or displace an existing schedule.",
+      "Corrective work requiring execution timing should be evaluated through Scheduling Engine.",
+      "Issue Engine must not manufacture feasible schedule placement."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine governs materially incompatible valid requirements or constraints.",
+      "An issue may create a conflict but is not itself automatically a conflict.",
+      "Issue correction requiring a consequential tradeoff may trigger Conflict Engine evaluation."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine governs authorized choices.",
+      "Issue Engine may identify when corrective handling requires a material authorized decision.",
+      "A.R.I.A. may recommend corrective options but must not silently make decisions outside supported authority.",
+      "Selected corrective decisions should return to Issue Engine for execution and verification."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Corrective actions may be delegated.",
+      "Delegating correction does not automatically transfer issue ownership.",
+      "Issue Engine should distinguish owner accountability from delegated execution."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit and verification timing.",
+      "Issue handling may require follow-up for diagnosis, corrective progress, vendor response, customer response, or verification.",
+      "Issue Engine determines what needs corrective handling but must not independently send follow-up communication."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, repeated deferral, and starvation.",
+      "Long-running unresolved issues may accumulate aging pressure.",
+      "Age alone does not prove worsening issue impact.",
+      "Repeated delay in consequential correction may justify Priority, Attention, Risk, Decision, or Escalation reevaluation."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines when issue handling requires higher or different authority.",
+      "Not every active issue requires escalation.",
+      "Failed correction, unavailable authority, severe consequence, or repeated recurrence may justify escalation."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition.",
+      "Issue Engine provides issue-specific evidence supporting resolution.",
+      "Containment or workaround alone must not automatically satisfy resolution.",
+      "Issue resolution should normally require supported verification when correction is applicable.",
+      "Resolving an issue does not automatically resolve broader work items or downstream obligations."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may identify active issues from incoming information.",
+      "Issue Engine governs sufficiently supported active operational problems.",
+      "Diagnosis, correction, realization, or verification may create new obligations requiring Capture Engine evaluation.",
+      "Issue Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new issue evidence appears",
+      "impact changes",
+      "containment begins",
+      "containment fails",
+      "workaround begins",
+      "workaround fails",
+      "diagnostic evidence changes",
+      "cause becomes confirmed",
+      "corrective action begins",
+      "corrective action completes",
+      "corrective action fails",
+      "verification begins",
+      "verification succeeds",
+      "verification fails",
+      "issue recurs",
+      "commitment impact changes",
+      "dependency changes",
+      "capacity changes",
+      "schedule changes",
+      "risk changes",
+      "decision changes",
+      "escalation occurs",
+      "user requests issue review"
+    ],
+    "rules": [
+      "Reevaluation must preserve issue history.",
+      "Reevaluation should use current supported evidence rather than preserve obsolete assumptions.",
+      "Changed symptoms must remain distinguishable from changed cause.",
+      "Material issue changes may trigger Priority, Attention, Risk, Commitment, Dependency, Capacity, Scheduling, Conflict, Decision, Delegation, Aging, Escalation, Follow-Up, Capture, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.issue",
+    "issue_evaluation": [
+      "work_item_id",
+      "issue_id",
+      "issue_state",
+      "issue_type",
+      "issue_statement",
+      "known_impact",
+      "cause_state",
+      "confirmed_cause",
+      "containment_status",
+      "workaround_status",
+      "corrective_status",
+      "verification_status",
+      "issue_owner",
+      "recommended_next_action",
+      "confidence",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Issue output must reference the applicable work_item_id.",
+      "Symptoms, suspected cause, and confirmed cause must remain distinguishable.",
+      "Containment, workaround, correction, verification, and resolution must remain distinguishable.",
+      "Unknown cause or ownership must not be fabricated.",
+      "Issue Engine must not directly overwrite canonical priority.",
+      "Material issue changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not represent future uncertainty as an active issue without evidence that the problem exists.",
+    "Do not keep a realized problem represented only as risk.",
+    "Do not confuse symptoms with root cause.",
+    "Do not represent suspected cause as confirmed cause.",
+    "Do not invent issue ownership.",
+    "Do not equate containment with correction.",
+    "Do not equate workaround with resolution.",
+    "Do not equate corrective action completed with verified recovery.",
+    "Do not hide material consequences introduced by a workaround.",
+    "Do not assume corrective capacity is available.",
+    "Do not silently modify commitments.",
+    "Do not silently resolve dependent or downstream work.",
+    "Do not repeatedly reopen resolved issues without supported recurrence evidence.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass Risk Engine for material future exposure created by an active issue.",
+    "Do not bypass Decision Engine when corrective handling requires authorized choice.",
+    "Do not bypass Escalation Engine when corrective handling requires higher authority.",
+    "Do not bypass Attention Engine for user-facing presentation.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of issue management."
+  ]
+}
