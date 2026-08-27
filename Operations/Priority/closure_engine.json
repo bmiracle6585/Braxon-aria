@@ -1,0 +1,653 @@
+{
+  "engine": {
+    "id": "aria.operations.closure_engine",
+    "name": "A.R.I.A. Operational Closure Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_closure_readiness",
+    "status": "active",
+    "purpose": "Determine whether operational work is legitimately ready for terminal disposition by evaluating applicable completion, verification, commitment, acceptance, documentation, dependency, issue, financial, administrative, and other closure requirements. The engine distinguishes execution completion from closure readiness and closure readiness from terminal resolution while preventing unfinished obligations from disappearing merely because primary work appears complete.",
+    "principles": [
+      "Execution completion is not automatically closure readiness.",
+      "Verification is not automatically closure readiness.",
+      "Closure readiness is not terminal resolution.",
+      "All applicable material closure requirements must be accounted for.",
+      "Closure requirements should come from supported operational sources rather than being invented.",
+      "A missing closure requirement must not be silently assumed satisfied.",
+      "Not every work item requires every possible closure condition.",
+      "Closure should reflect the actual obligations attached to the work.",
+      "Administrative incompleteness can legitimately prevent closure even when field execution is complete.",
+      "A non-blocking residual item should not automatically prevent closure.",
+      "Known residual obligations must remain visible after closure when policy permits closure with residuals.",
+      "Waived requirements must remain distinguishable from satisfied requirements.",
+      "Closure readiness must remain explainable and provenance-preserving.",
+      "Closure must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "closure_record",
+    "sources": [
+      "work_items",
+      "execution records",
+      "verification records",
+      "commitments",
+      "dependencies",
+      "delegations",
+      "operational plans",
+      "issues",
+      "risks",
+      "decisions",
+      "authorizations",
+      "action outcomes",
+      "communication outcomes",
+      "customer acceptance",
+      "vendor obligations",
+      "documentation state",
+      "financial state",
+      "administrative state",
+      "quality requirements",
+      "contractual requirements",
+      "resolution candidates",
+      "user instructions",
+      "approved workflows",
+      "organizational policy"
+    ]
+  },
+
+  "closure_states": {
+    "not_evaluated": {
+      "description": "Closure readiness has not yet been materially evaluated."
+    },
+    "not_ready": {
+      "description": "One or more applicable material closure requirements remain unsatisfied."
+    },
+    "conditionally_ready": {
+      "description": "Closure may be appropriate only if explicitly supported residual conditions, waivers, or accepted exceptions are preserved."
+    },
+    "ready": {
+      "description": "All applicable material closure requirements are sufficiently satisfied or validly waived."
+    },
+    "awaiting_verification": {
+      "description": "Required execution or outcome verification remains incomplete."
+    },
+    "awaiting_acceptance": {
+      "description": "Required acceptance remains outstanding."
+    },
+    "awaiting_documentation": {
+      "description": "Required documentation remains incomplete or unverified."
+    },
+    "awaiting_commitment": {
+      "description": "An applicable commitment remains unsatisfied or unresolved."
+    },
+    "awaiting_dependency": {
+      "description": "A closure-relevant dependency remains unsatisfied."
+    },
+    "awaiting_issue_resolution": {
+      "description": "A closure-blocking issue remains active."
+    },
+    "awaiting_financial": {
+      "description": "A required financial condition remains outstanding."
+    },
+    "awaiting_administrative": {
+      "description": "A required administrative condition remains outstanding."
+    },
+    "awaiting_decision": {
+      "description": "A required closure disposition or exception decision remains unresolved."
+    },
+    "blocked": {
+      "description": "Closure cannot currently proceed because a supported blocking condition exists."
+    },
+    "superseded": {
+      "description": "A newer closure evaluation replaces this evaluation."
+    },
+    "cancelled": {
+      "description": "Closure evaluation is no longer applicable."
+    },
+    "unknown": {
+      "description": "Available evidence is insufficient to determine closure readiness."
+    }
+  },
+
+  "closure_record": {
+    "fields": [
+      "closure_id",
+      "subject_type",
+      "subject_reference",
+      "closure_state",
+      "closure_requirements",
+      "satisfied_requirements",
+      "unsatisfied_requirements",
+      "waived_requirements",
+      "not_applicable_requirements",
+      "residual_items",
+      "blocking_items",
+      "verification_state",
+      "acceptance_state",
+      "commitment_state",
+      "documentation_state",
+      "dependency_state",
+      "issue_state",
+      "risk_state",
+      "financial_state",
+      "administrative_state",
+      "decision_requirements",
+      "closure_confidence",
+      "recommended_resolution_posture",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Applicable closure requirements must be identifiable.",
+      "Satisfied, waived, not applicable, and unsatisfied requirements must remain distinguishable.",
+      "Closure-blocking and non-blocking residual items must remain distinguishable.",
+      "Unknown closure conditions must not be silently treated as satisfied.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "closure_requirement_types": {
+    "execution": {
+      "description": "Required execution activity must be materially complete."
+    },
+    "verification": {
+      "description": "Required assertions or outcomes must have applicable verification."
+    },
+    "deliverable": {
+      "description": "Required deliverables must exist and satisfy applicable closure conditions."
+    },
+    "acceptance": {
+      "description": "Required customer, internal, vendor, or other acceptance must be obtained."
+    },
+    "commitment": {
+      "description": "Applicable commitments must be fulfilled, released, renegotiated, transferred, or otherwise validly dispositioned."
+    },
+    "dependency": {
+      "description": "Closure-relevant dependencies must be satisfied or validly dispositioned."
+    },
+    "documentation": {
+      "description": "Required closeout, record, evidence, or administrative documentation must be complete."
+    },
+    "issue": {
+      "description": "Closure-blocking issues must be resolved or validly dispositioned."
+    },
+    "risk": {
+      "description": "Residual risks requiring disposition before closure must be appropriately handled."
+    },
+    "financial": {
+      "description": "Applicable financial requirements must be sufficiently satisfied."
+    },
+    "administrative": {
+      "description": "Required administrative processing must be complete."
+    },
+    "contractual": {
+      "description": "Applicable contractual closure conditions must be satisfied."
+    },
+    "quality": {
+      "description": "Applicable quality or inspection conditions must be satisfied."
+    },
+    "communication": {
+      "description": "Required closure communication, notification, acknowledgement, or handoff must occur."
+    },
+    "handoff": {
+      "description": "Remaining ownership, support, warranty, maintenance, or follow-on responsibility must be appropriately transferred."
+    },
+    "decision": {
+      "description": "Any required closure decision or exception approval must be completed."
+    },
+    "other": {
+      "description": "Another supported requirement necessary for legitimate closure."
+    }
+  },
+
+  "requirement_sources": {
+    "supported": [
+      "operational plan",
+      "customer requirement",
+      "contract",
+      "scope of work",
+      "commitment terms",
+      "approved workflow",
+      "organizational policy",
+      "quality standard",
+      "technical standard",
+      "authorized user instruction",
+      "decision",
+      "resolution policy"
+    ],
+    "rules": [
+      "Closure Engine must not invent mandatory closure requirements merely because they are common elsewhere.",
+      "Requirements should be scoped to the applicable work.",
+      "Requirements may be inherited from project, customer, contract, workflow, or organizational context when supported.",
+      "Conflicting closure requirements should route to appropriate conflict or decision handling.",
+      "Requirement provenance should remain recoverable."
+    ]
+  },
+
+  "requirement_disposition": {
+    "states": {
+      "required_unsatisfied": "The requirement applies and has not been sufficiently satisfied.",
+      "required_pending_verification": "The requirement may be complete but required verification remains outstanding.",
+      "satisfied": "Supported evidence establishes that the requirement is satisfied.",
+      "waived": "An authorized waiver removes the requirement as a closure blocker.",
+      "not_applicable": "Supported context establishes that the requirement does not apply.",
+      "transferred": "The remaining obligation was validly transferred to another supported owner or work object.",
+      "residual_non_blocking": "The item remains open but supported policy allows closure without treating it as a blocker.",
+      "unknown": "Available evidence does not establish the requirement's disposition."
+    },
+    "rules": [
+      "Waived must never be represented as satisfied.",
+      "Not applicable must not be used merely because evidence is missing.",
+      "Transferred obligations must identify the receiving owner or work object when materially relevant.",
+      "Residual non-blocking treatment requires a supported basis.",
+      "Unknown material requirements prevent unconditional ready state."
+    ]
+  },
+
+  "closure_readiness": {
+    "questions": [
+      "Is the intended execution materially complete?",
+      "Are required outcomes verified?",
+      "Are required deliverables complete?",
+      "Has required acceptance occurred?",
+      "Are all applicable commitments appropriately dispositioned?",
+      "Are closure-relevant dependencies satisfied?",
+      "Is required documentation complete?",
+      "Are closure-blocking issues resolved?",
+      "Are residual risks appropriately dispositioned?",
+      "Are required financial conditions satisfied?",
+      "Are required administrative conditions satisfied?",
+      "Are required contractual and quality conditions satisfied?",
+      "Is required closure communication or handoff complete?",
+      "Does any unresolved decision still prevent closure?"
+    ],
+    "rules": [
+      "Closure readiness should evaluate only applicable requirements.",
+      "A single unsatisfied material blocking requirement prevents unconditional ready state.",
+      "Multiple non-blocking residual items may coexist with conditional readiness when supported.",
+      "Closure confidence should reflect evidence quality and completeness.",
+      "Closure readiness should be reevaluated when a material underlying condition changes."
+    ]
+  },
+
+  "blocking_model": {
+    "blocking": [
+      "required execution incomplete",
+      "required verification incomplete or failed",
+      "required acceptance missing",
+      "active closure-blocking commitment",
+      "unsatisfied closure dependency",
+      "active closure-blocking issue",
+      "required documentation missing",
+      "required financial condition incomplete",
+      "required administrative condition incomplete",
+      "required contractual condition incomplete",
+      "required decision unresolved"
+    ],
+    "potentially_non_blocking": [
+      "future monitoring",
+      "low-severity residual risk",
+      "optional documentation",
+      "informational follow-up",
+      "separate warranty work",
+      "separate future improvement",
+      "transferred follow-on work"
+    ],
+    "rules": [
+      "Blocking status must come from applicable requirements and operational consequence rather than generic category alone.",
+      "An issue is not automatically closure-blocking merely because it exists.",
+      "A risk is not automatically closure-blocking merely because exposure remains.",
+      "A follow-up item may remain after closure when it belongs to valid separate work.",
+      "A.R.I.A. must not downgrade a true blocker merely to permit closure."
+    ]
+  },
+
+  "waiver_handling": {
+    "requirements": [
+      "requirement_reference",
+      "authorized_waiver_source",
+      "waiver_scope",
+      "waiver_reason",
+      "waiver_time",
+      "residual_consequence"
+    ],
+    "rules": [
+      "Only appropriate authority may waive an applicable requirement.",
+      "Silence is not a waiver.",
+      "Inability to satisfy a requirement is not itself a waiver.",
+      "Waiver scope must not be broader than authorized.",
+      "Waived requirements should remain historically visible.",
+      "Waiver does not erase resulting risk, contractual consequence, or future obligation."
+    ]
+  },
+
+  "residual_items": {
+    "types": [
+      "monitoring",
+      "warranty",
+      "future_follow_up",
+      "separate_corrective_work",
+      "administrative_record",
+      "residual_risk",
+      "customer_observation",
+      "vendor_obligation",
+      "future_maintenance",
+      "other"
+    ],
+    "rules": [
+      "Residual items must not disappear when primary work closes.",
+      "A residual item that requires active work should have a supported owner or receiving work object.",
+      "Closure should not be used to hide unfinished primary scope by relabeling it residual.",
+      "Residual items should remain linked to the originating work when materially useful."
+    ]
+  },
+
+  "acceptance_handling": {
+    "states": [
+      "not_required",
+      "required",
+      "requested",
+      "received",
+      "received_with_conditions",
+      "rejected",
+      "expired",
+      "unknown"
+    ],
+    "rules": [
+      "Acceptance requirements must come from supported workflow, contract, customer requirement, or policy.",
+      "Delivery does not equal acceptance.",
+      "Silence does not equal acceptance unless an applicable supported agreement explicitly establishes deemed acceptance.",
+      "Conditional acceptance must preserve the conditions.",
+      "Rejected acceptance should normally prevent ready state until appropriately dispositioned."
+    ]
+  },
+
+  "documentation_closure": {
+    "categories": [
+      "closeout_package",
+      "photos",
+      "videos",
+      "test_results",
+      "as_builts",
+      "forms",
+      "signatures",
+      "customer_documents",
+      "vendor_documents",
+      "financial_documents",
+      "internal_records",
+      "other"
+    ],
+    "rules": [
+      "Documentation presence and documentation adequacy must remain distinguishable.",
+      "Uploaded does not automatically mean complete.",
+      "Generated does not automatically mean submitted.",
+      "Submitted does not automatically mean accepted.",
+      "Required documentation should use Verification Engine where evidentiary evaluation is needed."
+    ]
+  },
+
+  "financial_closure": {
+    "examples": [
+      "required billing information complete",
+      "approved change order dispositioned",
+      "required purchase order condition satisfied",
+      "required vendor cost captured",
+      "required reimbursement processed",
+      "required financial approval complete"
+    ],
+    "rules": [
+      "Financial closure requirements should be evaluated only where applicable.",
+      "Closure Engine does not create or execute financial transactions.",
+      "Revenue recognition, accounting treatment, and tax treatment remain outside Closure unless explicitly represented by an authorized financial system or policy.",
+      "Operational completion must not silently imply financial closure."
+    ]
+  },
+
+  "handoff": {
+    "rules": [
+      "Closure may require transfer of remaining responsibility to another person, team, system, warranty process, maintenance process, or work item.",
+      "Handoff must not be inferred merely because primary execution ended.",
+      "Transferred responsibility should be accepted or otherwise supported where applicable.",
+      "Handoff does not erase the originating work's historical responsibility."
+    ]
+  },
+
+  "closure_vs_execution": {
+    "rules": [
+      "Execution Engine owns actual work progression and execution completion.",
+      "Closure Engine determines whether the completed execution is ready to leave active operational handling.",
+      "Execution completion alone does not establish closure readiness.",
+      "Closure Engine must not rewrite execution history."
+    ]
+  },
+
+  "closure_vs_verification": {
+    "rules": [
+      "Verification Engine determines whether applicable assertions are sufficiently supported.",
+      "Closure Engine consumes required verification outcomes.",
+      "Verified execution does not automatically establish closure readiness when other obligations remain.",
+      "Closure Engine must not manufacture verification."
+    ]
+  },
+
+  "closure_vs_resolution": {
+    "rules": [
+      "Closure Engine owns closure readiness.",
+      "Resolution Engine owns canonical terminal disposition.",
+      "Ready for closure does not mean resolved until Resolution Engine establishes the terminal state.",
+      "Resolution Engine should consume closure readiness when closure requirements apply.",
+      "Closure Engine must not independently mark work resolved."
+    ]
+  },
+
+  "closure_vs_commitment": {
+    "rules": [
+      "Commitment Engine owns promises and commitment terms.",
+      "Closure Engine determines whether applicable commitments have been sufficiently dispositioned for closure.",
+      "Closure Engine must not release, modify, or fabricate commitment satisfaction.",
+      "A commitment may remain active after execution completion and therefore block closure."
+    ]
+  },
+
+  "closure_vs_dependency": {
+    "rules": [
+      "Dependency Engine owns dependency existence and canonical state.",
+      "Closure Engine determines whether applicable dependency state permits closure.",
+      "A dependency may be irrelevant to closure even if historically associated with execution.",
+      "Closure Engine must not mark dependencies satisfied."
+    ]
+  },
+
+  "closure_vs_issue": {
+    "rules": [
+      "Issue Engine owns active operational problem state.",
+      "Closure Engine determines whether an issue blocks closure.",
+      "Not every active issue necessarily blocks closure if supported disposition permits separate handling.",
+      "Closure Engine must not resolve issues."
+    ]
+  },
+
+  "closure_vs_risk": {
+    "rules": [
+      "Risk Engine owns future adverse exposure.",
+      "Closure Engine determines whether residual exposure requires disposition before closure.",
+      "Residual risk may remain after closure when appropriately accepted, transferred, monitored, or otherwise dispositioned.",
+      "Closure Engine must not represent residual risk as eliminated."
+    ]
+  },
+
+  "closure_vs_action": {
+    "rules": [
+      "Action Engine governs authorized side effects required to satisfy closure conditions.",
+      "Closure Engine identifies readiness and remaining closure conditions but does not execute them.",
+      "A closure action being authorized does not mean the closure requirement has been satisfied."
+    ]
+  },
+
+  "closure_vs_authorization": {
+    "rules": [
+      "Authorization Engine owns permission state.",
+      "Closure Engine may require authorized waivers, approvals, handoffs, or disposition decisions.",
+      "Closure readiness must not create authority.",
+      "Unauthorized waiver or acceptance must not satisfy a closure requirement."
+    ]
+  },
+
+  "closure_vs_decision": {
+    "rules": [
+      "Decision Engine owns authorized choices.",
+      "Closure Engine may identify decisions required before closure.",
+      "A.R.I.A. must not choose a closure exception merely because closure is operationally convenient.",
+      "Authorized decision outcomes should be reflected in closure reevaluation."
+    ]
+  },
+
+  "closure_vs_delegation": {
+    "rules": [
+      "Delegation Engine owns execution responsibility.",
+      "Closure Engine may require valid handoff or transfer of remaining responsibility.",
+      "Closure Engine must not silently reassign residual work.",
+      "Closed primary work must not orphan remaining obligations."
+    ]
+  },
+
+  "closure_vs_follow_up": {
+    "rules": [
+      "Follow-Up Engine owns pursuit of outstanding responses or actions.",
+      "A closure-blocking follow-up condition prevents ready state until appropriately dispositioned.",
+      "Non-blocking future follow-up may survive closure when validly transferred or represented as residual work.",
+      "Closure must not erase follow-up obligations."
+    ]
+  },
+
+  "closure_vs_learning": {
+    "rules": [
+      "Learning Engine owns reusable operational knowledge.",
+      "Closure outcomes provide evidence about actual completion requirements, recurring closeout blockers, documentation burden, acceptance behavior, and administrative friction.",
+      "Learning must not generalize customer-specific closure requirements beyond supported scope."
+    ]
+  },
+
+  "closure_vs_prediction": {
+    "rules": [
+      "Prediction Engine forecasts future closure conditions.",
+      "Predicted acceptance, payment, documentation, or verification must not be treated as satisfied closure requirements.",
+      "Closure Engine uses observed canonical state."
+    ]
+  },
+
+  "closure_vs_recommendation": {
+    "rules": [
+      "Recommendation Engine may recommend actions needed to reach closure readiness.",
+      "Recommendation does not satisfy a closure requirement.",
+      "Closure Engine provides remaining-condition evidence for recommendation construction."
+    ]
+  },
+
+  "closure_vs_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Closure Engine may expose work that appears complete but remains blocked from legitimate closure.",
+      "Closure Engine must not independently interrupt the user.",
+      "Long-lived closure blockers may warrant Attention, Aging, Follow-Up, or Escalation evaluation."
+    ]
+  },
+
+  "closure_vs_briefing": {
+    "rules": [
+      "Briefing Engine owns executive presentation.",
+      "Closure Engine should provide concise readiness posture and material blockers.",
+      "Briefing should distinguish execution complete from closure ready.",
+      "Routine satisfied closure detail should normally remain compressed."
+    ]
+  },
+
+  "closure_refresh": {
+    "triggers": [
+      "execution completes",
+      "verification changes",
+      "acceptance changes",
+      "commitment changes",
+      "dependency changes",
+      "documentation changes",
+      "issue changes",
+      "risk disposition changes",
+      "financial condition changes",
+      "administrative condition changes",
+      "contractual condition changes",
+      "quality condition changes",
+      "handoff occurs",
+      "waiver is authorized",
+      "required decision occurs",
+      "residual item changes",
+      "resolution evaluation requests closure state"
+    ],
+    "rules": [
+      "Closure readiness should refresh whenever a material closure condition changes.",
+      "Satisfied requirements should not be repeatedly reprocessed without relevant change.",
+      "Time-sensitive closure evidence may require renewed verification.",
+      "Superseded closure evaluations should remain historically recoverable when useful.",
+      "Refresh must not create uncontrolled engine-to-engine loops."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_closure",
+    "closure_evaluation": [
+      "closure_id",
+      "subject",
+      "closure_state",
+      "closure_requirements",
+      "satisfied_requirements",
+      "unsatisfied_requirements",
+      "waived_requirements",
+      "residual_items",
+      "blocking_items",
+      "verification_state",
+      "acceptance_state",
+      "commitment_state",
+      "documentation_state",
+      "dependency_state",
+      "issue_state",
+      "risk_state",
+      "financial_state",
+      "administrative_state",
+      "closure_confidence",
+      "recommended_resolution_posture",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Closure output must distinguish execution completion from closure readiness.",
+      "Closure output must distinguish satisfied, waived, transferred, residual, not applicable, and unsatisfied conditions.",
+      "Closure output must preserve material blockers.",
+      "Unknown material requirements must remain unknown.",
+      "Closure output must not represent readiness as terminal resolution.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat execution completion as closure readiness.",
+    "Do not treat verification alone as closure readiness.",
+    "Do not treat closure readiness as terminal resolution.",
+    "Do not invent closure requirements.",
+    "Do not fabricate requirement satisfaction.",
+    "Do not treat missing evidence as not applicable.",
+    "Do not treat inability to satisfy a requirement as waiver.",
+    "Do not treat silence as acceptance unless supported governing terms explicitly allow it.",
+    "Do not represent waived requirements as satisfied.",
+    "Do not hide unfinished primary scope as residual work.",
+    "Do not orphan residual obligations.",
+    "Do not manufacture customer acceptance.",
+    "Do not manufacture commitment satisfaction.",
+    "Do not manufacture dependency satisfaction.",
+    "Do not resolve issues.",
+    "Do not eliminate risks.",
+    "Do not execute financial actions.",
+    "Do not silently transfer responsibility.",
+    "Do not independently authorize waivers.",
+    "Do not independently mark work resolved.",
+    "Do not modify Core reasoning architecture as part of operational closure."
+  ]
+}
