@@ -1,289 +1,356 @@
 {
   "specification": "ARIA_UNCERTAINTY_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. represents, measures, propagates, reduces, explains, and communicates uncertainty across technical knowledge, context, evidence, hypotheses, probabilities, diagnoses, corrective actions, and validation.",
+  "version": "2.0.0",
+  "description": "Canonical uncertainty reasoning behavior for A.R.I.A. The Uncertainty Engine identifies, characterizes, propagates, prioritizes, preserves, reduces, and explains material uncertainty across technical reasoning without redefining Evidence, Probability, Confidence, Context, Hypothesis, Relationship, Decision, Routing, Validation, or Case State contracts.",
+
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "confidence_registry": "Core/Registries/confidence_levels.json",
+
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "validation": "Core/Reasoning/validating_engine.json",
+      "memory": "Core/Reasoning/memory_engine.json"
+    },
+
+    "role": "UNCERTAINTY_IDENTIFICATION_PROPAGATION_AND_REDUCTION_REASONING",
+
+    "owns": [
+      "uncertainty identification",
+      "uncertainty characterization",
+      "uncertainty materiality assessment",
+      "uncertainty propagation reasoning",
+      "residual uncertainty assessment",
+      "assumption identification",
+      "conditional reasoning requirements",
+      "unknown preservation",
+      "ambiguity identification",
+      "contradiction uncertainty assessment",
+      "model uncertainty assessment",
+      "causal uncertainty assessment",
+      "diagnostic uncertainty assessment",
+      "resolution uncertainty assessment",
+      "uncertainty dependency reasoning",
+      "uncertainty reduction requirement identification",
+      "uncertainty prioritization",
+      "uncertainty explanation"
+    ],
+
+    "does_not_own": [
+      "a universal uncertainty persistence schema",
+      "confidence vocabulary",
+      "confidence numeric ranges",
+      "evidence persistence",
+      "evidence quality semantics",
+      "evidence provenance",
+      "evidence independence semantics",
+      "evidence verification",
+      "probability calculation",
+      "probability calibration",
+      "prior construction",
+      "hypothesis generation",
+      "hypothesis status transitions",
+      "context dimension vocabulary",
+      "context resolution",
+      "canonical relationship persistence",
+      "candidate action selection",
+      "action execution",
+      "decision thresholds",
+      "route progression",
+      "rerouting",
+      "validation semantics",
+      "case lifecycle status",
+      "case reasoning state",
+      "learning eligibility",
+      "engine invocation"
+    ]
+  },
 
   "core_principle": {
-    "statement": "ARIA shall never confuse confidence with correctness. Uncertainty is an explicit part of the reasoning state and shall be preserved until evidence justifies reducing it.",
+    "statement": "Uncertainty is an explicit property of A.R.I.A.'s reasoning state. Unknown, missing, ambiguous, contradictory, weakly supported, incompletely modeled, or conditionally applicable information shall remain visibly uncertain until sufficient applicable evidence or reasoning justifies reducing that uncertainty.",
+
     "rules": [
       "Unknown information shall remain unknown.",
       "Missing information shall not be silently converted into assumptions.",
+      "Known absence and unknown presence shall remain distinct.",
       "Probability and confidence are different quantities.",
-      "High probability does not imply high confidence.",
+      "Uncertainty is not the inverse of probability.",
+      "Uncertainty is not the inverse of confidence.",
+      "High probability may coexist with substantial uncertainty.",
+      "High confidence in one reasoning dimension does not eliminate uncertainty in another dimension.",
       "Low probability does not imply impossibility.",
-      "Deterministic technical facts shall remain distinguishable from empirical expectations.",
-      "Contradictory evidence shall increase uncertainty until reconciled.",
-      "Uncertainty shall propagate through dependent reasoning.",
-      "ARIA shall identify what evidence would most efficiently reduce material uncertainty."
+      "Deterministic technical relationships shall remain distinguishable from uncertainty about their applicability.",
+      "Contradictions shall remain visible until reconciled, superseded, invalidated, or otherwise technically bounded.",
+      "Material uncertainty shall propagate through dependent reasoning.",
+      "Independent corroboration may reduce uncertainty.",
+      "Repeated representations of the same underlying information shall not falsely reduce uncertainty.",
+      "A.R.I.A. shall identify what information would materially reduce uncertainty without independently selecting the Action used to obtain it.",
+      "Residual uncertainty shall remain visible after diagnosis, corrective action, and validation when it is still material.",
+      "The Uncertainty Engine shall remain technically domain-independent."
     ]
   },
 
-  "uncertainty_types": [
-    {
-      "name": "MISSING_INFORMATION",
-      "description": "Information required for stronger reasoning is unavailable."
-    },
-    {
-      "name": "AMBIGUOUS_INFORMATION",
-      "description": "Available information supports multiple interpretations."
-    },
-    {
-      "name": "MEASUREMENT_UNCERTAINTY",
-      "description": "A measurement contains instrument, procedural, environmental, or reporting uncertainty."
-    },
-    {
-      "name": "SOURCE_UNCERTAINTY",
-      "description": "Reliability or applicability of the source is uncertain."
-    },
-    {
-      "name": "CONTEXT_UNCERTAINTY",
-      "description": "One or more technical context dimensions are unresolved."
-    },
-    {
-      "name": "MODEL_UNCERTAINTY",
-      "description": "ARIA's available knowledge does not sufficiently characterize the technical relationship."
-    },
-    {
-      "name": "STATISTICAL_UNCERTAINTY",
-      "description": "Historical experience is insufficient or variable."
-    },
-    {
-      "name": "CAUSAL_UNCERTAINTY",
-      "description": "Observed conditions do not yet establish the actual causal mechanism."
-    },
-    {
-      "name": "CONTRADICTION_UNCERTAINTY",
-      "description": "Material evidence or authoritative sources disagree."
-    },
-    {
-      "name": "TEMPORAL_UNCERTAINTY",
-      "description": "It is unclear whether information remains applicable to the current technical state."
-    },
-    {
-      "name": "ATTRIBUTION_UNCERTAINTY",
-      "description": "It is unclear who performed an action or which component, path, endpoint, or condition produced an observation."
-    },
-    {
-      "name": "RESOLUTION_UNCERTAINTY",
-      "description": "The system appears improved or restored but durability or completeness remains uncertain."
-    }
-  ],
-
-  "uncertainty_record": {
-    "required_fields": [
-      "uncertainty_id",
-      "case_id",
-      "uncertainty_type",
-      "target_type",
-      "target_id",
-      "description",
-      "materiality",
-      "current_level",
-      "source_ids",
-      "created_at",
-      "updated_at"
-    ],
-
-    "optional_fields": [
-      "reduction_actions",
-      "blocking_reason",
-      "resolution_event_id",
-      "residual_uncertainty"
-    ]
-  },
-
-  "confidence_model": {
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "interpretation": [
-      {
-        "range": "0.00-0.19",
-        "label": "VERY_LOW"
-      },
-      {
-        "range": "0.20-0.39",
-        "label": "LOW"
-      },
-      {
-        "range": "0.40-0.59",
-        "label": "MODERATE"
-      },
-      {
-        "range": "0.60-0.79",
-        "label": "HIGH"
-      },
-      {
-        "range": "0.80-0.94",
-        "label": "VERY_HIGH"
-      },
-      {
-        "range": "0.95-1.00",
-        "label": "NEAR_CERTAIN"
-      }
-    ],
+  "persistence_boundary": {
+    "principle": "Uncertainty Engine defines reasoning behavior, not a competing universal persisted uncertainty object.",
 
     "rules": [
-      "Numerical confidence shall not be presented as measurement precision beyond what the underlying evidence supports.",
-      "Confidence values are reasoning metadata rather than claims of mathematical omniscience.",
-      "Exact calibration shall improve through validated historical outcomes."
+      "Uncertainty Engine shall not define a canonical uncertainty_record unless a future canonical schema explicitly establishes one.",
+      "Uncertainty may be represented through Case State, Hypothesis, Evidence, Context, Validation, Decision, canonical Relationships, reasoning-cycle outputs, or other schema-authorized structures.",
+      "Temporary uncertainty analysis may exist as reasoning output without creating a new canonical entity.",
+      "If a future canonical uncertainty schema is introduced, this engine shall defer persistence structure and controlled vocabularies to that schema.",
+      "Uncertainty reasoning shall preserve references to the canonical objects from which the uncertainty arises whenever practical."
     ]
   },
 
-  "probability_vs_confidence": {
-    "description": "ARIA shall maintain probability and confidence independently.",
-
-    "examples": [
-      {
-        "probability": 0.72,
-        "confidence": 0.31,
-        "interpretation": "This is currently the most likely hypothesis, but the evidence base is weak."
-      },
-      {
-        "probability": 0.52,
-        "confidence": 0.91,
-        "interpretation": "The available evidence strongly supports a close competition between hypotheses."
-      },
-      {
-        "probability": 0.96,
-        "confidence": 0.97,
-        "interpretation": "One hypothesis is overwhelmingly supported by strong evidence."
-      }
-    ]
-  },
-
-  "knowledge_certainty_classes": [
+  "uncertainty_categories": [
     {
-      "name": "DETERMINISTIC",
-      "description": "Technical relationship established sufficiently strongly that within its applicable context it should be treated as a rule."
+      "category": "MISSING_INFORMATION",
+      "description": "Information materially relevant to stronger reasoning is unavailable, absent from the case, or has not yet been obtained."
     },
     {
-      "name": "AUTHORITATIVE",
-      "description": "Supported by applicable manufacturer, engineering, standards, or approved technical documentation."
+      "category": "AMBIGUOUS_INFORMATION",
+      "description": "Available information permits multiple materially different interpretations."
     },
     {
-      "name": "EMPIRICALLY_STRONG",
-      "description": "Supported by substantial validated historical experience."
+      "category": "MEASUREMENT_UNCERTAINTY",
+      "description": "The interpretation or usefulness of a measurement is limited by unresolved measurement quality, method, calibration, sampling, environmental, or reporting factors."
     },
     {
-      "name": "EMPIRICAL",
-      "description": "Supported by historical experience but subject to statistical uncertainty."
+      "category": "SOURCE_UNCERTAINTY",
+      "description": "The reliability, fidelity, authority, provenance, or applicability of source-derived information is insufficiently established for the reasoning consequence."
     },
     {
-      "name": "INFERRED",
-      "description": "Derived from available evidence and relationships."
+      "category": "CONTEXT_UNCERTAINTY",
+      "description": "One or more materially relevant aspects of technical context remain unresolved or insufficiently matched."
     },
     {
-      "name": "SPECULATIVE",
-      "description": "Technically possible but weakly supported."
+      "category": "MODEL_UNCERTAINTY",
+      "description": "Available canonical knowledge, relationships, or modeled hypotheses may not adequately represent the technical system or causal mechanism."
     },
     {
-      "name": "UNKNOWN",
-      "description": "Insufficient information exists to establish the claim."
+      "category": "STATISTICAL_UNCERTAINTY",
+      "description": "Numerical belief, historical frequency, likelihood, calibration, or predictive behavior is limited by sample size, variability, dependence, applicability, or model limitations."
+    },
+    {
+      "category": "CAUSAL_UNCERTAINTY",
+      "description": "Available information does not sufficiently establish which mechanism actually caused the represented condition."
+    },
+    {
+      "category": "CONTRADICTION_UNCERTAINTY",
+      "description": "Material evidence, claims, relationships, context, or authoritative information remain inconsistent."
+    },
+    {
+      "category": "TEMPORAL_UNCERTAINTY",
+      "description": "It is unclear whether information, configuration, evidence, relationships, or conditions remain applicable to the current technical state."
+    },
+    {
+      "category": "ATTRIBUTION_UNCERTAINTY",
+      "description": "It is unclear which canonical entity, component, path, source, action, actor, condition, or mechanism should be attributed to an observation or outcome."
+    },
+    {
+      "category": "HYPOTHESIS_UNCERTAINTY",
+      "description": "Available information does not sufficiently discriminate among technically viable candidate explanations."
+    },
+    {
+      "category": "PROBABILITY_UNCERTAINTY",
+      "description": "The numerical probability estimate is materially sensitive to weak priors, uncertain likelihoods, incomplete alternatives, dependency assumptions, calibration limitations, or other probability-model limitations."
+    },
+    {
+      "category": "DECISION_UNCERTAINTY",
+      "description": "Available information does not clearly establish which candidate Action provides the best justified utility under the current technical state."
+    },
+    {
+      "category": "VALIDATION_UNCERTAINTY",
+      "description": "The available validation process or resulting evidence does not sufficiently establish whether the tested assertion, corrective action, or expected technical state has been demonstrated."
+    },
+    {
+      "category": "RESOLUTION_UNCERTAINTY",
+      "description": "The represented condition appears improved or resolved, but completeness, durability, causal attribution, or required acceptance remains uncertain."
     }
   ],
+
+  "category_rules": [
+    "Uncertainty categories are reasoning classifications and shall not automatically become a new persisted controlled vocabulary outside an authorized schema.",
+    "One reasoning condition may contain multiple uncertainty categories.",
+    "Categories shall describe why uncertainty exists rather than merely labeling reasoning as uncertain.",
+    "Uncertainty categories shall not replace canonical confidence dimensions.",
+    "Uncertainty categories shall not replace Evidence status, Hypothesis status, Validation outcome, Decision state, or Case State."
+  ],
+
+  "confidence_boundary": {
+    "registry": "Core/Registries/confidence_levels.json",
+
+    "principle": "Confidence is represented through the canonical confidence architecture; Uncertainty Engine consumes confidence information but does not redefine it.",
+
+    "rules": [
+      "Uncertainty Engine shall not define competing confidence levels.",
+      "Uncertainty Engine shall not define competing confidence numeric ranges.",
+      "Uncertainty Engine shall consume the applicable canonical confidence dimension.",
+      "UNKNOWN confidence shall remain UNKNOWN when confidence cannot meaningfully be established.",
+      "Confidence in one dimension shall not be silently substituted for another.",
+      "Evidence Quality Confidence shall not automatically become Diagnostic Confidence.",
+      "Diagnostic Confidence shall not automatically become Causal Confidence.",
+      "Causal Confidence shall not automatically become Resolution Confidence.",
+      "Probability Confidence shall remain distinct from hypothesis probability.",
+      "Conversational certainty shall not exceed the applicable internal confidence and uncertainty state."
+    ]
+  },
+
+  "probability_boundary": {
+    "principle": "Probability Engine calculates numerical belief; Uncertainty Engine evaluates limitations, incompleteness, ambiguity, sensitivity, and unresolved uncertainty surrounding that belief.",
+
+    "rules": [
+      "Uncertainty Engine shall not calculate hypothesis priors.",
+      "Uncertainty Engine shall not calculate posterior probability.",
+      "Uncertainty Engine shall not normalize probability groups.",
+      "Uncertainty Engine shall not calibrate numerical probability.",
+      "Uncertainty Engine may consume current_probability, probability_confidence, unknown probability, sensitivity results, and probability history.",
+      "A narrow probability distribution does not automatically imply low uncertainty.",
+      "A leading hypothesis with weak probability confidence may remain materially uncertain.",
+      "Material unknown probability may create model or hypothesis uncertainty.",
+      "Probability sensitivity to weak assumptions may create probability uncertainty.",
+      "Probability Engine remains authoritative for numerical probability calculation and calibration."
+    ]
+  },
+
+  "evidence_boundary": {
+    "principle": "Evidence Engine owns Evidence semantics; Uncertainty Engine consumes evidence assessments to determine what remains uncertain.",
+
+    "rules": [
+      "Evidence Engine owns evidence quality, provenance, verification, independence, freshness, contradiction, supersession, invalidation, retraction, and evidence-gap semantics.",
+      "Uncertainty Engine shall not recreate evidence confidence calculations.",
+      "Uncertainty Engine shall not independently declare duplicate evidence independent.",
+      "Evidence gaps may create or sustain uncertainty.",
+      "Contradictory evidence may create contradiction uncertainty.",
+      "Weak evidence quality may sustain diagnostic or causal uncertainty.",
+      "Uncertain evidence applicability may sustain context or temporal uncertainty.",
+      "Evidence invalidation or retraction may increase downstream uncertainty.",
+      "Uncertainty Engine may identify the reasoning consequence of an Evidence limitation without changing the Evidence record itself."
+    ]
+  },
+
+  "context_boundary": {
+    "principle": "Context Engine determines contextual representation and applicability; Uncertainty Engine identifies material uncertainty caused by incomplete, conflicting, or weakly matched context.",
+
+    "rules": [
+      "Uncertainty Engine shall not define a competing Context dimension vocabulary.",
+      "Missing material context may create CONTEXT_UNCERTAINTY.",
+      "Conflicting context may create AMBIGUOUS_INFORMATION or CONTRADICTION_UNCERTAINTY.",
+      "Uncertain temporal applicability may create TEMPORAL_UNCERTAINTY.",
+      "A deterministic technical rule may remain certain while its applicability to the current Context remains uncertain.",
+      "Material Context changes shall trigger uncertainty reevaluation through Orchestration."
+    ]
+  },
+
+  "hypothesis_boundary": {
+    "principle": "Hypothesis Engine owns candidate explanations and hypothesis state; Uncertainty Engine evaluates what remains unresolved among or within those explanations.",
+
+    "rules": [
+      "Uncertainty Engine shall not generate canonical hyp_<UUID> records.",
+      "Uncertainty Engine shall not set Hypothesis persistence status.",
+      "Multiple viable hypotheses may create HYPOTHESIS_UNCERTAINTY.",
+      "A dominant hypothesis does not automatically eliminate uncertainty.",
+      "Insufficient discrimination among hypotheses shall remain visible.",
+      "Unknown or unmodeled hypotheses may contribute to MODEL_UNCERTAINTY.",
+      "Hypothesis elimination may reduce uncertainty when the elimination basis is sufficiently strong.",
+      "Hypothesis confirmation may reduce diagnostic uncertainty without necessarily eliminating causal, validation, or resolution uncertainty."
+    ]
+  },
+
+  "relationship_boundary": {
+    "principle": "Canonical Relationships remain authoritative for persisted dependencies, support, contradiction, causality, hierarchy, and graph semantics.",
+
+    "rules": [
+      "Uncertainty Engine shall not define a competing persisted relationship vocabulary.",
+      "Uncertainty Engine may reason about dependency conceptually.",
+      "Persisted dependency semantics shall use canonical rel_<UUID> records where applicable.",
+      "Uncertainty in a parent dependency may propagate to dependent reasoning.",
+      "Invalidated or weakened relationships may increase downstream uncertainty.",
+      "Relationship Confidence may constrain how strongly a relationship reduces uncertainty."
+    ]
+  },
 
   "uncertainty_propagation": {
     "enabled": true,
 
+    "principle": "Material uncertainty in an input, dependency, applicability condition, or inference basis shall constrain certainty in dependent reasoning.",
+
     "rules": [
-      "Derived conclusions shall inherit material uncertainty from their inputs.",
+      "Derived reasoning shall preserve material uncertainty from its inputs.",
       "A conclusion shall not become more certain merely because it passes through multiple reasoning steps.",
-      "Independent corroborating evidence may reduce uncertainty.",
-      "Dependent evidence shall not be treated as independent corroboration.",
-      "Uncertainty in critical context may limit confidence in otherwise strong technical reasoning.",
-      "A deterministic relationship may remain certain while its applicability to the current case remains uncertain."
+      "Independent corroboration may reduce uncertainty.",
+      "Dependent corroboration shall not receive the same uncertainty reduction as independent corroboration.",
+      "Uncertainty shall propagate only when the uncertain input is materially relevant to the downstream conclusion.",
+      "Irrelevant uncertainty shall not contaminate unrelated reasoning.",
+      "A deterministic relationship may remain deterministic while uncertainty exists about whether its prerequisites are satisfied.",
+      "A resolved upstream uncertainty may justify downstream reevaluation.",
+      "Invalidation of an upstream basis may increase uncertainty in downstream conclusions.",
+      "Propagation shall preserve the reason for the uncertainty whenever practical."
     ]
   },
 
-  "dependency_model": {
-    "description": "ARIA shall track important dependencies between conclusions and their supporting information.",
+  "dependency_reasoning": {
+    "principle": "A.R.I.A. shall identify material reasoning dependencies so uncertainty can propagate and be reduced coherently.",
 
-    "relationship_types": [
-      "DEPENDS_ON",
+    "conceptual_dependencies": [
+      "REQUIRES",
       "SUPPORTED_BY",
       "CONTRADICTED_BY",
       "INFERRED_FROM",
       "APPLICABLE_IF",
+      "CONDITIONAL_ON",
       "INVALIDATED_BY"
     ],
 
-    "rule": "When a dependency is invalidated or materially weakened, affected downstream conclusions shall be reevaluated."
-  },
-
-  "evidence_independence": {
-    "description": "Multiple observations are not automatically independent evidence.",
-
-    "examples": [
-      {
-        "evidence": [
-          "technician reports -63 dBm",
-          "ticket repeats technician report",
-          "email repeats ticket value"
-        ],
-        "independent_observations": 1
-      },
-      {
-        "evidence": [
-          "radio reports -63 dBm",
-          "independent test equipment confirms abnormal receive level"
-        ],
-        "independent_observations": 2
-      }
-    ],
-
     "rules": [
-      "Repeated transmission of the same underlying observation shall not multiply confidence.",
-      "ARIA shall identify common provenance when practical.",
-      "Independent measurement methods may increase confidence more strongly than repeated identical methods."
-    ]
-  },
-
-  "contradiction_handling": {
-    "process": [
-      "DETECT_CONTRADICTION",
-      "ASSESS_MATERIALITY",
-      "IDENTIFY_SOURCE_AUTHORITY",
-      "CHECK_CONTEXT_APPLICABILITY",
-      "CHECK_TEMPORAL_ORDER",
-      "CHECK_MEASUREMENT_QUALITY",
-      "SEEK_DISCRIMINATING_EVIDENCE",
-      "RECONCILE_OR_PRESERVE"
-    ],
-
-    "rules": [
-      "ARIA shall not average contradictory technical facts merely to produce one answer.",
-      "Higher-authority information may supersede lower-authority information only when applicability is established.",
-      "Current direct evidence may demonstrate behavior inconsistent with documentation.",
-      "Unresolved contradictions shall remain visible in case state."
+      "Conceptual dependency labels guide reasoning and do not establish a second persisted Relationship registry.",
+      "Canonical Relationship records remain authoritative when dependency semantics are persisted.",
+      "When a material dependency is invalidated, dependent reasoning shall be reevaluated.",
+      "When a dependency remains unresolved, dependent conclusions shall preserve applicable uncertainty.",
+      "Shared dependencies shall be recognized to avoid false independent corroboration."
     ]
   },
 
   "unknown_handling": {
-    "allowed_states": [
+    "principle": "A.R.I.A. shall preserve semantic distinctions among unknown, absent, unobserved, unavailable, unresolved, and not applicable information without inventing a competing universal status registry.",
+
+    "reasoning_concepts": [
       "UNKNOWN",
+      "KNOWN_ABSENT",
       "NOT_OBSERVED",
       "NOT_MEASURED",
       "NOT_PROVIDED",
-      "NOT_APPLICABLE",
+      "UNAVAILABLE",
       "UNRESOLVED",
-      "UNAVAILABLE"
+      "NOT_APPLICABLE"
     ],
 
     "rules": [
-      "ARIA shall distinguish information that is unknown from information known to be absent.",
-      "No alarm reported is not equivalent to confirmed absence of alarms.",
-      "No obstruction reported is not equivalent to validated clear LOS.",
-      "A missing configuration screenshot is not evidence that configuration is correct."
+      "These are reasoning concepts unless an authoritative schema or registry establishes them as persisted values.",
+      "UNKNOWN means the state cannot currently be established.",
+      "KNOWN_ABSENT requires applicable evidence establishing absence.",
+      "NOT_OBSERVED means an observation has not established the condition.",
+      "NOT_MEASURED means the relevant quantity has not been measured.",
+      "NOT_PROVIDED means the expected information has not been supplied.",
+      "UNAVAILABLE means the information cannot currently be obtained through the available source or process.",
+      "UNRESOLVED means competing interpretations or states remain.",
+      "NOT_APPLICABLE means the information is not relevant under the established Context.",
+      "Missing information shall never be interpreted as proof of the favorable or expected state.",
+      "Absence of reported evidence shall not be treated as evidence of absence unless the reporting process supports that inference."
     ]
   },
 
   "assumption_policy": {
-    "description": "ARIA may sometimes reason conditionally using assumptions but shall not silently convert assumptions into facts.",
+    "principle": "Assumptions may support conditional reasoning but shall never silently become facts, Evidence, canonical knowledge, or validated Experience.",
 
-    "assumption_states": [
+    "reasoning_classes": [
       "EXPLICIT_USER_ASSUMPTION",
       "ARIA_WORKING_ASSUMPTION",
       "ENGINEERING_DEFAULT",
@@ -292,317 +359,643 @@
 
     "rules": [
       "Material assumptions shall be identifiable.",
-      "ARIA shall prefer conditional reasoning when an assumption cannot yet be validated.",
-      "Assumptions shall not enter canonical knowledge or learning as validated facts.",
-      "When an assumption becomes verified, its status shall change through evidence."
+      "The source of a material assumption shall be identifiable when known.",
+      "The consequence of an assumption being wrong shall be considered when material.",
+      "A.R.I.A. shall prefer conditional reasoning when an assumption cannot yet be validated.",
+      "Assumptions shall not become current-case Evidence merely because they are useful.",
+      "Assumptions shall not enter canonical knowledge as validated facts.",
+      "Assumptions shall not enter Experience as validated historical truth.",
+      "When an assumption becomes verified, the verification shall occur through the appropriate Evidence and reasoning contracts.",
+      "When an assumption is contradicted, dependent reasoning shall be reevaluated."
     ]
   },
 
   "conditional_reasoning": {
-    "examples": [
-      "If Radio B is confirmed to be the Diversity radio, then this port mapping applies.",
-      "If the path is actually configured as Space Diversity, the observed Main/Diversity relationship is abnormal.",
-      "If the screenshot is current, configuration error becomes less likely."
-    ],
-
-    "rule": "Conditional conclusions shall preserve the condition upon which they depend."
-  },
-
-  "uncertainty_reduction": {
-    "description": "ARIA shall actively identify actions that reduce uncertainty.",
-
-    "candidate_metrics": [
-      "EXPECTED_INFORMATION_GAIN",
-      "NUMBER_OF_HYPOTHESES_DISCRIMINATED",
-      "UNCERTAINTY_REDUCTION",
-      "TIME_COST",
-      "USER_EFFORT",
-      "SERVICE_RISK",
-      "REVERSIBILITY"
-    ],
+    "principle": "When a conclusion depends materially on an unresolved condition, A.R.I.A. shall preserve the condition with the conclusion.",
 
     "rules": [
-      "The best next diagnostic action is often the action expected to reduce the most important uncertainty at acceptable cost.",
-      "ARIA shall prefer discriminating evidence over repeated confirmation of already strong evidence.",
-      "An action that can separate several leading hypotheses may outrank an action targeted only at the highest-probability hypothesis."
+      "Conditional conclusions shall identify the material condition upon which they depend.",
+      "Conditional conclusions shall not be presented as unconditional facts.",
+      "Multiple conditional branches may remain active when the controlling condition is unresolved.",
+      "Resolution of the controlling condition shall trigger reevaluation of dependent branches.",
+      "Conditional reasoning shall not create duplicate canonical facts for each branch.",
+      "Conditional reasoning may be used to identify discriminating information needed to resolve the branch."
     ]
   },
 
-  "material_uncertainty": {
-    "description": "Not all uncertainty matters equally.",
-
-    "materiality_levels": [
-      "CRITICAL",
-      "HIGH",
-      "MODERATE",
-      "LOW",
-      "NEGLIGIBLE"
+  "contradiction_uncertainty": {
+    "process": [
+      "DETECT_MATERIAL_INCONSISTENCY",
+      "IDENTIFY_AFFECTED_REASONING",
+      "CONSUME_EVIDENCE_ASSESSMENTS",
+      "CONSUME_SOURCE_AND_CONTEXT_ASSESSMENTS",
+      "CHECK_TEMPORAL_APPLICABILITY",
+      "IDENTIFY_POSSIBLE_RECONCILIATION",
+      "IDENTIFY_DISCRIMINATING_INFORMATION",
+      "PRESERVE_RESIDUAL_UNCERTAINTY"
     ],
 
     "rules": [
-      "ARIA shall prioritize uncertainty capable of changing diagnosis, routing, safety, service impact, or corrective action.",
-      "Low-value missing details shall not unnecessarily delay diagnosis.",
-      "Critical uncertainty may block destructive or high-impact actions."
+      "Uncertainty Engine shall not average contradictory technical facts merely to produce one answer.",
+      "Uncertainty Engine shall not independently determine Evidence authority or quality.",
+      "Higher-authority information does not resolve contradiction unless it is applicable to the represented Context.",
+      "Current direct evidence may reveal behavior inconsistent with documentation without automatically invalidating the documentation universally.",
+      "Contradictions may be resolved through context, temporal ordering, scope, source correction, supersession, invalidation, or additional evidence.",
+      "Unresolved material contradictions shall remain visible.",
+      "Contradictions affecting high-consequence reasoning shall increase material uncertainty."
     ]
   },
 
-  "decision_thresholds": {
-    "description": "Different decisions require different confidence.",
+  "model_uncertainty": {
+    "principle": "A.R.I.A. shall recognize when its modeled technical knowledge or candidate explanations may be incomplete.",
 
-    "decision_classes": [
-      {
-        "name": "LOW_RISK_DIAGNOSTIC_CHECK",
-        "confidence_requirement": "LOW_TO_MODERATE"
-      },
-      {
-        "name": "NONDISRUPTIVE_CONFIGURATION_REVIEW",
-        "confidence_requirement": "LOW_TO_MODERATE"
-      },
-      {
-        "name": "SERVICE_AFFECTING_TEST",
-        "confidence_requirement": "HIGHER"
-      },
-      {
-        "name": "DESTRUCTIVE_OR_IRREVERSIBLE_ACTION",
-        "confidence_requirement": "HIGH"
-      },
-      {
-        "name": "ROOT_CAUSE_DECLARATION",
-        "confidence_requirement": "HIGH"
-      },
-      {
-        "name": "CANONICAL_KNOWLEDGE_PROMOTION",
-        "confidence_requirement": "VERY_HIGH_WITH_PROVENANCE"
-      }
+    "indicators": [
+      "material unknown hypothesis probability",
+      "known hypotheses repeatedly contradicted",
+      "observations unexplained by active hypotheses",
+      "missing canonical relationships",
+      "weak applicability of available knowledge",
+      "novel technical configuration",
+      "unresolved contradiction among authoritative sources",
+      "repeated validation failure despite apparently correct diagnosis"
     ],
 
     "rules": [
-      "Decision thresholds shall account for consequence, reversibility, cost, safety, and service impact.",
-      "High uncertainty does not prohibit low-risk information-gathering actions.",
-      "ARIA shall seek stronger evidence before high-consequence actions."
+      "Model uncertainty shall not be hidden by forcing observations into existing categories.",
+      "Persistent model uncertainty may justify broader knowledge retrieval or hypothesis generation through Orchestration.",
+      "Model uncertainty shall constrain diagnostic confidence when material.",
+      "A.R.I.A. shall distinguish lack of model coverage from evidence that a known hypothesis is false."
     ]
   },
 
-  "confidence_language": {
-    "description": "ARIA's conversational language shall reflect actual reasoning state without sounding mechanically probabilistic.",
+  "causal_uncertainty": {
+    "principle": "Association, correlation, temporal proximity, action success, or symptom disappearance does not automatically establish causality.",
 
-    "examples": [
-      {
-        "state": "VERY_HIGH_CONFIDENCE",
-        "preferred_language": "The evidence strongly points to the Diversity RF chain."
-      },
-      {
-        "state": "HIGH_PROBABILITY_LOW_CONFIDENCE",
-        "preferred_language": "RF routing is my leading suspicion, but we do not have enough evidence yet to call it."
-      },
-      {
-        "state": "CONTRADICTION",
-        "preferred_language": "Something does not line up here. The screenshot shows Radio A, but the project record identifies this as Radio B."
-      },
-      {
-        "state": "UNKNOWN",
-        "preferred_language": "I don't know that yet. I need the current configuration to distinguish those possibilities."
-      },
-      {
-        "state": "DETERMINISTIC",
-        "preferred_language": "That connection is incorrect for this configuration."
-      }
+    "candidate_reduction_factors": [
+      "direct mechanism evidence",
+      "controlled discrimination",
+      "alternative cause elimination",
+      "repeatability",
+      "before-after evidence",
+      "reversal evidence",
+      "independent corroboration",
+      "successful validation specifically testing the causal mechanism"
     ],
 
     "rules": [
-      "ARIA shall not repeatedly recite numerical probabilities unless they improve the user's decision.",
-      "ARIA shall be comfortable explicitly saying she does not know.",
-      "ARIA shall explain the reason for material uncertainty when useful.",
-      "Conversational confidence shall not exceed internal confidence."
+      "Causal Confidence shall use the canonical confidence architecture.",
+      "A successful corrective action may reduce causal uncertainty but does not automatically eliminate it.",
+      "Symptom disappearance alone shall not establish root cause.",
+      "Multiple coexisting causes may preserve causal uncertainty even after service restoration.",
+      "Unexplained contradictory evidence shall constrain causal certainty."
     ]
   },
 
-  "calibration": {
-    "enabled": true,
+  "statistical_uncertainty": {
+    "principle": "Probability and historical inference may remain uncertain because of limited data, dependence, variability, calibration limitations, applicability, or model assumptions.",
 
-    "description": "ARIA shall evaluate whether historical confidence levels correspond to actual validated outcomes.",
-
-    "metrics": [
-      "Brier score",
-      "log loss",
-      "reliability by confidence bucket",
-      "top-hypothesis accuracy",
-      "resolution confidence accuracy",
-      "false certainty rate"
+    "candidate_sources": [
+      "small effective sample size",
+      "weak historical applicability",
+      "dependent historical cases",
+      "uncertain likelihood estimates",
+      "poor calibration support",
+      "unstable priors",
+      "incomplete hypothesis coverage",
+      "sensitivity to modeling assumptions"
     ],
 
     "rules": [
-      "ARIA's probability and confidence models shall be calibratable from validated cases.",
-      "Repeated overconfidence shall cause model adjustment.",
-      "Repeated underconfidence may also be corrected.",
-      "Calibration shall preserve context where sample size permits."
+      "Probability Engine owns numerical calculation and calibration.",
+      "Uncertainty Engine may consume Probability sensitivity and confidence outputs.",
+      "Numerical precision shall not conceal statistical uncertainty.",
+      "Small samples shall not be treated as certainty merely because a numerical probability can be calculated.",
+      "Material statistical uncertainty shall be surfaced when it could change downstream reasoning."
+    ]
+  },
+
+  "materiality_model": {
+    "principle": "Uncertainty matters according to its potential to change a technically meaningful conclusion or consequence.",
+
+    "assessment_factors": [
+      "potential to change hypothesis ranking",
+      "potential to change hypothesis status reasoning",
+      "potential to change selected Action",
+      "potential to change route feasibility",
+      "potential to affect safety",
+      "potential to affect service",
+      "potential to affect destructive or irreversible consequences",
+      "potential to affect validation interpretation",
+      "potential to affect resolution determination",
+      "potential to affect learning eligibility",
+      "difficulty of later recovery from an incorrect assumption"
+    ],
+
+    "rules": [
+      "Uncertainty materiality shall not be inferred solely from confidence magnitude.",
+      "Low-impact missing details shall not unnecessarily block reasoning.",
+      "High-consequence uncertainty may remain material even when probability differences appear large.",
+      "Materiality may change as the case progresses.",
+      "Uncertainty no longer capable of changing a relevant outcome may be treated as residual and non-blocking.",
+      "Materiality terminology shall not create a competing global severity registry unless one is canonically established."
+    ]
+  },
+
+  "uncertainty_reduction_requirements": {
+    "principle": "Uncertainty Engine identifies what information or discrimination would materially reduce uncertainty; it does not select the Action used to obtain it.",
+
+    "may_identify": [
+      "required observation",
+      "required measurement",
+      "required artifact",
+      "required technical fact",
+      "required context",
+      "required source verification",
+      "required isolation result",
+      "required validation result",
+      "required temporal confirmation",
+      "required identity resolution",
+      "discriminating condition",
+      "uncertainty expected to be reduced",
+      "hypotheses expected to be discriminated"
+    ],
+
+    "candidate_value_factors": [
+      "expected uncertainty reduction",
+      "number of material hypotheses discriminated",
+      "ability to resolve contradiction",
+      "ability to resolve context ambiguity",
+      "ability to test causal mechanism",
+      "ability to reduce unknown model space",
+      "downstream decision relevance"
+    ],
+
+    "rules": [
+      "Uncertainty Engine may estimate informational value conceptually without selecting a candidate Action.",
+      "The information requirement and the Action used to obtain it shall remain distinct.",
+      "Uncertainty Engine shall prefer identifying discriminating information over redundant confirmation when technically appropriate.",
+      "An unmet uncertainty-reduction requirement shall not be assigned an Evidence ID.",
+      "Decision Engine evaluates candidate Actions using information value, consequence, cost, burden, reversibility, service impact, and other decision factors.",
+      "Routing Engine manages progression after Decision selects an Action.",
+      "Uncertainty Engine shall not directly command execution."
+    ]
+  },
+
+  "decision_boundary": {
+    "principle": "Uncertainty informs Decision; Decision determines whether and how to act.",
+
+    "rules": [
+      "Uncertainty Engine shall not define universal decision confidence thresholds.",
+      "Uncertainty Engine shall not determine that a specific Action is justified solely from a confidence level.",
+      "Uncertainty Engine may identify uncertainty capable of materially changing a decision.",
+      "Uncertainty Engine may identify what information would reduce that uncertainty.",
+      "Decision Engine owns comparison and selection of act_<UUID> candidates.",
+      "High uncertainty does not automatically prohibit low-risk information-gathering Actions.",
+      "Low uncertainty does not automatically justify high-consequence Actions.",
+      "Decision consequences, reversibility, cost, service impact, safety, and information value remain Decision concerns."
+    ]
+  },
+
+  "routing_boundary": {
+    "principle": "Uncertainty may affect route feasibility or cause Decision reevaluation but does not own operational progression.",
+
+    "rules": [
+      "Uncertainty Engine shall not create route steps.",
+      "Uncertainty Engine shall not select next hops.",
+      "Uncertainty Engine shall not reroute.",
+      "Material uncertainty may make an existing route step infeasible or insufficiently justified.",
+      "Such changes shall be returned through Orchestration.",
+      "Routing Engine remains responsible for route progression after Action selection."
+    ]
+  },
+
+  "validation_boundary": {
+    "principle": "Validation may reduce or expose uncertainty; Validation Engine owns validation semantics.",
+
+    "rules": [
+      "Uncertainty Engine shall not define validation outcomes.",
+      "Validation results may reduce diagnostic, causal, validation, or resolution uncertainty.",
+      "Weak validation coverage may preserve VALIDATION_UNCERTAINTY.",
+      "Temporary symptom improvement may preserve RESOLUTION_UNCERTAINTY.",
+      "Failed validation may increase HYPOTHESIS_UNCERTAINTY or MODEL_UNCERTAINTY.",
+      "Validation Confidence shall use the canonical confidence architecture.",
+      "Resolution Confidence shall use the canonical confidence architecture."
+    ]
+  },
+
+  "resolution_uncertainty": {
+    "principle": "Improvement, restoration, or completion of an Action does not automatically establish durable technical resolution.",
+
+    "candidate_sources": [
+      "insufficient post-action validation",
+      "short observation interval",
+      "intermittent condition",
+      "remaining unexplained symptoms",
+      "remaining contradictory evidence",
+      "uncertain causal attribution",
+      "partial restoration",
+      "unvalidated dependent components",
+      "uncertain acceptance criteria satisfaction"
+    ],
+
+    "rules": [
+      "Resolution uncertainty shall remain visible while materially relevant.",
+      "Resolution Confidence shall use the canonical confidence architecture.",
+      "A case may have low diagnostic uncertainty and still have material resolution uncertainty.",
+      "A case may have restored service while causal uncertainty remains.",
+      "Case State and Validation determine whether resolution criteria are satisfied."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Case State owns the assembled current reasoning projection; Uncertainty Engine contributes uncertainty analysis without redefining Case State.",
+
+    "rules": [
+      "Uncertainty Engine shall not define case lifecycle status.",
+      "Uncertainty Engine shall not define case reasoning state.",
+      "Material unresolved uncertainty may be projected into Case State through schema-authorized structures.",
+      "Residual uncertainty may remain after technical resolution when it does not block closure under applicable criteria.",
+      "Case State determines how current uncertainty is represented in the assembled case projection."
+    ]
+  },
+
+  "orchestration_boundary": {
+    "principle": "Uncertainty Engine returns uncertainty reasoning results; Orchestration coordinates downstream reevaluation.",
+
+    "rules": [
+      "Uncertainty Engine shall not directly invoke all downstream engines.",
+      "Material uncertainty changes shall be returned to Orchestration.",
+      "New material uncertainty may require Hypothesis, Probability, Decision, Routing, Validation, or Case State reevaluation.",
+      "Resolved uncertainty may also require downstream reevaluation.",
+      "Evidence invalidation or Context change may increase uncertainty and trigger reevaluation.",
+      "Orchestration determines engine invocation order and reasoning-cycle continuation."
+    ]
+  },
+
+  "uncertainty_reassessment_triggers": [
+    "NEW_MATERIAL_EVIDENCE",
+    "EVIDENCE_SUPERSEDED",
+    "EVIDENCE_INVALIDATED",
+    "EVIDENCE_RETRACTED",
+    "EVIDENCE_DEPENDENCY_CHANGED",
+    "CONTRADICTION_DETECTED",
+    "CONTRADICTION_RESOLVED",
+    "MATERIAL_CONTEXT_CHANGE",
+    "ASSUMPTION_VERIFIED",
+    "ASSUMPTION_CONTRADICTED",
+    "HYPOTHESIS_CREATED",
+    "HYPOTHESIS_ELIMINATED",
+    "HYPOTHESIS_CONFIRMED",
+    "HYPOTHESIS_REACTIVATED",
+    "HYPOTHESIS_SUPERSEDED",
+    "MATERIAL_PROBABILITY_CHANGE",
+    "PROBABILITY_CONFIDENCE_CHANGED",
+    "UNKNOWN_PROBABILITY_CHANGED",
+    "ACTION_RESULT_RECEIVED",
+    "VALIDATION_RESULT_RECEIVED",
+    "VALIDATION_FAILED",
+    "RESOLUTION_STATE_CHANGED",
+    "DEPENDENCY_INVALIDATED"
+  ],
+
+  "reassessment_rules": [
+    "Uncertainty shall be reassessed when a material basis for prior uncertainty changes.",
+    "Reduction of one uncertainty category shall not silently eliminate unrelated uncertainty.",
+    "New evidence may reduce one uncertainty while increasing another.",
+    "Historical uncertainty state shall remain reconstructable where the governing schemas preserve reasoning history.",
+    "Reassessment shall preserve the reason for material increases or decreases in uncertainty."
+  ],
+
+  "residual_uncertainty": {
+    "principle": "Not all uncertainty must be eliminated for technically responsible action or resolution, but material residual uncertainty shall remain explicit.",
+
+    "rules": [
+      "Residual uncertainty shall be distinguished from resolved uncertainty.",
+      "Residual uncertainty may be acceptable when it cannot materially change the relevant decision or required technical outcome.",
+      "Residual uncertainty affecting safety, destructive consequences, service integrity, causal attribution, or required validation may remain blocking.",
+      "Acceptance of residual uncertainty is a Decision, Validation, or Case State concern depending on the consequence.",
+      "Uncertainty Engine identifies and characterizes residual uncertainty but does not independently close the case."
+    ]
+  },
+
+  "communication_policy": {
+    "principle": "A.R.I.A.'s communication shall accurately reflect uncertainty without unnecessary numerical narration or artificial certainty.",
+
+    "rules": [
+      "A.R.I.A. may explicitly state that information is unknown when it is unknown.",
+      "A.R.I.A. shall distinguish a leading explanation from a confirmed explanation.",
+      "A.R.I.A. shall distinguish a working assumption from an established fact.",
+      "A.R.I.A. shall explain material contradictions when they affect the recommendation.",
+      "A.R.I.A. shall explain material residual uncertainty when it affects action or resolution.",
+      "Numerical probability should be communicated when it materially improves understanding or decision quality.",
+      "Canonical qualitative confidence terminology shall be used when confidence terminology is required.",
+      "Conversational confidence shall not exceed internal reasoning support.",
+      "Fluent language shall never be treated as evidence of correctness.",
+      "Model-generated confidence shall not independently establish technical confidence."
     ]
   },
 
   "false_certainty_protection": {
     "controls": [
-      "SOURCE_PROVENANCE",
-      "CONFIDENCE_SEPARATION",
-      "PROBABILITY_SEPARATION",
-      "CONTRADICTION_TRACKING",
-      "UNKNOWN_STATES",
+      "UNKNOWN_PRESERVATION",
       "ASSUMPTION_TRACKING",
-      "VALIDATION_REQUIREMENTS",
-      "CALIBRATION_MONITORING"
+      "CONDITIONAL_REASONING",
+      "PROBABILITY_CONFIDENCE_SEPARATION",
+      "CONFIDENCE_DIMENSION_SEPARATION",
+      "CONTRADICTION_VISIBILITY",
+      "DEPENDENCY_AWARENESS",
+      "EVIDENCE_PROVENANCE",
+      "EVIDENCE_INDEPENDENCE",
+      "MODEL_UNCERTAINTY",
+      "RESIDUAL_UNCERTAINTY",
+      "VALIDATION_REQUIREMENTS"
     ],
 
     "rules": [
-      "Fluent language shall never be treated as evidence of correctness.",
-      "Language-model confidence shall not independently determine technical confidence.",
-      "ARIA shall not fabricate supporting evidence to justify a conclusion.",
-      "ARIA shall not conceal uncertainty to appear more competent."
+      "A.R.I.A. shall not fabricate supporting evidence to reduce uncertainty.",
+      "A.R.I.A. shall not convert missing information into favorable assumptions.",
+      "A.R.I.A. shall not hide contradictions to produce a cleaner answer.",
+      "A.R.I.A. shall not infer certainty from linguistic fluency.",
+      "A.R.I.A. shall not infer certainty from numerical precision alone.",
+      "A.R.I.A. shall not treat repeated copies of the same observation as independent corroboration.",
+      "A.R.I.A. shall not treat action success alone as proof of root cause.",
+      "A.R.I.A. shall preserve uncertainty when available information does not justify reducing it."
     ]
   },
 
-  "example": {
-    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
-
-    "hypotheses": [
-      {
-        "failure_mode": "RF_ROUTING_ERROR",
-        "probability": 0.58,
-        "confidence": 0.72
-      },
-      {
-        "failure_mode": "CONFIGURATION_ERROR",
-        "probability": 0.24,
-        "confidence": 0.72
-      },
-      {
-        "failure_mode": "RADIO_FAILURE",
-        "probability": 0.11,
-        "confidence": 0.65
-      },
-      {
-        "failure_mode": "OTHER",
-        "probability": 0.07,
-        "confidence": 0.41
-      }
+  "uncertainty_result": {
+    "recommended_outputs": [
+      "target_id",
+      "target_type",
+      "uncertainty_categories",
+      "material_uncertainty_detected",
+      "materiality_reasoning",
+      "uncertainty_sources",
+      "affected_reasoning",
+      "assumptions",
+      "conditional_dependencies",
+      "contradictions",
+      "unknowns",
+      "residual_uncertainty",
+      "uncertainty_reduction_requirements",
+      "probability_uncertainty",
+      "diagnostic_uncertainty",
+      "causal_uncertainty",
+      "validation_uncertainty",
+      "resolution_uncertainty",
+      "downstream_reevaluation_required",
+      "reasoning_summary"
     ],
 
-    "material_uncertainty": [
-      "Physical Main/Diversity routing has not been independently verified.",
-      "Current Radio B configuration screenshot is unavailable."
-    ],
-
-    "recommended_action": "Verify Main/Diversity RF routing.",
-
-    "reason": "This action can strongly discriminate the two leading hypotheses with low service risk and low time cost.",
-
-    "preferred_response": "RF routing is the leading possibility, but I would not replace hardware yet. Verify the Main and Diversity routing first; that check gives us the most useful information for the least effort."
+    "rules": [
+      "Outputs are reasoning results unless an authoritative schema establishes corresponding persisted fields.",
+      "Outputs shall reference canonical objects where practical.",
+      "Outputs shall not fabricate confidence values.",
+      "Outputs shall not fabricate probability values.",
+      "Outputs shall not fabricate Evidence IDs for unmet requirements.",
+      "Outputs shall not select Actions.",
+      "Outputs shall not perform Routing.",
+      "Material changes shall be returned to Orchestration."
+    ]
   },
 
-  "counterexample": {
-    "historical_prior": {
-      "configuration_error": 0.72
-    },
-
-    "current_evidence": {
-      "validated_configuration": "CORRECT"
-    },
-
-    "rule": "Historical frequency shall not cause ARIA to continue claiming configuration error when strong current evidence contradicts it.",
-
-    "interpretation": "Priors guide where ARIA looks first. Evidence determines where ARIA goes next."
-  },
-
-  "engine_interfaces": {
-    "context_engine": "Provides context confidence and unresolved dimensions.",
-    "evidence_engine": "Provides evidence quality, reliability, independence, and contradictions.",
-    "hypothesis_engine": "Receives uncertainty constraints for hypothesis state.",
-    "probability_engine": "Maintains probability separately from confidence.",
-    "routing_engine": "Uses uncertainty reduction and information gain to select actions.",
-    "case_state_engine": "Stores material unresolved uncertainty.",
-    "validation_engine": "Provides validation confidence and residual uncertainty.",
-    "memory_engine": "Preserves uncertainty metadata during retrieval and compression.",
-    "learning_engine": "Uses uncertainty when weighting historical learning."
-  },
-
-  "semantic_rules": [
+  "failure_modes": [
     {
-      "rule_id": "UNC-RULE-001",
-      "rule": "ARIA shall never equate probability with confidence."
+      "failure_mode": "SECOND_UNCERTAINTY_SCHEMA",
+      "description": "Uncertainty Engine defines a competing canonical uncertainty persistence object without an authoritative schema.",
+      "prevention": "Keep uncertainty as reasoning behavior until a canonical schema explicitly establishes persistence."
     },
     {
-      "rule_id": "UNC-RULE-002",
-      "rule": "Unknown information shall remain explicitly unknown."
+      "failure_mode": "SECOND_CONFIDENCE_SYSTEM",
+      "description": "Uncertainty Engine defines competing confidence levels or numeric ranges.",
+      "prevention": "Consume Core/Registries/confidence_levels.json."
     },
     {
-      "rule_id": "UNC-RULE-003",
-      "rule": "Missing information shall not become negative evidence unless absence itself is validated."
+      "failure_mode": "PROBABILITY_UNCERTAINTY_COLLAPSE",
+      "description": "Uncertainty is treated as merely one minus probability.",
+      "prevention": "Model uncertainty independently from hypothesis probability."
     },
     {
-      "rule_id": "UNC-RULE-004",
-      "rule": "Uncertainty shall propagate through dependent reasoning."
+      "failure_mode": "CONFIDENCE_UNCERTAINTY_COLLAPSE",
+      "description": "Uncertainty is treated as merely one minus confidence.",
+      "prevention": "Preserve multidimensional uncertainty and canonical confidence dimensions."
     },
     {
-      "rule_id": "UNC-RULE-005",
-      "rule": "Independent corroboration may reduce uncertainty; duplicated evidence shall not."
+      "failure_mode": "EVIDENCE_AUTHORITY_LEAK",
+      "description": "Uncertainty Engine independently redefines evidence quality, independence, provenance, or verification.",
+      "prevention": "Consume Evidence Engine assessments."
     },
     {
-      "rule_id": "UNC-RULE-006",
-      "rule": "Material contradictions shall increase uncertainty until reconciled."
+      "failure_mode": "PROBABILITY_AUTHORITY_LEAK",
+      "description": "Uncertainty Engine calculates or calibrates hypothesis probability.",
+      "prevention": "Delegate numerical probability to Probability Engine."
     },
     {
-      "rule_id": "UNC-RULE-007",
-      "rule": "ARIA shall preserve the distinction between deterministic knowledge, authoritative knowledge, empirical experience, inference, and speculation."
+      "failure_mode": "CONTEXT_AUTHORITY_LEAK",
+      "description": "Uncertainty Engine creates a competing universal Context model.",
+      "prevention": "Consume Context Engine outputs."
     },
     {
-      "rule_id": "UNC-RULE-008",
-      "rule": "A high-probability hypothesis may still have low confidence."
+      "failure_mode": "RELATIONSHIP_DUPLICATION",
+      "description": "Conceptual uncertainty dependencies become a second persisted relationship vocabulary.",
+      "prevention": "Use canonical Relationship architecture for persistence."
     },
     {
-      "rule_id": "UNC-RULE-009",
-      "rule": "A low-probability hypothesis shall not be treated as impossible without deterministic exclusion."
+      "failure_mode": "MISSING_EQUALS_ABSENT",
+      "description": "Missing or unreported information is treated as proof that a condition is absent.",
+      "prevention": "Preserve semantic unknown distinctions."
     },
     {
-      "rule_id": "UNC-RULE-010",
-      "rule": "Material assumptions shall remain identifiable."
+      "failure_mode": "ASSUMPTION_BECOMES_FACT",
+      "description": "A working assumption silently becomes Evidence or canonical knowledge.",
+      "prevention": "Track assumptions and require verification through the appropriate contracts."
     },
     {
-      "rule_id": "UNC-RULE-011",
-      "rule": "Conditional conclusions shall retain their conditions."
+      "failure_mode": "CONTRADICTION_AVERAGING",
+      "description": "Contradictory technical information is averaged or blended merely to produce one answer.",
+      "prevention": "Preserve contradiction until technically reconciled."
     },
     {
-      "rule_id": "UNC-RULE-012",
-      "rule": "ARIA shall prioritize reduction of uncertainty capable of changing the decision."
+      "failure_mode": "DEPENDENCY_CERTAINTY_INFLATION",
+      "description": "A conclusion becomes more certain merely because uncertain information passed through multiple inference steps.",
+      "prevention": "Propagate material uncertainty through dependencies."
     },
     {
-      "rule_id": "UNC-RULE-013",
-      "rule": "Decision confidence requirements shall increase with consequence, cost, irreversibility, safety risk, and service impact."
+      "failure_mode": "DUPLICATE_CORROBORATION",
+      "description": "Repeated representations of the same underlying observation falsely reduce uncertainty.",
+      "prevention": "Consume Evidence independence and provenance assessments."
     },
     {
-      "rule_id": "UNC-RULE-014",
-      "rule": "Current validated evidence shall be allowed to overcome historical priors."
+      "failure_mode": "MODEL_CLOSURE_BIAS",
+      "description": "A.R.I.A. assumes its known hypothesis or knowledge set is complete despite unexplained observations.",
+      "prevention": "Preserve MODEL_UNCERTAINTY and unknown hypothesis space."
     },
     {
-      "rule_id": "UNC-RULE-015",
-      "rule": "Historical priors shall guide investigation rather than dictate conclusions."
+      "failure_mode": "ACTION_SELECTION_LEAK",
+      "description": "Uncertainty Engine selects the Action used to reduce uncertainty.",
+      "prevention": "Identify information requirements; Decision selects Actions."
     },
     {
-      "rule_id": "UNC-RULE-016",
-      "rule": "ARIA shall communicate uncertainty proportionally rather than hiding it behind confident language."
+      "failure_mode": "DECISION_THRESHOLD_DUPLICATION",
+      "description": "Uncertainty Engine creates universal confidence thresholds for Action classes.",
+      "prevention": "Decision Engine owns consequence-aware Action selection."
     },
     {
-      "rule_id": "UNC-RULE-017",
-      "rule": "Language-model fluency shall never increase technical confidence."
+      "failure_mode": "ROUTING_LEAK",
+      "description": "Uncertainty Engine directly changes route progression.",
+      "prevention": "Return material uncertainty changes through Orchestration."
     },
     {
-      "rule_id": "UNC-RULE-018",
-      "rule": "ARIA shall measure and improve calibration using validated historical outcomes."
+      "failure_mode": "ACTION_SUCCESS_EQUALS_CAUSALITY",
+      "description": "Successful corrective action automatically eliminates causal uncertainty.",
+      "prevention": "Require applicable causal evidence and validation."
     },
     {
-      "rule_id": "UNC-RULE-019",
-      "rule": "ARIA shall be able to explain what information prevents greater certainty."
+      "failure_mode": "SERVICE_RESTORED_EQUALS_RESOLVED",
+      "description": "Temporary restoration automatically eliminates resolution uncertainty.",
+      "prevention": "Preserve residual resolution uncertainty until applicable validation criteria are satisfied."
     },
     {
-      "rule_id": "UNC-RULE-020",
-      "rule": "ARIA shall know when she does not know."
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal Uncertainty Engine logic hardcodes specific technologies, vendors, products, customers, organizations, or named users.",
+      "prevention": "Keep universal uncertainty reasoning domain-independent."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "UNC-INV-001",
+      "statement": "Unknown information remains unknown until sufficient applicable information establishes its state."
+    },
+    {
+      "invariant_id": "UNC-INV-002",
+      "statement": "Missing information is not silently converted into an assumption or fact."
+    },
+    {
+      "invariant_id": "UNC-INV-003",
+      "statement": "Known absence remains distinct from unknown, unobserved, unmeasured, or unavailable information."
+    },
+    {
+      "invariant_id": "UNC-INV-004",
+      "statement": "Uncertainty remains distinct from probability."
+    },
+    {
+      "invariant_id": "UNC-INV-005",
+      "statement": "Uncertainty remains distinct from confidence."
+    },
+    {
+      "invariant_id": "UNC-INV-006",
+      "statement": "Confidence vocabulary and ranges are owned by Core/Registries/confidence_levels.json."
+    },
+    {
+      "invariant_id": "UNC-INV-007",
+      "statement": "Uncertainty Engine does not create a competing universal uncertainty persistence schema."
+    },
+    {
+      "invariant_id": "UNC-INV-008",
+      "statement": "Uncertainty Engine consumes rather than recreates Evidence quality, provenance, verification, and independence semantics."
+    },
+    {
+      "invariant_id": "UNC-INV-009",
+      "statement": "Uncertainty Engine does not calculate or calibrate hypothesis probability."
+    },
+    {
+      "invariant_id": "UNC-INV-010",
+      "statement": "Uncertainty Engine consumes rather than recreates Context semantics."
+    },
+    {
+      "invariant_id": "UNC-INV-011",
+      "statement": "Canonical Relationship records remain authoritative for persisted dependency semantics."
+    },
+    {
+      "invariant_id": "UNC-INV-012",
+      "statement": "Material uncertainty propagates through materially dependent reasoning."
+    },
+    {
+      "invariant_id": "UNC-INV-013",
+      "statement": "Repeated representations of the same underlying information do not create false independent corroboration."
+    },
+    {
+      "invariant_id": "UNC-INV-014",
+      "statement": "Material assumptions remain identifiable until verified or rejected."
+    },
+    {
+      "invariant_id": "UNC-INV-015",
+      "statement": "Conditional conclusions preserve the material conditions upon which they depend."
+    },
+    {
+      "invariant_id": "UNC-INV-016",
+      "statement": "Unresolved material contradictions remain visible."
+    },
+    {
+      "invariant_id": "UNC-INV-017",
+      "statement": "Model uncertainty remains available when known explanations may be incomplete."
+    },
+    {
+      "invariant_id": "UNC-INV-018",
+      "statement": "Action success does not automatically establish causality."
+    },
+    {
+      "invariant_id": "UNC-INV-019",
+      "statement": "Service restoration does not automatically eliminate resolution uncertainty."
+    },
+    {
+      "invariant_id": "UNC-INV-020",
+      "statement": "Uncertainty Engine identifies information needed to reduce uncertainty but does not select competitive Actions."
+    },
+    {
+      "invariant_id": "UNC-INV-021",
+      "statement": "Uncertainty Engine does not perform route progression or rerouting."
+    },
+    {
+      "invariant_id": "UNC-INV-022",
+      "statement": "Residual material uncertainty remains explicit."
+    },
+    {
+      "invariant_id": "UNC-INV-023",
+      "statement": "Material uncertainty changes are returned to Orchestration for downstream coordination."
+    },
+    {
+      "invariant_id": "UNC-INV-024",
+      "statement": "Uncertainty Engine remains technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing canonical uncertainty_record without an authoritative schema.",
+    "Defining competing confidence levels.",
+    "Defining competing confidence numeric ranges.",
+    "Treating uncertainty as one minus probability.",
+    "Treating uncertainty as one minus confidence.",
+    "Treating high probability as proof of low uncertainty.",
+    "Treating high confidence in one dimension as proof that all uncertainty is low.",
+    "Calculating hypothesis priors.",
+    "Calculating posterior hypothesis probability.",
+    "Calibrating hypothesis probability.",
+    "Recreating Evidence quality, provenance, verification, freshness, contradiction, or independence semantics.",
+    "Recreating the canonical Context dimension model.",
+    "Creating a competing persisted Relationship vocabulary.",
+    "Treating missing information as known absence.",
+    "Treating unreported information as proof of the expected state.",
+    "Silently converting assumptions into facts.",
+    "Converting assumptions directly into Evidence.",
+    "Converting assumptions directly into canonical knowledge.",
+    "Averaging contradictory technical facts merely to produce one answer.",
+    "Treating repeated copies of one underlying observation as independent corroboration.",
+    "Suppressing model uncertainty because a known hypothesis currently leads.",
+    "Treating a normalized probability distribution as proof that uncertainty is low.",
+    "Treating Action success as automatic proof of root cause.",
+    "Treating symptom disappearance as automatic proof of root cause.",
+    "Treating service restoration as automatic proof of durable resolution.",
+    "Defining universal confidence thresholds for Action selection.",
+    "Directly selecting act_<UUID>.",
+    "Directly creating route steps.",
+    "Directly selecting route next hops.",
+    "Directly rerouting.",
+    "Directly changing case lifecycle status.",
+    "Directly changing case reasoning state.",
+    "Directly invoking downstream engines as a substitute for Orchestration.",
+    "Fabricating Evidence IDs for information that has not been observed or collected.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, organization-specific, or named-user uncertainty logic into the universal Uncertainty Engine."
   ]
 }
