@@ -1,326 +1,624 @@
 {
   "specification": "ARIA_VALIDATION_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. determines whether a diagnosis, corrective action, configuration, installation, technical state, or case resolution has been sufficiently validated before accepting the result or allowing the case to contribute authoritative learning.",
+  "version": "2.0.0",
+  "description": "Canonical validation reasoning behavior for A.R.I.A. The Validation Engine determines whether an asserted technical state, hypothesis, intervention result, configuration, installation, performance condition, or resolution claim has been sufficiently demonstrated against explicit applicable criteria. It distinguishes action completion, action effectiveness, symptom improvement, causal validation, technical-state validation, and durable resolution without redefining Evidence, Confidence, Hypothesis, Probability, Uncertainty, Decision, Routing, Learning, or Case State contracts.",
+
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "confidence_registry": "Core/Registries/confidence_levels.json",
+
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "memory": "Core/Reasoning/memory_engine.json"
+    },
+
+    "role": "TECHNICAL_VALIDATION_AND_OUTCOME_DEMONSTRATION",
+
+    "owns": [
+      "validation reasoning",
+      "validation target assessment",
+      "validation method selection reasoning",
+      "validation criteria interpretation",
+      "expected outcome definition",
+      "observed outcome comparison",
+      "validation sufficiency assessment",
+      "validation coverage assessment",
+      "validation result classification",
+      "action completion assessment",
+      "action effectiveness assessment",
+      "symptom validation",
+      "technical state validation",
+      "configuration validation",
+      "physical state validation",
+      "functional validation",
+      "performance validation",
+      "causal validation reasoning",
+      "multi-entity validation reasoning",
+      "before-after comparison",
+      "baseline applicability assessment",
+      "tolerance interpretation",
+      "stability validation reasoning",
+      "regression validation reasoning",
+      "partial validation reasoning",
+      "validation failure reasoning",
+      "validation confidence assessment",
+      "resolution evidence assessment",
+      "validation explanation"
+    ],
+
+    "does_not_own": [
+      "a universal validation persistence schema",
+      "confidence vocabulary",
+      "confidence numeric ranges",
+      "evidence persistence",
+      "evidence quality semantics",
+      "evidence verification semantics",
+      "evidence independence semantics",
+      "hypothesis generation",
+      "hypothesis status transitions",
+      "probability calculation",
+      "probability calibration",
+      "uncertainty persistence",
+      "context dimension vocabulary",
+      "context resolution",
+      "canonical relationship persistence",
+      "candidate action selection",
+      "action execution",
+      "route progression",
+      "route cost calculation",
+      "rerouting",
+      "case lifecycle status",
+      "case reasoning state",
+      "case closure",
+      "learning eligibility",
+      "learning policy",
+      "memory promotion",
+      "engine invocation"
+    ]
+  },
 
   "core_principle": {
-    "statement": "A corrective action is not a validated resolution. ARIA shall define expected post-action outcomes before validation, compare observed results against those expectations, distinguish operational recovery from causal proof, and preserve residual uncertainty.",
+    "statement": "A completed corrective action is not automatically an effective corrective action, an effective corrective action is not automatically proof of root cause, symptom improvement is not automatically complete technical resolution, and apparent resolution is not automatically durable resolution. Validation shall compare observed results against explicit applicable expectations and preserve whatever uncertainty remains.",
+
     "rules": [
-      "Validation criteria should be defined before evaluating the result whenever practical.",
+      "Validation criteria should be established before evaluating the resulting state whenever practical.",
+      "Expected outcomes shall be distinguishable from observed outcomes.",
+      "Validation shall use evidence appropriate to the assertion being tested.",
+      "Action completion and action effectiveness shall remain distinct.",
+      "Action effectiveness and symptom resolution shall remain distinct.",
+      "Symptom resolution and causal validation shall remain distinct.",
+      "Causal validation and durable resolution shall remain distinct.",
       "A successful action does not automatically prove the suspected root cause.",
       "The disappearance of a symptom does not automatically prove complete resolution.",
-      "Validation shall use evidence appropriate to the technical condition being validated.",
-      "Validation strength shall reflect evidence quality, independence, applicability, duration, and completeness.",
-      "Failed validation shall become new evidence and return the case to active reasoning.",
-      "Validation shall never rewrite unsuccessful diagnostic history.",
-      "Learning eligibility shall depend on what was actually validated."
+      "Failed validation is diagnostically meaningful and shall remain part of reasoning history.",
+      "Partial success shall not be collapsed into complete validation.",
+      "Validation strength shall reflect applicable evidence quality, independence, directness, completeness, stability, and discriminatory power.",
+      "Validation shall preserve material contradictions and residual uncertainty.",
+      "Validation Engine shall report downstream consequences through Orchestration rather than directly manipulating other engines.",
+      "The Validation Engine shall remain technically domain-independent."
+    ]
+  },
+
+  "persistence_boundary": {
+    "principle": "Validation Engine defines canonical reasoning behavior but shall not create a competing universal validation persistence object without an authoritative schema.",
+
+    "rules": [
+      "Validation Engine shall not define a canonical validation_record unless a future canonical schema explicitly establishes one.",
+      "Validation reasoning results may be represented through Evidence, Hypothesis, Action, Route, Case State, reasoning-cycle outputs, or other schema-authorized structures.",
+      "Temporary validation plans and comparisons may exist as reasoning outputs without becoming canonical entities.",
+      "Validation-generated observations shall be persisted through the canonical Evidence architecture when they constitute evidence.",
+      "If a future validation schema is established, this engine shall defer persistence structure, IDs, statuses, and controlled vocabularies to that schema."
     ]
   },
 
   "validation_targets": [
     "SYMPTOM",
+    "OBSERVATION",
     "FINDING",
     "HYPOTHESIS",
-    "ROOT_CAUSE",
+    "CAUSAL_MECHANISM",
     "CONFIGURATION",
+    "PHYSICAL_STATE",
     "INSTALLATION",
-    "CORRECTIVE_ACTION",
+    "CORRECTIVE_ACTION_COMPLETION",
+    "CORRECTIVE_ACTION_EFFECTIVENESS",
     "TECHNICAL_STATE",
-    "SERVICE_RESTORATION",
+    "FUNCTION",
+    "SERVICE_STATE",
     "PERFORMANCE",
     "ACCEPTANCE_CRITERIA",
-    "CASE_RESOLUTION"
+    "STABILITY",
+    "RESOLUTION_ASSERTION"
   ],
 
-  "validation_record": {
-    "required_fields": [
-      "validation_id",
-      "case_id",
-      "target_type",
-      "target_id",
-      "validation_type",
-      "validation_status",
-      "criteria",
-      "expected_outcomes",
-      "observed_outcomes",
-      "supporting_evidence_ids",
-      "validation_confidence",
-      "started_at",
-      "updated_at"
-    ],
+  "target_rules": [
+    "Validation targets are reasoning classifications unless an authoritative schema establishes them as persisted values.",
+    "A single case may contain multiple independent validation targets.",
+    "Passing one validation target shall not automatically pass another.",
+    "Validation requirements shall be proportional to the assertion being made.",
+    "Causal claims generally require stronger discrimination than operational-state claims.",
+    "Durable resolution generally requires broader validation than immediate symptom improvement."
+  ],
 
-    "optional_fields": [
-      "performed_by",
-      "validated_by",
-      "comparison_baseline_ids",
-      "contradicting_evidence_ids",
-      "monitoring_window",
-      "monitoring_started_at",
-      "monitoring_completed_at",
-      "failure_reason",
-      "residual_uncertainty",
-      "learning_restrictions"
-    ]
-  },
-
-  "validation_types": [
+  "validation_methods": [
     {
-      "name": "DIRECT_REMEASUREMENT",
-      "description": "Repeat an applicable measurement after an intervention and compare the result against expected state."
+      "method": "DIRECT_REMEASUREMENT",
+      "description": "Repeat an applicable measurement and compare the result with an expected or required state."
     },
     {
-      "name": "BEFORE_AFTER_COMPARISON",
-      "description": "Compare validated technical state before and after a controlled change."
+      "method": "BEFORE_AFTER_COMPARISON",
+      "description": "Compare sufficiently comparable technical states before and after an intervention or event."
     },
     {
-      "name": "CONFIGURATION_VERIFICATION",
-      "description": "Verify that applicable configuration values match intended technical requirements."
+      "method": "CONFIGURATION_VERIFICATION",
+      "description": "Verify applicable configuration against an intended, required, or known-correct state."
     },
     {
-      "name": "PHYSICAL_VERIFICATION",
-      "description": "Verify physical installation, routing, connection, orientation, component, or mechanical state."
+      "method": "PHYSICAL_VERIFICATION",
+      "description": "Verify observable physical identity, connection, orientation, installation, routing, assembly, or component state."
     },
     {
-      "name": "FUNCTIONAL_TEST",
-      "description": "Verify that the affected system performs its required function."
+      "method": "FUNCTIONAL_TEST",
+      "description": "Verify that the target performs the function required under the applicable technical context."
     },
     {
-      "name": "PERFORMANCE_TEST",
-      "description": "Verify performance against engineering, manufacturer, customer, or project criteria."
+      "method": "PERFORMANCE_TEST",
+      "description": "Verify measurable performance against applicable technical criteria."
     },
     {
-      "name": "CROSS_ENDPOINT_VALIDATION",
-      "description": "Verify corresponding technical state from both ends of a path or system."
+      "method": "MULTI_ENTITY_VALIDATION",
+      "description": "Validate a condition across multiple technically dependent entities, endpoints, components, interfaces, paths, or systems."
     },
     {
-      "name": "INDEPENDENT_MEASUREMENT",
-      "description": "Validate a condition using an independent source or measurement method."
+      "method": "INDEPENDENT_CORROBORATION",
+      "description": "Validate an assertion using sufficiently independent evidence, source, measurement method, or observation."
     },
     {
-      "name": "CONTROLLED_INTERVENTION",
-      "description": "Change one sufficiently isolated variable and evaluate whether the predicted result occurs."
+      "method": "CONTROLLED_INTERVENTION",
+      "description": "Change a sufficiently isolated variable and determine whether the predicted technical response occurs."
     },
     {
-      "name": "REVERSAL_TEST",
-      "description": "Where safe and justified, reverse a controlled change to test whether the original condition returns."
+      "method": "REVERSAL_TEST",
+      "description": "Where safe, justified, and technically appropriate, reverse a controlled change and determine whether the predicted prior condition returns."
     },
     {
-      "name": "MONITORED_STABILITY",
-      "description": "Observe the technical state over a defined period to establish durability."
+      "method": "REPEATABILITY_TEST",
+      "description": "Repeat a technically applicable test or state transition to assess reproducibility."
     },
     {
-      "name": "ACCEPTANCE_VALIDATION",
-      "description": "Compare final state against applicable acceptance requirements."
+      "method": "MONITORED_STABILITY",
+      "description": "Observe the technical state for a technically justified interval or condition set to assess durability."
+    },
+    {
+      "method": "ACCEPTANCE_VALIDATION",
+      "description": "Compare the final demonstrated state against applicable acceptance requirements."
     }
   ],
 
-  "validation_statuses": [
-    "NOT_STARTED",
-    "PLANNED",
-    "IN_PROGRESS",
-    "PASSED",
-    "PARTIALLY_PASSED",
-    "FAILED",
-    "INCONCLUSIVE",
-    "MONITORING_REQUIRED",
-    "EXPIRED",
-    "SUPERSEDED"
+  "method_rules": [
+    "Validation method shall be appropriate to the assertion being tested.",
+    "Multiple validation methods may be required for a material assertion.",
+    "Repeated use of the same dependent information source shall not be treated as independent corroboration.",
+    "A method capable only of validating operational recovery shall not be represented as proving causality.",
+    "A method capable only of verifying configuration presence shall not automatically establish configuration effectiveness.",
+    "A.R.I.A. shall not invent validation methods solely to manufacture certainty."
   ],
 
-  "validation_plan": {
-    "required_fields": [
-      "target",
-      "precondition",
-      "validation_actions",
-      "expected_success_state",
-      "expected_failure_state",
-      "required_evidence",
-      "success_threshold",
-      "failure_threshold"
+  "validation_pipeline": [
+    {
+      "step": 1,
+      "name": "IDENTIFY_VALIDATION_TARGET",
+      "description": "Identify exactly what assertion, state, outcome, mechanism, or resolution claim requires validation."
+    },
+    {
+      "step": 2,
+      "name": "RESOLVE_APPLICABLE_CONTEXT",
+      "description": "Consume canonical Context necessary to determine applicable criteria and expected behavior."
+    },
+    {
+      "step": 3,
+      "name": "ESTABLISH_VALIDATION_CRITERIA",
+      "description": "Determine what conditions would demonstrate success, failure, partial success, or inconclusive outcome."
+    },
+    {
+      "step": 4,
+      "name": "DEFINE_EXPECTED_OUTCOMES",
+      "description": "Define predicted or required outcomes before evaluating observations whenever practical."
+    },
+    {
+      "step": 5,
+      "name": "IDENTIFY_REQUIRED_VALIDATION_INFORMATION",
+      "description": "Identify observations, measurements, artifacts, comparisons, or stability information required to evaluate the criteria."
+    },
+    {
+      "step": 6,
+      "name": "CONSUME_VALIDATION_EVIDENCE",
+      "description": "Consume canonical Evidence representing the observed post-action or tested technical state."
+    },
+    {
+      "step": 7,
+      "name": "ASSESS_BASELINE_APPLICABILITY",
+      "description": "Determine whether any comparison baseline remains technically applicable."
+    },
+    {
+      "step": 8,
+      "name": "COMPARE_EXPECTED_AND_OBSERVED_STATE",
+      "description": "Compare actual observations against expected outcomes, thresholds, tolerances, and applicable criteria."
+    },
+    {
+      "step": 9,
+      "name": "ASSESS_VALIDATION_COVERAGE",
+      "description": "Determine whether all material criteria and affected technical dimensions were adequately evaluated."
+    },
+    {
+      "step": 10,
+      "name": "ASSESS_DISCRIMINATORY_POWER",
+      "description": "Determine what the observed result actually demonstrates and which competing explanations remain viable."
+    },
+    {
+      "step": 11,
+      "name": "ASSESS_STABILITY_AND_REGRESSION",
+      "description": "Determine whether the result is sufficiently durable and whether new material problems were introduced."
+    },
+    {
+      "step": 12,
+      "name": "ASSESS_RESIDUAL_UNCERTAINTY",
+      "description": "Consume and contribute uncertainty reasoning concerning unresolved diagnostic, causal, validation, or resolution questions."
+    },
+    {
+      "step": 13,
+      "name": "CLASSIFY_VALIDATION_RESULT",
+      "description": "Classify what was demonstrated without exceeding the strength of the evidence."
+    },
+    {
+      "step": 14,
+      "name": "ASSESS_VALIDATION_CONFIDENCE",
+      "description": "Assess confidence in the validation result using the canonical confidence architecture."
+    },
+    {
+      "step": 15,
+      "name": "RETURN_VALIDATION_RESULT",
+      "description": "Return the validation result and material downstream implications to Orchestration."
+    }
+  ],
+
+  "validation_result_classes": [
+    {
+      "result": "SATISFIED",
+      "description": "Applicable validation criteria for the specific target were sufficiently demonstrated."
+    },
+    {
+      "result": "PARTIALLY_SATISFIED",
+      "description": "Some material criteria were demonstrated while other material criteria remain unsatisfied or unresolved."
+    },
+    {
+      "result": "NOT_SATISFIED",
+      "description": "Applicable criteria were sufficiently evaluated and the required state was not demonstrated."
+    },
+    {
+      "result": "INCONCLUSIVE",
+      "description": "Available validation information is insufficient or contradictory and does not support a defensible satisfied or not-satisfied conclusion."
+    },
+    {
+      "result": "NOT_EVALUATED",
+      "description": "The target has not yet been sufficiently evaluated."
+    },
+    {
+      "result": "NOT_APPLICABLE",
+      "description": "The validation target or criterion is not applicable under the established Context."
+    }
+  ],
+
+  "result_rules": [
+    "Validation result classes are reasoning outputs unless an authoritative schema establishes them as persisted statuses.",
+    "SATISFIED applies only to the specific target and criteria evaluated.",
+    "PARTIALLY_SATISFIED shall not be represented as SATISFIED.",
+    "INCONCLUSIVE shall not be treated as failure unless applicable criteria define that consequence.",
+    "NOT_EVALUATED shall remain distinct from NOT_SATISFIED.",
+    "NOT_APPLICABLE requires sufficient Context to establish non-applicability.",
+    "A successful operational result shall not be mislabeled as causal validation unless the method discriminates causality."
+  ],
+
+  "validation_criteria": {
+    "principle": "Validation requires explicit applicable criteria sufficient to evaluate the assertion being tested.",
+
+    "candidate_sources": [
+      "canonical technical knowledge",
+      "applicable engineering requirements",
+      "applicable manufacturer requirements",
+      "applicable design requirements",
+      "applicable configuration requirements",
+      "applicable project requirements",
+      "applicable customer acceptance requirements",
+      "applicable safety requirements",
+      "validated baseline behavior",
+      "validated expected system behavior",
+      "explicitly defined diagnostic prediction"
     ],
 
     "rules": [
-      "ARIA should know what result would constitute success before observing the result.",
-      "Thresholds shall be quantitative when technically appropriate.",
+      "Criteria shall be resolved under the applicable Context.",
+      "Quantitative thresholds shall be used when technically justified.",
       "Qualitative criteria shall be explicit when quantitative criteria are unavailable.",
-      "Validation plans shall reflect applicable manufacturer, engineering, customer, project, and safety requirements."
+      "A.R.I.A. shall not invent numerical thresholds or tolerances without sufficient basis.",
+      "Criteria shall distinguish required conditions from supporting observations.",
+      "Criteria shall identify material conditions whose failure prevents full validation.",
+      "Conflicting criteria shall be surfaced rather than silently averaged.",
+      "Criteria provenance shall remain identifiable when available."
     ]
   },
 
   "expected_outcome_model": {
-    "required_fields": [
-      "expected_outcome_id",
-      "validation_id",
+    "principle": "Expected outcomes describe what should occur if the tested assertion, intervention, or technical model is correct.",
+
+    "recommended_elements": [
+      "target",
       "condition",
       "expected_result",
-      "tolerance",
-      "importance"
+      "acceptable_tolerance",
+      "importance",
+      "applicable_context",
+      "failure_implication",
+      "alternative_outcome_implication"
     ],
 
-    "importance_levels": [
+    "importance_concepts": [
       "REQUIRED",
-      "HIGH",
-      "MODERATE",
+      "MATERIAL",
       "SUPPORTING"
     ],
 
     "rules": [
-      "Required outcomes must normally be satisfied for full validation.",
-      "Supporting outcomes may increase confidence without being independently sufficient.",
-      "Unexpected improvement shall still be investigated when it contradicts the predicted mechanism."
+      "Expected outcomes should be defined before observing the validation result whenever practical.",
+      "Required outcomes normally must be satisfied for complete validation of the target.",
+      "Supporting outcomes may increase confidence without independently proving the target.",
+      "Unexpected improvement shall remain diagnostically meaningful.",
+      "Unexpected failure shall remain diagnostically meaningful.",
+      "Expected outcomes shall not be retroactively rewritten solely to make observed results appear successful.",
+      "Observed outcomes shall remain distinct from expected outcomes."
     ]
   },
 
-  "validation_confidence": {
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
+  "evidence_boundary": {
+    "principle": "Validation consumes and may cause creation of Evidence, but Evidence Engine owns Evidence semantics and persistence.",
 
-    "candidate_factors": [
-      "EVIDENCE_QUALITY",
-      "DIRECTNESS",
-      "INDEPENDENCE",
-      "CRITERIA_COMPLETENESS",
-      "EXPECTED_OUTCOME_MATCH",
-      "MEASUREMENT_QUALITY",
-      "CONTROL_OF_VARIABLES",
-      "CROSS_ENDPOINT_AGREEMENT",
-      "TEMPORAL_STABILITY",
-      "REPEATABILITY"
+    "rules": [
+      "Validation observations that constitute evidence shall use canonical evd_<UUID> records.",
+      "Validation Engine shall not define a competing Evidence structure.",
+      "Evidence Engine owns evidence quality, provenance, verification, independence, freshness, contradiction, supersession, invalidation, and retraction semantics.",
+      "Validation Engine may assess what Evidence demonstrates relative to validation criteria.",
+      "Validation Engine shall not independently inflate Evidence confidence because an observation supports the expected result.",
+      "Contradicting validation evidence shall remain visible.",
+      "Failed validation may produce new Evidence.",
+      "Unexpected successful outcomes may also produce diagnostically important Evidence.",
+      "Repeated copies of the same underlying validation observation shall not count as independent validation."
+    ]
+  },
+
+  "confidence_boundary": {
+    "registry": "Core/Registries/confidence_levels.json",
+
+    "principle": "Validation Confidence, Causal Confidence, and Resolution Confidence shall use the canonical confidence architecture and remain distinct.",
+
+    "rules": [
+      "Validation Engine shall not define competing confidence levels.",
+      "Validation Engine shall not define competing confidence numeric ranges.",
+      "Validation Confidence represents confidence that the validation process and resulting evidence adequately demonstrate the tested assertion.",
+      "Causal Confidence represents confidence in causal attribution and shall not be substituted with Validation Confidence.",
+      "Resolution Confidence represents confidence that the represented technical problem has been sufficiently and durably resolved.",
+      "Evidence Quality Confidence shall constrain validation reasoning when evidence quality is material.",
+      "Independent corroboration may increase Validation Confidence.",
+      "Material contradictions may constrain Validation Confidence.",
+      "Incomplete criteria coverage may constrain Validation Confidence.",
+      "Short or inadequate monitoring may constrain Resolution Confidence.",
+      "Multiple simultaneous interventions may constrain Causal Confidence.",
+      "UNKNOWN confidence shall remain UNKNOWN when confidence cannot meaningfully be established."
+    ]
+  },
+
+  "action_validation": {
+    "principle": "Completion of an Action and effectiveness of that Action are separate validation questions.",
+
+    "required_questions": [
+      "Was the selected Action actually performed as intended?",
+      "Was the intended target actually affected?",
+      "Did the predicted technical state change occur?",
+      "Did the relevant symptom or condition change?",
+      "Did required function or performance improve?",
+      "Were new material problems introduced?",
+      "Did the improvement persist sufficiently for the represented failure mode?"
     ],
 
     "rules": [
-      "Validation confidence shall preserve component factors.",
-      "A single weak validation method shall not receive artificial confidence from repeated copies of the same evidence.",
-      "Validation confidence may increase through independent corroboration.",
-      "Confidence shall remain bounded by material unresolved contradictions."
+      "Action completion shall not imply Action effectiveness.",
+      "Action effectiveness shall not imply causal proof.",
+      "An ineffective Action may provide strong discriminating Evidence.",
+      "A partially effective Action may indicate incomplete correction, multiple contributing conditions, or incorrect causal scope.",
+      "An Action may be correctly completed while producing no technical benefit.",
+      "An Action may restore operation while leaving causal attribution unresolved.",
+      "Validation Engine shall not select the next Action."
     ]
   },
 
   "symptom_validation": {
-    "description": "Determines whether the originally reported or observed symptom remains present.",
+    "principle": "Material originally reported or observed symptoms shall be explicitly reevaluated when resolution is asserted.",
 
     "rules": [
-      "The original symptom shall be explicitly reevaluated after corrective action.",
-      "If multiple symptoms existed, each material symptom shall be evaluated.",
-      "Symptom disappearance may establish operational improvement without proving exact root cause."
+      "Each material symptom shall be evaluated independently when technically appropriate.",
+      "Symptom disappearance may establish operational improvement.",
+      "Symptom disappearance does not automatically establish root cause.",
+      "Partial symptom improvement shall remain partial.",
+      "New symptoms introduced after intervention shall be included in regression reasoning.",
+      "Intermittent symptoms may require stability monitoring before absence is considered durable."
     ]
   },
 
-  "root_cause_validation": {
-    "description": "Determines whether evidence sufficiently establishes the causal mechanism responsible for the failure.",
+  "causal_validation": {
+    "principle": "Causal validation determines whether available evidence sufficiently discriminates the responsible mechanism from viable alternatives.",
 
     "strong_indicators": [
-      "CONTROLLED_SINGLE_VARIABLE_CHANGE",
+      "DIRECT_MECHANISM_OBSERVATION",
+      "CONTROLLED_SINGLE_VARIABLE_INTERVENTION",
       "PREDICTED_BEFORE_AFTER_RESPONSE",
-      "REPRODUCIBLE_FAILURE_REMOVAL",
-      "INDEPENDENT_CORROBORATING_EVIDENCE",
-      "DIRECT_OBSERVATION_OF_FAILURE_MECHANISM"
+      "REPRODUCIBLE_STATE_CHANGE",
+      "SAFE_REVERSAL_RESPONSE",
+      "INDEPENDENT_CORROBORATION",
+      "ALTERNATIVE_CAUSE_DISCRIMINATION"
     ],
 
     "weak_indicators": [
-      "SYMPTOM_DISAPPEARED_AFTER_MULTIPLE_CHANGES",
-      "COMPONENT_REPLACED_AND_SERVICE_RETURNED",
+      "SYMPTOM_DISAPPEARANCE_AFTER_MULTIPLE_CHANGES",
+      "COMPONENT_REPLACEMENT_FOLLOWED_BY_RECOVERY",
       "HISTORICAL_FREQUENCY_ONLY",
-      "TECHNICIAN_ASSUMPTION",
-      "LEADING_HYPOTHESIS_ONLY"
+      "WORKING_ASSUMPTION_ONLY",
+      "LEADING_HYPOTHESIS_ONLY",
+      "TEMPORAL_ASSOCIATION_ONLY"
     ],
 
     "rules": [
-      "Root-cause validation requires stronger evidence than symptom resolution.",
-      "Multiple simultaneous interventions shall reduce causal confidence.",
-      "Historical probability may support but shall not independently validate root cause.",
-      "A successful replacement may implicate the replaced subsystem without proving the exact failed mechanism."
+      "Causal validation generally requires stronger evidence than operational recovery.",
+      "Multiple simultaneous interventions shall constrain causal attribution unless their effects can be discriminated.",
+      "Historical probability may support diagnosis but shall not independently validate root cause.",
+      "Temporal sequence alone shall not prove causality.",
+      "Successful replacement may implicate a component or subsystem without proving the exact internal failure mechanism.",
+      "Alternative viable causes shall be considered when materially relevant.",
+      "Causal Confidence shall use the canonical confidence architecture."
     ]
   },
 
-  "corrective_action_validation": {
-    "description": "Determines whether a corrective action produced the intended technical effect.",
-
-    "required_questions": [
-      "Was the intended action actually completed?",
-      "Did the targeted technical state change?",
-      "Did the affected symptom improve?",
-      "Did required performance return?",
-      "Were new problems introduced?",
-      "Did the improvement persist?"
-    ],
+  "multi_change_caution": {
+    "principle": "When multiple material variables change before validation, A.R.I.A. shall distinguish validation of the intervention set from validation of any individual causal mechanism.",
 
     "rules": [
-      "Action completion and action effectiveness shall be separately recorded.",
-      "An ineffective corrective action is diagnostically useful evidence.",
-      "A partially effective correction may indicate multiple simultaneous failure mechanisms."
+      "The combined intervention may be validated as effective even when individual causal attribution remains uncertain.",
+      "Multiple simultaneous changes shall not automatically invalidate operational validation.",
+      "Multiple simultaneous changes shall normally constrain Causal Confidence.",
+      "Where safe and useful, later discrimination may isolate which change was causal.",
+      "A.R.I.A. shall not retroactively attribute success to the preferred hypothesis without sufficient discrimination."
     ]
   },
 
   "configuration_validation": {
+    "principle": "Configuration validation determines whether the applicable configured state matches intended requirements and, where necessary, whether that configuration produces the required technical behavior.",
+
     "rules": [
       "Configured values shall be compared against the applicable intended state.",
       "Configuration presence does not prove configuration effectiveness.",
-      "Dependencies between configuration parameters shall be evaluated where applicable.",
-      "Both endpoints shall be considered when configuration relationships span the path."
+      "Configuration identity and scope shall be verified when material.",
+      "Dependencies among configuration values shall be considered where applicable.",
+      "Multi-entity configuration relationships shall be validated across all materially dependent entities when required.",
+      "Configuration correctness may coexist with failure caused elsewhere."
     ]
   },
 
   "physical_validation": {
+    "principle": "Physical validation determines whether observable physical state satisfies the applicable technical requirement while respecting limits of what can actually be observed.",
+
     "rules": [
-      "Visual confirmation may validate visible installation state.",
-      "Hidden mating, internal electrical state, or RF performance may require additional evidence.",
-      "Component identity and port identity shall be confirmed when technically material.",
-      "Physical validation shall preserve endpoint and RF-chain context."
+      "Visual confirmation may validate directly visible physical state.",
+      "Hidden internal, electrical, logical, optical, mechanical, software, or other non-visible state may require additional evidence.",
+      "Component identity shall be confirmed when technically material.",
+      "Interface, connector, port, orientation, path, assembly, and endpoint identity shall be confirmed when technically material.",
+      "Physical presence does not automatically prove functional performance.",
+      "Physical validation shall remain scoped to what the method can actually demonstrate."
     ]
   },
 
-  "cross_endpoint_validation": {
-    "enabled": true,
-
-    "description": "Microwave systems frequently require validation across both endpoints rather than evaluating one radio in isolation.",
+  "functional_validation": {
+    "principle": "Functional validation determines whether the target performs its required function under the applicable conditions.",
 
     "rules": [
-      "ARIA shall identify when a technical condition depends on both endpoints.",
-      "Near-end improvement shall not automatically establish far-end correctness.",
-      "Transmit and receive relationships shall preserve directionality.",
-      "Main and Diversity paths shall remain distinguishable.",
-      "Cross-endpoint disagreement shall trigger investigation rather than averaging."
+      "Function shall be evaluated under technically meaningful conditions.",
+      "A function passing once may not establish durability for intermittent conditions.",
+      "Functional success does not automatically establish optimal performance.",
+      "Functional success does not automatically establish root cause.",
+      "Dependent functions may require multi-entity validation."
+    ]
+  },
+
+  "performance_validation": {
+    "principle": "Performance validation compares observed technical performance against applicable quantitative or qualitative requirements.",
+
+    "rules": [
+      "Performance criteria shall have a justified technical basis.",
+      "Measurement uncertainty shall be considered where material.",
+      "Performance shall be evaluated under applicable Context.",
+      "A value within tolerance may still require monitoring when stability remains uncertain.",
+      "A.R.I.A. shall not invent performance thresholds.",
+      "Passing one performance dimension shall not automatically validate unrelated dimensions."
+    ]
+  },
+
+  "multi_entity_validation": {
+    "enabled": true,
+
+    "principle": "Technical assertions spanning multiple dependent entities shall be validated across the entities necessary to demonstrate the complete relationship.",
+
+    "rules": [
+      "A.R.I.A. shall identify when a condition depends on more than one entity, endpoint, component, interface, path, or system.",
+      "Improvement at one entity shall not automatically establish correctness of all dependent entities.",
+      "Directionality shall be preserved when the technical relationship is directional.",
+      "Parallel or redundant paths shall remain distinguishable when technically material.",
+      "Cross-entity disagreement shall trigger investigation rather than averaging.",
+      "Validation scope shall include only entities materially required to demonstrate the target assertion.",
+      "Canonical Relationships shall remain authoritative for persisted dependency semantics."
     ]
   },
 
   "baseline_comparison": {
-    "baseline_types": [
-      "PRE_FAILURE_STATE",
-      "PRE_CORRECTION_STATE",
+    "principle": "A baseline is useful only when it remains technically comparable and applicable to the current validation target.",
+
+    "baseline_concepts": [
+      "PRE_CONDITION_STATE",
+      "PRE_INTERVENTION_STATE",
       "ENGINEERED_EXPECTATION",
       "MANUFACTURER_EXPECTATION",
-      "CUSTOMER_ACCEPTANCE_CRITERIA",
-      "PEER_CHANNEL",
-      "PARALLEL_RF_CHAIN",
-      "FAR_ENDPOINT",
+      "DESIGN_EXPECTATION",
+      "ACCEPTANCE_REQUIREMENT",
+      "KNOWN_GOOD_COMPARISON",
+      "PEER_ENTITY",
+      "PARALLEL_PATH",
+      "DEPENDENT_ENTITY",
       "HISTORICAL_STABLE_STATE"
     ],
 
     "rules": [
       "The selected baseline shall be technically applicable.",
-      "A historical baseline shall not automatically remain valid after topology or configuration changes.",
-      "Engineered expectation and observed historical performance shall remain distinguishable."
+      "Historical baselines shall not automatically remain valid after material technical changes.",
+      "Engineered expectation and historical observed performance shall remain distinguishable.",
+      "Peer comparison shall not be used when the peer differs in materially relevant Context.",
+      "A degraded historical baseline shall not become the acceptance standard merely because it is familiar.",
+      "Baseline provenance and applicability should remain explainable."
     ]
   },
 
   "tolerance_handling": {
-    "description": "Validation shall account for technically meaningful tolerances rather than requiring exact equality.",
+    "principle": "Validation shall account for technically justified tolerances and measurement limitations rather than requiring arbitrary exact equality.",
 
     "rules": [
-      "Tolerance shall be derived from applicable engineering, manufacturer, customer, measurement, or statistical criteria.",
-      "Measurement uncertainty shall be considered.",
-      "A value barely inside a threshold may justify monitoring when other evidence remains concerning.",
-      "ARIA shall not invent numerical tolerances when no justified threshold exists."
+      "Tolerance shall derive from applicable technical, engineering, manufacturer, customer, project, measurement, or statistically justified criteria.",
+      "Measurement uncertainty shall be considered when material.",
+      "A.R.I.A. shall not invent numerical tolerance without sufficient basis.",
+      "Being barely within a threshold may preserve stability or resolution uncertainty when technically justified.",
+      "Different criteria may legitimately require different tolerances.",
+      "Tolerance shall not be widened merely to convert a failing result into a passing result."
     ]
   },
 
   "stability_validation": {
     "enabled": true,
 
-    "monitoring_classes": [
+    "principle": "Validation shall consider whether the demonstrated state persists for a duration or condition set appropriate to the represented failure mode.",
+
+    "monitoring_concepts": [
       "IMMEDIATE",
       "SHORT_TERM",
       "EXTENDED",
@@ -328,266 +626,657 @@
     ],
 
     "rules": [
-      "Some corrections may be validated immediately.",
-      "Intermittent or environmentally dependent failures may require monitoring.",
-      "A case may be operationally restored while remaining in monitoring state.",
-      "Monitoring duration shall reflect the failure mechanism and recurrence risk rather than arbitrary time."
+      "Some technical states may be validated immediately.",
+      "Intermittent conditions may require repeated or extended observation.",
+      "Environmentally or load-dependent conditions may require condition-dependent validation.",
+      "Monitoring duration shall reflect technical recurrence risk rather than an arbitrary universal period.",
+      "Operational recovery may precede sufficient stability validation.",
+      "Insufficient monitoring shall preserve applicable Resolution Uncertainty.",
+      "A stable result shall not retroactively prove causality unless the stability behavior is causally discriminating."
     ]
   },
 
-  "regression_check": {
+  "regression_validation": {
     "enabled": true,
 
-    "description": "Validation shall determine whether corrective work introduced new technical problems.",
+    "principle": "Validation shall determine whether an intervention introduced new material problems or degraded previously acceptable technical behavior.",
 
     "candidate_checks": [
+      "new faults",
       "new alarms",
+      "new functional degradation",
       "new performance degradation",
       "loss of redundancy",
-      "incorrect path routing",
-      "unexpected configuration changes",
+      "incorrect dependency behavior",
+      "unexpected configuration change",
       "service impact",
-      "new Main/Diversity imbalance"
-    ]
-  },
-
-  "multi_change_caution": {
-    "description": "When multiple variables change before validation, ARIA shall reduce confidence in causal attribution.",
-
-    "example": {
-      "changes": [
-        "Flex twist replaced",
-        "OCM connection reseated",
-        "Radio rebooted"
-      ],
-      "result": "Diversity RSL improved by 18 dB",
-      "valid_conclusion": "The intervention set restored Diversity performance.",
-      "invalid_conclusion": "The flex twist was definitely defective."
-    }
-  },
-
-  "failed_validation": {
-    "process": [
-      "PRESERVE_VALIDATION_RESULT",
-      "CREATE_NEW_EVIDENCE",
-      "UPDATE_CASE_STATE",
-      "REEVALUATE_HYPOTHESES",
-      "RECALCULATE_PROBABILITIES",
-      "UPDATE_ROUTE_COSTS",
-      "REROUTE_FROM_CURRENT_STATE"
+      "new instability",
+      "new safety concern"
     ],
 
     "rules": [
-      "Failed validation shall not restart the case.",
-      "The failed corrective action shall remain part of the diagnostic history.",
-      "The failure itself may strongly weaken the causal hypothesis that justified the action.",
-      "Unexpected outcomes may generate new hypotheses."
+      "Regression checks shall be proportional to the scope and consequence of the intervention.",
+      "A target improvement accompanied by a new material failure shall not be represented as complete validation.",
+      "Unrelated pre-existing conditions shall not automatically be attributed to the intervention.",
+      "Material regressions shall be returned through Orchestration for downstream reasoning."
     ]
   },
 
   "partial_validation": {
-    "examples": [
-      "RSL normalized but BER remains abnormal.",
-      "Main path passes while Diversity remains degraded.",
-      "Service restored but intermittent alarms continue.",
-      "Configuration corrected but engineered performance is not achieved."
-    ],
+    "principle": "Validation may legitimately demonstrate only part of the required technical state.",
 
     "rules": [
-      "Partial success shall not be collapsed into PASS.",
-      "Remaining abnormal conditions shall return to active reasoning.",
-      "Successfully validated portions shall remain preserved and need not be unnecessarily retested."
+      "Partial success shall remain distinguishable from full validation.",
+      "Successfully demonstrated portions shall remain preserved.",
+      "Unvalidated portions shall remain unresolved.",
+      "A partially successful intervention may indicate multiple contributing mechanisms.",
+      "Partial validation may reduce uncertainty without eliminating it.",
+      "Partial validation may alter hypothesis probabilities through resulting Evidence.",
+      "Validation Engine shall not directly perform the probability update."
     ]
   },
 
-  "resolution_gate": {
-    "description": "Controls whether a case may transition into a resolved state.",
-
-    "minimum_requirements": [
-      "MATERIAL_SYMPTOMS_EVALUATED",
-      "REQUIRED_VALIDATION_CRITERIA_EVALUATED",
-      "CORRECTIVE_ACTION_OUTCOME_RECORDED",
-      "RESIDUAL_ABNORMALITIES_RECORDED",
-      "UNRESOLVED_CONTRADICTIONS_ASSESSED",
-      "RESOLUTION_CONFIDENCE_CALCULATED"
-    ],
+  "failed_validation": {
+    "principle": "Failure to demonstrate the expected result is new diagnostic information and shall not erase prior reasoning history.",
 
     "rules": [
-      "A case may be operationally resolved without being causally resolved.",
-      "ARIA shall state the actual resolution level.",
-      "Cases with unresolved material service impact shall not be represented as fully resolved.",
-      "Resolution shall be controlled by deterministic state-transition rules."
+      "Failed validation shall preserve the attempted Action and resulting observations.",
+      "Failed validation observations that constitute Evidence shall be persisted through the Evidence architecture.",
+      "Failure may weaken the hypothesis or causal model that predicted success.",
+      "Failure may increase probability of alternatives.",
+      "Failure may increase unknown or model uncertainty.",
+      "Unexpected outcomes may justify new hypothesis generation.",
+      "Validation Engine shall not directly create hypotheses.",
+      "Validation Engine shall not directly recalculate probabilities.",
+      "Validation Engine shall not directly change route costs.",
+      "Validation Engine shall not directly reroute.",
+      "Validation Engine shall return material consequences to Orchestration."
     ]
   },
 
-  "learning_gate": {
-    "description": "Determines what aspects of a case may teach the Learning Engine.",
+  "inconclusive_validation": {
+    "principle": "Validation is inconclusive when the available process or evidence cannot defensibly determine whether the target criteria were satisfied.",
 
-    "outcomes": [
-      "FULL_LEARNING",
-      "CAUSAL_LEARNING_RESTRICTED",
-      "ROUTE_LEARNING_ONLY",
-      "EVIDENCE_LEARNING_ONLY",
-      "USER_LEARNING_ONLY",
-      "NO_LEARNING"
+    "candidate_causes": [
+      "insufficient evidence",
+      "poor evidence quality",
+      "ambiguous observation",
+      "conflicting evidence",
+      "insufficient test coverage",
+      "unresolved Context",
+      "inadequate monitoring",
+      "measurement limitation",
+      "multiple uncontrolled variables",
+      "invalid baseline",
+      "test interruption"
     ],
 
     "rules": [
-      "Validated symptom resolution alone does not authorize full causal learning.",
-      "Root-cause learning requires sufficient causal validation.",
-      "Route learning may remain valid when root cause is unresolved.",
-      "Learning restrictions shall be attached to the completed case."
+      "INCONCLUSIVE shall not be silently converted to SATISFIED.",
+      "INCONCLUSIVE shall not automatically be treated as NOT_SATISFIED.",
+      "The reason for inconclusiveness shall be identified when possible.",
+      "Uncertainty Engine may identify information needed to resolve the inconclusive state.",
+      "Decision Engine selects any Action used to obtain that information."
     ]
   },
 
-  "example": {
-    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+  "validation_coverage": {
+    "principle": "Validation sufficiency depends not only on individual passing observations but also on whether the material scope of the assertion was actually tested.",
 
-    "before": {
-      "main_rsl": "-44.2 dBm",
-      "diversity_rsl": "-63.1 dBm",
-      "delta": "18.9 dB"
-    },
-
-    "hypothesis": "Incorrect Diversity RF routing",
-
-    "corrective_action": "Correct Diversity RF routing",
-
-    "predicted_outcome": {
-      "diversity_rsl": "Move materially toward expected engineered level",
-      "main_diversity_delta": "Reduce substantially",
-      "new_alarms": "None"
-    },
-
-    "after": {
-      "main_rsl": "-44.4 dBm",
-      "diversity_rsl": "-45.1 dBm",
-      "delta": "0.7 dB",
-      "new_alarms": "None"
-    },
-
-    "validation": {
-      "symptom_resolution": "PASSED",
-      "performance_validation": "PASSED",
-      "corrective_action_effectiveness": "PASSED",
-      "root_cause_validation": "HIGH_CONFIDENCE",
-      "overall_validation_confidence": 0.97
-    },
-
-    "interpretation": "The predicted technical response occurred after a targeted correction, strongly supporting the routing-error diagnosis and allowing appropriately weighted causal learning."
-  },
-
-  "counterexample": {
-    "case": "RSL discrepancy after RF-chain intervention",
-
-    "changes": [
-      "Flex twist replaced",
-      "OCM reseated",
-      "Radio rebooted"
+    "candidate_dimensions": [
+      "criteria coverage",
+      "symptom coverage",
+      "entity coverage",
+      "dependency coverage",
+      "functional coverage",
+      "performance coverage",
+      "temporal coverage",
+      "regression coverage",
+      "acceptance coverage",
+      "alternative explanation discrimination"
     ],
 
-    "result": "RSL normalized",
-
-    "validation": {
-      "symptom_resolution": "PASSED",
-      "corrective_action_effectiveness": "PASSED",
-      "exact_root_cause": "INCONCLUSIVE"
-    },
-
-    "learning_result": "Do not teach ARIA that the flex twist was definitively defective. The intervention set may contribute route and subsystem-level experience."
+    "rules": [
+      "Passing evidence with inadequate scope shall not establish complete validation.",
+      "Coverage requirements depend on the target assertion.",
+      "Causal validation may require alternative-explanation discrimination.",
+      "Resolution validation may require symptom, function, stability, and regression coverage.",
+      "Coverage gaps shall remain explicit."
+    ]
   },
 
-  "engine_interfaces": {
-    "case_state_engine": "Controls validation lifecycle and resolution state.",
-    "evidence_engine": "Provides validation evidence and evidence quality.",
-    "context_engine": "Determines applicable technical context and criteria.",
-    "knowledge_graph": "Provides expected states, relationships, procedures, and requirements.",
-    "probability_engine": "Receives probability effects from validation outcomes.",
-    "routing_engine": "Receives failed or partial validation as new routing state.",
-    "memory_engine": "Provides applicable baselines and historical comparison.",
-    "learning_engine": "Receives validation strength and learning restrictions."
+  "validation_confidence_model": {
+    "principle": "Validation Confidence reflects how strongly the validation process and resulting evidence demonstrate the specific assertion tested.",
+
+    "candidate_inputs": [
+      "Evidence Quality Confidence",
+      "evidence directness",
+      "evidence independence",
+      "criteria completeness",
+      "expected outcome match",
+      "measurement suitability",
+      "control of variables",
+      "multi-entity agreement",
+      "temporal stability",
+      "repeatability",
+      "baseline applicability",
+      "contradiction burden",
+      "validation coverage",
+      "discriminatory power"
+    ],
+
+    "rules": [
+      "Validation Confidence shall use the canonical confidence contract.",
+      "Validation Confidence shall not be derived solely from whether the observed result was favorable.",
+      "Repeated dependent observations shall not create artificial confidence.",
+      "Independent corroboration may increase confidence.",
+      "Material unresolved contradiction may constrain confidence.",
+      "Incomplete validation coverage may constrain confidence.",
+      "Validation Confidence shall remain scoped to the assertion actually tested.",
+      "Validation Confidence shall not automatically become Causal Confidence or Resolution Confidence."
+    ]
   },
 
-  "semantic_rules": [
+  "uncertainty_boundary": {
+    "principle": "Validation reduces, preserves, or exposes uncertainty; Uncertainty Engine remains authoritative for uncertainty reasoning.",
+
+    "rules": [
+      "Validation Engine shall not define a competing uncertainty persistence model.",
+      "Validation may reduce Diagnostic Uncertainty.",
+      "Validation may reduce Causal Uncertainty.",
+      "Validation may reduce Validation Uncertainty.",
+      "Validation may reduce Resolution Uncertainty.",
+      "Failed validation may increase Hypothesis or Model Uncertainty.",
+      "Partial validation may reduce some uncertainty while preserving other uncertainty.",
+      "Residual uncertainty shall be returned through Orchestration.",
+      "Validation result and uncertainty state shall remain distinct."
+    ]
+  },
+
+  "probability_boundary": {
+    "principle": "Validation produces information capable of changing probability; Probability Engine owns the numerical update.",
+
+    "rules": [
+      "Validation Engine shall not calculate hypothesis priors.",
+      "Validation Engine shall not calculate posterior hypothesis probabilities.",
+      "Validation-generated Evidence may materially change hypothesis probability.",
+      "A causally discriminating validation result may strongly affect probability.",
+      "An inconclusive validation result may have little probability effect.",
+      "Probability Engine determines numerical belief updates.",
+      "Validation Engine shall return applicable results through Orchestration."
+    ]
+  },
+
+  "hypothesis_boundary": {
+    "principle": "Validation may support, weaken, discriminate, or contradict hypotheses; Hypothesis Engine owns hypothesis state.",
+
+    "rules": [
+      "Validation Engine shall not create canonical hyp_<UUID> records.",
+      "Validation Engine shall not directly confirm hypotheses.",
+      "Validation Engine shall not directly eliminate hypotheses.",
+      "Validation Engine may report whether a result strongly discriminates among hypotheses.",
+      "Successful validation of an operational state does not automatically confirm the causal hypothesis.",
+      "Failed validation may materially weaken the hypothesis that predicted success.",
+      "Hypothesis Engine owns resulting hypothesis-state reevaluation."
+    ]
+  },
+
+  "decision_boundary": {
+    "principle": "Validation determines what was demonstrated; Decision determines what should be done next.",
+
+    "rules": [
+      "Validation Engine shall not select act_<UUID>.",
+      "Validation Engine may identify that additional validation information is required.",
+      "Uncertainty Engine may characterize what information would reduce uncertainty.",
+      "Decision Engine compares and selects candidate Actions.",
+      "Validation Engine shall not define universal Action thresholds.",
+      "Validation Engine shall not authorize destructive or irreversible Actions solely because prior validation failed."
+    ]
+  },
+
+  "routing_boundary": {
+    "principle": "Validation results may affect route feasibility or progression, but Routing Engine owns route behavior.",
+
+    "rules": [
+      "Validation Engine shall not create route steps.",
+      "Validation Engine shall not update route costs.",
+      "Validation Engine shall not select route next hops.",
+      "Validation Engine shall not reroute.",
+      "Validation success may satisfy a route condition.",
+      "Validation failure may invalidate a route assumption or completion condition.",
+      "Material route implications shall be returned to Orchestration."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Validation contributes demonstrated technical state; Case State owns lifecycle and assembled case-state representation.",
+
+    "rules": [
+      "Validation Engine shall not directly set case lifecycle status.",
+      "Validation Engine shall not directly set case reasoning state.",
+      "Validation Engine shall not independently close a case.",
+      "Validation may report whether applicable resolution assertions have been demonstrated.",
+      "Case State determines lifecycle transitions under the canonical state architecture.",
+      "A case may be operationally restored while causal uncertainty remains.",
+      "A case may have a strongly validated cause while durable resolution remains insufficiently demonstrated."
+    ]
+  },
+
+  "resolution_validation": {
+    "principle": "Resolution validation determines what level of technical recovery has actually been demonstrated without claiming more than the evidence supports.",
+
+    "resolution_dimensions": [
+      "SYMPTOM_RESOLUTION",
+      "FUNCTIONAL_RESTORATION",
+      "PERFORMANCE_RESTORATION",
+      "CORRECTIVE_ACTION_EFFECTIVENESS",
+      "CAUSAL_DEMONSTRATION",
+      "STABILITY",
+      "REGRESSION_FREE_STATE",
+      "ACCEPTANCE_SATISFACTION"
+    ],
+
+    "rules": [
+      "Not every case requires every resolution dimension.",
+      "Applicable resolution dimensions shall derive from Context and requirements.",
+      "Operational resolution may be established without complete causal validation.",
+      "Causal validation may exist while corrective work remains incomplete.",
+      "Immediate restoration may exist while stability remains unvalidated.",
+      "Resolution Confidence shall use the canonical confidence architecture.",
+      "Validation Engine reports what has been demonstrated; Case State owns lifecycle resolution status."
+    ]
+  },
+
+  "learning_boundary": {
+    "principle": "Validation establishes what the case actually demonstrated; the Learning architecture determines what may be learned from it.",
+
+    "rules": [
+      "Validation Engine shall not define competing learning eligibility statuses.",
+      "Validation Engine shall not independently authorize full learning.",
+      "Validation Engine shall report which assertions were demonstrated and at what applicable confidence.",
+      "Operational recovery without causal validation shall not be represented as validated causal truth.",
+      "Failed Actions may remain useful for route, decision, or diagnostic learning if the Learning architecture permits.",
+      "Partial validation shall constrain what may be learned as established fact.",
+      "Learning eligibility and promotion remain outside Validation authority."
+    ]
+  },
+
+  "orchestration_boundary": {
+    "principle": "Validation Engine returns validation reasoning results; Orchestration coordinates all downstream effects.",
+
+    "rules": [
+      "Validation Engine shall not directly invoke every affected engine.",
+      "Validation success shall be returned to Orchestration.",
+      "Validation failure shall be returned to Orchestration.",
+      "Partial validation shall be returned to Orchestration.",
+      "Inconclusive validation shall be returned to Orchestration.",
+      "Material new Evidence shall be returned or persisted through the Evidence workflow as orchestrated.",
+      "Orchestration determines whether Evidence, Hypothesis, Probability, Uncertainty, Decision, Routing, Learning, Memory, or Case State require reevaluation.",
+      "Validation shall not restart the case merely because a validation attempt fails."
+    ]
+  },
+
+  "validation_reassessment_triggers": [
+    "NEW_VALIDATION_EVIDENCE",
+    "VALIDATION_EVIDENCE_INVALIDATED",
+    "VALIDATION_EVIDENCE_RETRACTED",
+    "MATERIAL_CONTEXT_CHANGE",
+    "BASELINE_INVALIDATED",
+    "CRITERIA_CHANGED",
+    "EXPECTED_OUTCOME_CHANGED_BEFORE_TEST",
+    "NEW_CONTRADICTORY_EVIDENCE",
+    "MONITORING_WINDOW_COMPLETED",
+    "MONITORING_CONDITION_OCCURRED",
+    "REGRESSION_DETECTED",
+    "DEPENDENT_ENTITY_STATE_CHANGED",
+    "RESOLUTION_ASSERTION_CHANGED"
+  ],
+
+  "reassessment_rules": [
+    "Validation shall be reassessed when a material basis for the prior validation conclusion changes.",
+    "Historical validation reasoning shall not be rewritten using later information.",
+    "Invalidated validation evidence shall no longer support the current validation conclusion.",
+    "A material Context change may invalidate prior criteria or baseline applicability.",
+    "A previously satisfied result may require renewed validation when the validated technical state materially changes.",
+    "Reassessment shall preserve why the validation conclusion changed."
+  ],
+
+  "validation_result": {
+    "recommended_outputs": [
+      "target_id",
+      "target_type",
+      "validation_methods",
+      "applicable_criteria",
+      "expected_outcomes",
+      "observed_outcomes",
+      "supporting_evidence_ids",
+      "contradicting_evidence_ids",
+      "baseline",
+      "baseline_applicability",
+      "criteria_coverage",
+      "validation_result",
+      "validation_confidence",
+      "causal_implication",
+      "causal_confidence",
+      "stability_assessment",
+      "regression_assessment",
+      "resolution_dimensions_demonstrated",
+      "resolution_confidence",
+      "residual_uncertainty",
+      "new_evidence_required",
+      "material_change_detected",
+      "downstream_reevaluation_required",
+      "reasoning_summary"
+    ],
+
+    "rules": [
+      "Outputs are reasoning results unless an authoritative schema establishes corresponding persisted fields.",
+      "Outputs shall distinguish observed results from expected outcomes.",
+      "Outputs shall distinguish validation result from confidence.",
+      "Outputs shall distinguish operational validation from causal validation.",
+      "Outputs shall distinguish immediate success from durable resolution.",
+      "Outputs shall reference canonical Evidence where applicable.",
+      "Outputs shall not fabricate Evidence IDs.",
+      "Outputs shall not directly change Hypothesis status.",
+      "Outputs shall not calculate hypothesis probability.",
+      "Outputs shall not select Actions.",
+      "Outputs shall not perform Routing.",
+      "Outputs shall not close the case.",
+      "Material results shall be returned to Orchestration."
+    ]
+  },
+
+  "explainability": {
+    "required_questions": [
+      "What exactly was being validated?",
+      "What criteria applied?",
+      "What outcome was expected?",
+      "What was actually observed?",
+      "What evidence supports the validation result?",
+      "Was the evidence sufficiently independent and applicable?",
+      "Was the complete material scope evaluated?",
+      "Did the result demonstrate Action completion, Action effectiveness, symptom resolution, causality, or durable resolution?",
+      "Were multiple variables changed?",
+      "Were regressions detected?",
+      "Was stability adequately demonstrated?",
+      "What remains uncertain?",
+      "How confident is A.R.I.A. in the validation conclusion?"
+    ],
+
+    "rules": [
+      "Validation explanations shall not claim more than the validation method can demonstrate.",
+      "A favorable result shall not be described as causal proof unless causal discrimination is sufficient.",
+      "A failed result shall identify what prediction or criterion was not demonstrated when known.",
+      "Partial and inconclusive results shall remain explicit.",
+      "Residual uncertainty shall be explained when material."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "rule_id": "VAL-RULE-001",
-      "rule": "A corrective action is not a validated resolution."
+      "failure_mode": "SECOND_VALIDATION_SCHEMA",
+      "description": "Validation Engine defines a competing canonical validation persistence object without an authoritative schema.",
+      "prevention": "Keep validation structures as reasoning behavior until a canonical schema explicitly establishes persistence."
     },
     {
-      "rule_id": "VAL-RULE-002",
-      "rule": "ARIA shall define expected outcomes before evaluating corrective success whenever practical."
+      "failure_mode": "SECOND_CONFIDENCE_SYSTEM",
+      "description": "Validation Engine defines competing confidence levels or numeric ranges.",
+      "prevention": "Consume Core/Registries/confidence_levels.json."
     },
     {
-      "rule_id": "VAL-RULE-003",
-      "rule": "Symptom resolution and root-cause validation are separate conclusions."
+      "failure_mode": "ACTION_COMPLETION_EQUALS_EFFECTIVENESS",
+      "description": "Completion of a corrective Action is treated as proof that the Action achieved its intended technical effect.",
+      "prevention": "Validate completion and effectiveness separately."
     },
     {
-      "rule_id": "VAL-RULE-004",
-      "rule": "Multiple simultaneous changes shall reduce exact causal attribution confidence."
+      "failure_mode": "ACTION_SUCCESS_EQUALS_CAUSAL_PROOF",
+      "description": "A successful Action is treated as proof of the suspected causal mechanism.",
+      "prevention": "Require causally discriminating validation for causal claims."
     },
     {
-      "rule_id": "VAL-RULE-005",
-      "rule": "Validation shall use evidence appropriate to the condition being tested."
+      "failure_mode": "SYMPTOM_DISAPPEARANCE_EQUALS_RESOLUTION",
+      "description": "Symptom disappearance is treated as complete durable resolution.",
+      "prevention": "Assess function, performance, stability, regression, and other applicable resolution dimensions."
     },
     {
-      "rule_id": "VAL-RULE-006",
-      "rule": "Validation evidence shall preserve provenance."
+      "failure_mode": "MULTI_CHANGE_CAUSAL_OVERCLAIM",
+      "description": "Success after multiple simultaneous interventions is attributed to one preferred change without sufficient discrimination.",
+      "prevention": "Validate the intervention set separately from individual causal attribution."
     },
     {
-      "rule_id": "VAL-RULE-007",
-      "rule": "Repeated copies of the same validation evidence shall not create independent corroboration."
+      "failure_mode": "EXPECTED_OUTCOME_RETROFIT",
+      "description": "Expected outcomes are rewritten after observation so the result appears successful.",
+      "prevention": "Define expected outcomes before evaluation whenever practical and preserve history."
     },
     {
-      "rule_id": "VAL-RULE-008",
-      "rule": "Failed validation is diagnostic evidence, not wasted work."
+      "failure_mode": "PARTIAL_EQUALS_PASS",
+      "description": "Partial validation is represented as complete validation.",
+      "prevention": "Preserve PARTIALLY_SATISFIED reasoning."
     },
     {
-      "rule_id": "VAL-RULE-009",
-      "rule": "Failed validation shall trigger rerouting from the current state rather than restart."
+      "failure_mode": "INCONCLUSIVE_EQUALS_PASS",
+      "description": "Insufficient validation evidence is treated as success.",
+      "prevention": "Preserve INCONCLUSIVE."
     },
     {
-      "rule_id": "VAL-RULE-010",
-      "rule": "Partial validation shall preserve successful findings while continuing diagnosis of unresolved conditions."
+      "failure_mode": "INCONCLUSIVE_EQUALS_FAILURE",
+      "description": "Insufficient validation evidence is automatically treated as demonstrated failure.",
+      "prevention": "Distinguish insufficient information from NOT_SATISFIED."
     },
     {
-      "rule_id": "VAL-RULE-011",
-      "rule": "Applicable tolerance and measurement uncertainty shall be considered when evaluating technical success."
+      "failure_mode": "INVALID_BASELINE",
+      "description": "A technically inapplicable historical or peer state is used as the validation baseline.",
+      "prevention": "Assess baseline applicability under current Context."
     },
     {
-      "rule_id": "VAL-RULE-012",
-      "rule": "ARIA shall not invent acceptance criteria or technical tolerances."
+      "failure_mode": "INVENTED_TOLERANCE",
+      "description": "A.R.I.A. invents a numerical tolerance or threshold without sufficient technical basis.",
+      "prevention": "Require applicable criteria or preserve qualitative uncertainty."
     },
     {
-      "rule_id": "VAL-RULE-013",
-      "rule": "Cross-endpoint systems shall be validated across all technically necessary endpoints."
+      "failure_mode": "DEPENDENT_VALIDATION_INFLATION",
+      "description": "Repeated dependent observations are treated as independent corroboration.",
+      "prevention": "Consume Evidence independence and provenance assessments."
     },
     {
-      "rule_id": "VAL-RULE-014",
-      "rule": "Immediate improvement may require continued monitoring when recurrence risk remains material."
+      "failure_mode": "INSUFFICIENT_COVERAGE",
+      "description": "A narrow passing test is treated as validating a broader assertion than was actually evaluated.",
+      "prevention": "Assess validation coverage relative to the target assertion."
     },
     {
-      "rule_id": "VAL-RULE-015",
-      "rule": "A case shall record the level of resolution actually achieved rather than force every closure into complete causal certainty."
+      "failure_mode": "STABILITY_OVERCLAIM",
+      "description": "Immediate recovery is treated as durable resolution for an intermittent or condition-dependent failure.",
+      "prevention": "Use technically appropriate stability validation."
     },
     {
-      "rule_id": "VAL-RULE-016",
-      "rule": "Learning authorization shall reflect validation strength."
+      "failure_mode": "REGRESSION_BLINDNESS",
+      "description": "A target improvement is accepted without considering material problems introduced by the intervention.",
+      "prevention": "Perform proportionate regression validation."
     },
     {
-      "rule_id": "VAL-RULE-017",
-      "rule": "The language model may propose validation criteria, but authoritative validation state shall be controlled by structured ARIA services."
+      "failure_mode": "EVIDENCE_AUTHORITY_LEAK",
+      "description": "Validation Engine recreates Evidence quality, verification, provenance, or independence semantics.",
+      "prevention": "Consume Evidence Engine assessments."
     },
     {
-      "rule_id": "VAL-RULE-018",
-      "rule": "Successful validation shall not erase contradictory evidence; material contradictions must be reconciled or preserved."
+      "failure_mode": "HYPOTHESIS_AUTHORITY_LEAK",
+      "description": "Validation Engine directly confirms or eliminates hypotheses.",
+      "prevention": "Return validation results through Orchestration to Hypothesis Engine."
     },
     {
-      "rule_id": "VAL-RULE-019",
-      "rule": "Validation shall check for unintended regression where technically applicable."
+      "failure_mode": "PROBABILITY_AUTHORITY_LEAK",
+      "description": "Validation Engine directly recalculates hypothesis probability.",
+      "prevention": "Probability Engine owns numerical belief updates."
     },
     {
-      "rule_id": "VAL-RULE-020",
-      "rule": "ARIA shall prefer validated technical resolution over conversational agreement that the problem appears fixed."
+      "failure_mode": "UNCERTAINTY_AUTHORITY_LEAK",
+      "description": "Validation Engine creates a competing uncertainty model.",
+      "prevention": "Consume and contribute to Uncertainty reasoning without redefining its authority."
+    },
+    {
+      "failure_mode": "DECISION_AUTHORITY_LEAK",
+      "description": "Validation Engine selects the next Action after a validation result.",
+      "prevention": "Decision Engine owns Action selection."
+    },
+    {
+      "failure_mode": "ROUTING_AUTHORITY_LEAK",
+      "description": "Validation Engine directly changes route costs, next hops, or reroutes.",
+      "prevention": "Return route-relevant consequences through Orchestration."
+    },
+    {
+      "failure_mode": "CASE_STATE_AUTHORITY_LEAK",
+      "description": "Validation Engine directly marks the case resolved or closed.",
+      "prevention": "Case State owns lifecycle transitions."
+    },
+    {
+      "failure_mode": "LEARNING_AUTHORITY_LEAK",
+      "description": "Validation Engine creates competing learning eligibility outcomes.",
+      "prevention": "Report what was demonstrated; Learning architecture determines eligibility."
+    },
+    {
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal Validation Engine logic hardcodes specific technologies, vendors, products, customers, organizations, or named users.",
+      "prevention": "Keep universal validation reasoning domain-independent."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "VAL-INV-001",
+      "statement": "Action completion remains distinct from Action effectiveness."
+    },
+    {
+      "invariant_id": "VAL-INV-002",
+      "statement": "Action effectiveness remains distinct from symptom resolution."
+    },
+    {
+      "invariant_id": "VAL-INV-003",
+      "statement": "Symptom resolution remains distinct from causal validation."
+    },
+    {
+      "invariant_id": "VAL-INV-004",
+      "statement": "Causal validation remains distinct from durable resolution."
+    },
+    {
+      "invariant_id": "VAL-INV-005",
+      "statement": "Expected outcomes remain distinct from observed outcomes."
+    },
+    {
+      "invariant_id": "VAL-INV-006",
+      "statement": "Validation criteria have a sufficient applicable technical basis."
+    },
+    {
+      "invariant_id": "VAL-INV-007",
+      "statement": "Validation Engine does not define a competing universal validation persistence schema."
+    },
+    {
+      "invariant_id": "VAL-INV-008",
+      "statement": "Confidence vocabulary and ranges are owned by Core/Registries/confidence_levels.json."
+    },
+    {
+      "invariant_id": "VAL-INV-009",
+      "statement": "Validation Engine consumes rather than recreates Evidence quality, provenance, verification, and independence semantics."
+    },
+    {
+      "invariant_id": "VAL-INV-010",
+      "statement": "Failed validation remains part of diagnostic history."
+    },
+    {
+      "invariant_id": "VAL-INV-011",
+      "statement": "Partial validation is not represented as complete validation."
+    },
+    {
+      "invariant_id": "VAL-INV-012",
+      "statement": "Inconclusive validation is not represented as demonstrated success or demonstrated failure."
+    },
+    {
+      "invariant_id": "VAL-INV-013",
+      "statement": "Multiple simultaneous interventions constrain individual causal attribution when their effects cannot be discriminated."
+    },
+    {
+      "invariant_id": "VAL-INV-014",
+      "statement": "Validation scope does not exceed what the validation method and evidence can demonstrate."
+    },
+    {
+      "invariant_id": "VAL-INV-015",
+      "statement": "Validation Engine does not directly confirm or eliminate hypotheses."
+    },
+    {
+      "invariant_id": "VAL-INV-016",
+      "statement": "Validation Engine does not calculate hypothesis probability."
+    },
+    {
+      "invariant_id": "VAL-INV-017",
+      "statement": "Validation Engine does not select competitive Actions."
+    },
+    {
+      "invariant_id": "VAL-INV-018",
+      "statement": "Validation Engine does not perform route progression, route-cost updates, or rerouting."
+    },
+    {
+      "invariant_id": "VAL-INV-019",
+      "statement": "Validation Engine does not directly change case lifecycle or reasoning state."
+    },
+    {
+      "invariant_id": "VAL-INV-020",
+      "statement": "Validation Engine does not independently determine learning eligibility."
+    },
+    {
+      "invariant_id": "VAL-INV-021",
+      "statement": "Material validation results are returned to Orchestration for downstream coordination."
+    },
+    {
+      "invariant_id": "VAL-INV-022",
+      "statement": "Validation Confidence, Causal Confidence, and Resolution Confidence remain distinct."
+    },
+    {
+      "invariant_id": "VAL-INV-023",
+      "statement": "Residual material uncertainty remains visible."
+    },
+    {
+      "invariant_id": "VAL-INV-024",
+      "statement": "Validation Engine remains technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing canonical validation_record without an authoritative schema.",
+    "Defining competing validation confidence levels.",
+    "Defining competing validation confidence numeric ranges.",
+    "Treating Action completion as Action effectiveness.",
+    "Treating Action effectiveness as proof of root cause.",
+    "Treating symptom disappearance as proof of root cause.",
+    "Treating symptom disappearance as automatic durable resolution.",
+    "Treating operational restoration as automatic causal validation.",
+    "Treating causal validation as automatic durable resolution.",
+    "Rewriting expected outcomes after observation solely to make validation appear successful.",
+    "Collapsing partial validation into complete validation.",
+    "Treating inconclusive validation as success.",
+    "Treating inconclusive validation as demonstrated failure without applicable criteria supporting that consequence.",
+    "Using a technically inapplicable baseline.",
+    "Inventing numerical validation thresholds.",
+    "Inventing numerical validation tolerances.",
+    "Treating repeated dependent observations as independent validation.",
+    "Claiming broader validation than the evaluated scope supports.",
+    "Claiming durable resolution from inadequate monitoring.",
+    "Ignoring material regressions introduced by corrective work.",
+    "Recreating Evidence quality, provenance, verification, freshness, contradiction, or independence semantics.",
+    "Directly creating canonical Evidence outside the Evidence workflow.",
+    "Directly confirming hypotheses.",
+    "Directly eliminating hypotheses.",
+    "Directly calculating hypothesis probability.",
+    "Directly creating a competing uncertainty model.",
+    "Directly selecting act_<UUID>.",
+    "Directly creating route steps.",
+    "Directly updating route costs.",
+    "Directly selecting route next hops.",
+    "Directly rerouting.",
+    "Directly changing case lifecycle status.",
+    "Directly changing case reasoning state.",
+    "Directly closing a case.",
+    "Defining competing learning eligibility outcomes.",
+    "Directly authorizing canonical learning or memory promotion.",
+    "Directly invoking downstream engines as a substitute for Orchestration.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, electrical-specific, software-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, organization-specific, or named-user validation logic into the universal Validation Engine."
   ]
 }
