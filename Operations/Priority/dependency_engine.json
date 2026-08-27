@@ -1,0 +1,407 @@
+{
+  "engine": {
+    "id": "aria.operations.dependency_engine",
+    "name": "A.R.I.A. Dependency Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "dependency_management",
+    "status": "active",
+    "purpose": "Govern operational dependencies between work items, people, information, approvals, resources, events, systems, and external conditions. The engine determines what work depends on, whether that dependency currently prevents progress, what becomes possible when it clears, and what downstream obligations may be affected.",
+    "principles": [
+      "A dependency is not automatically a blocker.",
+      "A blocker is a dependency or condition currently preventing meaningful progress.",
+      "Dependencies should identify what is required and what it enables.",
+      "A.R.I.A. should distinguish internal dependencies from external dependencies.",
+      "A.R.I.A. should distinguish known dependencies from suspected dependencies.",
+      "One dependency may affect multiple work items.",
+      "One work item may depend on multiple conditions.",
+      "Dependency state should propagate operational significance without blindly copying priority.",
+      "Resolved dependencies should cause affected work to be reevaluated.",
+      "A blocked item should not repeatedly consume attention when no useful intervention is available.",
+      "A dependency that threatens multiple consequential obligations may itself become operationally significant.",
+      "Dependency relationships must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+
+    "applicable_conditions": [
+      "work_item.dependencies is not empty",
+      "progress requires another work item",
+      "progress requires information",
+      "progress requires approval",
+      "progress requires a person or organization",
+      "progress requires equipment, material, access, or another resource",
+      "progress requires an external event or condition",
+      "a previously required dependency changes state",
+      "a blocker is identified or cleared"
+    ],
+
+    "context": [
+      "current_time",
+      "work_item",
+      "related_work_items",
+      "owner",
+      "delegation",
+      "commitment",
+      "timing",
+      "priority",
+      "attention",
+      "follow_up",
+      "activity",
+      "source history"
+    ]
+  },
+
+  "dependency_types": {
+    "work_item": "Another operational work item must reach a required state.",
+    "information": "Required information, documentation, data, or answer is unavailable.",
+    "approval": "Required authorization, acceptance, permit, signoff, or decision is pending.",
+    "person": "A required action or response from a person is outstanding.",
+    "organization": "A required action or response from an external or internal organization is outstanding.",
+    "resource": "Equipment, material, funding, staffing, access, or another resource is required.",
+    "system": "A system, application, service, integration, or technical capability must become available or reach a required state.",
+    "event": "A scheduled or unscheduled event must occur.",
+    "condition": "A real-world or operational condition must become true.",
+    "decision": "A decision must be made before dependent work can meaningfully continue.",
+    "other": "A supported dependency not represented by another canonical type."
+  },
+
+  "dependency_states": {
+    "identified": {
+      "description": "A supported dependency exists, but it is not currently preventing useful progress."
+    },
+
+    "pending": {
+      "description": "The dependency remains unresolved and may become relevant to progress."
+    },
+
+    "waiting": {
+      "description": "The dependent work has reached the point where progress appropriately waits on the dependency."
+    },
+
+    "blocking": {
+      "description": "The unresolved dependency currently prevents a meaningful required action or outcome."
+    },
+
+    "at_risk": {
+      "description": "The dependency is not yet fully blocking, but supported circumstances indicate it may threaten timing, commitments, or downstream work."
+    },
+
+    "satisfied": {
+      "description": "The required dependency condition has been sufficiently met."
+    },
+
+    "failed": {
+      "description": "The expected dependency cannot or will not be satisfied under the current path."
+    },
+
+    "removed": {
+      "description": "The dependency is no longer required because scope, method, authority, or another supported condition changed."
+    },
+
+    "superseded": {
+      "description": "Another dependency or path has legitimately replaced this dependency."
+    },
+
+    "unresolved": {
+      "description": "Available information is insufficient to determine the dependency's current state."
+    }
+  },
+
+  "establishment": {
+    "requirements": [
+      "The required dependency must be sufficiently identifiable to govern operationally.",
+      "The dependent work item must be identified.",
+      "The reason the dependency matters should be preserved when available.",
+      "The condition that would satisfy the dependency should be preserved when known.",
+      "The source establishing the dependency should remain traceable.",
+      "Suspected dependencies must not be represented as confirmed facts."
+    ],
+
+    "rules": [
+      "Temporal sequence alone does not prove dependency.",
+      "Two related work items are not necessarily dependent.",
+      "A.R.I.A. must not invent dependencies merely because one action commonly precedes another.",
+      "Authoritative workflow rules may establish dependencies.",
+      "Explicit statements of required prerequisites are strong dependency evidence.",
+      "Observed operational patterns may inform interpretation but must remain subordinate to authoritative requirements."
+    ]
+  },
+
+  "dependency_record": {
+    "fields": [
+      "dependency_id",
+      "dependent_work_item_id",
+      "dependency_type",
+      "depends_on_reference",
+      "description",
+      "required_condition",
+      "state",
+      "blocking",
+      "identified_at",
+      "satisfied_at",
+      "source_reference"
+    ],
+
+    "requirements": [
+      "Each materially independent dependency should have a persistent identity.",
+      "depends_on_reference should point to an authoritative entity or work item when one exists.",
+      "blocking must reflect current operational effect rather than the importance of the dependency.",
+      "Historical state changes should remain recoverable.",
+      "Unknown satisfaction conditions should remain unknown rather than invented."
+    ]
+  },
+
+  "blocking_evaluation": {
+    "questions": [
+      "Has the dependent work reached the point where this dependency is required?",
+      "Can other meaningful work continue while the dependency remains unresolved?",
+      "Is the dependency preventing the next required action?",
+      "Is an alternate authorized path available?",
+      "Can the owner or another party influence resolution?"
+    ],
+
+    "rules": [
+      "A dependency is blocking only when its unresolved state currently prevents meaningful required progress.",
+      "An unresolved future prerequisite should not automatically mark current work blocked.",
+      "Partial progress may remain possible despite a dependency.",
+      "A blocker should identify the specific progress it prevents.",
+      "A blocked status should be reevaluated when an alternate path becomes available.",
+      "The existence of a blocker does not independently determine priority."
+    ]
+  },
+
+  "downstream_impact": {
+    "considerations": [
+      "number of affected work items",
+      "affected commitments",
+      "affected deadlines",
+      "affected customers",
+      "affected projects",
+      "financial consequence",
+      "operational consequence",
+      "safety consequence",
+      "resource consequence",
+      "strategic consequence"
+    ],
+
+    "rules": [
+      "A dependency affecting multiple work items may warrant greater operational significance.",
+      "Downstream impact must not be calculated solely from the number of linked items.",
+      "One high-consequence downstream obligation may matter more than many trivial ones.",
+      "Priority Engine determines how downstream impact affects canonical priority.",
+      "Attention Engine determines whether downstream impact warrants user presentation."
+    ]
+  },
+
+  "alternate_paths": {
+    "purpose": "Recognize when the required outcome can be achieved without waiting for the original dependency.",
+
+    "rules": [
+      "An alternate path must be operationally legitimate, not merely theoretically possible.",
+      "Using an alternate path may satisfy, remove, or supersede the original dependency.",
+      "A.R.I.A. should not recommend bypassing required approvals, safety controls, contractual requirements, or authority boundaries.",
+      "A changed execution method may create new dependencies.",
+      "Material alternate-path decisions should preserve why the original dependency no longer governs."
+    ]
+  },
+
+  "dependency_chains": {
+    "supported": true,
+
+    "rules": [
+      "A dependency may itself depend on another work item or condition.",
+      "Dependency chains should be traceable far enough to identify the actionable constraint.",
+      "A.R.I.A. should avoid presenting long dependency graphs when a concise actionable explanation is sufficient.",
+      "Circular dependencies should be detected when practical.",
+      "A circular dependency should be surfaced as an operational issue rather than allowed to create indefinite waiting.",
+      "Resolution of an upstream dependency should trigger reevaluation of downstream items."
+    ]
+  },
+
+  "ownership": {
+    "rules": [
+      "The owner of the dependent work is not automatically the owner of resolving the dependency.",
+      "The person being waited on is not automatically the owner of the dependent work.",
+      "Dependency resolution responsibility should be represented separately when known.",
+      "Unknown resolution ownership must not be invented.",
+      "Delegation Engine governs delegated execution responsibility when dependency resolution itself is delegated."
+    ]
+  },
+
+  "waiting_and_follow_up": {
+    "rules": [
+      "A work item may legitimately enter waiting status when a dependency becomes necessary for further progress.",
+      "Waiting should identify the dependency being awaited when known.",
+      "Follow-Up Engine determines when checking or pursuing an unresolved dependency becomes appropriate.",
+      "A dependency becoming blocking may justify earlier follow-up.",
+      "A satisfied dependency should stop unnecessary dependency follow-up.",
+      "A failed dependency may require alternate-path, ownership, scope, priority, or attention reevaluation."
+    ]
+  },
+
+  "resolution": {
+    "possible_evidence": [
+      "required information received",
+      "approval granted",
+      "decision made",
+      "required work item reaches necessary state",
+      "resource becomes available",
+      "system becomes available",
+      "required person or organization responds",
+      "event occurs",
+      "condition becomes true",
+      "authorized alternate path removes the requirement",
+      "other sufficient validation"
+    ],
+
+    "rules": [
+      "Dependency satisfaction means the required condition was met, not merely that activity occurred.",
+      "A response may fail to satisfy an information dependency if the required information remains missing.",
+      "A partial approval may fail to satisfy an approval dependency when full authorization is required.",
+      "Resolution evidence should be proportional to consequence and workflow.",
+      "Satisfying a dependency does not automatically complete the dependent work item.",
+      "Satisfied dependencies should trigger reevaluation of the next actionable state."
+    ]
+  },
+
+  "failure": {
+    "rules": [
+      "A dependency may fail when sufficient evidence establishes that the required condition cannot be achieved under the current path.",
+      "Delay alone does not prove dependency failure.",
+      "Non-response alone does not prove dependency failure.",
+      "Failure should identify the supported reason when known.",
+      "A failed dependency should trigger evaluation of alternate paths or required intervention.",
+      "Failure may materially affect related commitments and downstream work."
+    ]
+  },
+
+  "interaction_with_priority": {
+    "rules": [
+      "Dependency state may provide factors relevant to priority.",
+      "Priority Engine owns canonical priority scoring and banding.",
+      "A blocked high-consequence obligation may warrant increased priority.",
+      "A non-actionable blocker should not automatically become maximum priority.",
+      "Dependency Engine must not independently overwrite canonical priority."
+    ]
+  },
+
+  "interaction_with_attention": {
+    "rules": [
+      "Dependency Engine determines whether a dependency exists and whether it is currently blocking or at risk.",
+      "Attention Engine determines whether and how the condition should consume user attention.",
+      "Blocked work should remain quiet when no useful intervention is available and expectations remain acceptable.",
+      "A blocker should return to attention when user intervention becomes useful or consequence materially changes."
+    ]
+  },
+
+  "interaction_with_follow_up": {
+    "rules": [
+      "Dependency Engine determines dependency state.",
+      "Follow-Up Engine determines when unresolved dependencies should be rechecked or pursued.",
+      "Dependency timing may inform follow-up windows.",
+      "Follow-Up activity must not silently redefine dependency truth."
+    ]
+  },
+
+  "interaction_with_commitment": {
+    "rules": [
+      "Dependencies may threaten fulfillment of commitments.",
+      "Commitment Engine determines the state of the commitment.",
+      "Dependency Engine should expose conditions that place a commitment at risk.",
+      "A failed dependency does not automatically release a commitment."
+    ]
+  },
+
+  "interaction_with_delegation": {
+    "rules": [
+      "A delegated work item may depend on conditions outside the delegate's control.",
+      "Delegation Engine determines delegated execution state.",
+      "Dependency Engine determines the external or internal condition constraining that execution.",
+      "A blocker should not automatically be interpreted as delegate failure."
+    ]
+  },
+
+  "interaction_with_capture": {
+    "rules": [
+      "Capture Engine may identify dependencies from incoming information.",
+      "Dependency Engine governs sufficiently supported dependencies after capture.",
+      "New information about a dependency may create a materially new obligation requiring Capture Engine evaluation.",
+      "Dependency Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new dependency identified",
+      "dependent work reaches dependency point",
+      "dependency state changes",
+      "new activity occurs",
+      "required information arrives",
+      "approval state changes",
+      "decision occurs",
+      "resource availability changes",
+      "system availability changes",
+      "event occurs",
+      "condition changes",
+      "alternate path becomes available",
+      "dependency fails",
+      "upstream work changes",
+      "user requests dependency review"
+    ],
+
+    "rules": [
+      "Reevaluation must preserve dependency history.",
+      "Reevaluation should determine whether the dependency remains required.",
+      "Reevaluation should determine whether unresolved dependency is currently blocking.",
+      "Satisfied, failed, removed, or superseded dependencies should trigger reevaluation of affected work.",
+      "Material dependency changes may trigger Priority, Attention, Follow-Up, Commitment, and Delegation reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.dependencies",
+
+    "evaluation_output": [
+      "work_item_id",
+      "dependency_id",
+      "dependency_state",
+      "blocking",
+      "blocked_action",
+      "resolution_owner",
+      "required_condition",
+      "downstream_impact",
+      "recommended_reassessment",
+      "evaluated_at"
+    ],
+
+    "requirements": [
+      "Dependency evaluation must reference the applicable work_item_id.",
+      "Materially independent dependencies must remain distinguishable.",
+      "Known facts and inferred dependency interpretations must remain appropriately distinguishable.",
+      "Dependency state changes must preserve provenance.",
+      "Material dependency changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat every prerequisite as a current blocker.",
+    "Do not invent dependencies.",
+    "Do not invent dependency owners.",
+    "Do not infer failure from delay alone.",
+    "Do not infer failure from silence alone.",
+    "Do not blame a delegate for conditions outside their control.",
+    "Do not bypass required approvals or controls merely to remove a dependency.",
+    "Do not mark dependent work complete because a dependency was satisfied.",
+    "Do not allow blocked work to disappear indefinitely.",
+    "Do not repeatedly surface non-actionable blockers without meaningful change.",
+    "Do not blindly propagate priority through dependency chains.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Follow-Up Engine for pursuit timing.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not modify Core reasoning architecture as part of dependency management."
+  ]
+}
