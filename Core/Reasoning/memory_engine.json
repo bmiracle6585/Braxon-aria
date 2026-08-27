@@ -1,315 +1,279 @@
 {
   "specification": "ARIA_MEMORY_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. stores, retrieves, ranks, scopes, compresses, expires, and supplies memory to the reasoning system while keeping canonical knowledge, historical experience, user-specific experience, active case state, and conversational context logically separated.",
+  "version": "2.0.0",
+  "description": "Canonical memory reasoning behavior for A.R.I.A. The Memory Engine determines how authorized persistent and transient information is retrieved, ranked, scoped, diversified, compressed, assembled, refreshed, and supplied to reasoning while preserving the distinction between memory and truth. It does not duplicate canonical Evidence, Context, Case State, Hypothesis, Probability, Action, Route, Validation, Learning, Relationship, or Knowledge records.",
 
-  "core_principle": {
-    "statement": "ARIA shall not attempt to place everything she knows into the language model context. Memory shall be retrieved according to relevance, authority, scope, recency, diagnostic value, and current reasoning state.",
-    "rules": [
-      "Persistent intelligence shall exist outside the language model context window.",
-      "The language model receives a selected working set rather than the entire ARIA knowledge system.",
-      "Canonical knowledge, learned experience, user-specific experience, case history, and conversation history are distinct memory domains.",
-      "Memory retrieval shall preserve provenance.",
-      "Memory relevance does not imply truth.",
-      "User-specific memory shall remain scoped to the applicable user.",
-      "Current case evidence shall normally outrank historical similarity when determining present technical state.",
-      "Memory retrieval shall be dynamic as the reasoning state changes."
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "confidence_registry": "Core/Registries/confidence_levels.json",
+
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "validation": "Core/Reasoning/validating_engine.json",
+      "learning": "Core/Reasoning/learning_engine.json"
+    },
+
+    "role": "MEMORY_RETRIEVAL_CONTEXT_ASSEMBLY_AND_RETENTION_REASONING",
+
+    "owns": [
+      "memory retrieval reasoning",
+      "retrieval-need interpretation",
+      "memory-source selection",
+      "memory applicability assessment",
+      "memory relevance ranking",
+      "retrieval diversification",
+      "retrieval deduplication",
+      "memory compression reasoning",
+      "working-context assembly",
+      "context-budget management",
+      "memory freshness assessment",
+      "memory conflict surfacing",
+      "historical case retrieval",
+      "counterexample retrieval",
+      "authorized learned-pattern retrieval",
+      "authorized participant-context retrieval",
+      "canonical knowledge retrieval",
+      "procedural information retrieval",
+      "conversation continuity retrieval",
+      "transient working-memory assembly",
+      "memory retention recommendation reasoning",
+      "memory refresh reasoning",
+      "retrieval explainability"
+    ],
+
+    "does_not_own": [
+      "a universal memory persistence schema",
+      "canonical technical truth",
+      "canonical knowledge approval",
+      "canonical relationship vocabulary",
+      "canonical relationship creation",
+      "canonical relationship mutation",
+      "context vocabulary",
+      "context persistence",
+      "evidence persistence",
+      "evidence quality semantics",
+      "hypothesis persistence",
+      "hypothesis state transitions",
+      "probability calculation",
+      "probability calibration",
+      "uncertainty persistence",
+      "action persistence",
+      "action selection",
+      "route persistence",
+      "route selection",
+      "route progression",
+      "validation semantics",
+      "learning eligibility",
+      "learning generalization",
+      "case lifecycle state",
+      "case reasoning state",
+      "authoritative case history",
+      "engine invocation"
     ]
   },
 
-  "memory_domains": [
+  "core_principle": {
+    "statement": "Persistent intelligence shall exist outside the language-model context window. A.R.I.A. shall retrieve the smallest sufficient set of applicable information for the current reasoning operation while preserving provenance, authority, uncertainty, contradictions, and source identity. Remembering information does not make that information true.",
+
+    "rules": [
+      "The language model shall receive a selected working set rather than the entire persistent knowledge system.",
+      "Memory retrieval shall be task-sensitive and reasoning-state-sensitive.",
+      "Memory relevance does not imply truth.",
+      "Memory frequency does not imply truth.",
+      "Memory recency does not imply truth.",
+      "Memory similarity does not imply identical cause.",
+      "Retrieved information shall preserve its authoritative source identity when available.",
+      "Canonical knowledge, empirical learning, historical case records, current case state, conversation history, and transient working context shall remain distinguishable.",
+      "Current direct Evidence shall normally outrank merely similar historical experience when determining present technical state.",
+      "Historical counterexamples shall remain retrievable.",
+      "Material contradictions shall not be compressed away.",
+      "Memory shall not become a duplicate system of record for canonical entities.",
+      "Working memory shall be reconstructable from authoritative sources whenever practical.",
+      "Memory Engine shall remain technically domain-independent."
+    ]
+  },
+
+  "persistence_boundary": {
+    "principle": "Memory Engine defines memory behavior, not a competing universal persistence schema.",
+
+    "rules": [
+      "Memory Engine shall not define a canonical memory_record unless an authoritative schema explicitly establishes one.",
+      "Memory Engine shall not define a canonical working_memory_record unless an authoritative schema explicitly establishes one.",
+      "Memory Engine shall not define a canonical context_packet persistence object unless an authoritative schema explicitly establishes one.",
+      "Memory Engine shall not invent canonical memory IDs without a governing schema.",
+      "Canonical entities shall remain persisted through their authoritative schemas and systems.",
+      "Memory may retain references, indexes, summaries, embeddings, caches, retrieval metadata, or other implementation artifacts when authorized by the implementation architecture.",
+      "Implementation artifacts shall not silently become canonical truth.",
+      "If a future Memory schema is established, this engine shall defer persistence fields, identifiers, statuses, retention metadata, and storage semantics to that schema."
+    ]
+  },
+
+  "memory_source_classes": [
     {
-      "name": "CANONICAL_KNOWLEDGE",
-      "description": "Validated technical knowledge represented by the knowledge graph, authoritative references, technical relationships, product definitions, procedures, constraints, and engineering rules.",
-      "persistence": "LONG_TERM",
-      "authority": "HIGH"
+      "class": "CANONICAL_KNOWLEDGE",
+      "description": "Approved technical knowledge, authoritative references, governed technical rules, canonical relationships, definitions, constraints, and procedures."
     },
     {
-      "name": "EXPERIENCE_MEMORY",
-      "description": "Historical diagnostic experience derived from validated cases and stored through the Experience Ledger.",
-      "persistence": "LONG_TERM",
-      "authority": "EMPIRICAL"
+      "class": "CURRENT_CASE_STATE",
+      "description": "Authoritative or derived current case information assembled from the applicable canonical case components."
     },
     {
-      "name": "USER_MEMORY",
-      "description": "Contextual historical experience associated with a specific user, including applicable technical history, action performance, evidence patterns, and communication preferences.",
-      "persistence": "LONG_TERM",
-      "authority": "EMPIRICAL_CONTEXTUAL"
+      "class": "HISTORICAL_CASE",
+      "description": "Historical case records retained by their authoritative systems and retrievable as prior episodes."
     },
     {
-      "name": "CASE_MEMORY",
-      "description": "Complete historical record of an individual diagnostic case including observations, evidence, hypotheses, probabilities, routes, actions, outcomes, corrections, and validation.",
-      "persistence": "LONG_TERM",
-      "authority": "CASE_RECORD"
+      "class": "LEARNED_EXPERIENCE",
+      "description": "Authorized empirical patterns, historical frequencies, route performance, Action performance, recurrence patterns, contextual learning, and other Learning Engine outputs."
     },
     {
-      "name": "WORKING_MEMORY",
-      "description": "Current compact representation of information required to reason about the active case.",
-      "persistence": "ACTIVE_CASE",
-      "authority": "DERIVED_CURRENT_STATE"
+      "class": "PARTICIPANT_CONTEXT",
+      "description": "Authorized contextual information associated with users, teams, roles, or participants."
     },
     {
-      "name": "CONVERSATIONAL_MEMORY",
-      "description": "Recent conversational content required to understand references, intent, questions, answers, and dialogue continuity.",
-      "persistence": "SESSION_OR_CASE",
-      "authority": "CONVERSATIONAL"
+      "class": "CONVERSATIONAL_CONTEXT",
+      "description": "Conversation history required for continuity, references, intent, prior questions, prior answers, and active dialogue."
     },
     {
-      "name": "PROCEDURAL_MEMORY",
-      "description": "Reusable knowledge describing how diagnostic, configuration, installation, validation, and corrective actions are performed.",
-      "persistence": "LONG_TERM",
-      "authority": "MIXED"
+      "class": "PROCEDURAL_INFORMATION",
+      "description": "Authorized information describing how applicable technical, operational, diagnostic, validation, or corrective procedures are performed."
     },
     {
-      "name": "TEMPORARY_RETRIEVAL_MEMORY",
-      "description": "Information retrieved for a specific reasoning operation but not necessarily retained in active working memory after the operation completes.",
-      "persistence": "TRANSIENT",
-      "authority": "SOURCE_DEPENDENT"
+      "class": "SOURCE_DOCUMENT",
+      "description": "Documents, manuals, specifications, reports, records, or other source material retrievable in applicable portions."
+    },
+    {
+      "class": "TRANSIENT_REASONING_OUTPUT",
+      "description": "Temporary reasoning information useful to the current operation but not necessarily authorized for persistent retention."
     }
   ],
 
-  "working_memory": {
-    "purpose": "Maintain the smallest sufficient representation of the active diagnostic state.",
-
-    "required_sections": [
-      "CASE_IDENTITY",
-      "CURRENT_CONTEXT",
-      "CURRENT_SYMPTOMS",
-      "CURRENT_EVIDENCE",
-      "ACTIVE_HYPOTHESES",
-      "CURRENT_PROBABILITIES",
-      "RULED_OUT_HYPOTHESES",
-      "CONFIRMED_FINDINGS",
-      "COMPLETED_ACTIONS",
-      "PENDING_ACTIONS",
-      "UNRESOLVED_QUESTIONS",
-      "CURRENT_CONSTRAINTS",
-      "RECENT_ROUTE_HISTORY",
-      "CURRENT_NEXT_HOP"
-    ],
-
-    "rules": [
-      "Working memory shall represent current state rather than duplicate the entire case history.",
-      "Older details may be retrieved from case memory when needed.",
-      "Material contradictions shall remain represented until resolved.",
-      "Ruled-out hypotheses shall remain summarized sufficiently to prevent unnecessary repetition.",
-      "Working memory shall be reconstructable from authoritative case records."
-    ]
-  },
-
-  "working_memory_record": {
-    "required_fields": [
-      "case_id",
-      "generated_at",
-      "reasoning_state_version",
-      "context_summary",
-      "symptom_summary",
-      "evidence_summary",
-      "hypothesis_summary",
-      "probability_summary",
-      "completed_action_summary",
-      "unresolved_state",
-      "next_hop_state"
-    ]
-  },
-
-  "episodic_case_memory": {
-    "description": "Every diagnostic case is an episode that can later be retrieved by technical similarity.",
-
-    "retrieval_dimensions": [
-      "manufacturer",
-      "product_family",
-      "product",
-      "product_variant",
-      "hardware_revision",
-      "firmware",
-      "frequency_band",
-      "topology",
-      "scope",
-      "project_phase",
-      "symptoms",
-      "failure_mode",
-      "evidence_pattern",
-      "corrective_action",
-      "user",
-      "team",
-      "environment",
-      "recent_change",
-      "route_sequence"
-    ],
-
-    "rules": [
-      "Historical cases shall remain individually retrievable.",
-      "Case similarity shall not imply identical cause.",
-      "Retrieved cases shall preserve their outcome confidence and learning eligibility.",
-      "Low-quality historical cases shall not be presented as equivalent to fully validated cases.",
-      "ARIA shall be capable of retrieving both similar successful cases and important counterexamples."
-    ]
-  },
-
-  "user_memory": {
-    "description": "ARIA shall maintain user-specific experience without cloning the entire global knowledge graph for each user.",
-
-    "architecture": "SHARED_KNOWLEDGE_PLUS_USER_OVERLAY",
-
-    "shared_layer": [
-      "canonical technical knowledge",
-      "manufacturer knowledge",
-      "product knowledge",
-      "failure modes",
-      "procedures",
-      "general historical experience"
-    ],
-
-    "user_overlay": [
-      "user-specific case references",
-      "user-specific learned priors",
-      "action-performance statistics",
-      "evidence-quality history",
-      "product experience",
-      "manufacturer experience",
-      "scope experience",
-      "communication preferences",
-      "recent relevant cases"
-    ],
-
-    "rules": [
-      "The knowledge graph shall not be physically duplicated for each user.",
-      "The Experience Ledger shall not be physically duplicated for each user.",
-      "User overlays shall reference shared entities and shared case structures.",
-      "User-specific aggregates may be materialized for performance.",
-      "A user overlay shall modify retrieval and reasoning context without creating a separate technical universe."
-    ]
-  },
-
-  "memory_graph_relationships": [
-    "REMEMBERS_CASE",
-    "PARTICIPATED_IN_CASE",
-    "OBSERVED",
-    "PERFORMED_ACTION",
-    "PROVIDED_EVIDENCE",
-    "CONFIGURED",
-    "INSTALLED",
-    "TESTED",
-    "VALIDATED",
-    "EXPERIENCED_FAILURE",
-    "RESOLVED_FAILURE",
-    "HAS_PRODUCT_EXPERIENCE",
-    "HAS_MANUFACTURER_EXPERIENCE",
-    "HAS_SCOPE_EXPERIENCE",
-    "SIMILAR_TO_CASE",
-    "DERIVED_FROM_CASE",
-    "SUPPORTED_BY_MEMORY",
-    "CONTRADICTED_BY_MEMORY"
+  "source_class_rules": [
+    "Memory source classes are reasoning classifications unless an authoritative schema establishes them as persisted values.",
+    "One source may participate in more than one retrieval purpose without becoming duplicated canonical information.",
+    "Source class shall not determine truth by itself.",
+    "Source authority and source relevance shall remain separate.",
+    "Learned Experience shall remain distinguishable from Canonical Knowledge.",
+    "Historical Case information shall remain distinguishable from current Case State.",
+    "Conversational Context shall not automatically become technical Evidence.",
+    "Transient Reasoning Output shall not automatically become persistent Memory."
   ],
 
-  "retrieval_pipeline": {
-    "steps": [
-      {
-        "step": 1,
-        "name": "DEFINE_RETRIEVAL_NEED",
-        "description": "Determine what information the current reasoning operation requires."
-      },
-      {
-        "step": 2,
-        "name": "SELECT_MEMORY_DOMAINS",
-        "description": "Determine which memory domains are relevant."
-      },
-      {
-        "step": 3,
-        "name": "APPLY_SCOPE_FILTERS",
-        "description": "Restrict retrieval according to applicable user, product, manufacturer, case, topology, scope, time, and other context."
-      },
-      {
-        "step": 4,
-        "name": "RETRIEVE_CANDIDATES",
-        "description": "Retrieve candidate graph nodes, records, documents, cases, experience events, and summaries."
-      },
-      {
-        "step": 5,
-        "name": "RANK_CANDIDATES",
-        "description": "Rank candidate memories according to relevance and reasoning value."
-      },
-      {
-        "step": 6,
-        "name": "DIVERSIFY",
-        "description": "Prevent near-duplicate retrieved memories from consuming the working context."
-      },
-      {
-        "step": 7,
-        "name": "AUTHORITY_CHECK",
-        "description": "Preserve distinction between canonical, empirical, conversational, and uncertain information."
-      },
-      {
-        "step": 8,
-        "name": "COMPRESS",
-        "description": "Reduce retrieved material into the smallest representation that preserves diagnostically important meaning."
-      },
-      {
-        "step": 9,
-        "name": "ASSEMBLE_WORKING_CONTEXT",
-        "description": "Construct the information package supplied to the reasoning operation."
-      }
-    ]
-  },
-
-  "retrieval_score": {
-    "method": "MULTI_FACTOR_RELEVANCE",
-
-    "candidate_dimensions": [
-      "SEMANTIC_RELEVANCE",
-      "GRAPH_DISTANCE",
-      "CONTEXT_MATCH",
-      "DIAGNOSTIC_RELEVANCE",
-      "SOURCE_AUTHORITY",
-      "EVIDENCE_QUALITY",
-      "CASE_VALIDATION_QUALITY",
-      "RECENCY",
-      "USER_APPLICABILITY",
-      "PRODUCT_APPLICABILITY",
-      "ROUTE_RELEVANCE",
-      "NOVELTY",
-      "CONTRADICTION_VALUE"
-    ],
-
-    "conceptual_formula": "retrieval_score = relevance + applicability + authority + diagnostic_value + novelty - redundancy",
-
-    "rules": [
-      "Exact weights shall remain configurable.",
-      "Retrieval scoring shall depend on the reasoning task.",
-      "Canonical knowledge may receive higher authority while empirical cases may receive higher contextual similarity.",
-      "Contradictory memories may receive increased retrieval value when they challenge the leading hypothesis."
-    ]
-  },
+  "retrieval_pipeline": [
+    {
+      "step": 1,
+      "name": "DEFINE_RETRIEVAL_NEED",
+      "description": "Determine what information the current reasoning operation actually requires."
+    },
+    {
+      "step": 2,
+      "name": "IDENTIFY_APPLICABLE_SOURCE_CLASSES",
+      "description": "Determine which authorized memory-source classes may contain relevant information."
+    },
+    {
+      "step": 3,
+      "name": "RESOLVE_APPLICABLE_CONTEXT",
+      "description": "Consume canonical Context required to constrain retrieval and applicability."
+    },
+    {
+      "step": 4,
+      "name": "APPLY_AUTHORIZATION_AND_SCOPE",
+      "description": "Restrict retrieval to information authorized and applicable to the current operation, case, participant, organization, or other canonical Context."
+    },
+    {
+      "step": 5,
+      "name": "RETRIEVE_CANDIDATES",
+      "description": "Retrieve candidate records, references, knowledge, learned patterns, historical cases, document sections, conversational history, or other authorized information."
+    },
+    {
+      "step": 6,
+      "name": "ASSESS_APPLICABILITY",
+      "description": "Determine how well each candidate applies to the current Context and reasoning need."
+    },
+    {
+      "step": 7,
+      "name": "ASSESS_AUTHORITY_AND_PROVENANCE",
+      "description": "Preserve the candidate's authority, provenance, confidence, validation state, and source type as applicable."
+    },
+    {
+      "step": 8,
+      "name": "RANK_CANDIDATES",
+      "description": "Rank candidates according to current reasoning value rather than simple similarity alone."
+    },
+    {
+      "step": 9,
+      "name": "DIVERSIFY_AND_DEDUPLICATE",
+      "description": "Reduce redundant retrieval while preserving materially different sources, alternatives, and counterexamples."
+    },
+    {
+      "step": 10,
+      "name": "CHECK_CONFLICTS_AND_COUNTEREXAMPLES",
+      "description": "Ensure material contradictory information and high-value counterexamples are not suppressed by majority similarity."
+    },
+    {
+      "step": 11,
+      "name": "COMPRESS",
+      "description": "Reduce retrieved material to the smallest representation that preserves reasoning-critical meaning."
+    },
+    {
+      "step": 12,
+      "name": "ASSEMBLE_WORKING_CONTEXT",
+      "description": "Construct the task-specific information package supplied to the reasoning operation."
+    },
+    {
+      "step": 13,
+      "name": "RETURN_PROVENANCE_AND_RETRIEVAL_STATE",
+      "description": "Return sufficient provenance and retrieval metadata to explain why information was supplied."
+    }
+  ],
 
   "retrieval_modes": [
     {
-      "name": "GRAPH_RETRIEVAL",
-      "description": "Traverse explicit relationships between technical entities."
+      "mode": "STRUCTURED_RETRIEVAL",
+      "description": "Retrieve information using explicit structured identifiers, fields, or canonical Context."
     },
     {
-      "name": "SEMANTIC_RETRIEVAL",
-      "description": "Retrieve information based on semantic similarity."
+      "mode": "RELATIONSHIP_RETRIEVAL",
+      "description": "Traverse canonical Relationships relevant to the reasoning need."
     },
     {
-      "name": "STRUCTURED_FILTER_RETRIEVAL",
-      "description": "Retrieve records matching explicit structured fields."
+      "mode": "SEMANTIC_RETRIEVAL",
+      "description": "Retrieve information according to semantic similarity."
     },
     {
-      "name": "CASE_SIMILARITY_RETRIEVAL",
-      "description": "Retrieve historically similar diagnostic episodes."
+      "mode": "CASE_SIMILARITY_RETRIEVAL",
+      "description": "Retrieve historically similar cases while preserving that similarity does not establish identical cause."
     },
     {
-      "name": "USER_OVERLAY_RETRIEVAL",
-      "description": "Retrieve applicable user-specific historical experience."
+      "mode": "TEMPORAL_RETRIEVAL",
+      "description": "Retrieve information according to applicable temporal relationships."
     },
     {
-      "name": "TEMPORAL_RETRIEVAL",
-      "description": "Retrieve information according to time relationships."
+      "mode": "PARTICIPANT_CONTEXT_RETRIEVAL",
+      "description": "Retrieve authorized participant-specific or team-specific contextual experience."
     },
     {
-      "name": "HYBRID_RETRIEVAL",
-      "description": "Combine graph, semantic, structured, user, and temporal retrieval."
+      "mode": "LEARNED_PATTERN_RETRIEVAL",
+      "description": "Retrieve authorized empirical patterns produced through the Learning architecture."
+    },
+    {
+      "mode": "DOCUMENT_SECTION_RETRIEVAL",
+      "description": "Retrieve applicable portions of larger source documents rather than loading the complete source unnecessarily."
+    },
+    {
+      "mode": "CONVERSATIONAL_RETRIEVAL",
+      "description": "Retrieve prior dialogue necessary to maintain conversational continuity."
+    },
+    {
+      "mode": "HYBRID_RETRIEVAL",
+      "description": "Combine complementary retrieval modes when doing so materially improves reasoning quality."
     }
   ],
 
@@ -318,336 +282,939 @@
 
     "rules": [
       "Semantic similarity alone shall not determine technical applicability.",
-      "Graph relationships alone may be insufficient when terminology differs.",
-      "Structured filters shall be used whenever applicable context is known.",
-      "Hybrid retrieval should combine complementary retrieval methods when the diagnostic value justifies it."
+      "Relationship traversal alone may be insufficient when terminology or representation differs.",
+      "Structured retrieval should be used when reliable identifiers or canonical Context are available.",
+      "Historical case retrieval should include materially useful counterexamples when appropriate.",
+      "Document retrieval should prefer relevant sections over complete-document injection when sufficient.",
+      "Hybrid retrieval shall be proportional to the reasoning need and context budget.",
+      "Retrieval modes shall not create new canonical Relationships."
+    ]
+  },
+
+  "retrieval_ranking": {
+    "principle": "Retrieval ranking determines reasoning value for the current operation and shall not be interpreted as a universal truth score.",
+
+    "candidate_dimensions": [
+      "task relevance",
+      "semantic relevance",
+      "context applicability",
+      "relationship relevance",
+      "diagnostic relevance",
+      "source authority",
+      "source provenance quality",
+      "Evidence Quality Confidence",
+      "Validation Confidence",
+      "Causal Confidence",
+      "Resolution Confidence",
+      "Learning Confidence",
+      "Context Confidence",
+      "recency relevance",
+      "temporal applicability",
+      "participant applicability",
+      "technical applicability",
+      "novelty",
+      "contradiction value",
+      "counterexample value",
+      "redundancy",
+      "retrieval cost"
+    ],
+
+    "rules": [
+      "Exact implementation weights may remain configurable.",
+      "Memory Engine shall not establish a universal numerical truth formula.",
+      "Ranking shall depend on the reasoning task.",
+      "High relevance shall not erase low authority.",
+      "High authority shall not guarantee current applicability.",
+      "Recent information shall not automatically outrank stable canonical knowledge.",
+      "Historical majority shall not automatically outrank applicable deterministic technical knowledge.",
+      "Contradictory memories may receive increased retrieval value when they challenge an active assumption or leading hypothesis.",
+      "Current direct Evidence may outrank historically frequent patterns when determining current technical state.",
+      "Ranking shall preserve source distinctions needed by downstream reasoning."
+    ]
+  },
+
+  "context_boundary": {
+    "principle": "Memory uses canonical Context to scope retrieval but does not define a competing Context vocabulary.",
+
+    "rules": [
+      "Context Engine owns canonical Context resolution.",
+      "Memory Engine shall not define universal memory scope dimensions that compete with Context.",
+      "Memory retrieval may filter using any applicable canonical Context dimension.",
+      "Memory applicability may depend on multiple Context dimensions simultaneously.",
+      "More specific applicable Context may constrain broader retrieval.",
+      "Unknown material Context shall preserve applicability uncertainty.",
+      "Memory Engine shall not infer a missing Context value solely because a historical memory is similar."
+    ]
+  },
+
+  "relationship_boundary": {
+    "principle": "Memory may traverse and reference canonical Relationships but shall not invent a separate memory relationship vocabulary.",
+
+    "rules": [
+      "Memory Engine shall consume canonical Relationships.",
+      "Memory Engine shall not create relationship types such as REMEMBERS_CASE, SIMILAR_TO_CASE, SUPPORTED_BY_MEMORY, or other competing relationship semantics unless established by the canonical relationship architecture.",
+      "Similarity may exist as a retrieval computation without becoming a canonical Relationship.",
+      "Derived retrieval association shall remain distinguishable from canonical relationship state.",
+      "Learning Engine may propose candidate knowledge relationships through governance; Memory does not promote them."
+    ]
+  },
+
+  "working_memory": {
+    "principle": "Working memory is a transient, task-specific projection of authoritative and authorized information needed for current reasoning. It is not a second Case State schema.",
+
+    "candidate_content": [
+      "current task",
+      "current case identity",
+      "applicable Context",
+      "material symptoms",
+      "material Evidence",
+      "active hypotheses",
+      "current probability state",
+      "material uncertainty",
+      "completed Actions",
+      "pending or selected Action information",
+      "route state",
+      "validation state",
+      "resolution state",
+      "constraints",
+      "unresolved questions",
+      "material contradictions",
+      "applicable canonical knowledge",
+      "applicable learned experience",
+      "relevant historical cases",
+      "counterexamples",
+      "recent conversation",
+      "output requirements"
+    ],
+
+    "rules": [
+      "Candidate content does not create required persisted fields.",
+      "Working memory content shall depend on the current reasoning operation.",
+      "Working memory shall represent current reasoning needs rather than duplicate complete case history.",
+      "Working memory shall reference authoritative source information where practical.",
+      "Material contradictions shall remain represented.",
+      "Material uncertainty shall remain represented.",
+      "Ruled-out or rejected possibilities may be summarized sufficiently to prevent unnecessary repetition when relevant.",
+      "Older detail may be retrieved from authoritative history when required.",
+      "Working memory should be reconstructable from authoritative sources plus authorized transient reasoning state.",
+      "Working memory may be discarded or regenerated without deleting canonical records."
     ]
   },
 
   "context_budget": {
-    "description": "ARIA shall treat language-model context as a scarce computational resource.",
+    "principle": "Language-model context is a scarce computational resource and shall be allocated according to current reasoning value.",
 
-    "priority_order": [
+    "default_priority_concepts": [
+      "CURRENT_TASK",
       "CURRENT_CASE_STATE",
       "CURRENT_HIGH_VALUE_EVIDENCE",
+      "MATERIAL_UNCERTAINTY",
       "ACTIVE_HYPOTHESES",
       "CURRENT_PROBABILITY_STATE",
-      "IMMEDIATE_ROUTING_NEED",
+      "IMMEDIATE_DECISION_OR_ROUTING_NEED",
       "APPLICABLE_CANONICAL_KNOWLEDGE",
-      "HIGH_VALUE_USER_MEMORY",
-      "HIGH_VALUE_SIMILAR_CASES",
+      "APPLICABLE_VALIDATION_STATE",
+      "HIGH_VALUE_LEARNED_EXPERIENCE",
+      "HIGH_VALUE_HISTORICAL_CASES",
+      "COUNTEREXAMPLES",
       "RECENT_CONVERSATION",
       "LOWER_PRIORITY_BACKGROUND"
     ],
 
     "rules": [
+      "Priority concepts are not mandatory packet fields.",
       "Context shall be assembled for the current operation rather than permanently loaded.",
-      "Large source documents should normally be retrieved in relevant sections rather than injected in full.",
+      "Large source documents should normally be retrieved in applicable sections.",
       "Repeated information should be deduplicated before context assembly.",
-      "Structured representations should be preferred when they preserve meaning more efficiently than prose.",
-      "Critical provenance references shall survive compression."
+      "Structured representations should be preferred when they preserve required meaning more efficiently than prose.",
+      "Exact values needed for technical reasoning shall not be lost merely to save tokens.",
+      "Critical provenance references shall survive compression.",
+      "Material contradictions shall survive compression.",
+      "Material uncertainty shall survive compression.",
+      "The context budget may change according to operation complexity and model capability."
     ]
   },
 
-  "context_packet": {
-    "required_sections": [
+  "context_assembly": {
+    "principle": "The working context supplied to a reasoning operation shall contain sufficient information to perform the task while preserving source distinctions.",
+
+    "candidate_sections": [
       "TASK",
       "CURRENT_STATE",
-      "AUTHORITATIVE_FACTS",
+      "APPLICABLE_CONTEXT",
+      "AUTHORITATIVE_KNOWLEDGE",
       "ACTIVE_EVIDENCE",
       "ACTIVE_HYPOTHESES",
       "PROBABILITY_STATE",
-      "RELEVANT_KNOWLEDGE",
-      "RELEVANT_EXPERIENCE",
-      "USER_CONTEXT",
+      "UNCERTAINTY_STATE",
+      "DECISION_STATE",
+      "ROUTE_STATE",
+      "VALIDATION_STATE",
+      "LEARNED_EXPERIENCE",
+      "SIMILAR_CASES",
+      "COUNTEREXAMPLES",
+      "PARTICIPANT_CONTEXT",
+      "PROCEDURAL_INFORMATION",
+      "RECENT_DIALOGUE",
       "CONSTRAINTS",
       "OUTPUT_REQUIREMENT"
     ],
 
-    "optional_sections": [
-      "SIMILAR_CASES",
-      "COUNTEREXAMPLES",
-      "PROCEDURES",
-      "RECENT_DIALOGUE",
-      "UNRESOLVED_CONTRADICTIONS",
-      "ROUTE_HISTORY"
+    "rules": [
+      "Candidate sections do not define a canonical context_packet schema.",
+      "Only sections relevant to the current operation need to be supplied.",
+      "The same source should not be redundantly repeated across multiple sections.",
+      "Authority and provenance shall remain distinguishable.",
+      "Learned experience shall not be presented as canonical knowledge.",
+      "Historical case state shall not be presented as current case state.",
+      "Conversation statements shall not be presented as verified Evidence unless they have entered the Evidence architecture."
     ]
   },
 
   "memory_compression": {
     "enabled": true,
 
-    "compression_types": [
+    "compression_classes": [
       "CASE_STATE_SUMMARY",
       "CONVERSATION_SUMMARY",
       "EVIDENCE_SUMMARY",
+      "HYPOTHESIS_SUMMARY",
       "ROUTE_SUMMARY",
-      "USER_HISTORY_SUMMARY",
-      "SIMILAR_CASE_SUMMARY",
+      "VALIDATION_SUMMARY",
+      "LEARNED_EXPERIENCE_SUMMARY",
+      "PARTICIPANT_CONTEXT_SUMMARY",
+      "HISTORICAL_CASE_SUMMARY",
       "DOCUMENT_SECTION_SUMMARY"
     ],
 
     "rules": [
       "Compression shall not replace authoritative source records.",
-      "A summary shall preserve references to underlying records.",
-      "Material uncertainty and contradictions shall survive compression.",
+      "A summary should preserve references to underlying records when available.",
+      "Material uncertainty shall survive compression.",
+      "Material contradictions shall survive compression.",
+      "Causal qualification shall survive compression.",
+      "Validation qualification shall survive compression.",
+      "Scope restrictions shall survive compression.",
       "Exact values required for calculations shall not be replaced by vague summaries.",
-      "Summaries may be regenerated when underlying records change."
+      "Critical temporal ordering shall survive compression when relevant.",
+      "Summaries may be regenerated when underlying information changes.",
+      "A summary shall not increase the authority of its source information."
     ]
   },
 
-  "memory_deduplication": {
+  "deduplication_and_diversification": {
     "enabled": true,
 
+    "principle": "Retrieval should minimize redundant context without suppressing materially independent support, contradictions, or counterexamples.",
+
     "rules": [
-      "Equivalent memories shall not consume context repeatedly.",
-      "Duplicate source artifacts shall be identified when practical.",
-      "Multiple historical aggregates derived from the same cases shall not be presented as independent evidence.",
-      "Shared technical concepts shall be represented once and referenced from multiple contexts.",
-      "Deduplication shall preserve meaningful contextual differences."
+      "Equivalent retrieval results should not consume context repeatedly.",
+      "Duplicate source artifacts should be identified when practical.",
+      "Multiple summaries derived from the same underlying records shall not be presented as independent support.",
+      "Learned aggregates and their source cases shall not be double-counted as independent Evidence.",
+      "Shared technical concepts may be represented once and referenced from multiple reasoning areas.",
+      "Deduplication shall preserve meaningful Context differences.",
+      "Deduplication shall preserve independent corroboration.",
+      "Diversification should include materially different plausible explanations when relevant.",
+      "Diversification should include important counterexamples when relevant."
     ]
   },
 
-  "memory_freshness": {
+  "freshness_and_temporal_applicability": {
+    "principle": "Freshness is source-dependent and context-dependent. Age alone does not determine validity.",
+
     "rules": [
-      "Current-state memories may become stale after technical changes.",
+      "Current-state information may become stale after material technical change.",
       "Stable canonical engineering knowledge does not become stale merely because it is old.",
-      "Firmware-specific and software-specific knowledge shall preserve version applicability.",
-      "User-specific behavioral experience may receive recency weighting.",
-      "Superseded information shall remain historically retrievable."
+      "Version-specific knowledge shall preserve version applicability.",
+      "Configuration-specific knowledge shall preserve configuration applicability.",
+      "Environment-dependent knowledge shall preserve applicable environmental conditions.",
+      "Participant-context learning may legitimately receive recency consideration.",
+      "Historical cases remain historical even when no longer predictive.",
+      "Superseded information may remain historically retrievable.",
+      "A newer source shall not automatically overwrite an older higher-authority source.",
+      "Temporal contradiction shall be resolved according to source semantics rather than simple recency."
     ]
   },
 
-  "memory_conflict_handling": {
-    "rules": [
-      "Conflicting memories shall preserve their source and authority.",
-      "Canonical documentation and field experience may disagree without either being silently deleted.",
-      "Current direct evidence may establish that a device is not behaving according to documented expectation.",
-      "Historical majority shall not automatically override an applicable deterministic technical rule.",
-      "Material conflicts shall be surfaced to the reasoning engine."
-    ]
-  },
-
-  "memory_scope": {
-    "scope_dimensions": [
-      "GLOBAL",
-      "ORGANIZATION",
-      "MANUFACTURER",
-      "PRODUCT_FAMILY",
-      "PRODUCT",
-      "PRODUCT_VARIANT",
-      "FIRMWARE",
-      "CUSTOMER",
-      "PROJECT",
-      "SITE",
-      "PATH",
-      "USER",
-      "TEAM",
-      "CASE"
-    ],
+  "conflict_handling": {
+    "principle": "Memory retrieval shall preserve meaningful disagreement rather than silently selecting the most frequent or most recent remembered claim.",
 
     "rules": [
-      "A memory may have multiple applicable scopes.",
-      "More specific scope does not automatically imply greater truth.",
-      "Retrieval shall favor the most applicable sufficiently reliable scope.",
-      "Unknown scope shall reduce applicability confidence."
+      "Conflicting memories shall preserve source identity and authority.",
+      "Canonical knowledge and empirical field experience may disagree without either being silently deleted.",
+      "Current direct Evidence may demonstrate behavior inconsistent with documented expectation.",
+      "Historical majority shall not automatically override an applicable deterministic rule.",
+      "A canonical rule shall not cause contradictory current Evidence to disappear.",
+      "Conflicting learned patterns shall remain distinguishable.",
+      "Material conflicts shall be surfaced to the applicable reasoning engine.",
+      "Memory Engine shall not independently resolve technical contradictions outside its authority."
     ]
   },
 
-  "memory_write_policy": {
-    "description": "Not everything discussed with ARIA becomes persistent memory.",
-
-    "persistent_write_targets": [
-      "VALIDATED_CASE_RECORD",
-      "VALIDATED_EVIDENCE",
-      "EXPERIENCE_LEDGER_EVENT",
-      "APPROVED_USER_EXPERIENCE",
-      "APPROVED_CANONICAL_KNOWLEDGE",
-      "AUDITABLE_REASONING_STATE",
-      "ROUTE_PERFORMANCE_EVENT"
-    ],
-
-    "nonautomatic_persistence": [
-      "CASUAL_CONVERSATION",
-      "UNVERIFIED_USER_ASSUMPTION",
-      "ARIA_SPECULATION",
-      "TEMPORARY_HYPOTHESIS",
-      "UNVALIDATED_TECHNICAL_CLAIM"
-    ],
-
-    "rules": [
-      "Persistent writes shall identify their target memory domain.",
-      "Temporary reasoning shall not silently become permanent learned experience.",
-      "Authoritative knowledge writes shall follow knowledge governance.",
-      "User-specific experience writes shall follow learning eligibility rules."
-    ]
-  },
-
-  "memory_invalidation": {
-    "rules": [
-      "Invalidation shall not normally delete historical records.",
-      "Invalid memories shall be excluded from current authoritative retrieval unless historical reconstruction requires them.",
-      "Derived summaries and aggregates affected by invalidation shall be regenerable.",
-      "Memory invalidation shall preserve reason, timestamp, and affected dependencies."
-    ]
-  },
-
-  "memory_reconstruction": {
+  "historical_case_retrieval": {
     "enabled": true,
 
-    "description": "ARIA shall be capable of reconstructing what she knew and why she reasoned as she did at an earlier point in a case.",
+    "principle": "Historical cases are prior episodes that may inform current reasoning through similarity, difference, counterexample value, and demonstrated outcomes.",
 
-    "required_sources": [
-      "CASE_STATE_HISTORY",
-      "EVIDENCE_HISTORY",
-      "HYPOTHESIS_HISTORY",
-      "PROBABILITY_HISTORY",
-      "ROUTE_HISTORY",
-      "CONVERSATION_HISTORY",
-      "KNOWLEDGE_VERSION_REFERENCES"
-    ]
-  },
-
-  "model_context_interface": {
-    "description": "Defines the boundary between ARIA's persistent intelligence and the language model.",
-
-    "model_receives": [
-      "CURRENT_TASK",
-      "CURATED_WORKING_MEMORY",
-      "RELEVANT_RETRIEVED_KNOWLEDGE",
-      "RELEVANT_RETRIEVED_EXPERIENCE",
-      "RELEVANT_USER_OVERLAY",
-      "RELEVANT_CONVERSATION",
-      "REASONING_CONSTRAINTS"
-    ],
-
-    "model_does_not_require": [
-      "ENTIRE_KNOWLEDGE_GRAPH",
-      "ENTIRE_EXPERIENCE_LEDGER",
-      "ENTIRE_USER_HISTORY",
-      "ENTIRE_CASE_DATABASE",
-      "ENTIRE_DOCUMENT_LIBRARY",
-      "ENTIRE_CONVERSATION_ARCHIVE"
+    "candidate_similarity_inputs": [
+      "canonical Context",
+      "symptoms",
+      "Evidence patterns",
+      "failure patterns",
+      "hypothesis patterns",
+      "Action history",
+      "route history",
+      "validation outcomes",
+      "causal outcomes",
+      "resolution outcomes",
+      "recurrence",
+      "participant Context",
+      "temporal relationships"
     ],
 
     "rules": [
-      "The model shall not be the authoritative storage layer.",
-      "Model context may be discarded and reconstructed.",
-      "The same persistent ARIA memory architecture may support different future language models.",
-      "Increasing ARIA's total stored knowledge shall not require proportional growth of the model context window."
+      "Candidate similarity inputs do not create a competing Context vocabulary.",
+      "Historical cases shall remain individually identifiable when available.",
+      "Case similarity shall not imply identical cause.",
+      "Case similarity shall not imply identical corrective Action.",
+      "Retrieved cases shall preserve their validation and causal limitations.",
+      "Low-quality historical cases shall not be represented as equivalent to strongly validated cases.",
+      "A.R.I.A. should retrieve important counterexamples when they materially challenge a current inference.",
+      "Historical cases may inform reasoning but shall not override stronger current Evidence."
     ]
   },
 
-  "example": {
-    "current_case": {
-      "user": "Clayton",
-      "manufacturer": "Nokia",
-      "product": "UBT-T",
-      "frequency_band": "18 GHz",
-      "scope": "Commissioning",
-      "symptom": "Main/Diversity RSL discrepancy"
-    },
+  "learned_experience_retrieval": {
+    "principle": "Memory retrieves authorized Learning outputs but does not create or reinterpret learned patterns outside the Learning Engine's authority.",
 
-    "total_available_memory": {
-      "canonical_nodes": 2400000,
-      "historical_cases": 185000,
-      "experience_events": 960000,
-      "documents": 41000,
-      "user_specific_events": 428
-    },
-
-    "retrieved_working_context": {
-      "canonical_relationships": 24,
-      "relevant_document_sections": 6,
-      "similar_cases": 8,
-      "user_specific_patterns": 4,
-      "active_case_evidence": 11,
-      "active_hypotheses": 5
-    },
-
-    "interpretation": "ARIA may possess millions of persistent records while supplying the language model only the small set needed for the current reasoning operation."
+    "rules": [
+      "Learning Engine owns learning eligibility and generalization.",
+      "Memory Engine may retrieve applicable learned frequencies, patterns, route performance, Action performance, recurrence patterns, participant Context, and candidate knowledge state when authorized.",
+      "Memory Engine shall preserve the learning scope.",
+      "Memory Engine shall preserve Learning Confidence when applicable.",
+      "Memory Engine shall preserve whether a learned pattern is associative, causal, operational, contextual, or candidate knowledge.",
+      "Memory Engine shall not convert learned frequency into current hypothesis probability.",
+      "Memory Engine shall not broaden the generalization scope of retrieved learning.",
+      "Memory Engine shall not promote candidate knowledge into canonical knowledge."
+    ]
   },
 
-  "semantic_rules": [
+  "participant_memory": {
+    "principle": "Participant-related memory is an authorized retrieval view over participant Context and learned experience, not a separate technical universe.",
+
+    "rules": [
+      "Participant-specific information shall remain scoped to the applicable participant and Context.",
+      "Memory Engine shall not create a universal participant credibility score.",
+      "Memory Engine shall not create a universal participant competence score.",
+      "Memory Engine shall not infer fault from reporter identity.",
+      "Participant-related learned patterns shall originate from the applicable Learning architecture.",
+      "Communication preferences may be retrieved separately from technical attribution.",
+      "Participant history shall not override stronger direct current Evidence.",
+      "Authorization and privacy constraints shall be respected by the implementation."
+    ]
+  },
+
+  "conversation_memory": {
+    "principle": "Conversation memory preserves continuity of dialogue without automatically converting statements into canonical technical facts.",
+
+    "rules": [
+      "Recent dialogue may be retrieved to resolve references and maintain continuity.",
+      "Conversation summaries shall preserve important commitments, corrections, constraints, and unresolved questions.",
+      "A user's statement may remain conversational information until represented through the appropriate Evidence or Context architecture.",
+      "Corrections in later conversation should supersede earlier conversational assumptions for current dialogue while preserving history where necessary.",
+      "Conversation memory shall not independently modify canonical technical records.",
+      "Conversation history may be compressed when exact wording is not required.",
+      "Exact wording shall be preserved when materially required by the task."
+    ]
+  },
+
+  "procedural_information": {
+    "principle": "Memory may retrieve authorized procedures but does not determine whether a procedure is currently safe, applicable, or selected.",
+
+    "rules": [
+      "Procedures shall preserve source and applicability.",
+      "Version-specific procedures shall preserve version Context.",
+      "A historically successful procedure shall not automatically become canonical.",
+      "Decision Engine selects Actions.",
+      "Routing Engine determines current route behavior.",
+      "Applicable safety constraints shall remain visible.",
+      "Memory retrieval shall not bypass current Decision or Validation requirements."
+    ]
+  },
+
+  "retention_reasoning": {
+    "principle": "Not every reasoning output warrants persistent retention. Memory may recommend retention based on future value, but persistence remains governed by the applicable storage and data-governance architecture.",
+
+    "candidate_retention_factors": [
+      "future reasoning value",
+      "source authority",
+      "learning value",
+      "case relevance",
+      "recurrence value",
+      "audit value",
+      "provenance value",
+      "user continuity value",
+      "technical uniqueness",
+      "replacement cost",
+      "reconstructability",
+      "sensitivity",
+      "staleness risk",
+      "duplication"
+    ],
+
+    "retention_recommendation_concepts": [
+      "RETAIN_REFERENCE",
+      "RETAIN_SUMMARY",
+      "RETAIN_INDEX",
+      "TRANSIENT_ONLY",
+      "REGENERATABLE",
+      "GOVERNANCE_REQUIRED"
+    ],
+
+    "rules": [
+      "Retention recommendation concepts are reasoning outputs unless established by an authoritative schema.",
+      "Memory Engine shall not invent universal retention durations.",
+      "Memory Engine shall not independently override privacy, security, legal, organizational, or storage-governance requirements.",
+      "Authoritative source records should generally be referenced rather than unnecessarily duplicated.",
+      "Regeneratable summaries need not be treated as authoritative permanent records.",
+      "High-value provenance may justify retention of references even when summaries are regenerated.",
+      "Sensitive information shall not be retained merely because it may be useful."
+    ]
+  },
+
+  "memory_refresh": {
+    "principle": "Derived memory artifacts shall be refreshed when their authoritative basis materially changes.",
+
+    "refresh_triggers": [
+      "SOURCE_RECORD_CHANGED",
+      "SOURCE_RECORD_INVALIDATED",
+      "SOURCE_RECORD_RETRACTED",
+      "CASE_STATE_CHANGED",
+      "CONTEXT_CHANGED",
+      "VALIDATION_CHANGED",
+      "LEARNING_CHANGED",
+      "CANONICAL_KNOWLEDGE_CHANGED",
+      "RELATIONSHIP_CHANGED",
+      "DUPLICATE_IDENTIFIED",
+      "AUTHORIZATION_CHANGED",
+      "SUMMARY_STALE",
+      "RETRIEVAL_INDEX_STALE"
+    ],
+
+    "rules": [
+      "Derived summaries may be regenerated.",
+      "Derived retrieval indexes may be refreshed.",
+      "Cached working context may be discarded when stale.",
+      "Historical authoritative records shall not be rewritten by memory refresh.",
+      "Invalidated source information shall no longer be represented as currently valid merely because an old summary contains it.",
+      "Refresh shall preserve historical provenance when required."
+    ]
+  },
+
+  "evidence_boundary": {
+    "principle": "Memory retrieves Evidence; Evidence Engine owns Evidence semantics and persistence.",
+
+    "rules": [
+      "Memory Engine shall not create a competing Evidence structure.",
+      "Memory Engine shall not redefine Evidence Quality Confidence.",
+      "Memory Engine shall not redefine evidence verification.",
+      "Memory Engine shall not redefine evidence independence.",
+      "Memory Engine shall not redefine evidence contradiction, invalidation, retraction, or supersession.",
+      "Evidence summaries shall preserve material provenance.",
+      "Conversation memory shall not be mislabeled as canonical Evidence.",
+      "Learned experience shall not be mislabeled as direct Evidence of a current-case condition.",
+      "Current direct Evidence may outweigh retrieved historical experience."
+    ]
+  },
+
+  "hypothesis_boundary": {
+    "principle": "Memory supplies applicable information to Hypothesis reasoning but does not create or transition hypotheses.",
+
+    "rules": [
+      "Memory Engine shall not create canonical hyp_<UUID> records.",
+      "Memory Engine shall not confirm hypotheses.",
+      "Memory Engine shall not eliminate hypotheses.",
+      "Memory may retrieve historical hypotheses and outcomes.",
+      "Memory may retrieve learned patterns relevant to hypothesis generation.",
+      "Hypothesis Engine determines current hypothesis state."
+    ]
+  },
+
+  "probability_boundary": {
+    "principle": "Memory supplies applicable historical and current information; Probability Engine determines numerical belief.",
+
+    "rules": [
+      "Memory Engine shall not calculate current hypothesis probabilities.",
+      "Memory Engine shall not normalize hypothesis probabilities.",
+      "Memory Engine shall not define universal priors.",
+      "Memory may retrieve learned historical frequencies.",
+      "Memory may retrieve current probability state when needed for continuity.",
+      "Retrieved frequency shall not be presented as current probability.",
+      "Probability Engine determines how retrieved information affects current belief."
+    ]
+  },
+
+  "uncertainty_boundary": {
+    "principle": "Memory preserves and retrieves uncertainty information but does not own uncertainty reasoning.",
+
+    "rules": [
+      "Memory Engine shall not create a competing uncertainty persistence model.",
+      "Memory shall preserve material uncertainty in summaries.",
+      "Memory may retrieve prior unresolved questions.",
+      "Memory may retrieve prior uncertainty-reduction attempts.",
+      "Historical uncertainty shall not automatically remain current after new Evidence.",
+      "Uncertainty Engine determines current uncertainty state."
+    ]
+  },
+
+  "decision_boundary": {
+    "principle": "Memory provides applicable historical information and procedures; Decision Engine selects current Actions.",
+
+    "rules": [
+      "Memory Engine shall not select act_<UUID>.",
+      "Memory may retrieve historical Action outcomes.",
+      "Memory may retrieve learned Action-performance information.",
+      "Memory may retrieve applicable procedures.",
+      "Historical popularity shall not determine current Action selection.",
+      "Decision Engine evaluates current applicability, risk, cost, and expected value."
+    ]
+  },
+
+  "routing_boundary": {
+    "principle": "Memory provides route history and learned route information; Routing Engine owns current route behavior.",
+
+    "rules": [
+      "Memory Engine shall not create route steps.",
+      "Memory Engine shall not change route costs.",
+      "Memory Engine shall not select route next hops.",
+      "Memory Engine shall not reroute.",
+      "Memory may retrieve previous route history.",
+      "Memory may retrieve learned route-performance patterns.",
+      "Routing Engine determines current route construction and progression."
+    ]
+  },
+
+  "validation_boundary": {
+    "principle": "Memory retrieves validation history and applicable results; Validation Engine determines what has been demonstrated.",
+
+    "rules": [
+      "Memory Engine shall not classify current validation results.",
+      "Memory Engine shall not redefine Validation Confidence.",
+      "Memory may retrieve prior validation outcomes.",
+      "Memory may retrieve prior expected and observed outcomes when authorized.",
+      "A historical successful validation shall not prove the current state.",
+      "Validation Engine determines current validation sufficiency."
+    ]
+  },
+
+  "learning_boundary": {
+    "principle": "Learning determines what experience means and what may be generalized. Memory determines how authorized learning is retained, retrieved, and supplied.",
+
+    "rules": [
+      "Memory Engine shall not determine learning eligibility.",
+      "Memory Engine shall not calculate learned frequencies.",
+      "Memory Engine shall not broaden learning scope.",
+      "Memory Engine shall not create participant performance judgments independently.",
+      "Memory Engine may retain or retrieve authorized Learning outputs.",
+      "Learning Engine remains authoritative for empirical generalization.",
+      "Candidate knowledge shall remain candidate knowledge when retrieved."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Case State owns assembled current case state. Memory may retrieve and project it but shall not become a competing case-state authority.",
+
+    "rules": [
+      "Memory Engine shall not directly set case lifecycle status.",
+      "Memory Engine shall not directly set case reasoning state.",
+      "Memory Engine shall not close or reopen cases.",
+      "Working memory shall not become a second canonical Case State.",
+      "Case history shall remain in authoritative case records.",
+      "Memory may retrieve historical state transitions for reasoning continuity.",
+      "Current Case State shall be refreshed when authoritative case information changes."
+    ]
+  },
+
+  "canonical_knowledge_boundary": {
+    "principle": "Memory retrieves canonical knowledge but does not decide what becomes canonical.",
+
+    "rules": [
+      "Memory Engine shall not approve canonical technical knowledge.",
+      "Memory Engine shall not silently promote learned patterns into canonical knowledge.",
+      "Memory Engine shall not mutate canonical Relationships.",
+      "Memory shall preserve canonical source identity.",
+      "Canonical knowledge may be indexed or summarized for retrieval without changing its authoritative meaning.",
+      "Conflicts between canonical knowledge and empirical experience shall remain distinguishable.",
+      "Knowledge-governance authority determines canonical promotion."
+    ]
+  },
+
+  "orchestration_boundary": {
+    "principle": "Memory Engine performs retrieval and context assembly when invoked. Orchestration determines when memory operations are required within the reasoning cycle.",
+
+    "rules": [
+      "Memory Engine shall not independently control the complete reasoning cycle.",
+      "Memory Engine shall not invoke every downstream reasoning engine.",
+      "Orchestration may request retrieval for a specific reasoning operation.",
+      "Memory Engine returns retrieved and assembled context to the requesting reasoning flow.",
+      "Material stale-memory detection may be returned to Orchestration.",
+      "Material retrieval conflicts may be returned to Orchestration.",
+      "Missing critical information may be returned as a retrieval limitation rather than invented."
+    ]
+  },
+
+  "retrieval_result": {
+    "recommended_outputs": [
+      "retrieval_need",
+      "source_classes_considered",
+      "retrieval_modes_used",
+      "applicable_context",
+      "retrieved_source_references",
+      "source_authority",
+      "source_provenance",
+      "applicability_assessment",
+      "relevance_assessment",
+      "freshness_assessment",
+      "deduplication_assessment",
+      "counterexamples",
+      "material_conflicts",
+      "compressed_context",
+      "omitted_low_value_information",
+      "retrieval_limitations",
+      "staleness_flags",
+      "reasoning_summary"
+    ],
+
+    "rules": [
+      "Outputs are reasoning results unless an authoritative schema establishes persisted fields.",
+      "Retrieval outputs shall preserve source distinctions.",
+      "Retrieval outputs shall not label remembered information true solely because it was retrieved.",
+      "Retrieval outputs shall not fabricate source references.",
+      "Retrieval outputs shall preserve material uncertainty.",
+      "Retrieval outputs shall preserve material contradictions.",
+      "Retrieval outputs shall preserve applicable learning scope.",
+      "Retrieval outputs shall preserve validation and causal qualifications when material.",
+      "Retrieval outputs shall not calculate hypothesis probability.",
+      "Retrieval outputs shall not select Actions.",
+      "Retrieval outputs shall not perform Routing.",
+      "Retrieval outputs shall not change Case State."
+    ]
+  },
+
+  "explainability": {
+    "required_questions": [
+      "What information was needed?",
+      "Which memory-source classes were searched?",
+      "What Context constrained retrieval?",
+      "Why was this information considered applicable?",
+      "What was its authority and provenance?",
+      "Was the information current, historical, learned, canonical, conversational, or transient?",
+      "Were similar results deduplicated?",
+      "Were important counterexamples retrieved?",
+      "Were material conflicts found?",
+      "What information was compressed?",
+      "What material information was omitted because of context limits?",
+      "What retrieval limitations remain?"
+    ],
+
+    "rules": [
+      "Memory explanations shall distinguish relevance from truth.",
+      "Memory explanations shall distinguish similarity from causality.",
+      "Memory explanations shall distinguish canonical knowledge from learned experience.",
+      "Memory explanations shall distinguish current Case State from historical case records.",
+      "Memory explanations shall disclose material retrieval limitations when they affect reasoning."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "rule_id": "MEM-RULE-001",
-      "rule": "ARIA's memory is not equivalent to the language model context window."
+      "failure_mode": "SECOND_MEMORY_SCHEMA",
+      "description": "Memory Engine creates a competing universal memory persistence contract.",
+      "prevention": "Keep persistence schema-authorized and separate from retrieval reasoning."
     },
     {
-      "rule_id": "MEM-RULE-002",
-      "rule": "Persistent intelligence shall remain reconstructable independently of any single language-model invocation."
+      "failure_mode": "SECOND_CASE_STATE",
+      "description": "Working memory becomes a competing authoritative representation of case state.",
+      "prevention": "Keep working memory transient and reconstructable from authoritative sources."
     },
     {
-      "rule_id": "MEM-RULE-003",
-      "rule": "The global knowledge graph and Experience Ledger shall be shared rather than physically replicated for every user."
+      "failure_mode": "SECOND_CONTEXT_VOCABULARY",
+      "description": "Memory Engine hardcodes universal scope dimensions that compete with canonical Context.",
+      "prevention": "Consume Context Engine outputs."
     },
     {
-      "rule_id": "MEM-RULE-004",
-      "rule": "User-specific intelligence shall be implemented as scoped overlays and relationships referencing shared technical entities and historical cases."
+      "failure_mode": "SECOND_RELATIONSHIP_VOCABULARY",
+      "description": "Memory Engine invents memory-specific canonical relationship types.",
+      "prevention": "Traverse canonical Relationships and keep retrieval similarity derived."
     },
     {
-      "rule_id": "MEM-RULE-005",
-      "rule": "Memory retrieval shall be driven by the current reasoning need."
+      "failure_mode": "MEMORY_EQUALS_TRUTH",
+      "description": "Retrieved information is treated as true merely because it was remembered.",
+      "prevention": "Preserve authority, provenance, confidence, validation, and source class."
     },
     {
-      "rule_id": "MEM-RULE-006",
-      "rule": "Semantic similarity shall not substitute for technical applicability."
+      "failure_mode": "SIMILARITY_EQUALS_CAUSALITY",
+      "description": "A similar historical case is treated as proof of identical cause.",
+      "prevention": "Use historical similarity as contextual information only."
     },
     {
-      "rule_id": "MEM-RULE-007",
-      "rule": "ARIA shall retrieve counterexamples and contradictory experience when diagnostically valuable."
+      "failure_mode": "RECENCY_EQUALS_AUTHORITY",
+      "description": "The newest memory automatically overrides older authoritative information.",
+      "prevention": "Evaluate freshness and authority separately."
     },
     {
-      "rule_id": "MEM-RULE-008",
-      "rule": "Working memory shall contain current state, not the complete history of how that state was reached."
+      "failure_mode": "FREQUENCY_EQUALS_AUTHORITY",
+      "description": "Frequently retrieved historical experience overrides applicable deterministic knowledge.",
+      "prevention": "Preserve empirical and canonical authority distinctions."
     },
     {
-      "rule_id": "MEM-RULE-009",
-      "rule": "Complete historical reasoning shall remain available outside working memory."
+      "failure_mode": "CURRENT_HISTORICAL_COLLAPSE",
+      "description": "Historical case state is represented as current technical state.",
+      "prevention": "Preserve temporal and case identity."
     },
     {
-      "rule_id": "MEM-RULE-010",
-      "rule": "Compression shall reduce context size without destroying provenance, uncertainty, contradictions, or calculation-critical values."
+      "failure_mode": "LEARNING_MEMORY_COLLAPSE",
+      "description": "Memory independently calculates or generalizes learned patterns.",
+      "prevention": "Learning Engine owns learning semantics."
     },
     {
-      "rule_id": "MEM-RULE-011",
-      "rule": "Repeated information shall not receive additional authority merely because it appears in multiple retrieved representations."
+      "failure_mode": "EXPERIENCE_LEDGER_ASSUMPTION",
+      "description": "Memory assumes an undeclared canonical Experience Ledger.",
+      "prevention": "Retrieve authorized Learning outputs and historical records through their actual authoritative structures."
     },
     {
-      "rule_id": "MEM-RULE-012",
-      "rule": "Memory scope and source authority shall remain explicit."
+      "failure_mode": "CONVERSATION_EQUALS_EVIDENCE",
+      "description": "Conversation history is automatically treated as canonical Evidence.",
+      "prevention": "Keep conversational information distinct until represented through the Evidence architecture."
     },
     {
-      "rule_id": "MEM-RULE-013",
-      "rule": "Historical experience shall influence current reasoning without becoming current-case evidence."
+      "failure_mode": "COMPRESSION_LOSS",
+      "description": "Compression removes material uncertainty, contradiction, provenance, qualification, or exact technical values.",
+      "prevention": "Preserve reasoning-critical information and references."
     },
     {
-      "rule_id": "MEM-RULE-014",
-      "rule": "Conversation history shall support continuity but shall not silently become canonical technical knowledge."
+      "failure_mode": "DUPLICATE_CONTEXT_INFLATION",
+      "description": "The same underlying information appears repeatedly and creates artificial reasoning weight.",
+      "prevention": "Deduplicate derived and dependent retrieval results."
     },
     {
-      "rule_id": "MEM-RULE-015",
-      "rule": "ARIA shall preserve the ability to reconstruct what information was available when a historical decision was made."
+      "failure_mode": "COUNTEREXAMPLE_SUPPRESSION",
+      "description": "Retrieval returns only memories supporting the leading interpretation.",
+      "prevention": "Retrieve material counterexamples and contradictions."
     },
     {
-      "rule_id": "MEM-RULE-016",
-      "rule": "Memory retrieval performance shall be improved through indexing, materialized aggregates, graph traversal, and scoped retrieval rather than uncontrolled duplication."
+      "failure_mode": "STALE_WORKING_MEMORY",
+      "description": "Derived working context remains in use after authoritative state materially changes.",
+      "prevention": "Refresh or regenerate derived memory artifacts."
     },
     {
-      "rule_id": "MEM-RULE-017",
-      "rule": "A memory may be relevant without being correct; retrieval and authority evaluation are separate operations."
+      "failure_mode": "EVIDENCE_AUTHORITY_LEAK",
+      "description": "Memory Engine recreates Evidence semantics.",
+      "prevention": "Consume Evidence Engine outputs."
     },
     {
-      "rule_id": "MEM-RULE-018",
-      "rule": "The language model may request memory retrieval but shall not independently fabricate persistent memories."
+      "failure_mode": "HYPOTHESIS_AUTHORITY_LEAK",
+      "description": "Memory Engine directly creates or transitions hypotheses.",
+      "prevention": "Hypothesis Engine owns hypothesis state."
     },
     {
-      "rule_id": "MEM-RULE-019",
-      "rule": "The memory architecture shall permit ARIA to change language models without losing her accumulated technical experience."
+      "failure_mode": "PROBABILITY_AUTHORITY_LEAK",
+      "description": "Memory Engine directly calculates current probabilities.",
+      "prevention": "Probability Engine owns numerical belief."
     },
     {
-      "rule_id": "MEM-RULE-020",
-      "rule": "ARIA's effective intelligence shall scale primarily through structured knowledge, experience, retrieval, and reasoning rather than requiring all accumulated knowledge to reside in model weights."
+      "failure_mode": "DECISION_AUTHORITY_LEAK",
+      "description": "Memory Engine selects current Actions based on historical memory.",
+      "prevention": "Decision Engine owns Action selection."
+    },
+    {
+      "failure_mode": "ROUTING_AUTHORITY_LEAK",
+      "description": "Memory Engine directly modifies current routes.",
+      "prevention": "Routing Engine owns route behavior."
+    },
+    {
+      "failure_mode": "VALIDATION_AUTHORITY_LEAK",
+      "description": "Memory Engine decides what the current state has demonstrated.",
+      "prevention": "Validation Engine owns validation reasoning."
+    },
+    {
+      "failure_mode": "LEARNING_AUTHORITY_LEAK",
+      "description": "Memory Engine independently determines what experience may be generalized.",
+      "prevention": "Learning Engine owns learning eligibility and generalization."
+    },
+    {
+      "failure_mode": "CANONICAL_KNOWLEDGE_AUTHORITY_LEAK",
+      "description": "Memory Engine promotes retrieved experience into canonical knowledge.",
+      "prevention": "Use the applicable knowledge-governance authority."
+    },
+    {
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal Memory Engine hardcodes a specific technology, vendor, product, customer, organization, protocol, or named user.",
+      "prevention": "Keep universal memory behavior domain-independent."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "MEM-INV-001",
+      "statement": "Memory relevance does not imply truth."
+    },
+    {
+      "invariant_id": "MEM-INV-002",
+      "statement": "Memory similarity does not imply identical cause."
+    },
+    {
+      "invariant_id": "MEM-INV-003",
+      "statement": "Memory recency does not imply authority."
+    },
+    {
+      "invariant_id": "MEM-INV-004",
+      "statement": "Memory frequency does not imply authority."
+    },
+    {
+      "invariant_id": "MEM-INV-005",
+      "statement": "Canonical knowledge remains distinguishable from learned experience."
+    },
+    {
+      "invariant_id": "MEM-INV-006",
+      "statement": "Current Case State remains distinguishable from historical case state."
+    },
+    {
+      "invariant_id": "MEM-INV-007",
+      "statement": "Conversational Context remains distinguishable from canonical Evidence."
+    },
+    {
+      "invariant_id": "MEM-INV-008",
+      "statement": "Working memory remains transient and does not become a second canonical Case State."
+    },
+    {
+      "invariant_id": "MEM-INV-009",
+      "statement": "Memory Engine does not define a competing universal memory persistence schema."
+    },
+    {
+      "invariant_id": "MEM-INV-010",
+      "statement": "Memory Engine does not define a competing Context vocabulary."
+    },
+    {
+      "invariant_id": "MEM-INV-011",
+      "statement": "Memory Engine does not define a competing canonical Relationship vocabulary."
+    },
+    {
+      "invariant_id": "MEM-INV-012",
+      "statement": "Authoritative source records remain distinct from compressed summaries."
+    },
+    {
+      "invariant_id": "MEM-INV-013",
+      "statement": "Material uncertainty survives retrieval compression."
+    },
+    {
+      "invariant_id": "MEM-INV-014",
+      "statement": "Material contradictions survive retrieval compression."
+    },
+    {
+      "invariant_id": "MEM-INV-015",
+      "statement": "Critical provenance survives retrieval compression."
+    },
+    {
+      "invariant_id": "MEM-INV-016",
+      "statement": "Duplicate retrieval does not create artificial reasoning weight."
+    },
+    {
+      "invariant_id": "MEM-INV-017",
+      "statement": "Material counterexamples remain retrievable."
+    },
+    {
+      "invariant_id": "MEM-INV-018",
+      "statement": "Memory Engine consumes rather than recreates Evidence semantics."
+    },
+    {
+      "invariant_id": "MEM-INV-019",
+      "statement": "Memory Engine does not calculate current hypothesis probability."
+    },
+    {
+      "invariant_id": "MEM-INV-020",
+      "statement": "Memory Engine does not directly manipulate hypothesis state."
+    },
+    {
+      "invariant_id": "MEM-INV-021",
+      "statement": "Memory Engine does not select current Actions."
+    },
+    {
+      "invariant_id": "MEM-INV-022",
+      "statement": "Memory Engine does not perform current Routing."
+    },
+    {
+      "invariant_id": "MEM-INV-023",
+      "statement": "Memory Engine does not determine current Validation results."
+    },
+    {
+      "invariant_id": "MEM-INV-024",
+      "statement": "Memory Engine does not determine learning eligibility or generalization."
+    },
+    {
+      "invariant_id": "MEM-INV-025",
+      "statement": "Memory Engine does not directly change Case State."
+    },
+    {
+      "invariant_id": "MEM-INV-026",
+      "statement": "Memory Engine does not directly promote empirical experience into canonical knowledge."
+    },
+    {
+      "invariant_id": "MEM-INV-027",
+      "statement": "Derived memory artifacts are refreshable when their authoritative basis changes."
+    },
+    {
+      "invariant_id": "MEM-INV-028",
+      "statement": "Memory Engine remains technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing canonical memory_record schema without an authoritative schema.",
+    "Defining a competing canonical working_memory_record schema without an authoritative schema.",
+    "Defining a competing canonical context_packet schema without an authoritative schema.",
+    "Treating working memory as authoritative Case State.",
+    "Treating remembered information as true solely because it was retrieved.",
+    "Treating a similar historical case as proof of identical cause.",
+    "Treating the newest memory as automatically authoritative.",
+    "Treating the most frequent historical memory as automatically authoritative.",
+    "Presenting historical case state as current case state.",
+    "Presenting learned experience as canonical technical knowledge.",
+    "Presenting conversational history as canonical Evidence without the Evidence workflow.",
+    "Assuming an undeclared canonical Experience Ledger.",
+    "Creating competing Context types or scope vocabularies.",
+    "Creating competing canonical Relationship types.",
+    "Creating canonical Relationships from retrieval similarity.",
+    "Calculating learned frequencies independently of Learning Engine.",
+    "Broadening the generalization scope of learned patterns.",
+    "Creating universal participant credibility scores.",
+    "Creating universal participant competence scores.",
+    "Inferring participant fault from reporter identity.",
+    "Compressing away material uncertainty.",
+    "Compressing away material contradictions.",
+    "Compressing away critical provenance.",
+    "Replacing exact values required for technical reasoning with vague summaries.",
+    "Presenting duplicate summaries as independent support.",
+    "Suppressing counterexamples because they disagree with the leading interpretation.",
+    "Continuing to use stale derived working context after authoritative state materially changes.",
+    "Recreating Evidence quality, verification, provenance, contradiction, invalidation, or independence semantics.",
+    "Directly creating, confirming, or eliminating hypotheses.",
+    "Directly calculating current hypothesis probabilities.",
+    "Directly selecting act_<UUID>.",
+    "Directly creating route steps.",
+    "Directly changing route costs.",
+    "Directly selecting route next hops.",
+    "Directly rerouting.",
+    "Directly classifying current Validation results.",
+    "Directly determining learning eligibility.",
+    "Directly generalizing empirical experience.",
+    "Directly changing case lifecycle status.",
+    "Directly changing case reasoning state.",
+    "Directly closing or reopening cases.",
+    "Directly approving canonical technical knowledge.",
+    "Directly promoting empirical experience into canonical knowledge.",
+    "Directly mutating canonical Relationships.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, electrical-specific, software-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, organization-specific, or named-user logic into the universal Memory Engine."
   ]
 }
