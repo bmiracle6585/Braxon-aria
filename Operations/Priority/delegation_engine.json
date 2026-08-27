@@ -1,0 +1,474 @@
+{
+  "engine": {
+    "id": "aria.operations.delegation_engine",
+    "name": "A.R.I.A. Delegation Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "delegation_management",
+    "status": "active",
+    "purpose": "Govern operational work assigned or transferred to another person, team, organization, or authorized system. The engine tracks execution responsibility, expectations, acknowledgement, progress, oversight, reassignment, return, and completion without confusing delegation with abandonment or completion.",
+    "principles": [
+      "Delegation transfers execution responsibility; it does not automatically eliminate accountability.",
+      "Delegated work remains active until appropriately resolved.",
+      "The person delegating work and the person executing it may have different responsibilities.",
+      "Delegation should reduce unnecessary attention load when work is progressing normally.",
+      "A.R.I.A. should not require constant status updates merely because work was delegated.",
+      "Expected outcomes should be clearer than vague activity instructions whenever possible.",
+      "Delegated work may support a commitment made by someone other than the delegate.",
+      "A delegate's completion claim may require verification when consequence or workflow warrants it.",
+      "Reassignment must preserve delegation history.",
+      "Failure to acknowledge delegation does not automatically mean refusal.",
+      "Lack of visible progress does not automatically mean no progress exists.",
+      "Delegation state may affect follow-up, priority, and attention but does not own those decisions.",
+      "Delegation management must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+
+    "applicable_conditions": [
+      "delegation.is_delegated is true",
+      "work is explicitly assigned to another party",
+      "execution responsibility changes",
+      "delegated work is acknowledged",
+      "delegated work progresses",
+      "delegated work reaches an expected completion point",
+      "delegated work is reported complete",
+      "delegated work is returned, rejected, or reassigned"
+    ],
+
+    "context": [
+      "current_time",
+      "owner",
+      "delegation",
+      "commitment",
+      "timing",
+      "status",
+      "priority",
+      "attention",
+      "follow_up",
+      "activity",
+      "dependencies",
+      "related_work_items",
+      "source history"
+    ]
+  },
+
+  "delegation_states": {
+    "candidate": {
+      "description": "Available information suggests execution responsibility may have been delegated, but the assignment is not sufficiently established."
+    },
+
+    "assigned": {
+      "description": "Execution responsibility has been assigned to another party but acknowledgement is not yet established or required."
+    },
+
+    "acknowledged": {
+      "description": "The delegate has sufficiently acknowledged responsibility for the assigned work."
+    },
+
+    "in_progress": {
+      "description": "Available information supports that delegated work is actively progressing."
+    },
+
+    "waiting": {
+      "description": "The delegate remains responsible but progress currently depends on another condition, person, event, or resource."
+    },
+
+    "blocked": {
+      "description": "The delegate remains responsible but a known blocker prevents meaningful progress."
+    },
+
+    "at_risk": {
+      "description": "Supported circumstances indicate the delegated outcome may not be achieved as expected."
+    },
+
+    "reported_complete": {
+      "description": "The delegate has reported completion, but any required verification has not yet been satisfied."
+    },
+
+    "verified_complete": {
+      "description": "The delegated execution obligation has been sufficiently verified as complete."
+    },
+
+    "returned": {
+      "description": "The delegate has legitimately returned execution responsibility for further handling."
+    },
+
+    "declined": {
+      "description": "The proposed or assigned delegate has explicitly declined or cannot accept responsibility."
+    },
+
+    "reassigned": {
+      "description": "Execution responsibility has been transferred from the prior delegate to another authorized party."
+    },
+
+    "cancelled": {
+      "description": "The delegated execution requirement was legitimately cancelled."
+    },
+
+    "unresolved": {
+      "description": "Available information is insufficient to determine the current delegation state."
+    }
+  },
+
+  "establishment": {
+    "signals": [
+      "explicit assignment",
+      "explicit handoff",
+      "accepted responsibility",
+      "documented workflow assignment",
+      "authorized system assignment",
+      "supported conversational delegation",
+      "supported reassignment"
+    ],
+
+    "requirements": [
+      "The delegating party should be identified when reasonably determinable.",
+      "The delegate should be identified when reasonably determinable.",
+      "The expected outcome should be preserved when available.",
+      "The assignment time should be preserved when available.",
+      "Any expected completion point must preserve whether it was explicit, agreed, or derived.",
+      "Instructions should remain traceable to their source when materially relevant.",
+      "Ambiguous participation must not be silently promoted into delegation."
+    ],
+
+    "non_delegation_examples": [
+      "Jackie knows about the licensing issue.",
+      "I copied Steve on the email.",
+      "Adam was in the meeting.",
+      "Melissa may be able to help.",
+      "Someone should check this.",
+      "Can Jackie handle this?"
+    ],
+
+    "rules": [
+      "Awareness is not delegation.",
+      "CC is not delegation.",
+      "Participation in a meeting is not delegation.",
+      "A suggestion of who could perform work is not delegation.",
+      "A request to delegate is not proof that delegation occurred.",
+      "Existing workflow ownership may establish responsibility when authoritative.",
+      "A.R.I.A. must not invent delegation merely to ensure every work item has an owner."
+    ]
+  },
+
+  "delegation_record": {
+    "canonical_fields": [
+      "is_delegated",
+      "delegated_by",
+      "delegated_to",
+      "delegated_at",
+      "expected_by",
+      "instructions",
+      "acknowledged_at"
+    ],
+
+    "supplemental_evaluation_fields": [
+      "delegation_state",
+      "expected_outcome",
+      "progress_summary",
+      "blocker",
+      "at_risk_reason",
+      "completion_evidence",
+      "state_evaluated_at"
+    ],
+
+    "requirements": [
+      "instructions should preserve the substantive assignment rather than unnecessary source content.",
+      "expected_by must not imply a promised deadline unless such a promise actually exists.",
+      "Delegation history must remain recoverable after reassignment.",
+      "Current delegation interpretation must remain traceable to supported information."
+    ]
+  },
+
+  "acknowledgement": {
+    "signals": [
+      "explicit acceptance",
+      "confirmation of assignment",
+      "substantive work begins",
+      "delegate asks execution-specific questions",
+      "delegate provides progress",
+      "authoritative workflow acknowledgement"
+    ],
+
+    "rules": [
+      "Explicit acknowledgement is useful but not always required for delegation to be valid.",
+      "Beginning substantive execution may establish practical acknowledgement.",
+      "A message receipt or read receipt does not establish acknowledgement.",
+      "Silence does not automatically mean acceptance.",
+      "Silence does not automatically mean refusal.",
+      "When acknowledgement is materially necessary, Follow-Up Engine may determine when verification becomes appropriate."
+    ]
+  },
+
+  "expectation_management": {
+    "elements": [
+      "expected outcome",
+      "expected completion",
+      "required quality or acceptance condition",
+      "known dependencies",
+      "required reporting point",
+      "required verification"
+    ],
+
+    "rules": [
+      "A.R.I.A. should distinguish the expected outcome from the activity used to achieve it.",
+      "An expected completion point may exist without being a formal commitment.",
+      "A delegate should not be treated as overdue against a date they never accepted unless another authoritative obligation establishes that date.",
+      "Derived expectations must remain distinguishable from explicit expectations.",
+      "Materially changed expectations must preserve prior history.",
+      "Scope changes may require reevaluation of expected completion."
+    ]
+  },
+
+  "progress": {
+    "meaningful_signals": [
+      "substantive status update",
+      "partial deliverable",
+      "dependency resolved",
+      "milestone completed",
+      "work product created",
+      "required information obtained",
+      "execution activity verified",
+      "authoritative project state changed"
+    ],
+
+    "rules": [
+      "A.R.I.A. should not require constant progress evidence.",
+      "Absence of a recent update does not independently prove lack of progress.",
+      "Progress should be interpreted relative to expected completion and consequence.",
+      "A meaningful progress update may reduce the need for follow-up without changing the underlying priority.",
+      "Progress information should update activity state when appropriate."
+    ]
+  },
+
+  "oversight": {
+    "purpose": "Keep delegated work governed without forcing the user to micromanage it.",
+
+    "modes": {
+      "quiet": {
+        "description": "Work is delegated and proceeding within reasonable expectations. No user attention is currently useful."
+      },
+
+      "watch": {
+        "description": "Work remains delegated but circumstances justify passive monitoring."
+      },
+
+      "check": {
+        "description": "A status verification or follow-up is becoming operationally useful."
+      },
+
+      "intervene": {
+        "description": "The delegator or another responsible party may need to act because the delegated outcome is materially at risk."
+      }
+    },
+
+    "rules": [
+      "Normal delegated work should default toward quiet oversight when expectations are being met.",
+      "Oversight intensity should increase because of supported operational conditions, not because the work is important in the abstract.",
+      "Approaching expected completion without sufficient evidence of progress may justify a check.",
+      "A blocker the delegator can remove may justify intervention.",
+      "A delegate should not be repeatedly interrupted solely to reassure the system that work still exists.",
+      "Attention Engine determines whether oversight needs should actually be surfaced to the user."
+    ]
+  },
+
+  "risk_evaluation": {
+    "signals": [
+      "expected completion approaching without sufficient progress",
+      "delegate reports blocker",
+      "critical dependency unresolved",
+      "required resource unavailable",
+      "scope materially increased",
+      "delegate indicates inability to complete",
+      "multiple expected dates missed",
+      "required quality condition not being met",
+      "downstream work is becoming blocked",
+      "related commitment is becoming at risk"
+    ],
+
+    "rules": [
+      "At-risk delegation should identify the supported condition threatening the outcome.",
+      "Risk must not be inferred merely from a lack of communication.",
+      "A.R.I.A. should recognize risk early enough for useful intervention when possible.",
+      "Delegation risk may trigger Follow-Up reevaluation.",
+      "Delegation risk may trigger Priority reevaluation.",
+      "Delegation risk may trigger Attention reevaluation."
+    ]
+  },
+
+  "reassignment": {
+    "rules": [
+      "Reassignment must preserve the prior delegate and delegation history.",
+      "The new delegate must not inherit unsupported blame or assumptions from the prior delegation.",
+      "The expected outcome should remain stable unless the scope itself changes.",
+      "Expected completion may require reevaluation after reassignment.",
+      "Reassignment does not automatically modify an external commitment.",
+      "If the delegator made an external commitment, that commitment remains governed independently."
+    ]
+  },
+
+  "return_and_decline": {
+    "rules": [
+      "A delegate may return work when they lack authority, capability, capacity, information, or another required condition.",
+      "A declined delegation should return the item for ownership resolution rather than allowing it to disappear.",
+      "A returned delegation should identify the reason when known.",
+      "Decline or return does not automatically mean fault.",
+      "Returned or declined work may require Capture, Priority, Follow-Up, or Attention reevaluation depending on circumstances."
+    ]
+  },
+
+  "completion": {
+    "possible_evidence": [
+      "delegate completion report",
+      "deliverable received",
+      "required system state reached",
+      "project state verifies completion",
+      "recipient accepts outcome",
+      "required documentation completed",
+      "independent verification",
+      "other sufficient validation"
+    ],
+
+    "rules": [
+      "Reported completion and verified completion must remain distinguishable when verification matters.",
+      "Low-consequence work may not require independent verification.",
+      "High-consequence or externally committed work may require stronger verification.",
+      "Verification requirements should be proportional to consequence and workflow.",
+      "Verified delegated completion does not automatically complete every related commitment or work item.",
+      "Completion evidence should be preserved when materially relevant."
+    ]
+  },
+
+  "relationship_to_commitments": {
+    "rules": [
+      "A person may delegate execution of work while retaining an external commitment.",
+      "Delegating a committed outcome does not transfer who originally made the commitment unless the commitment itself is legitimately modified.",
+      "A delegate may independently make a new commitment during execution.",
+      "Commitment Engine governs promises; Delegation Engine governs execution responsibility.",
+      "Delegation risk may place a related commitment at risk."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Delegation Engine determines the state of delegated execution.",
+      "Follow-Up Engine determines when status verification, pursuit, or intervention becomes appropriate.",
+      "An expected completion point may establish a natural follow-up point.",
+      "Normal progress may defer unnecessary follow-up.",
+      "A reported completion may require a verification follow-up."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Delegation state may provide factors relevant to priority.",
+      "Priority Engine owns canonical priority scoring and banding.",
+      "Delegating work does not automatically reduce its underlying operational importance.",
+      "Healthy delegation may reduce direct user attention without reducing canonical priority."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Delegation Engine may determine that oversight is quiet, watch, check, or intervene.",
+      "Attention Engine determines whether and how the user should see the condition.",
+      "Properly delegated work should normally consume less direct user attention while progressing normally.",
+      "Direct attention may increase when user intervention becomes materially useful."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may detect delegation from incoming information.",
+      "Delegation Engine governs sufficiently supported delegation after capture.",
+      "A delegation response may contain new obligations requiring Capture Engine evaluation.",
+      "The Delegation Engine must not silently create unrelated work from delegate communications."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new delegation established",
+      "delegation acknowledged",
+      "meaningful progress occurs",
+      "expected completion approaches",
+      "expected completion arrives",
+      "expected completion passes",
+      "blocker appears",
+      "dependency changes",
+      "scope changes",
+      "delegate reports completion",
+      "completion evidence appears",
+      "work is returned",
+      "delegation is declined",
+      "work is reassigned",
+      "related commitment changes",
+      "user requests delegation review"
+    ],
+
+    "rules": [
+      "Reevaluation must preserve delegation history.",
+      "Reevaluation should determine the current delegation state from supported information.",
+      "Material state changes may trigger Follow-Up, Priority, Commitment, and Attention reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.delegation",
+
+    "canonical_fields": [
+      "is_delegated",
+      "delegated_by",
+      "delegated_to",
+      "delegated_at",
+      "expected_by",
+      "instructions",
+      "acknowledged_at"
+    ],
+
+    "evaluation_output": [
+      "work_item_id",
+      "delegation_state",
+      "oversight_mode",
+      "progress_summary",
+      "blocker",
+      "at_risk_reason",
+      "completion_evidence",
+      "recommended_reassessment",
+      "evaluated_at"
+    ],
+
+    "requirements": [
+      "Delegation state must reference the applicable work_item_id.",
+      "Changes must preserve historical provenance.",
+      "Derived expected timing must not be represented as an accepted commitment.",
+      "Reported completion and verified completion must remain distinguishable when required.",
+      "Material delegation state changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat awareness as delegation.",
+    "Do not treat CC as delegation.",
+    "Do not invent delegates.",
+    "Do not invent acceptance.",
+    "Do not invent expected completion dates.",
+    "Do not assume silence means acceptance.",
+    "Do not assume silence means refusal.",
+    "Do not assume lack of updates means lack of progress.",
+    "Do not require unnecessary status reporting.",
+    "Do not treat delegation as completion.",
+    "Do not treat delegated work as forgotten work.",
+    "Do not silently rewrite delegation history.",
+    "Do not transfer an external commitment merely because execution was delegated.",
+    "Do not assign blame from a missed expectation alone.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not bypass the Follow-Up Engine for follow-up timing.",
+    "Do not modify Core reasoning architecture as part of delegation management."
+  ]
+}
