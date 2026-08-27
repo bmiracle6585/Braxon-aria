@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aria.braxon.ai/schemas/evidence.schema.json",
   "title": "A.R.I.A. Case Evidence",
-  "description": "Machine-readable validation schema for observations, measurements, test results, artifacts, configuration data, documentary information, and other evidence associated with an active or historical A.R.I.A. diagnostic case. Evidence remains distinct from interpretation and inference, retains provenance, and references the canonical entities to which it applies.",
+  "description": "Authoritative persistence schema for case-specific technical evidence used by A.R.I.A. Evidence records what was observed, measured, reported, retrieved, captured, tested, calculated, or otherwise established for a technical case. Evidence remains distinct from interpretation, inference, hypothesis, diagnosis, canonical knowledge, historical experience, and source authority.",
   "type": "object",
   "additionalProperties": false,
 
@@ -12,7 +12,6 @@
     "evidence_type",
     "status",
     "provenance",
-    "observed_at",
     "created_at",
     "updated_at"
   ],
@@ -24,33 +23,12 @@
 
     "case_id": {
       "$ref": "#/$defs/case_id",
-      "description": "Diagnostic case to which this evidence belongs. A diagnostic case is distinct from an Experience Ledger record."
+      "description": "Diagnostic case to which this evidence belongs."
     },
 
     "evidence_type": {
       "type": "string",
-      "enum": [
-        "USER_OBSERVATION",
-        "TECHNICIAN_OBSERVATION",
-        "DIRECT_MEASUREMENT",
-        "INSTRUMENT_MEASUREMENT",
-        "SYSTEM_READING",
-        "CONFIGURATION_VALUE",
-        "CONFIGURATION_EXPORT",
-        "TEST_RESULT",
-        "ALARM",
-        "LOG_ENTRY",
-        "SCREENSHOT",
-        "PHOTOGRAPH",
-        "VIDEO",
-        "DOCUMENT",
-        "DESIGN_VALUE",
-        "EXPECTED_VALUE",
-        "ENVIRONMENTAL_OBSERVATION",
-        "PHYSICAL_INSPECTION",
-        "SYSTEM_INFERENCE",
-        "OTHER"
-      ]
+      "description": "Controlled evidence classification governed by Core/Registries/evidence_types.json. This schema intentionally does not duplicate the Registry's complete evidence-type vocabulary."
     },
 
     "status": {
@@ -60,17 +38,34 @@
         "SUPERSEDED",
         "INVALIDATED",
         "RETRACTED"
-      ]
+      ],
+      "description": "Persistence state of the evidence record. Status does not encode diagnostic support, contradiction, confidence, or hypothesis disposition."
     },
 
     "observation": {
-      "type": ["string", "null"],
-      "description": "Human-readable statement describing what was directly observed, measured, recorded, or supplied by the originating source."
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable statement of what was observed, measured, reported, retrieved, captured, tested, calculated, or otherwise established. Observation shall remain distinguishable from interpretation."
     },
 
     "interpretation": {
-      "type": ["string", "null"],
-      "description": "Interpretation of the observation. Interpretation shall remain distinguishable from the underlying observation and shall not acquire the authority of the source evidence."
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional interpretation of the underlying evidence. Interpretation does not acquire the authority of the underlying observation and shall not replace it."
+    },
+
+    "value": {
+      "description": "Observed or established scalar value when the evidence can be represented directly as a scalar.",
+      "type": [
+        "number",
+        "string",
+        "boolean",
+        "null"
+      ]
     },
 
     "measurement_id": {
@@ -82,17 +77,7 @@
           "type": "null"
         }
       ],
-      "description": "Canonical measurement concept represented by this evidence when applicable."
-    },
-
-    "value": {
-      "description": "Observed value. May be numeric, textual, boolean, or null depending on evidence type.",
-      "type": [
-        "number",
-        "string",
-        "boolean",
-        "null"
-      ]
+      "description": "Canonical measurement record represented or supported by this evidence when applicable."
     },
 
     "unit_id": {
@@ -104,11 +89,11 @@
           "type": "null"
         }
       ],
-      "description": "Canonical unit associated with the observed value when applicable."
+      "description": "Canonical unit associated with a scalar evidence value when applicable."
     },
 
     "expected_value": {
-      "description": "Expected, engineered, configured, required, or reference value when applicable.",
+      "description": "Expected, engineered, configured, required, baseline, or reference scalar value when materially relevant.",
       "type": [
         "number",
         "string",
@@ -129,48 +114,17 @@
     },
 
     "comparison": {
-      "type": ["object", "null"],
-      "description": "Structured comparison between observed and expected conditions.",
-      "additionalProperties": false,
-
-      "properties": {
-        "difference": {
-          "type": ["number", "null"]
-        },
-
-        "absolute_difference": {
-          "type": ["number", "null"],
-          "minimum": 0
-        },
-
-        "within_tolerance": {
-          "type": ["boolean", "null"]
-        },
-
-        "tolerance": {
-          "type": ["number", "null"],
-          "minimum": 0
-        },
-
-        "comparison_result": {
-          "type": ["string", "null"],
-          "enum": [
-            "MATCH",
-            "ABOVE_EXPECTED",
-            "BELOW_EXPECTED",
-            "WITHIN_TOLERANCE",
-            "OUTSIDE_TOLERANCE",
-            "DIFFERENT",
-            "UNKNOWN",
-            null
-          ]
-        }
-      }
+      "$ref": "#/$defs/comparison"
     },
 
     "subject_entity_ids": {
-      "$ref": "#/$defs/typed_entity_id_array",
-      "description": "Canonical entities directly described, measured, observed, or otherwise represented by this evidence."
+      "type": "array",
+      "description": "Canonical technical entities directly described, measured, observed, tested, or otherwise represented by this evidence.",
+      "items": {
+        "$ref": "#/$defs/runtime_id"
+      },
+      "uniqueItems": true,
+      "default": []
     },
 
     "context_id": {
@@ -181,359 +135,106 @@
         {
           "type": "null"
         }
-      ]
+      ],
+      "description": "Authoritative persisted technical context applicable to this evidence. Context structure is owned by Core/Schemas/context.schema.json."
     },
 
-    "context": {
-      "type": "object",
-      "description": "Evidence-local technical context. These references assist reasoning without duplicating canonical knowledge entities.",
-      "additionalProperties": false,
+    "source_ids": {
+      "type": "array",
+      "description": "Source records materially supporting or containing this evidence.",
+      "items": {
+        "$ref": "#/$defs/source_id"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
 
-      "properties": {
-        "manufacturer_ids": {
-          "$ref": "#/$defs/manufacturer_id_array"
-        },
-
-        "product_family_ids": {
-          "$ref": "#/$defs/product_family_id_array"
-        },
-
-        "product_ids": {
-          "$ref": "#/$defs/product_id_array"
-        },
-
-        "product_variant_ids": {
-          "$ref": "#/$defs/product_variant_id_array"
-        },
-
-        "hardware_revision_ids": {
-          "$ref": "#/$defs/typed_entity_id_array"
-        },
-
-        "firmware_ids": {
-          "$ref": "#/$defs/typed_entity_id_array"
-        },
-
-        "frequency_band_ids": {
-          "$ref": "#/$defs/typed_entity_id_array"
-        },
-
-        "configuration_ids": {
-          "$ref": "#/$defs/typed_entity_id_array"
-        },
-
-        "topology_ids": {
-          "$ref": "#/$defs/typed_entity_id_array"
-        },
-
-        "scope_ids": {
-          "$ref": "#/$defs/scope_id_array"
-        },
-
-        "symptom_ids": {
-          "$ref": "#/$defs/symptom_id_array"
-        },
-
-        "site": {
-          "type": ["string", "null"]
-        },
-
-        "side": {
-          "type": ["string", "null"],
-          "description": "Optional path or system side such as Main, Diversity, Radio A, Radio B, Site A, or Site B."
-        }
-      }
+    "artifact_ids": {
+      "type": "array",
+      "description": "Artifacts containing, supporting, or preserving this evidence.",
+      "items": {
+        "$ref": "#/$defs/artifact_id"
+      },
+      "uniqueItems": true,
+      "default": []
     },
 
     "observer": {
-      "type": ["object", "null"],
-      "description": "Person or system responsible for the underlying observation.",
-      "additionalProperties": false,
-
-      "properties": {
-        "user_id": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/user_id"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "role": {
-          "type": ["string", "null"]
-        },
-
-        "system_identifier": {
-          "type": ["string", "null"]
-        }
-      }
+      "$ref": "#/$defs/actor_reference"
     },
 
     "reporter": {
-      "type": ["object", "null"],
-      "description": "Person or system that supplied the evidence to ARIA when different from the original observer.",
-      "additionalProperties": false,
-
-      "properties": {
-        "user_id": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/user_id"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "role": {
-          "type": ["string", "null"]
-        },
-
-        "system_identifier": {
-          "type": ["string", "null"]
-        }
-      }
+      "$ref": "#/$defs/actor_reference"
     },
 
     "collection_method": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "enum": [
         "DIRECT_OBSERVATION",
         "MANUAL_ENTRY",
         "INSTRUMENT",
         "SYSTEM_API",
+        "SYSTEM_INTERFACE",
+        "CONFIGURATION_RETRIEVAL",
         "CONFIGURATION_EXPORT",
         "SCREEN_CAPTURE",
         "PHOTO_CAPTURE",
         "VIDEO_CAPTURE",
         "LOG_EXTRACTION",
         "DOCUMENT_EXTRACTION",
-        "MODEL_INTERPRETATION",
+        "TEST_EXECUTION",
+        "ACTION_OBSERVATION",
+        "DETERMINISTIC_CALCULATION",
         "SYSTEM_DERIVATION",
         null
-      ]
+      ],
+      "description": "Method by which the evidence was obtained. Model interpretation is intentionally excluded because inference is not an evidence collection method."
     },
 
     "instrument": {
-      "type": ["object", "null"],
-      "description": "Measurement instrument information when applicable.",
-      "additionalProperties": false,
-
-      "properties": {
-        "tool_id": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/tool_id"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "manufacturer_id": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/manufacturer_id"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "manufacturer": {
-          "type": ["string", "null"]
-        },
-
-        "model": {
-          "type": ["string", "null"]
-        },
-
-        "serial_number": {
-          "type": ["string", "null"]
-        },
-
-        "calibration_status": {
-          "type": ["string", "null"],
-          "enum": [
-            "CURRENT",
-            "EXPIRED",
-            "UNKNOWN",
-            "NOT_APPLICABLE",
-            null
-          ]
-        },
-
-        "calibration_due_at": {
-          "type": ["string", "null"],
-          "format": "date-time"
-        }
-      }
+      "$ref": "#/$defs/instrument_reference"
     },
 
-    "artifact": {
-      "type": ["object", "null"],
-      "description": "Artifact supporting or containing the evidence.",
-      "additionalProperties": false,
+    "test": {
+      "$ref": "#/$defs/test_record"
+    },
 
-      "properties": {
-        "artifact_id": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/artifact_id"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
+    "change_result": {
+      "$ref": "#/$defs/change_result"
+    },
 
-        "storage_location": {
-          "type": ["string", "null"]
-        },
-
-        "original_filename": {
-          "type": ["string", "null"]
-        },
-
-        "media_type": {
-          "type": ["string", "null"]
-        },
-
-        "sha256": {
-          "type": ["string", "null"],
-          "pattern": "^[A-Fa-f0-9]{64}$"
-        }
-      }
+    "derivation": {
+      "$ref": "#/$defs/derivation"
     },
 
     "provenance": {
-      "$ref": "#/$defs/provenance",
-      "description": "Required lineage information identifying where this evidence came from and whether it is primary, copied, transformed, derived, inferred, aggregated, or summarized."
+      "$ref": "#/$defs/provenance"
     },
 
-    "reliability": {
-      "type": "object",
-      "description": "Structured assessment of evidence reliability. Reliability concerns trust in this evidence record and remains distinct from hypothesis probability.",
-      "additionalProperties": false,
-
-      "properties": {
-        "observation_confidence": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/confidence"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "measurement_confidence": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/confidence"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "context_confidence": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/confidence"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "overall_confidence": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/confidence"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "independence": {
-          "type": "string",
-          "enum": [
-            "INDEPENDENT",
-            "PARTIALLY_INDEPENDENT",
-            "DEPENDENT",
-            "SAME_SOURCE",
-            "UNKNOWN"
-          ],
-          "default": "UNKNOWN"
-        },
-
-        "independence_group_id": {
-          "type": ["string", "null"],
-          "description": "Stable grouping identifier for evidence records that originate from the same underlying observation or source."
-        },
-
-        "independently_verified": {
-          "type": "boolean",
-          "default": false
-        }
-      }
+    "confidence": {
+      "$ref": "#/$defs/confidence",
+      "description": "Confidence in the evidence record represented according to the shared confidence contract in Core/Schemas/core_contracts.json. This is distinct from source authority, context-match confidence, and hypothesis probability."
     },
 
     "verification": {
-      "type": "object",
-      "description": "Independent verification of this evidence when available.",
-      "additionalProperties": false,
+      "$ref": "#/$defs/verification"
+    },
 
-      "properties": {
-        "verified": {
-          "type": "boolean",
-          "default": false
-        },
-
-        "verified_by": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/user_id"
-            },
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-
-        "verified_at": {
-          "type": ["string", "null"],
-          "format": "date-time"
-        },
-
-        "verification_method": {
-          "type": ["string", "null"]
-        },
-
-        "verification_notes": {
-          "type": ["string", "null"]
-        }
-      }
+    "diagnostic_links": {
+      "type": "array",
+      "description": "Case-specific diagnostic relationships between this evidence and hypotheses. Diagnostic role is relationship-specific rather than an immutable property of the evidence.",
+      "items": {
+        "$ref": "#/$defs/diagnostic_link"
+      },
+      "default": []
     },
 
     "supporting_relationship_ids": {
       "type": "array",
-      "description": "Canonical relationship records expressing how this evidence supports claims, hypotheses, or other entities. Relationship records are authoritative for relationship semantics.",
+      "description": "Canonical relationship records associated with this evidence. Relationship records remain authoritative for relationship semantics.",
       "items": {
         "$ref": "#/$defs/relationship_id"
       },
@@ -541,29 +242,9 @@
       "default": []
     },
 
-    "supports_hypothesis_ids": {
-      "type": "array",
-      "description": "Convenience index of hypotheses currently supported by this evidence. Canonical relationship records remain authoritative for support semantics and strength.",
-      "items": {
-        "$ref": "#/$defs/hypothesis_id"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
-
-    "contradicts_hypothesis_ids": {
-      "type": "array",
-      "description": "Convenience index of hypotheses currently contradicted by this evidence. Canonical relationship records remain authoritative for contradiction semantics and strength.",
-      "items": {
-        "$ref": "#/$defs/hypothesis_id"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
-
     "derived_from_evidence_ids": {
       "type": "array",
-      "description": "Evidence records materially used to derive this evidence. Derived evidence does not become independent merely because it is stored as a separate record.",
+      "description": "Evidence records materially used to derive this evidence. Derived evidence does not become independent merely because it is persisted separately.",
       "items": {
         "$ref": "#/$defs/evidence_id"
       },
@@ -573,6 +254,7 @@
 
     "supersedes_evidence_ids": {
       "type": "array",
+      "description": "Earlier evidence records superseded by this record.",
       "items": {
         "$ref": "#/$defs/evidence_id"
       },
@@ -592,15 +274,39 @@
     },
 
     "observed_at": {
-      "type": "string",
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time",
-      "description": "Time the underlying condition was observed or measured."
+      "description": "Time at which the represented technical condition was observed or occurred when known."
     },
 
-    "received_at": {
-      "type": ["string", "null"],
+    "collected_at": {
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time",
-      "description": "Time ARIA received the evidence when different from observation time."
+      "description": "Time at which the evidence was collected when distinct from the underlying observation time."
+    },
+
+    "effective_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Beginning of the period during which the evidence is known or asserted to describe the applicable technical state."
+    },
+
+    "effective_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "End of the period during which the evidence is known or asserted to describe the applicable technical state."
     },
 
     "created_at": {
@@ -614,228 +320,173 @@
     },
 
     "created_by": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/user_id"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     },
 
     "updated_by": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/user_id"
-        },
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
+    },
+
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable technical notes that do not replace structured evidence, provenance, context, or reasoning relationships."
     },
 
     "metadata": {
       "type": "object",
-      "description": "Controlled extensibility for evidence-type-specific metadata.",
-      "additionalProperties": true
+      "description": "Non-authoritative extensibility metadata. Canonical technical meaning shall not depend on metadata fields.",
+      "additionalProperties": true,
+      "default": {}
     }
   },
 
   "$defs": {
-    "case_id": {
+    "uuid": {
       "type": "string",
-      "pattern": "^case_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "context_id": {
+    "runtime_id": {
       "type": "string",
-      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
     "evidence_id": {
       "type": "string",
-      "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "hypothesis_id": {
+    "case_id": {
       "type": "string",
-      "pattern": "^hyp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^case_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "relationship_id": {
+    "context_id": {
       "type": "string",
-      "pattern": "^rel_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "user_id": {
-      "type": "string",
-      "pattern": "^usr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "manufacturer_id": {
-      "type": "string",
-      "pattern": "^mfr_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "product_family_id": {
-      "type": "string",
-      "pattern": "^pfam_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "product_id": {
-      "type": "string",
-      "pattern": "^prod_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "product_variant_id": {
-      "type": "string",
-      "pattern": "^pvar_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "scope_id": {
-      "type": "string",
-      "pattern": "^scope_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "symptom_id": {
-      "type": "string",
-      "pattern": "^sym_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
     "measurement_id": {
       "type": "string",
-      "pattern": "^meas_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^meas_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
     "unit_id": {
       "type": "string",
-      "pattern": "^unit_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "tool_id": {
-      "type": "string",
-      "pattern": "^tool_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-    },
-
-    "artifact_id": {
-      "type": "string",
-      "pattern": "^artifact_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^unit_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
     "source_id": {
       "type": "string",
-      "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "typed_entity_id": {
+    "artifact_id": {
       "type": "string",
-      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern": "^art_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "typed_entity_id_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/typed_entity_id"
-      },
-      "uniqueItems": true,
-      "default": []
+    "tool_id": {
+      "type": "string",
+      "pattern": "^tool_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "manufacturer_id_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/manufacturer_id"
-      },
-      "uniqueItems": true,
-      "default": []
+    "action_id": {
+      "type": "string",
+      "pattern": "^act_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "product_family_id_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/product_family_id"
-      },
-      "uniqueItems": true,
-      "default": []
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^hyp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "product_id_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/product_id"
-      },
-      "uniqueItems": true,
-      "default": []
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^rel_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     },
 
-    "product_variant_id_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/product_variant_id"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
-
-    "scope_id_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/scope_id"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
-
-    "symptom_id_array": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/symptom_id"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
-
-    "confidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "value",
-        "basis"
+    "comparison": {
+      "type": [
+        "object",
+        "null"
       ],
+      "description": "Structured comparison between observed and expected or reference conditions.",
+      "additionalProperties": false,
+
       "properties": {
-        "value": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1
+        "difference": {
+          "type": [
+            "number",
+            "null"
+          ]
         },
-        "basis": {
-          "type": "string",
-          "minLength": 1
+
+        "absolute_difference": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+
+        "within_tolerance": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "tolerance": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+
+        "comparison_result": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "MATCH",
+            "ABOVE_EXPECTED",
+            "BELOW_EXPECTED",
+            "WITHIN_TOLERANCE",
+            "OUTSIDE_TOLERANCE",
+            "DIFFERENT",
+            "UNKNOWN",
+            "NOT_APPLICABLE",
+            null
+          ]
         }
       }
     },
 
-    "provenance": {
-      "type": "object",
+    "actor_reference": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Person, system, or technical actor associated with observation or reporting.",
       "additionalProperties": false,
 
-      "required": [
-        "source_type",
-        "lineage_type"
-      ],
-
       "properties": {
-        "source_id": {
+        "actor_id": {
           "anyOf": [
             {
-              "$ref": "#/$defs/source_id"
+              "$ref": "#/$defs/runtime_id"
             },
             {
               "type": "null"
@@ -843,53 +494,392 @@
           ]
         },
 
-        "source_type": {
-          "type": "string",
+        "actor_type": {
+          "type": [
+            "string",
+            "null"
+          ],
           "enum": [
-            "MANUFACTURER_DOCUMENT",
-            "MANUFACTURER_SUPPORT",
-            "ENGINEERING_DOCUMENT",
-            "ENGINEERING_APPROVAL",
-            "STANDARD",
-            "CUSTOMER_DOCUMENT",
-            "PROJECT_DOCUMENT",
-            "DESIGN_DOCUMENT",
-            "CONFIGURATION_EXPORT",
-            "EQUIPMENT_TELEMETRY",
-            "DIRECT_MEASUREMENT",
-            "TEST_EQUIPMENT_OUTPUT",
-            "ALARM",
-            "LOG",
-            "SCREENSHOT",
-            "PHOTO",
-            "VIDEO",
-            "USER_STATEMENT",
-            "USER_OBSERVATION",
-            "USER_INTERPRETATION",
-            "TECHNICIAN_ACTION_RESULT",
-            "HISTORICAL_CASE",
-            "EXPERIENCE_LEDGER",
-            "EXTERNAL_SYSTEM",
-            "ARIA_DERIVATION",
-            "ARIA_INFERENCE",
-            "ARIA_SUMMARY",
-            "ARIA_CALCULATION",
-            "ARIA_PATTERN",
-            "UNKNOWN_SOURCE"
+            "USER",
+            "TECHNICIAN",
+            "ENGINEER",
+            "SYSTEM",
+            "INSTRUMENT",
+            "EXTERNAL_SOURCE",
+            "OTHER",
+            null
           ]
         },
 
-        "lineage_type": {
+        "role": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "system_identifier": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "instrument_reference": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Measurement or test instrument information when applicable.",
+      "additionalProperties": false,
+
+      "properties": {
+        "tool_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/tool_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "manufacturer_entity_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/runtime_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "product_entity_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/runtime_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "serial_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "calibration_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "CURRENT",
+            "EXPIRED",
+            "UNKNOWN",
+            "NOT_APPLICABLE",
+            null
+          ]
+        },
+
+        "calibration_due_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "test_record": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Structured information about the deliberate technical test that produced the evidence.",
+      "additionalProperties": false,
+
+      "properties": {
+        "test_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "DIAGNOSTIC",
+            "ISOLATION",
+            "COMPARATIVE",
+            "VALIDATION",
+            "OTHER",
+            null
+          ]
+        },
+
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "conditions": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "expected_result": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+
+        "actual_result": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+
+        "controlled_variable": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "uncontrolled_variables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "started_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+
+        "completed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "change_result": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Structured linkage between evidence and a deliberate technical action or change.",
+      "additionalProperties": false,
+
+      "properties": {
+        "action_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/action_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "before_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "after_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "outcome": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "IMPROVED",
+            "DEGRADED",
+            "UNCHANGED",
+            "RESOLVED",
+            "PARTIALLY_RESOLVED",
+            "INCONCLUSIVE",
+            "UNKNOWN",
+            null
+          ]
+        },
+
+        "other_material_changes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+
+    "derivation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Structured derivation information for deterministic calculations and derived patterns.",
+      "additionalProperties": false,
+
+      "properties": {
+        "derivation_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "DETERMINISTIC_CALCULATION",
+            "STRUCTURED_PATTERN",
+            "NORMALIZATION",
+            "TRANSFORMATION",
+            "OTHER",
+            null
+          ]
+        },
+
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "input_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "input_measurement_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/measurement_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "reproducible": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "provenance": {
+      "type": "object",
+      "description": "Required lineage identifying what produced the evidence and how it entered A.R.I.A.",
+      "additionalProperties": false,
+
+      "required": [
+        "origin_class"
+      ],
+
+      "properties": {
+        "origin_class": {
           "type": "string",
           "enum": [
-            "PRIMARY",
-            "COPIED",
-            "TRANSFORMED",
-            "DERIVED",
-            "INFERRED",
-            "AGGREGATED",
-            "SUMMARIZED"
+            "USER_SUPPLIED",
+            "HUMAN_OBSERVED",
+            "SYSTEM_OBSERVED",
+            "MEASURED",
+            "ARTIFACT_EXTRACTED",
+            "SOURCE_DERIVED",
+            "TEST_PRODUCED",
+            "ACTION_PRODUCED",
+            "SYSTEM_DERIVED"
           ]
+        },
+
+        "origin_actor_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/runtime_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "origin_system": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "origin_source_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "origin_artifact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact_id"
+          },
+          "uniqueItems": true,
+          "default": []
         },
 
         "parent_evidence_ids": {
@@ -901,30 +891,331 @@
           "default": []
         },
 
-        "original_source_reference": {
-          "type": ["string", "null"]
+        "transformation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Transformation, extraction, normalization, calculation, or other processing applied between the original source and this evidence representation."
         },
 
-        "acquired_at": {
-          "type": ["string", "null"],
+        "captured_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "confidence": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Shared Core confidence shape. Confidence remains distinct from source authority, context-match confidence, and hypothesis probability.",
+      "additionalProperties": false,
+
+      "required": [
+        "value",
+        "basis"
+      ],
+
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "dimension": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "const": "EVIDENCE_CONFIDENCE"
+        },
+
+        "calculated_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "verification": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Independent verification of the underlying evidence when available.",
+      "additionalProperties": false,
+
+      "properties": {
+        "verified": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "verified_by": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/runtime_id"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "verified_at": {
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
 
-        "integrity_status": {
+        "verification_method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "verification_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "verification_notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "diagnostic_link": {
+      "type": "object",
+      "description": "Case-specific relationship describing how this evidence currently affects a particular hypothesis.",
+      "additionalProperties": false,
+
+      "required": [
+        "hypothesis_id",
+        "role"
+      ],
+
+      "properties": {
+        "hypothesis_id": {
+          "$ref": "#/$defs/hypothesis_id"
+        },
+
+        "role": {
           "type": "string",
           "enum": [
-            "VERIFIED",
-            "HASH_VERIFIED",
-            "PARTIALLY_VERIFIED",
-            "UNVERIFIED",
-            "ALTERED",
-            "CORRUPTED",
-            "INCOMPLETE",
-            "UNKNOWN"
+            "SUPPORTING",
+            "CONTRADICTING",
+            "DISCRIMINATING",
+            "CONFIRMATORY",
+            "ELIMINATING",
+            "VALIDATING",
+            "CONTEXTUAL",
+            "NEUTRAL"
+          ]
+        },
+
+        "relationship_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/relationship_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "assigned_at": {
+          "type": [
+            "string",
+            "null"
           ],
-          "default": "UNKNOWN"
+          "format": "date-time"
         }
       }
     }
-  }
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_type": {
+            "const": "DIRECT_MEASUREMENT"
+          }
+        },
+        "required": [
+          "evidence_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "measurement_id"
+        ],
+        "properties": {
+          "measurement_id": {
+            "$ref": "#/$defs/measurement_id"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "evidence_type": {
+            "enum": [
+              "DIAGNOSTIC_TEST_RESULT",
+              "ISOLATION_TEST_RESULT",
+              "COMPARATIVE_TEST_RESULT",
+              "VALIDATION_TEST_RESULT"
+            ]
+          }
+        },
+        "required": [
+          "evidence_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "test"
+        ],
+        "properties": {
+          "test": {
+            "type": "object"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "evidence_type": {
+            "enum": [
+              "BEFORE_AFTER_RESULT",
+              "CORRECTIVE_ACTION_RESULT"
+            ]
+          }
+        },
+        "required": [
+          "evidence_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "change_result"
+        ],
+        "properties": {
+          "change_result": {
+            "type": "object"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "evidence_type": {
+            "enum": [
+              "DETERMINISTIC_CALCULATION",
+              "DERIVED_PATTERN"
+            ]
+          }
+        },
+        "required": [
+          "evidence_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "derivation"
+        ],
+        "properties": {
+          "derivation": {
+            "type": "object"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUPERSEDED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "superseded_by_evidence_id"
+        ],
+        "properties": {
+          "superseded_by_evidence_id": {
+            "$ref": "#/$defs/evidence_id"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "effective_from": {
+            "type": "string"
+          },
+          "effective_to": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "effective_from",
+          "effective_to"
+        ]
+      },
+      "then": {
+        "description": "Implementations shall additionally enforce that effective_to is not earlier than effective_from."
+      }
+    }
+  ]
 }
