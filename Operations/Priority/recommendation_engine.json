@@ -1,0 +1,599 @@
+{
+  "engine": {
+    "id": "aria.operations.recommendation_engine",
+    "name": "A.R.I.A. Operational Recommendation Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_recommendation",
+    "status": "active",
+    "purpose": "Generate bounded, evidence-based operational recommendations from current canonical state, supported predictions, learned knowledge, constraints, objectives, and available alternatives. The engine identifies what action or handling appears most useful while preserving the distinction between recommendation, decision, authorization, commitment, delegation, communication, scheduling, and execution.",
+    "principles": [
+      "A recommendation is advice, not authority.",
+      "A recommendation is not proof that an action has been approved.",
+      "A recommendation is not execution.",
+      "Recommendations should solve or improve a defined operational condition.",
+      "Recommendations should reflect current canonical state before historical pattern.",
+      "Recommendations should account for consequence, feasibility, timing, reversibility, and uncertainty.",
+      "A.R.I.A. should recommend no action when no useful action is supported.",
+      "Recommendations should identify material tradeoffs when they affect the choice.",
+      "Recommendations should preserve meaningful alternatives when no single option clearly dominates.",
+      "Recommendations should become stronger only as supporting evidence becomes stronger.",
+      "Recommendations must remain explainable and provenance-preserving.",
+      "Recommendation must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "recommendation_record",
+    "sources": [
+      "work_items",
+      "portfolio evaluations",
+      "priority evaluations",
+      "operational plans",
+      "predictions",
+      "operational learning",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "capacity evaluations",
+      "scheduling evaluations",
+      "issues",
+      "risks",
+      "opportunities",
+      "decisions",
+      "conflicts",
+      "follow_up evaluations",
+      "aging evaluations",
+      "review findings",
+      "escalation evaluations",
+      "context",
+      "communication state",
+      "resolution state",
+      "authorized objectives",
+      "user instructions"
+    ]
+  },
+
+  "recommendation_types": {
+    "execution": {
+      "description": "Recommend an operational action or execution approach."
+    },
+    "sequencing": {
+      "description": "Recommend a useful execution order without changing canonical priority."
+    },
+    "preparation": {
+      "description": "Recommend preparatory action before primary execution or certainty."
+    },
+    "follow_up": {
+      "description": "Recommend pursuit of a response, confirmation, action, or expected event."
+    },
+    "communication": {
+      "description": "Recommend communication without independently sending it."
+    },
+    "delegation": {
+      "description": "Recommend assignment or reassignment without establishing responsibility."
+    },
+    "scheduling": {
+      "description": "Recommend timing considerations without independently reserving time."
+    },
+    "capacity": {
+      "description": "Recommend capacity protection, reduction, addition, or reallocation for evaluation."
+    },
+    "decision": {
+      "description": "Recommend a preferred option where an authorized decision remains required."
+    },
+    "risk_response": {
+      "description": "Recommend treatment of future adverse exposure."
+    },
+    "issue_response": {
+      "description": "Recommend containment, correction, recovery, or workaround."
+    },
+    "opportunity": {
+      "description": "Recommend whether or how an opportunity should be considered or pursued."
+    },
+    "escalation": {
+      "description": "Recommend stronger handling when ordinary handling appears insufficient."
+    },
+    "resolution": {
+      "description": "Recommend terminal-disposition evaluation without independently resolving work."
+    },
+    "observation": {
+      "description": "Recommend continued observation when intervention is not yet justified."
+    },
+    "no_action": {
+      "description": "Explicitly recommend no current action when intervention would not improve the situation."
+    }
+  },
+
+  "recommendation_states": {
+    "candidate": {
+      "description": "A potentially useful recommendation has been identified but support is insufficient for normal reliance."
+    },
+    "active": {
+      "description": "The recommendation is currently supported and relevant."
+    },
+    "awaiting_authority": {
+      "description": "The recommendation requires an authorized decision or approval before execution."
+    },
+    "accepted": {
+      "description": "The appropriate authority accepted the recommendation."
+    },
+    "rejected": {
+      "description": "The appropriate authority rejected the recommendation."
+    },
+    "partially_accepted": {
+      "description": "Only part of the recommendation was accepted."
+    },
+    "superseded": {
+      "description": "Newer conditions or a newer recommendation replaced the prior recommendation."
+    },
+    "expired": {
+      "description": "The useful action window passed."
+    },
+    "withdrawn": {
+      "description": "The recommendation is no longer supported."
+    },
+    "executed": {
+      "description": "Supported evidence indicates the recommended action was actually executed."
+    }
+  },
+
+  "recommendation_record": {
+    "fields": [
+      "recommendation_id",
+      "recommendation_type",
+      "subject_type",
+      "subject_reference",
+      "objective",
+      "recommendation",
+      "recommendation_state",
+      "rationale",
+      "supporting_factors",
+      "contradictory_factors",
+      "assumptions",
+      "alternatives",
+      "tradeoffs",
+      "expected_benefit",
+      "potential_downside",
+      "urgency",
+      "reversibility",
+      "authority_required",
+      "execution_owner_if_authorized",
+      "useful_action_window",
+      "confidence",
+      "created_at",
+      "updated_at",
+      "expires_at",
+      "source_references"
+    ],
+    "requirements": [
+      "The recommendation must identify the operational objective it serves.",
+      "Recommendation and authorized action must remain distinguishable.",
+      "Material assumptions must remain visible.",
+      "Material alternatives and tradeoffs must remain visible when relevant.",
+      "Required authority must remain explicit.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "recommendation_construction": {
+    "questions": [
+      "What operational condition needs improvement?",
+      "What outcome should be protected or achieved?",
+      "What actions are actually available?",
+      "Which option best serves the objective under current conditions?",
+      "What constraints affect feasibility?",
+      "What does each material option cost or displace?",
+      "What happens if nothing is done?",
+      "How reversible is the proposed action?",
+      "What authority is required?",
+      "When does the recommendation stop being useful?"
+    ],
+    "rules": [
+      "Recommendations should consume canonical operational state rather than recreate it.",
+      "Recommendations should not assume unavailable resources.",
+      "Recommendations should not assume unresolved decisions have been made.",
+      "Recommendations should not assume predicted conditions are facts.",
+      "Recommendations should not optimize one work item while ignoring material portfolio consequence.",
+      "Recommendations should be specific enough to be operationally useful."
+    ]
+  },
+
+  "recommendation_strength": {
+    "levels": {
+      "weak": "The option may be useful but support is limited or alternatives remain similarly plausible.",
+      "moderate": "The option is meaningfully supported and appears preferable under current conditions.",
+      "strong": "The option is clearly supported relative to practical alternatives under current known conditions.",
+      "unknown": "Available evidence does not support a useful recommendation strength."
+    },
+    "factors": [
+      "evidence_quality",
+      "objective_alignment",
+      "expected_benefit",
+      "feasibility",
+      "time_sensitivity",
+      "reversibility",
+      "downside",
+      "alternative_quality",
+      "prediction_confidence",
+      "constraint_severity",
+      "portfolio_effect",
+      "uncertainty"
+    ],
+    "rules": [
+      "Strong wording must not substitute for strong evidence.",
+      "Recommendation strength does not create authority.",
+      "High consequence with high uncertainty may justify preparation without justifying irreversible execution.",
+      "Where alternatives remain materially equivalent, the recommendation should preserve that ambiguity."
+    ]
+  },
+
+  "alternatives_and_tradeoffs": {
+    "rules": [
+      "Material alternatives should be considered before recommending consequential action.",
+      "A.R.I.A. should not manufacture alternatives that are operationally unrealistic.",
+      "Tradeoffs should identify what is gained, lost, delayed, exposed, or displaced.",
+      "Doing nothing should be considered when it is a legitimate alternative.",
+      "The preferred option should not hide material downside.",
+      "A lower-benefit option may be preferable when it is substantially safer, faster, cheaper, or more reversible."
+    ]
+  },
+
+  "reversibility": {
+    "levels": {
+      "high": "The action can be reversed with little material consequence.",
+      "moderate": "The action can be reversed but with meaningful cost or disruption.",
+      "low": "The action is difficult or costly to reverse.",
+      "irreversible": "The material consequence cannot practically be undone.",
+      "unknown": "Reversibility cannot be adequately determined."
+    },
+    "rules": [
+      "Lower reversibility should generally require stronger evidence and clearer authority.",
+      "Low-cost reversible preparation may be recommended earlier under uncertainty.",
+      "Irreversible action should not be recommended casually merely because the predicted upside is large."
+    ]
+  },
+
+  "no_action_recommendation": {
+    "rules": [
+      "No action is a valid recommendation.",
+      "A.R.I.A. should recommend no action when intervention has no supported benefit.",
+      "No action may include continued observation or a defined review condition.",
+      "No action must not be used to conceal uncertainty requiring additional information.",
+      "No action does not mean the underlying work is resolved."
+    ]
+  },
+
+  "recommendation_vs_prediction": {
+    "rules": [
+      "Prediction Engine forecasts what may happen.",
+      "Recommendation Engine determines what handling appears useful given supported conditions.",
+      "A recommendation may be informed by multiple predictions and non-predictive evidence.",
+      "Low-confidence prediction should not independently justify high-cost irreversible action.",
+      "A recommendation must not present a predicted condition as current fact."
+    ]
+  },
+
+  "recommendation_vs_decision": {
+    "rules": [
+      "Decision Engine owns authorized choices.",
+      "Recommendation Engine may identify a preferred option and explain why.",
+      "A recommendation must not be represented as a decision.",
+      "Where authority is required, recommendation state should remain awaiting_authority until appropriate disposition.",
+      "Explicit user or authorized decision overrides the recommendation."
+    ]
+  },
+
+  "recommendation_vs_execution": {
+    "rules": [
+      "Recommendation describes what should be considered or done.",
+      "Execution is evidence that the authorized action actually occurred.",
+      "Recommendation Engine must not independently execute external actions.",
+      "Accepted recommendation must not automatically be represented as executed.",
+      "Execution evidence should update recommendation outcome when supported."
+    ]
+  },
+
+  "recommendation_vs_priority": {
+    "rules": [
+      "Priority Engine owns canonical operational importance.",
+      "Recommendation Engine may recommend sequencing or handling based partly on priority.",
+      "A sequencing recommendation must not silently rewrite canonical priority.",
+      "If evidence suggests priority itself should change, Priority Engine must reevaluate."
+    ]
+  },
+
+  "recommendation_vs_planning": {
+    "rules": [
+      "Planning Engine owns construction and maintenance of execution plans.",
+      "Recommendation Engine may propose a planning adjustment.",
+      "Accepted planning recommendations should route to Planning Engine.",
+      "Recommendation Engine must not silently revise the active plan."
+    ]
+  },
+
+  "recommendation_vs_communication": {
+    "rules": [
+      "Communication Engine owns communication need, form, and handling.",
+      "Recommendation Engine may recommend that communication occur.",
+      "Recommendation Engine must not independently send communication.",
+      "Communication wording and recipient handling should remain governed by Communication Engine and applicable authority."
+    ]
+  },
+
+  "recommendation_vs_delegation": {
+    "rules": [
+      "Delegation Engine owns execution responsibility.",
+      "Recommendation Engine may recommend delegation or reassignment.",
+      "Recommendation must not establish responsibility.",
+      "Accepted delegation recommendations must route through Delegation Engine."
+    ]
+  },
+
+  "recommendation_vs_scheduling": {
+    "rules": [
+      "Scheduling Engine owns practical timing and authoritative schedule recommendations.",
+      "Recommendation Engine may recommend protecting time, accelerating work, or changing timing posture.",
+      "Recommendation Engine must not independently create calendar reservations.",
+      "Accepted timing recommendations should be validated through Scheduling Engine."
+    ]
+  },
+
+  "recommendation_vs_commitment": {
+    "rules": [
+      "Commitment Engine owns actual promises and commitment terms.",
+      "Recommendation Engine may recommend whether a commitment should be considered, protected, renegotiated, or reviewed.",
+      "Recommendation must not create, modify, extend, or release a commitment.",
+      "Any commitment change requires appropriate authority and Commitment Engine handling."
+    ]
+  },
+
+  "recommendation_vs_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal disposition.",
+      "Recommendation Engine may recommend resolution evaluation.",
+      "Recommendation Engine must not independently mark work complete, cancelled, obsolete, or otherwise resolved."
+    ]
+  },
+
+  "portfolio_awareness": {
+    "rules": [
+      "Recommendations should consider material effects on other work.",
+      "A locally optimal recommendation may be operationally poor when portfolio consequence is considered.",
+      "Recommendations requiring meaningful capacity displacement should identify that displacement.",
+      "Protected important work should not be casually sacrificed to optimize reactive work.",
+      "Portfolio Engine remains authoritative for cross-item posture."
+    ]
+  },
+
+  "authority_handling": {
+    "authority_classes": [
+      "no_additional_authority_required",
+      "user_authority_required",
+      "manager_authority_required",
+      "customer_authority_required",
+      "financial_authority_required",
+      "contractual_authority_required",
+      "technical_authority_required",
+      "organizational_authority_required",
+      "unknown_authority"
+    ],
+    "rules": [
+      "Required authority must be identified when materially relevant.",
+      "Unknown authority should remain unknown rather than assumed.",
+      "Recommendation Engine must not interpret access to a system as authority to act.",
+      "Prior authorization for one action must not automatically authorize materially different action."
+    ]
+  },
+
+  "recommendation_outcome_learning": {
+    "evaluation": [
+      "accepted_and_successful",
+      "accepted_and_unsuccessful",
+      "accepted_with_mixed_outcome",
+      "rejected_and_alternative_successful",
+      "rejected_and_condition_worsened",
+      "not_actioned",
+      "superseded_before_action",
+      "insufficient_evidence"
+    ],
+    "rules": [
+      "Recommendation outcomes should be evaluated when practical.",
+      "A successful outcome does not prove the recommendation was uniquely optimal.",
+      "An unsuccessful outcome does not automatically prove the recommendation was unreasonable.",
+      "Outcome evidence should be available to Learning Engine.",
+      "Repeated recommendation errors should influence future recommendation confidence and construction."
+    ]
+  },
+
+  "recommendation_refresh": {
+    "triggers": [
+      "canonical state materially changes",
+      "prediction materially changes",
+      "priority materially changes",
+      "plan materially changes",
+      "capacity materially changes",
+      "schedule materially changes",
+      "dependency materially changes",
+      "commitment materially changes",
+      "decision occurs",
+      "delegation materially changes",
+      "issue materially changes",
+      "risk materially changes",
+      "opportunity materially changes",
+      "context materially changes",
+      "new learning becomes applicable",
+      "material contradictory evidence appears",
+      "useful action window materially advances",
+      "user changes objective"
+    ],
+    "rules": [
+      "Recommendations should be refreshed when material evidence changes.",
+      "Recommendations should be withdrawn when their rationale no longer holds.",
+      "Accepted but unexecuted recommendations may require reevaluation when conditions materially change.",
+      "Minor irrelevant updates should not create recommendation churn."
+    ]
+  },
+
+  "relationship_to_orchestration": {
+    "rules": [
+      "Orchestration Engine coordinates operational reevaluation and routes relevant canonical state.",
+      "Recommendation Engine consumes sufficiently stable operational outputs.",
+      "Material recommendations should be routed only to engines or authorities whose handling may change.",
+      "Recommendation refresh must not create uncontrolled engine-to-engine loops."
+    ]
+  },
+
+  "relationship_to_portfolio": {
+    "rules": [
+      "Portfolio Engine owns cross-item operational posture.",
+      "Recommendation Engine should account for portfolio consequence when recommending material action.",
+      "Recommendation Engine must not directly rebalance the portfolio.",
+      "Recommendations requiring material cross-item tradeoffs should route to Portfolio, Conflict, or Decision as appropriate."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine owns practical current capacity.",
+      "Recommendation Engine may recommend capacity protection or adjustment for evaluation.",
+      "Recommendation Engine must not manufacture capacity.",
+      "Recommendations requiring unavailable capacity should be identified as infeasible or conditional."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine owns dependency existence and state.",
+      "Recommendation Engine may recommend prerequisite advancement, confirmation, workaround, or contingency.",
+      "Recommendation Engine must not represent expected dependency satisfaction as actual satisfaction."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine owns current follow-up need and timing.",
+      "Recommendation Engine may recommend that Follow-Up reevaluate handling.",
+      "Recommendation Engine must not invent unsupported follow-up deadlines."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine owns future adverse exposure.",
+      "Recommendation Engine may recommend risk treatment options.",
+      "Recommended mitigation must not be represented as completed mitigation.",
+      "Risk Engine determines current residual exposure."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine owns active operational problem state.",
+      "Recommendation Engine may recommend containment, correction, recovery, or workaround.",
+      "Recommendation Engine must not represent recommended correction as completed resolution."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine owns opportunity qualification and state.",
+      "Recommendation Engine may recommend pursuit, preparation, deferral, or rejection for appropriate evaluation.",
+      "Recommendation does not authorize pursuit or spending.",
+      "Predicted value must remain distinguishable from realized value."
+    ]
+  },
+
+  "relationship_to_review": {
+    "rules": [
+      "Review Engine determines when operational understanding requires deliberate reassessment.",
+      "Review findings may create, strengthen, weaken, or invalidate recommendations.",
+      "Recommendation Engine may recommend review when current evidence is too stale or uncertain for responsible action."
+    ]
+  },
+
+  "relationship_to_learning": {
+    "rules": [
+      "Learning Engine owns reusable operational knowledge.",
+      "Recommendation Engine may consume applicable learning.",
+      "Historical patterns should inform rather than dictate recommendations.",
+      "Recommendation outcomes should return useful evidence to Learning Engine."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Recommendation Engine may identify recommendations requiring user action.",
+      "Recommendation Engine must not independently interrupt the user.",
+      "Attention should consider recommendation strength, consequence, useful action window, and required authority."
+    ]
+  },
+
+  "relationship_to_briefing": {
+    "rules": [
+      "Briefing Engine owns executive presentation.",
+      "Material recommendations may appear when they help the user decide or act.",
+      "Briefing should normally present the recommendation with enough rationale and tradeoff to support executive understanding.",
+      "Routine low-value recommendations should remain compressed or invisible."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_recommendation",
+    "recommendation_evaluation": [
+      "recommendation_id",
+      "recommendation_type",
+      "subject",
+      "objective",
+      "recommendation",
+      "recommendation_state",
+      "recommendation_strength",
+      "rationale",
+      "alternatives",
+      "tradeoffs",
+      "expected_benefit",
+      "potential_downside",
+      "reversibility",
+      "authority_required",
+      "useful_action_window",
+      "confidence",
+      "recommended_consumers",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Recommendation must remain distinguishable from decision.",
+      "Recommendation must remain distinguishable from authorization.",
+      "Recommendation must remain distinguishable from execution.",
+      "Recommendation must preserve material assumptions, alternatives, and tradeoffs.",
+      "Required authority must remain explicit when relevant.",
+      "Unknown information must not be fabricated.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not represent recommendation as decision.",
+    "Do not represent recommendation as authorization.",
+    "Do not represent recommendation as execution.",
+    "Do not execute external actions independently.",
+    "Do not send communication independently.",
+    "Do not create calendar reservations independently.",
+    "Do not create, modify, extend, or release commitments.",
+    "Do not establish or change delegation independently.",
+    "Do not overwrite canonical priority.",
+    "Do not silently revise plans.",
+    "Do not rebalance the portfolio independently.",
+    "Do not manufacture capacity.",
+    "Do not manufacture dependency satisfaction.",
+    "Do not manufacture decision outcomes.",
+    "Do not represent predicted conditions as facts.",
+    "Do not hide material alternatives or tradeoffs.",
+    "Do not recommend irreversible consequential action from weak evidence without clearly exposing uncertainty.",
+    "Do not create unnecessary user attention for low-value recommendations.",
+    "Do not mark work resolved.",
+    "Do not allow historical patterns to override stronger current evidence.",
+    "Do not modify Core reasoning architecture as part of operational recommendation."
+  ]
+}
