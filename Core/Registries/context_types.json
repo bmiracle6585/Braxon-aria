@@ -1,597 +1,943 @@
 {
   "registry": "ARIA_CONTEXT_TYPES",
-  "version": "0.1.0",
-  "description": "Controlled vocabulary defining contextual dimensions used by A.R.I.A. to determine applicability, similarity, historical relevance, and diagnostic specificity across microwave backhaul cases.",
+  "version": "2.0.0",
+  "description": "Canonical controlled vocabulary for technical context dimensions used by A.R.I.A. Context describes the circumstances under which technical information, evidence, knowledge, experience, relationships, hypotheses, actions, and reasoning are applicable. Context dimensions classify contextual meaning; they do not duplicate canonical entities or create a parallel technical ontology.",
 
-  "context_types": [
-    {
-      "id": "CTX-PERSON-001",
-      "name": "USER",
-      "canonical_name": "User",
-      "category": "PERSON",
-      "description": "The individual interacting with ARIA or materially participating in the case.",
-      "examples": ["Technician", "Engineer", "Project Manager"]
-    },
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "role": "CONTROLLED_CONTEXT_DIMENSION_VOCABULARY",
+    "owns": [
+      "technical context dimension vocabulary",
+      "context dimension semantics",
+      "context applicability semantics",
+      "context comparison guidance",
+      "context completeness semantics"
+    ],
+    "does_not_own": [
+      "canonical entity identity",
+      "manufacturer identity",
+      "product family identity",
+      "product identity",
+      "product variant identity",
+      "failure mode identity",
+      "symptom identity",
+      "measurement identity",
+      "unit identity",
+      "scope identity",
+      "case reasoning state",
+      "case lifecycle status",
+      "source authority",
+      "probability",
+      "confidence",
+      "context similarity algorithms",
+      "context persistence schema"
+    ]
+  },
 
-    {
-      "id": "CTX-PERSON-002",
-      "name": "TECHNICIAN",
-      "canonical_name": "Technician",
-      "category": "PERSON",
-      "description": "The individual performing or reporting technical field activity."
-    },
+  "context_contract": {
+    "field_concept": "context",
+    "runtime_identity": "ctx_<UUID>",
+    "schema_owner": "Core/Schemas/context.schema.json",
+    "applies_to": [
+      "CASE",
+      "SOURCE",
+      "CLAIM",
+      "RELATIONSHIP",
+      "EVIDENCE",
+      "HYPOTHESIS",
+      "ACTION",
+      "EXPERIENCE",
+      "KNOWLEDGE",
+      "REASONING_OPERATION"
+    ],
 
-    {
-      "id": "CTX-PERSON-003",
-      "name": "ENGINEER",
-      "canonical_name": "Engineer",
-      "category": "PERSON",
-      "description": "The individual responsible for or contributing engineering information, design, interpretation, or technical direction."
-    },
+    "principles": [
+      "Context describes technical applicability and circumstances; it does not replace the object being contextualized.",
+      "Canonical technical objects shall be referenced by canonical identity rather than recreated as context-specific duplicates.",
+      "A context dimension identifies what kind of contextual information is being represented.",
+      "A contextual value supplies the applicable value or canonical reference for that dimension.",
+      "Unknown context is a valid state.",
+      "Missing context shall only be requested when it is expected to materially improve technical reasoning.",
+      "Context similarity is multidimensional and shall not be reduced to simple equality unless technically justified.",
+      "Different context dimensions may have different importance for different technical questions.",
+      "Historical context shall be preserved when later context changes.",
+      "Context applicability may be temporal.",
+      "Context does not establish source authority.",
+      "Context match does not establish causal truth."
+    ]
+  },
 
-    {
-      "id": "CTX-ORG-001",
-      "name": "CUSTOMER",
-      "canonical_name": "Customer",
-      "category": "ORGANIZATION",
-      "description": "The customer organization associated with the case, project, standard, design, or scope."
-    },
+  "value_model": {
+    "principle": "A context dimension may be represented by a canonical entity reference, structured value, measurement reference, controlled scalar, free technical value, or explicitly unknown state depending on the dimension.",
 
-    {
-      "id": "CTX-ORG-002",
-      "name": "CONTRACTOR",
-      "canonical_name": "Contractor",
-      "category": "ORGANIZATION",
-      "description": "The contractor or subcontractor organization performing relevant work."
-    },
+    "value_kinds": [
+      {
+        "kind": "CANONICAL_REFERENCE",
+        "description": "References an existing canonical A.R.I.A. object by its canonical runtime identifier."
+      },
+      {
+        "kind": "STRUCTURED_VALUE",
+        "description": "Represents contextual information requiring a structured value that is not itself a reusable canonical entity."
+      },
+      {
+        "kind": "MEASUREMENT_REFERENCE",
+        "description": "References a measurement record when a measured technical condition provides context."
+      },
+      {
+        "kind": "CONTROLLED_VALUE",
+        "description": "Uses a controlled value defined by the applicable authoritative Registry or schema."
+      },
+      {
+        "kind": "TECHNICAL_VALUE",
+        "description": "Stores a bounded technical value when canonicalization would not provide meaningful reuse."
+      },
+      {
+        "kind": "UNKNOWN",
+        "description": "Explicitly represents that the applicable contextual value is not currently known."
+      },
+      {
+        "kind": "NOT_APPLICABLE",
+        "description": "Explicitly represents that the context dimension does not apply to the technical object or question."
+      }
+    ],
 
+    "rules": [
+      "CANONICAL_REFERENCE is preferred when the contextual value already exists as a reusable canonical object.",
+      "A Registry-definition code shall not be substituted for runtime canonical identity when a runtime object reference is required.",
+      "Unknown and not-applicable are distinct.",
+      "Absence of a value shall not automatically be interpreted as unknown, false, or not applicable.",
+      "Measurements used as context retain their measurement identity and provenance."
+    ]
+  },
+
+  "dimensions": [
     {
-      "id": "CTX-MFG-001",
-      "name": "MANUFACTURER",
-      "canonical_name": "Manufacturer",
-      "category": "EQUIPMENT",
-      "description": "The equipment manufacturer relevant to the case.",
+      "dimension": "MANUFACTURER",
+      "canonical_name": "Manufacturer Context",
+      "description": "Identifies the manufacturer materially applicable to the technical object, system, evidence, knowledge, experience, or reasoning operation.",
+      "category": "PRODUCT_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "mfr",
       "examples": [
-        "Nokia",
-        "Aviat",
-        "Ceragon",
-        "Ericsson"
+        "manufacturer of the equipment under diagnosis",
+        "manufacturer whose documentation is being evaluated"
+      ],
+      "rules": [
+        "The manufacturer shall be referenced rather than recreated inside the context record.",
+        "Manufacturer match alone does not establish product applicability."
       ]
     },
 
     {
-      "id": "CTX-PRODUCT-001",
-      "name": "PRODUCT_FAMILY",
-      "canonical_name": "Product Family",
-      "category": "EQUIPMENT",
-      "description": "Broad manufacturer product family relevant to the case.",
-      "examples": [
-        "Nokia Waveence"
+      "dimension": "PRODUCT_FAMILY",
+      "canonical_name": "Product Family Context",
+      "description": "Identifies the applicable reusable product family when product-family context materially affects technical reasoning.",
+      "category": "PRODUCT_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "pfam",
+      "rules": [
+        "Product-family context shall not replace more specific product or variant context when those distinctions materially affect applicability."
       ]
     },
 
     {
-      "id": "CTX-PRODUCT-002",
-      "name": "PRODUCT",
-      "canonical_name": "Product",
-      "category": "EQUIPMENT",
-      "description": "Specific product type or platform relevant to the case.",
-      "examples": [
-        "UBT",
-        "UBT-T"
+      "dimension": "PRODUCT",
+      "canonical_name": "Product Context",
+      "description": "Identifies the specific canonical product materially applicable to the technical context.",
+      "category": "PRODUCT_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "prod",
+      "rules": [
+        "Product identity shall remain canonical and reusable outside the case.",
+        "A product name shall not be used as identity when a canonical product reference exists."
       ]
     },
 
     {
-      "id": "CTX-PRODUCT-003",
-      "name": "PRODUCT_VARIANT",
-      "canonical_name": "Product Variant",
-      "category": "EQUIPMENT",
-      "description": "A technically meaningful product variant, model, option, or sub-type."
-    },
-
-    {
-      "id": "CTX-PRODUCT-004",
-      "name": "HARDWARE_REVISION",
-      "canonical_name": "Hardware Revision",
-      "category": "EQUIPMENT",
-      "description": "Hardware revision or generation when differences may affect applicability or diagnosis."
-    },
-
-    {
-      "id": "CTX-PRODUCT-005",
-      "name": "COMPONENT",
-      "canonical_name": "Component",
-      "category": "EQUIPMENT",
-      "description": "Specific component participating in the applicable equipment or RF architecture.",
-      "examples": [
-        "Radio",
-        "AIM",
-        "OCM",
-        "Flex Twist",
-        "Antenna"
+      "dimension": "PRODUCT_VARIANT",
+      "canonical_name": "Product Variant Context",
+      "description": "Identifies the applicable product variant, model variant, hardware variant, or other canonical product specialization when technically material.",
+      "category": "PRODUCT_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "pvar",
+      "rules": [
+        "Variant context shall be preserved when technical behavior, compatibility, procedure, limits, or documentation differ by variant."
       ]
     },
 
     {
-      "id": "CTX-SW-001",
-      "name": "FIRMWARE_VERSION",
-      "canonical_name": "Firmware Version",
-      "category": "SOFTWARE",
-      "description": "Installed equipment firmware or software version relevant to technical behavior."
-    },
-
-    {
-      "id": "CTX-SW-002",
-      "name": "SOFTWARE_RELEASE",
-      "canonical_name": "Software Release",
-      "category": "SOFTWARE",
-      "description": "Applicable management-system, controller, or platform software release."
-    },
-
-    {
-      "id": "CTX-RF-001",
-      "name": "FREQUENCY_BAND",
-      "canonical_name": "Frequency Band",
-      "category": "RF",
-      "description": "Microwave frequency band applicable to the case.",
-      "examples": [
-        "6 GHz",
-        "7 GHz",
-        "8 GHz",
-        "11 GHz",
-        "13 GHz",
-        "15 GHz",
-        "18 GHz",
-        "23 GHz",
-        "38 GHz",
-        "60 GHz",
-        "70/80 GHz"
+      "dimension": "HARDWARE_REVISION",
+      "canonical_name": "Hardware Revision Context",
+      "description": "Identifies the hardware revision or hardware-generation context when revision differences materially affect technical applicability.",
+      "category": "VERSION_CONTEXT",
+      "preferred_value_kind": "TECHNICAL_VALUE",
+      "rules": [
+        "A hardware revision may remain a technical value unless it becomes sufficiently reusable to justify canonical representation.",
+        "Revision applicability shall not be inferred solely from product name."
       ]
     },
 
     {
-      "id": "CTX-RF-002",
-      "name": "CHANNEL_FREQUENCY",
-      "canonical_name": "Channel Frequency",
-      "category": "RF",
-      "description": "Specific transmit or receive channel frequency relevant to the case."
-    },
-
-    {
-      "id": "CTX-RF-003",
-      "name": "CHANNEL_BANDWIDTH",
-      "canonical_name": "Channel Bandwidth",
-      "category": "RF",
-      "description": "Configured or engineered RF channel bandwidth."
-    },
-
-    {
-      "id": "CTX-RF-004",
-      "name": "POLARIZATION",
-      "canonical_name": "Polarization",
-      "category": "RF",
-      "description": "Applicable RF polarization or polarization arrangement."
-    },
-
-    {
-      "id": "CTX-RF-005",
-      "name": "MODULATION_PROFILE",
-      "canonical_name": "Modulation Profile",
-      "category": "RF",
-      "description": "Applicable fixed or adaptive modulation configuration."
-    },
-
-    {
-      "id": "CTX-TOPOLOGY-001",
-      "name": "RADIO_TOPOLOGY",
-      "canonical_name": "Radio Topology",
-      "category": "TOPOLOGY",
-      "description": "Logical and physical microwave radio architecture.",
-      "examples": [
-        "1+0",
-        "1+1",
-        "2+0",
-        "4+0"
+      "dimension": "SOFTWARE_VERSION",
+      "canonical_name": "Software Version Context",
+      "description": "Identifies software, application, operating-system, controller, or management-system version context when technically material.",
+      "category": "VERSION_CONTEXT",
+      "preferred_value_kind": "TECHNICAL_VALUE",
+      "rules": [
+        "Version ranges and exact versions shall remain distinguishable.",
+        "Software applicability may be temporal."
       ]
     },
 
     {
-      "id": "CTX-TOPOLOGY-002",
-      "name": "DIVERSITY_MODE",
-      "canonical_name": "Diversity Mode",
-      "category": "TOPOLOGY",
-      "description": "Applicable diversity architecture or mode.",
-      "examples": [
-        "Space Diversity",
-        "Frequency Diversity"
+      "dimension": "FIRMWARE_VERSION",
+      "canonical_name": "Firmware Version Context",
+      "description": "Identifies firmware or embedded software version context when firmware materially affects technical behavior, configuration, compatibility, or procedure.",
+      "category": "VERSION_CONTEXT",
+      "preferred_value_kind": "TECHNICAL_VALUE"
+    },
+
+    {
+      "dimension": "CONFIGURATION",
+      "canonical_name": "Configuration Context",
+      "description": "Represents technically material configuration state affecting expected behavior, compatibility, diagnosis, or applicability.",
+      "category": "SYSTEM_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Configuration context should reference canonical configuration entities when such entities exist.",
+        "Large configuration payloads should remain source artifacts or structured configuration records rather than being duplicated into context.",
+        "Only technically material configuration dimensions should be projected into reasoning context."
       ]
     },
 
     {
-      "id": "CTX-TOPOLOGY-003",
-      "name": "PROTECTION_MODE",
-      "canonical_name": "Protection Mode",
-      "category": "TOPOLOGY",
-      "description": "Applicable radio protection arrangement."
-    },
-
-    {
-      "id": "CTX-TOPOLOGY-004",
-      "name": "XPIC_STATE",
-      "canonical_name": "XPIC State",
-      "category": "TOPOLOGY",
-      "description": "Whether XPIC is applicable and its relevant configured or operational state."
-    },
-
-    {
-      "id": "CTX-TOPOLOGY-005",
-      "name": "MAIN_DIVERSITY_ROLE",
-      "canonical_name": "Main/Diversity Role",
-      "category": "TOPOLOGY",
-      "description": "Whether an observation, component, radio, or path applies to Main, Diversity, or another defined RF role."
-    },
-
-    {
-      "id": "CTX-PATH-001",
-      "name": "PATH",
-      "canonical_name": "Microwave Path",
-      "category": "PATH",
-      "description": "The specific point-to-point microwave path associated with the case."
-    },
-
-    {
-      "id": "CTX-PATH-002",
-      "name": "PATH_DISTANCE",
-      "canonical_name": "Path Distance",
-      "category": "PATH",
-      "description": "Engineered or actual distance between microwave endpoints."
-    },
-
-    {
-      "id": "CTX-PATH-003",
-      "name": "SITE",
-      "canonical_name": "Site",
-      "category": "PATH",
-      "description": "Specific telecommunications site associated with the case."
-    },
-
-    {
-      "id": "CTX-PATH-004",
-      "name": "ENDPOINT",
-      "canonical_name": "Path Endpoint",
-      "category": "PATH",
-      "description": "Specific endpoint or side of a microwave path.",
-      "examples": [
-        "Site A",
-        "Site B"
+      "dimension": "TOPOLOGY",
+      "canonical_name": "Topology Context",
+      "description": "Represents the technically relevant arrangement, connectivity, path, interface relationships, or system topology applicable to the technical question.",
+      "category": "SYSTEM_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Topology context may reference canonical topology entities where available.",
+        "Topology should preserve directionality and endpoint distinctions when technically material."
       ]
     },
 
     {
-      "id": "CTX-PATH-005",
-      "name": "ANTENNA_HEIGHT",
-      "canonical_name": "Antenna Height",
-      "category": "PATH",
-      "description": "Installed or designed antenna centerline height relevant to the case."
-    },
-
-    {
-      "id": "CTX-PATH-006",
-      "name": "ANTENNA_MODEL",
-      "canonical_name": "Antenna Model",
-      "category": "PATH",
-      "description": "Specific antenna model or technically meaningful antenna type."
-    },
-
-    {
-      "id": "CTX-PATH-007",
-      "name": "ANTENNA_DIAMETER",
-      "canonical_name": "Antenna Diameter",
-      "category": "PATH",
-      "description": "Applicable microwave antenna diameter."
-    },
-
-    {
-      "id": "CTX-SCOPE-001",
-      "name": "SCOPE_OF_WORK",
-      "canonical_name": "Scope of Work",
-      "category": "WORK",
-      "description": "Technical work scope associated with the case.",
-      "examples": [
-        "New Installation",
-        "Microwave Upgrade",
-        "Radio Replacement",
-        "Antenna Replacement",
-        "Troubleshooting",
-        "Decommission"
+      "dimension": "INTERFACE",
+      "canonical_name": "Interface Context",
+      "description": "Identifies the physical, electrical, optical, radio, logical, software, or protocol interface materially involved in the technical condition.",
+      "category": "SYSTEM_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "ent",
+      "rules": [
+        "Interface context should reference a canonical interface entity when one exists.",
+        "Interface names alone shall not be assumed globally unique."
       ]
     },
 
     {
-      "id": "CTX-SCOPE-002",
-      "name": "PROJECT_PHASE",
-      "canonical_name": "Project Phase",
-      "category": "WORK",
-      "description": "Lifecycle phase during which the condition occurred.",
-      "examples": [
-        "Engineering",
-        "Preconstruction",
-        "Installation",
-        "Commissioning",
-        "Integration",
-        "Acceptance",
-        "Maintenance",
-        "Troubleshooting"
+      "dimension": "COMPONENT",
+      "canonical_name": "Component Context",
+      "description": "Identifies a canonical component or technical element materially relevant to the technical question.",
+      "category": "SYSTEM_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "ent",
+      "rules": [
+        "Case-specific observation history shall not be embedded into the canonical component entity."
       ]
     },
 
     {
-      "id": "CTX-SCOPE-003",
-      "name": "WORK_ACTIVITY",
-      "canonical_name": "Work Activity",
-      "category": "WORK",
-      "description": "Specific activity being performed when the condition was observed."
-    },
-
-    {
-      "id": "CTX-SCOPE-004",
-      "name": "RECENT_CHANGE",
-      "canonical_name": "Recent Change",
-      "category": "WORK",
-      "description": "A recent modification, replacement, configuration change, installation activity, or other event potentially relevant to the current condition."
-    },
-
-    {
-      "id": "CTX-ENV-001",
-      "name": "WEATHER_CONDITION",
-      "canonical_name": "Weather Condition",
-      "category": "ENVIRONMENT",
-      "description": "Relevant weather condition at or near the microwave path."
-    },
-
-    {
-      "id": "CTX-ENV-002",
-      "name": "PRECIPITATION",
-      "canonical_name": "Precipitation",
-      "category": "ENVIRONMENT",
-      "description": "Relevant precipitation condition or rate."
-    },
-
-    {
-      "id": "CTX-ENV-003",
-      "name": "WIND_CONDITION",
-      "canonical_name": "Wind Condition",
-      "category": "ENVIRONMENT",
-      "description": "Relevant wind speed, gust, or direction condition."
-    },
-
-    {
-      "id": "CTX-ENV-004",
-      "name": "TEMPERATURE_CONDITION",
-      "canonical_name": "Temperature Condition",
-      "category": "ENVIRONMENT",
-      "description": "Relevant ambient or equipment temperature condition."
-    },
-
-    {
-      "id": "CTX-ENV-005",
-      "name": "TERRAIN_TYPE",
-      "canonical_name": "Terrain Type",
-      "category": "ENVIRONMENT",
-      "description": "Terrain characteristics potentially relevant to propagation, access, or installation."
-    },
-
-    {
-      "id": "CTX-ENV-006",
-      "name": "PATH_ENVIRONMENT",
-      "canonical_name": "Path Environment",
-      "category": "ENVIRONMENT",
-      "description": "Environmental characteristics of the propagation path.",
-      "examples": [
-        "Urban",
-        "Suburban",
-        "Rural",
-        "Desert",
-        "Mountain",
-        "Coastal"
+      "dimension": "SCOPE",
+      "canonical_name": "Scope Context",
+      "description": "Identifies the canonical technical scope applicable to the case, evidence, experience, knowledge, action, or reasoning operation.",
+      "category": "OPERATIONAL_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "scope",
+      "rules": [
+        "Scope describes the technical work or responsibility boundary relevant to reasoning.",
+        "Scope context shall not turn A.R.I.A. into a general project-management system."
       ]
     },
 
     {
-      "id": "CTX-CASE-001",
-      "name": "SYMPTOM_PATTERN",
-      "canonical_name": "Symptom Pattern",
-      "category": "CASE",
-      "description": "Combination and relationship of symptoms present in a case."
+      "dimension": "SITE",
+      "canonical_name": "Site Context",
+      "description": "Identifies the physical or logical site relevant to technical applicability when site-specific conditions materially affect reasoning.",
+      "category": "LOCATION_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "ent",
+      "rules": [
+        "Site identity may be represented as a generic canonical entity unless a dedicated runtime identity is later established.",
+        "Site context should only be included when technically relevant."
+      ]
     },
 
     {
-      "id": "CTX-CASE-002",
-      "name": "FAILURE_MODE",
+      "dimension": "LOCATION",
+      "canonical_name": "Location Context",
+      "description": "Represents technically material geographic, structural, equipment-position, path-position, or other location information.",
+      "category": "LOCATION_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Precise location shall only be retained when technically required.",
+        "Location and site are distinct: a site may contain multiple technically meaningful locations."
+      ]
+    },
+
+    {
+      "dimension": "FREQUENCY_BAND",
+      "canonical_name": "Frequency Band Context",
+      "description": "Identifies the radio-frequency band or spectrum context when frequency materially affects design, behavior, propagation, interference, compatibility, or diagnosis.",
+      "category": "RF_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Frequency band context may be represented by bounded frequency values and canonical units.",
+        "Frequency band shall not be inferred from manufacturer alone."
+      ]
+    },
+
+    {
+      "dimension": "CHANNEL",
+      "canonical_name": "Channel Context",
+      "description": "Identifies the applicable channel, channel pair, center frequency, bandwidth allocation, or equivalent channelization context.",
+      "category": "RF_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE"
+    },
+
+    {
+      "dimension": "POLARIZATION",
+      "canonical_name": "Polarization Context",
+      "description": "Identifies applicable polarization context when polarization affects RF behavior, configuration, interference, alignment, or expected performance.",
+      "category": "RF_CONTEXT",
+      "preferred_value_kind": "CONTROLLED_VALUE"
+    },
+
+    {
+      "dimension": "MODULATION",
+      "canonical_name": "Modulation Context",
+      "description": "Identifies modulation or adaptive-modulation context when it materially affects performance, capacity, thresholds, or diagnosis.",
+      "category": "RF_CONTEXT",
+      "preferred_value_kind": "TECHNICAL_VALUE"
+    },
+
+    {
+      "dimension": "CAPACITY_PROFILE",
+      "canonical_name": "Capacity Profile Context",
+      "description": "Represents configured or expected capacity, throughput profile, channel width, traffic profile, or related performance configuration when technically relevant.",
+      "category": "PERFORMANCE_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE"
+    },
+
+    {
+      "dimension": "TRAFFIC_STATE",
+      "canonical_name": "Traffic State Context",
+      "description": "Represents technically relevant load or traffic conditions present when behavior was observed or evaluated.",
+      "category": "PERFORMANCE_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Traffic state should preserve observation time when behavior is time-dependent."
+      ]
+    },
+
+    {
+      "dimension": "OPERATING_STATE",
+      "canonical_name": "Operating State Context",
+      "description": "Represents the technically relevant operational mode or equipment state under which information applies.",
+      "category": "SYSTEM_CONTEXT",
+      "preferred_value_kind": "CONTROLLED_VALUE",
+      "examples": [
+        "in service",
+        "maintenance mode",
+        "standby",
+        "booting",
+        "degraded operation"
+      ],
+      "rules": [
+        "Operating state shall not be confused with case lifecycle status."
+      ]
+    },
+
+    {
+      "dimension": "ENVIRONMENT",
+      "canonical_name": "Environmental Context",
+      "description": "Represents environmental conditions that may materially affect technical behavior, measurements, propagation, equipment performance, or applicability.",
+      "category": "ENVIRONMENTAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "examples": [
+        "temperature",
+        "precipitation",
+        "wind",
+        "humidity",
+        "icing",
+        "dust",
+        "solar loading"
+      ],
+      "rules": [
+        "Measured environmental quantities should reference measurement records when available.",
+        "Environmental correlation does not independently establish causality."
+      ]
+    },
+
+    {
+      "dimension": "POWER_CONDITION",
+      "canonical_name": "Power Condition Context",
+      "description": "Represents relevant electrical power conditions under which technical behavior was observed or evaluated.",
+      "category": "ELECTRICAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Measured voltage, current, power, or related quantities should reference measurement records when available."
+      ]
+    },
+
+    {
+      "dimension": "GROUNDING_BONDING_CONDITION",
+      "canonical_name": "Grounding and Bonding Context",
+      "description": "Represents technically relevant grounding, bonding, shielding, or electrical-reference conditions.",
+      "category": "ELECTRICAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE"
+    },
+
+    {
+      "dimension": "TRANSPORT_CONTEXT",
+      "canonical_name": "Transport Context",
+      "description": "Represents Ethernet, IP, VLAN, routing, switching, timing, synchronization, or other transport conditions materially affecting technical reasoning.",
+      "category": "NETWORK_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE"
+    },
+
+    {
+      "dimension": "PROTOCOL_CONTEXT",
+      "canonical_name": "Protocol Context",
+      "description": "Identifies the technically relevant communications, management, signaling, synchronization, or application protocol context.",
+      "category": "NETWORK_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "ent"
+    },
+
+    {
+      "dimension": "ALARM_STATE",
+      "canonical_name": "Alarm State Context",
+      "description": "Represents the relevant alarm state or alarm combination present during a technical observation or reasoning operation.",
+      "category": "OBSERVATIONAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "An alarm may also be persisted as evidence; contextual projection shall not duplicate or replace the evidence record.",
+        "Alarm presence does not independently establish root cause."
+      ]
+    },
+
+    {
+      "dimension": "SYMPTOM",
+      "canonical_name": "Symptom Context",
+      "description": "References canonical symptom entities materially relevant to contextual applicability or comparison.",
+      "category": "OBSERVATIONAL_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "sym",
+      "rules": [
+        "This dimension references canonical symptoms; it does not define symptom vocabulary.",
+        "Symptoms remain distinct from failure modes and causes."
+      ]
+    },
+
+    {
+      "dimension": "FAILURE_MODE",
       "canonical_name": "Failure Mode Context",
-      "category": "CASE",
-      "description": "Confirmed or candidate canonical failure mode relevant to contextual comparison."
-    },
-
-    {
-      "id": "CTX-CASE-003",
-      "name": "CASE_STAGE",
-      "canonical_name": "Case Stage",
-      "category": "CASE",
-      "description": "Current diagnostic lifecycle stage.",
-      "examples": [
-        "Intake",
-        "Evidence Gathering",
-        "Hypothesis Evaluation",
-        "Isolation",
-        "Correction",
-        "Validation",
-        "Closed"
+      "description": "References a canonical failure mode when historical experience, knowledge, validation, or other technical information is explicitly contextualized to that failure mode.",
+      "category": "DIAGNOSTIC_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "fm",
+      "rules": [
+        "Failure-mode context shall not be used to assert that the failure mode is present in the current case.",
+        "Current case evaluation of a failure mode belongs in hypothesis and evidence reasoning."
       ]
     },
 
     {
-      "id": "CTX-CASE-004",
-      "name": "PRIOR_ACTION_PATTERN",
-      "canonical_name": "Prior Action Pattern",
-      "category": "CASE",
-      "description": "Relevant sequence or combination of diagnostic actions already performed."
+      "dimension": "MEASUREMENT_CONDITION",
+      "canonical_name": "Measurement Condition Context",
+      "description": "References or represents technically relevant conditions under which measurements were obtained, compared, or interpreted.",
+      "category": "MEASUREMENT_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Actual measured values retain meas_<UUID> identity.",
+        "Units remain governed by the applicable unit Registry.",
+        "Measurement context shall preserve method and conditions when they materially affect interpretation."
+      ]
     },
 
     {
-      "id": "CTX-CASE-005",
-      "name": "PRIOR_OUTCOME_PATTERN",
-      "canonical_name": "Prior Outcome Pattern",
-      "category": "CASE",
-      "description": "Relevant sequence or combination of outcomes already observed."
+      "dimension": "TOOL",
+      "canonical_name": "Tool Context",
+      "description": "Identifies the canonical tool, instrument, tester, software utility, or technical apparatus materially relevant to evidence quality, measurement interpretation, or procedure applicability.",
+      "category": "MEASUREMENT_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "tool",
+      "rules": [
+        "Tool identity shall not substitute for calibration or measurement-confidence information."
+      ]
     },
 
     {
-      "id": "CTX-TIME-001",
-      "name": "TIME_SINCE_INSTALLATION",
-      "canonical_name": "Time Since Installation",
-      "category": "TEMPORAL",
-      "description": "Elapsed time between installation or commissioning and the current condition."
+      "dimension": "PROCEDURE",
+      "canonical_name": "Procedure Context",
+      "description": "Identifies a technically relevant procedure, method, test process, or workflow under which evidence, actions, or outcomes were produced.",
+      "category": "PROCEDURAL_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "ent",
+      "rules": [
+        "Procedure applicability may depend on manufacturer, product, revision, configuration, and safety context."
+      ]
     },
 
     {
-      "id": "CTX-TIME-002",
-      "name": "TIME_SINCE_CHANGE",
-      "canonical_name": "Time Since Change",
-      "category": "TEMPORAL",
-      "description": "Elapsed time between a relevant change and symptom onset."
+      "dimension": "SAFETY_CONSTRAINT",
+      "canonical_name": "Safety Constraint Context",
+      "description": "Represents safety conditions or constraints that materially affect permissible diagnostic or corrective actions.",
+      "category": "OPERATIONAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Safety constraints may prohibit otherwise diagnostically valuable actions.",
+        "A.R.I.A. shall not treat diagnostic utility as overriding applicable safety requirements."
+      ]
     },
 
     {
-      "id": "CTX-TIME-003",
-      "name": "FAILURE_DURATION",
-      "canonical_name": "Failure Duration",
-      "category": "TEMPORAL",
-      "description": "Elapsed duration of the observed abnormal condition."
+      "dimension": "ACCESS_CONSTRAINT",
+      "canonical_name": "Access Constraint Context",
+      "description": "Represents physical, logical, credential, equipment, site, maintenance-window, or other access limitations materially affecting technical execution.",
+      "category": "OPERATIONAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE"
     },
 
     {
-      "id": "CTX-TIME-004",
-      "name": "RECURRENCE_INTERVAL",
-      "canonical_name": "Recurrence Interval",
-      "category": "TEMPORAL",
-      "description": "Elapsed time between prior resolution and recurrence of a materially related condition."
+      "dimension": "SERVICE_IMPACT_CONSTRAINT",
+      "canonical_name": "Service Impact Constraint Context",
+      "description": "Represents limitations on actions due to expected or permissible impact to live service, traffic, availability, or operational continuity.",
+      "category": "OPERATIONAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE"
+    },
+
+    {
+      "dimension": "CUSTOMER_TECHNICAL_CONTEXT",
+      "canonical_name": "Customer Technical Context",
+      "description": "References customer-specific technical requirements, standards, acceptance criteria, configurations, or scope distinctions only when they materially affect technical reasoning.",
+      "category": "ORGANIZATIONAL_TECHNICAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Customer context exists only to support A.R.I.A.'s technical mission.",
+        "This dimension shall not create CRM, sales, billing, or general customer-management behavior.",
+        "Reusable technical requirements should be canonicalized separately when appropriate."
+      ]
+    },
+
+    {
+      "dimension": "TEAM_TECHNICAL_CONTEXT",
+      "canonical_name": "Team Technical Context",
+      "description": "Represents validated team-specific technical experience, capability, procedure, or execution context when materially relevant to diagnosis or learning.",
+      "category": "PARTICIPANT_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Team context shall not become an employee performance or HR assessment.",
+        "Historical team patterns require sufficient validation before influencing reasoning."
+      ]
+    },
+
+    {
+      "dimension": "USER_TECHNICAL_CONTEXT",
+      "canonical_name": "User Technical Context",
+      "description": "References technically relevant user-specific experience, capability, role, observation history, or procedural context when appropriate.",
+      "category": "PARTICIPANT_CONTEXT",
+      "preferred_value_kind": "CANONICAL_REFERENCE",
+      "canonical_reference_prefix": "usr",
+      "rules": [
+        "User identity does not establish fault.",
+        "User-specific history may influence reasoning only when validated and contextually relevant.",
+        "A.R.I.A. shall not evolve into an HR performance system."
+      ]
+    },
+
+    {
+      "dimension": "TEMPORAL",
+      "canonical_name": "Temporal Context",
+      "description": "Represents the time, interval, sequence, duration, recurrence pattern, validity period, or temporal relationship materially affecting technical interpretation or applicability.",
+      "category": "TEMPORAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Observed time and recorded time remain distinct.",
+        "Temporal context shall not be inferred solely from record creation time.",
+        "Historical applicability shall be preserved when technical conditions later change."
+      ]
+    },
+
+    {
+      "dimension": "MAINTENANCE_CHANGE_HISTORY",
+      "canonical_name": "Maintenance and Change History Context",
+      "description": "Represents technically relevant recent or historical changes, maintenance activity, replacements, upgrades, configuration modifications, or interventions.",
+      "category": "TEMPORAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Temporal proximity to a change may increase diagnostic relevance but does not independently establish causality.",
+        "Change history should reference underlying events, actions, sources, or evidence when available."
+      ]
+    },
+
+    {
+      "dimension": "HISTORICAL_BEHAVIOR",
+      "canonical_name": "Historical Behavior Context",
+      "description": "Represents technically relevant prior behavior, recurrence, stability, degradation, intermittent behavior, or known-good history.",
+      "category": "TEMPORAL_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Historical behavior shall preserve source and temporal provenance.",
+        "Historical frequency informs priors but does not independently establish current cause."
+      ]
+    },
+
+    {
+      "dimension": "VALIDATION_CONTEXT",
+      "canonical_name": "Validation Context",
+      "description": "Represents the technical conditions, acceptance criteria, comparison basis, test boundaries, and other circumstances under which validation results apply.",
+      "category": "VALIDATION_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Validation context shall preserve conditions necessary to interpret whether a result generalizes beyond the specific validation event."
+      ]
+    },
+
+    {
+      "dimension": "EXPERIENCE_APPLICABILITY",
+      "canonical_name": "Experience Applicability Context",
+      "description": "Represents the context dimensions required to determine whether a historical Experience Ledger record is sufficiently comparable to influence current reasoning.",
+      "category": "LEARNING_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Experience applicability is multidimensional.",
+        "Historical cases shall not be treated as equivalent merely because they share one manufacturer, symptom, product, or failure mode.",
+        "Context-match confidence remains separate from historical frequency."
+      ]
+    },
+
+    {
+      "dimension": "KNOWLEDGE_APPLICABILITY",
+      "canonical_name": "Knowledge Applicability Context",
+      "description": "Represents the context boundaries under which reusable canonical technical knowledge is known or expected to apply.",
+      "category": "KNOWLEDGE_CONTEXT",
+      "preferred_value_kind": "STRUCTURED_VALUE",
+      "rules": [
+        "Canonical knowledge may be reusable without being universally applicable.",
+        "Applicability restrictions shall remain explicit rather than being hidden in prose when materially important."
+      ]
     }
   ],
 
-  "match_states": [
-    "EXACT_MATCH",
-    "STRONG_MATCH",
-    "PARTIAL_MATCH",
-    "WEAK_MATCH",
-    "CONFLICT",
-    "UNKNOWN",
-    "NOT_APPLICABLE"
+  "dimension_categories": [
+    {
+      "category": "PRODUCT_CONTEXT",
+      "description": "Manufacturer, product family, product, and product-variant applicability."
+    },
+    {
+      "category": "VERSION_CONTEXT",
+      "description": "Hardware, software, firmware, and revision applicability."
+    },
+    {
+      "category": "SYSTEM_CONTEXT",
+      "description": "Configuration, topology, interface, component, and operating-state context."
+    },
+    {
+      "category": "LOCATION_CONTEXT",
+      "description": "Site and technically relevant location context."
+    },
+    {
+      "category": "RF_CONTEXT",
+      "description": "Frequency, channel, polarization, modulation, and other radio-specific context."
+    },
+    {
+      "category": "PERFORMANCE_CONTEXT",
+      "description": "Capacity, traffic, loading, and performance-operating context."
+    },
+    {
+      "category": "ENVIRONMENTAL_CONTEXT",
+      "description": "Environmental conditions materially affecting technical behavior."
+    },
+    {
+      "category": "ELECTRICAL_CONTEXT",
+      "description": "Power, grounding, bonding, shielding, and related electrical conditions."
+    },
+    {
+      "category": "NETWORK_CONTEXT",
+      "description": "Transport, protocol, addressing, switching, routing, timing, and related network context."
+    },
+    {
+      "category": "OBSERVATIONAL_CONTEXT",
+      "description": "Alarm and symptom context relevant to observations."
+    },
+    {
+      "category": "DIAGNOSTIC_CONTEXT",
+      "description": "Diagnostic contextual references that do not themselves establish current diagnosis."
+    },
+    {
+      "category": "MEASUREMENT_CONTEXT",
+      "description": "Measurement conditions, instruments, and test circumstances."
+    },
+    {
+      "category": "PROCEDURAL_CONTEXT",
+      "description": "Technical procedure and method context."
+    },
+    {
+      "category": "OPERATIONAL_CONTEXT",
+      "description": "Technical scope, safety, access, and service-impact constraints."
+    },
+    {
+      "category": "ORGANIZATIONAL_TECHNICAL_CONTEXT",
+      "description": "Organization-specific information retained solely when materially relevant to technical reasoning."
+    },
+    {
+      "category": "PARTICIPANT_CONTEXT",
+      "description": "User or team context retained solely when technically relevant."
+    },
+    {
+      "category": "TEMPORAL_CONTEXT",
+      "description": "Time, sequence, change history, recurrence, and historical behavior."
+    },
+    {
+      "category": "VALIDATION_CONTEXT",
+      "description": "Conditions and boundaries under which validation results apply."
+    },
+    {
+      "category": "LEARNING_CONTEXT",
+      "description": "Context required to evaluate applicability of validated historical experience."
+    },
+    {
+      "category": "KNOWLEDGE_CONTEXT",
+      "description": "Applicability boundaries for reusable canonical technical knowledge."
+    }
   ],
 
-  "importance_classes": {
-    "CRITICAL": "A mismatch may substantially alter technical applicability or diagnostic probability.",
-    "HIGH": "A match or mismatch is normally important to diagnostic similarity.",
-    "MODERATE": "Context may improve relevance but is not normally decisive alone.",
-    "LOW": "Context provides secondary specificity.",
-    "DYNAMIC": "Importance depends on the hypothesis, symptom, product, action, or technical question being evaluated."
+  "comparison_semantics": {
+    "principle": "Context comparison determines technical applicability or similarity. It is not a generic object-equality test.",
+
+    "comparison_states": [
+      {
+        "state": "MATCH",
+        "description": "The compared contextual values are materially equivalent for the technical question."
+      },
+      {
+        "state": "COMPATIBLE",
+        "description": "The values differ but remain technically compatible for the applicable reasoning purpose."
+      },
+      {
+        "state": "PARTIAL_MATCH",
+        "description": "Some technically meaningful overlap exists, but material differences remain."
+      },
+      {
+        "state": "MISMATCH",
+        "description": "A material contextual difference reduces or prevents applicability."
+      },
+      {
+        "state": "UNKNOWN",
+        "description": "Available information is insufficient to determine contextual similarity."
+      },
+      {
+        "state": "NOT_APPLICABLE",
+        "description": "The dimension is not relevant to the comparison being performed."
+      }
+    ],
+
+    "rules": [
+      "Different dimensions may use different comparison methods.",
+      "Exact equality shall not be required when technically valid ranges or compatible variants exist.",
+      "A mismatch in a critical dimension may outweigh matches in several noncritical dimensions.",
+      "Unknown comparison state shall not automatically be treated as mismatch.",
+      "Context similarity methods are owned by the Context Engine, not this Registry.",
+      "The comparison result may contribute to CONTEXT_MATCH_CONFIDENCE but is not itself confidence."
+    ]
   },
 
-  "context_importance_defaults": {
-    "MANUFACTURER": "HIGH",
-    "PRODUCT_FAMILY": "HIGH",
-    "PRODUCT": "CRITICAL",
-    "PRODUCT_VARIANT": "CRITICAL",
-    "HARDWARE_REVISION": "DYNAMIC",
-    "FIRMWARE_VERSION": "DYNAMIC",
-    "FREQUENCY_BAND": "HIGH",
-    "RADIO_TOPOLOGY": "HIGH",
-    "DIVERSITY_MODE": "HIGH",
-    "XPIC_STATE": "DYNAMIC",
-    "SCOPE_OF_WORK": "HIGH",
-    "PROJECT_PHASE": "HIGH",
-    "SYMPTOM_PATTERN": "CRITICAL",
-    "USER": "DYNAMIC",
-    "CUSTOMER": "DYNAMIC",
-    "WEATHER_CONDITION": "DYNAMIC",
-    "RECENT_CHANGE": "HIGH"
+  "completeness_semantics": {
+    "states": [
+      {
+        "state": "SUFFICIENT",
+        "description": "The available context is sufficient for the current technical reasoning operation."
+      },
+      {
+        "state": "PARTIAL",
+        "description": "Some material context is missing, but useful reasoning remains possible."
+      },
+      {
+        "state": "INSUFFICIENT",
+        "description": "Missing context materially prevents a defensible reasoning operation."
+      },
+      {
+        "state": "UNKNOWN",
+        "description": "A.R.I.A. cannot yet determine whether the available context is sufficient."
+      }
+    ],
+
+    "rules": [
+      "Context completeness is relative to the technical question.",
+      "A context record does not need every Registry dimension populated.",
+      "A.R.I.A. should request additional context only when expected information value justifies doing so.",
+      "Missing nonmaterial context shall not unnecessarily block reasoning.",
+      "Context completeness is not a confidence dimension by itself, although it may influence confidence."
+    ]
   },
 
-  "semantic_rules": [
+  "applicability_rules": [
     {
       "rule_id": "CTX-RULE-001",
-      "rule": "Context determines applicability and relevance but shall not independently establish causation."
+      "rule": "Context dimensions shall not duplicate canonical entity definitions."
     },
-
     {
       "rule_id": "CTX-RULE-002",
-      "rule": "ARIA shall not treat all historical cases as equally relevant. Historical evidence shall be weighted according to similarity to the current case."
+      "rule": "When a reusable canonical object exists, context shall reference its canonical runtime identifier rather than recreate it."
     },
-
     {
       "rule_id": "CTX-RULE-003",
-      "rule": "Context similarity shall be multidimensional. No single context field shall automatically determine overall case similarity unless technical rules establish that field as decisive."
+      "rule": "Manufacturer context does not establish product, variant, revision, configuration, or temporal applicability."
     },
-
     {
       "rule_id": "CTX-RULE-004",
-      "rule": "Context importance may change according to the hypothesis being evaluated. Firmware may be highly important to a software defect and nearly irrelevant to a visibly damaged waveguide."
+      "rule": "Product context does not establish revision or configuration applicability when those distinctions are technically material."
     },
-
     {
       "rule_id": "CTX-RULE-005",
-      "rule": "A manufacturer match shall not substitute for a product match when product-specific technical differences materially affect applicability."
+      "rule": "Failure-mode context does not assert that a failure mode is present in the current case."
     },
-
     {
       "rule_id": "CTX-RULE-006",
-      "rule": "A product-family match shall not automatically imply that procedures, ports, configurations, alarms, or failure mechanisms are identical across products or variants."
+      "rule": "Symptom context does not establish cause."
     },
-
     {
       "rule_id": "CTX-RULE-007",
-      "rule": "User-specific history may modify diagnostic priors, communication strategy, expected information quality, and route selection, but shall not override validated current technical evidence."
+      "rule": "Measurements used as contextual information retain measurement identity, units, provenance, and measurement confidence."
     },
-
     {
       "rule_id": "CTX-RULE-008",
-      "rule": "Customer context shall influence reasoning only where customer-specific design, standards, configuration, workflow, acceptance criteria, or historical patterns are technically relevant."
+      "rule": "Context-match confidence and hypothesis probability remain separate."
     },
-
     {
       "rule_id": "CTX-RULE-009",
-      "rule": "Missing context shall be represented as unknown rather than assumed."
+      "rule": "Context similarity and source authority remain separate."
     },
-
     {
       "rule_id": "CTX-RULE-010",
-      "rule": "A conflict in a critical context dimension may sharply reduce the relevance of a historical case even when other dimensions match."
+      "rule": "Historical experience shall be weighted according to technically material contextual similarity rather than superficial record similarity."
     },
-
     {
       "rule_id": "CTX-RULE-011",
-      "rule": "ARIA shall preserve hierarchical context relationships such as Manufacturer to Product Family to Product to Product Variant without requiring knowledge to be stored as a hierarchical directory."
+      "rule": "Unknown context shall remain representable and shall not be silently filled by model inference."
     },
-
     {
       "rule_id": "CTX-RULE-012",
-      "rule": "Context entities shall be reusable graph entities rather than duplicated descriptive strings whenever a canonical entity exists."
+      "rule": "Model-inferred context shall remain distinguishable from observed, supplied, retrieved, or validated context."
     },
-
     {
       "rule_id": "CTX-RULE-013",
-      "rule": "Recent changes occurring shortly before symptom onset may receive increased diagnostic relevance but shall not automatically be assumed causal."
+      "rule": "Temporal applicability shall be evaluated when product revisions, software, firmware, procedures, standards, configuration, or known behavior changes over time."
     },
-
     {
       "rule_id": "CTX-RULE-014",
-      "rule": "The same historical case may have different similarity scores when evaluated against different hypotheses."
+      "rule": "Context changes shall not silently rewrite the historical context under which prior evidence, actions, outcomes, or experience occurred."
     },
-
     {
       "rule_id": "CTX-RULE-015",
-      "rule": "Similarity shall support probability estimation and retrieval but shall not be treated as proof that two cases share the same root cause."
+      "rule": "Context used to retrieve Knowledge Graph information shall respect any applicability boundaries attached to that knowledge."
+    },
+    {
+      "rule_id": "CTX-RULE-016",
+      "rule": "Customer, team, and user context may be represented only where it materially supports A.R.I.A.'s technical mission."
+    },
+    {
+      "rule_id": "CTX-RULE-017",
+      "rule": "Context shall not become a substitute for CRM, HR, accounting, sales, or general project-management data."
+    },
+    {
+      "rule_id": "CTX-RULE-018",
+      "rule": "Context comparison methods shall preserve dimension-specific significance and shall not assume that all dimensions contribute equally."
+    },
+    {
+      "rule_id": "CTX-RULE-019",
+      "rule": "A context record may contain references to multiple values for a dimension when the technical situation legitimately involves multiple applicable objects."
+    },
+    {
+      "rule_id": "CTX-RULE-020",
+      "rule": "Contradictory contextual information shall be preserved and reconciled rather than silently overwritten."
     }
+  ],
+
+  "provenance_semantics": {
+    "principle": "Material context should retain enough provenance to distinguish supplied, observed, measured, retrieved, derived, and inferred contextual information.",
+
+    "origin_types": [
+      "USER_SUPPLIED",
+      "SYSTEM_OBSERVED",
+      "MEASURED",
+      "SOURCE_DERIVED",
+      "CANONICAL_RETRIEVAL",
+      "EXPERIENCE_DERIVED",
+      "MODEL_INFERRED",
+      "SYSTEM_DERIVED"
+    ],
+
+    "rules": [
+      "Origin type does not replace the Core provenance contract.",
+      "MODEL_INFERRED context requires structured acceptance before becoming authoritative persisted context.",
+      "Derived context should retain lineage to its parent information.",
+      "A canonical reference does not eliminate the need to preserve how A.R.I.A. determined that the reference was applicable to the current context."
+    ]
+  },
+
+  "reasoning_engine_boundary": {
+    "registry_role": "Defines context vocabulary and semantics.",
+
+    "context_engine_role": [
+      "resolves context",
+      "compares context",
+      "evaluates contextual applicability",
+      "evaluates missing context",
+      "calculates or contributes to context-match confidence",
+      "determines which context dimensions are material to a technical question"
+    ],
+
+    "memory_engine_role": [
+      "retrieves potentially relevant knowledge",
+      "retrieves potentially relevant experience",
+      "retrieves historical case information",
+      "retrieves source material"
+    ],
+
+    "orchestration_engine_role": [
+      "determines when context resolution or re-resolution is required"
+    ],
+
+    "rules": [
+      "This Registry shall not implement context similarity algorithms.",
+      "This Registry shall not determine retrieval ranking.",
+      "This Registry shall not calculate hypothesis probability.",
+      "This Registry shall not persist authoritative case state."
+    ]
+  },
+
+  "prohibited_uses": [
+    "Creating duplicate manufacturers inside context records.",
+    "Creating duplicate products inside context records.",
+    "Creating duplicate product variants inside context records.",
+    "Creating duplicate symptoms inside context records.",
+    "Creating duplicate failure modes inside context records.",
+    "Creating duplicate measurements inside context records.",
+    "Using Registry-definition codes as runtime canonical object identifiers.",
+    "Treating context match as source authority.",
+    "Treating context match as hypothesis probability.",
+    "Treating symptom context as causal proof.",
+    "Treating failure-mode context as confirmation that the failure mode exists in the current case.",
+    "Treating unknown context as mismatch.",
+    "Treating missing context as negative evidence unless the absence itself is technically meaningful.",
+    "Silently replacing historical context with current context.",
+    "Persisting model-inferred context as authoritative without structured acceptance.",
+    "Using customer context for CRM behavior.",
+    "Using user or team context for HR performance assessment.",
+    "Embedding large source artifacts or configuration exports directly into context when references are sufficient.",
+    "Using this Registry to define reasoning-state or lifecycle-state vocabulary."
   ]
 }
