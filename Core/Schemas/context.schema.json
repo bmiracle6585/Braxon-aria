@@ -39,23 +39,32 @@
     },
 
     "context_match_confidence": {
-      "$ref": "#/$defs/confidence_reference"
+      "$ref": "#/$defs/context_match_confidence"
     },
 
     "effective_from": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time",
       "description": "Beginning of the period during which this context is known or asserted to apply when temporally bounded."
     },
 
     "effective_to": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time",
       "description": "End of the period during which this context is known or asserted to apply when temporally bounded."
     },
 
     "observed_at": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time",
       "description": "Time at which the represented technical context was observed, when distinct from record creation time."
     },
@@ -105,7 +114,10 @@
     },
 
     "notes": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Human-readable technical notes that do not replace structured context dimensions."
     },
 
@@ -120,12 +132,18 @@
     },
 
     "created_by": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Actor responsible for creation when known."
     },
 
     "updated_by": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Actor responsible for the most recent update when known."
     },
 
@@ -226,13 +244,21 @@
         },
 
         "structured_value": {
-          "type": ["object", "null"],
+          "type": [
+            "object",
+            "null"
+          ],
           "description": "Structured contextual value that does not justify creation of a separate canonical entity.",
           "additionalProperties": true
         },
 
         "controlled_value": {
-          "type": ["string", "number", "boolean", "null"],
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ],
           "description": "Controlled scalar value governed by another applicable authoritative Registry or schema."
         },
 
@@ -292,36 +318,57 @@
         },
 
         "observed_at": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
 
         "effective_from": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
 
         "effective_to": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
 
         "accepted": {
-          "type": ["boolean", "null"],
+          "type": [
+            "boolean",
+            "null"
+          ],
           "description": "Structured acceptance state where acceptance is required, particularly for model-inferred context."
         },
 
         "accepted_at": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         },
 
         "accepted_by": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
 
         "notes": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
 
@@ -501,7 +548,10 @@
     },
 
     "completeness_assessment": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "additionalProperties": false,
 
       "properties": {
@@ -526,44 +576,63 @@
         },
 
         "materiality_reason": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
 
         "assessed_at": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         }
       }
     },
 
-    "confidence_reference": {
-      "type": ["object", "null"],
-      "description": "Context-match confidence represented separately from hypothesis probability, source authority, and other confidence dimensions.",
+    "context_match_confidence": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Context-match confidence represented according to the shared confidence contract in Core/Schemas/core_contracts.json. Confidence remains separate from hypothesis probability, source authority, and contextual comparison state.",
       "additionalProperties": false,
 
+      "required": [
+        "value",
+        "basis"
+      ],
+
       "properties": {
-        "dimension": {
-          "type": "string",
-          "const": "CONTEXT_MATCH_CONFIDENCE"
-        },
-
-        "level": {
-          "type": ["string", "null"],
-          "description": "Controlled confidence level governed by Core/Registries/confidence_levels.json."
-        },
-
-        "score": {
-          "type": ["number", "null"],
+        "value": {
+          "type": "number",
           "minimum": 0,
-          "maximum": 1
+          "maximum": 1,
+          "description": "Confidence value governed by the shared Core confidence contract."
         },
 
-        "reason": {
-          "type": ["string", "null"]
+        "basis": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable or method-identifying basis explaining why this confidence value is justified."
         },
 
-        "assessed_at": {
-          "type": ["string", "null"],
+        "dimension": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "const": "CONTEXT_MATCH_CONFIDENCE",
+          "description": "Controlled confidence dimension governed by Core/Registries/confidence_levels.json."
+        },
+
+        "calculated_at": {
+          "type": [
+            "string",
+            "null"
+          ],
           "format": "date-time"
         }
       }
