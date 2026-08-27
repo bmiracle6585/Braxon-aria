@@ -1,687 +1,1079 @@
 {
   "specification": "ARIA_CASE_STATE_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines the authoritative living state of an active A.R.I.A. diagnostic case and how that state changes as context, evidence, hypotheses, probabilities, actions, findings, corrections, and validation evolve.",
+  "version": "2.0.0",
+  "description": "Canonical case-state coordination behavior for A.R.I.A. technical investigations. The Case State Engine maintains the authoritative assembled current state of a diagnostic case, versions material state changes, validates cross-object consistency, preserves historical reconstruction, and exposes the current case projection to other reasoning components. It does not redefine lifecycle status, reasoning-state vocabulary, evidence semantics, hypothesis semantics, probability, action execution, routing, validation, event vocabulary, or learning semantics.",
 
-  "core_principle": {
-    "statement": "A diagnostic case is a versioned technical state machine, not a transcript. Conversation, documents, screenshots, measurements, actions, and historical experience contribute to the case, but the authoritative current case state shall be represented explicitly and independently of conversational order.",
-    "rules": [
-      "The current case state shall represent what ARIA presently knows, suspects, has eliminated, has confirmed, has requested, and is waiting for.",
-      "Conversation history shall not serve as the authoritative case database.",
-      "Every material state change shall be attributable to an event.",
-      "Previous states shall remain reconstructable.",
-      "ARIA shall reason from current state rather than repeatedly rereading the complete case transcript.",
-      "State transitions shall preserve uncertainty.",
-      "A hypothesis is not a finding.",
-      "A corrective action is not proof of root cause.",
-      "A successful validation is not automatically proof that every causal assumption was correct."
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+
+    "registries": {
+      "lifecycle_statuses": "Core/Registries/case_lifecycle_statuses.json",
+      "reasoning_states": "Core/Registries/case_states.json"
+    },
+
+    "schemas": {
+      "case": "Core/Schemas/case.schema.json",
+      "context": "Core/Schemas/context.schema.json",
+      "evidence": "Core/Schemas/evidence.schema.json",
+      "hypothesis": "Core/Schemas/hypothesis.schema.json",
+      "action": "Core/Schemas/action.schema.json",
+      "route_step": "Core/Schemas/route_step.schema.json",
+      "event": "Core/Schemas/event.schema.json"
+    },
+
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "reasoning_cycle": "Core/Reasoning/reasoning_cycle.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "validation": "Core/Reasoning/validating_engine.json",
+      "memory": "Core/Reasoning/memory_engine.json",
+      "learning": "Core/Reasoning/learning_engine.json"
+    },
+
+    "role": "CURRENT_CASE_STATE_COORDINATION",
+
+    "owns": [
+      "assembled current case projection",
+      "current lifecycle-status reference",
+      "current reasoning-state reference",
+      "current state-version reference",
+      "cross-object reference aggregation",
+      "current-state consistency validation",
+      "material-state version creation coordination",
+      "historical state reconstruction",
+      "case-level unresolved-condition projection",
+      "case-level constraint projection",
+      "case-level technical-disposition projection",
+      "case summary state",
+      "state freshness",
+      "state publication readiness"
+    ],
+
+    "does_not_own": [
+      "case lifecycle vocabulary",
+      "reasoning-state vocabulary",
+      "evidence type vocabulary",
+      "evidence truth",
+      "evidence confidence",
+      "hypothesis vocabulary",
+      "hypothesis probability",
+      "hypothesis confirmation",
+      "hypothesis elimination",
+      "action type vocabulary",
+      "action execution",
+      "technical outcome vocabulary",
+      "route progression",
+      "route branches",
+      "rerouting",
+      "decision utility",
+      "competitive action selection",
+      "validation semantics",
+      "event vocabulary",
+      "source authority",
+      "knowledge graph truth",
+      "experience ledger truth",
+      "learning eligibility",
+      "manufacturer requirements",
+      "technical procedure definitions"
     ]
   },
 
-  "case_lifecycle_states": [
-    "CREATED",
-    "CONTEXT_RESOLUTION",
-    "INITIAL_ASSESSMENT",
-    "ACTIVE_DIAGNOSIS",
-    "AWAITING_EVIDENCE",
-    "AWAITING_ACTION",
-    "CORRECTIVE_ACTION",
-    "VALIDATION",
-    "MONITORING",
-    "RESOLVED",
-    "CLOSED",
-    "ESCALATED",
-    "SUSPENDED",
-    "REOPENED"
-  ],
+  "core_principle": {
+    "statement": "A diagnostic case is a versioned authoritative technical state, not a transcript. Case State assembles the current case from canonical persisted objects and controlled vocabularies while preserving the distinction between lifecycle, reasoning phase, evidence, hypotheses, probability, actions, routing, validation, technical disposition, and historical events.",
 
-  "case_record": {
-    "required_fields": [
+    "rules": [
+      "Conversation history shall not serve as the authoritative case database.",
+      "The current case state shall be represented explicitly and independently of conversational order.",
+      "Every material state change shall remain attributable to a material event or equivalent auditable transition trigger.",
+      "Previous material states shall remain reconstructable.",
+      "A.R.I.A. shall reason from current authoritative state rather than repeatedly reinterpret the full transcript.",
+      "Case State shall reference canonical runtime objects rather than recreate competing object models.",
+      "Lifecycle status and reasoning state shall remain separate.",
+      "A hypothesis is not a finding.",
+      "A hypothesis probability is not case lifecycle status.",
+      "An action is not evidence.",
+      "A completed action is not technical proof.",
+      "A route step is not an action execution record.",
+      "A validation result is not automatically proof of every causal assumption.",
+      "A resolved case is not necessarily a closed case.",
+      "A closed case may preserve unresolved or cancelled technical disposition.",
+      "Uncertainty may remain present in an authoritative case state.",
+      "Case State shall remain technically domain-independent."
+    ]
+  },
+
+  "canonical_identity_model": {
+    "case": "case_<UUID>",
+    "state_version": "state_<UUID>",
+    "event": "evt_<UUID>",
+    "context": "ctx_<UUID>",
+    "evidence": "evd_<UUID>",
+    "hypothesis": "hyp_<UUID>",
+    "action": "act_<UUID>",
+    "route_step": "rstep_<UUID>",
+    "decision": "dec_<UUID>",
+    "measurement": "meas_<UUID>",
+    "source": "src_<UUID>",
+    "artifact": "art_<UUID>",
+
+    "rules": [
+      "Case State shall not invent alternate identifiers for canonical runtime objects.",
+      "There shall be no separate action_instance_id when act_<UUID> already represents the runtime action.",
+      "There shall be no separate corrective_action_id solely because an action is corrective.",
+      "Correction remains represented through canonical Action.",
+      "Canonical object references should be used instead of embedded duplicate authoritative objects when practical."
+    ]
+  },
+
+  "lifecycle_boundary": {
+    "registry": "Core/Registries/case_lifecycle_statuses.json",
+    "field": "status",
+
+    "rules": [
+      "Case State shall consume the lifecycle status vocabulary from the lifecycle Registry.",
+      "Case State shall not define a competing lifecycle list.",
+      "Reasoning phases shall never be stored as lifecycle status.",
+      "REOPENED is a lifecycle transition/event semantic, not a persistent lifecycle status.",
+      "WAITING describes lifecycle dependency state and is not a reasoning phase.",
+      "BLOCKED describes inability to progress and is not a diagnosis.",
+      "ESCALATED describes lifecycle handling and is not a failure mode.",
+      "RESOLVED indicates supported technical resolution but remains distinct from CLOSED.",
+      "UNRESOLVED preserves technical non-resolution explicitly.",
+      "CANCELLED preserves intentional discontinuation without claiming technical resolution.",
+      "CLOSED is formal lifecycle completion and shall preserve the final technical disposition."
+    ]
+  },
+
+  "reasoning_state_boundary": {
+    "registry": "Core/Registries/case_states.json",
+    "field": "reasoning_state",
+
+    "rules": [
+      "Case State shall consume the reasoning-state vocabulary from the reasoning-state Registry.",
+      "Case State shall not define a competing diagnostic-phase vocabulary.",
+      "A reasoning-state transition does not automatically require a lifecycle-status transition.",
+      "A lifecycle transition does not automatically redefine reasoning state.",
+      "Reasoning may revisit earlier phases when material evidence, context, contradiction, validation, or outcome changes.",
+      "Historical reasoning-state transitions shall remain auditable."
+    ]
+  },
+
+  "current_case_projection": {
+    "principle": "The current case projection is an assembled index of canonical technical state, not a duplicate persistence model for every referenced object.",
+
+    "core_fields": [
       "case_id",
-      "case_type",
+      "status",
+      "reasoning_state",
+      "current_state_version_id",
       "created_at",
-      "created_by",
-      "current_lifecycle_state",
-      "current_state_version",
-      "context_id",
-      "working_memory_id",
-      "diagnostic_confidence",
-      "resolution_confidence",
+      "updated_at",
       "last_material_update_at"
     ],
 
-    "optional_fields": [
-      "organization_id",
-      "customer_id",
-      "project_id",
-      "site_id",
-      "path_id",
-      "primary_user_id",
-      "assigned_user_ids",
-      "team_id",
-      "parent_case_id",
-      "related_case_ids",
-      "recurrence_of_case_id",
-      "escalation_target",
-      "priority",
-      "service_impact",
-      "safety_classification"
+    "reference_sections": {
+      "context": [
+        "current_context_id",
+        "relevant_context_ids"
+      ],
+
+      "evidence": [
+        "active_evidence_ids",
+        "superseded_evidence_ids",
+        "invalidated_evidence_ids",
+        "material_evidence_ids"
+      ],
+
+      "hypotheses": [
+        "active_hypothesis_ids",
+        "deprioritized_hypothesis_ids",
+        "eliminated_hypothesis_ids",
+        "confirmed_hypothesis_ids"
+      ],
+
+      "actions": [
+        "active_action_ids",
+        "pending_action_ids",
+        "completed_action_ids",
+        "failed_action_ids",
+        "blocked_action_ids",
+        "superseded_action_ids"
+      ],
+
+      "routing": [
+        "active_route_step_ids",
+        "completed_route_step_ids",
+        "blocked_route_step_ids",
+        "bypassed_route_step_ids",
+        "current_branch_ids"
+      ],
+
+      "decisions": [
+        "current_decision_id",
+        "material_decision_ids"
+      ],
+
+      "events": [
+        "last_material_event_id",
+        "recent_material_event_ids"
+      ],
+
+      "validation": [
+        "active_validation_reference_ids",
+        "material_validation_reference_ids"
+      ],
+
+      "measurements": [
+        "material_measurement_ids"
+      ]
+    },
+
+    "rules": [
+      "Reference sections may be empty.",
+      "Presence in a projection section does not alter the authoritative state of the referenced object.",
+      "Case State shall not copy full authoritative object structures unless explicitly required by another canonical contract.",
+      "Projection membership shall be updated when referenced object state materially changes.",
+      "Historical references may remain available even after objects leave the active projection."
     ]
   },
 
-  "case_state": {
-    "required_sections": [
-      "CONTEXT",
-      "REPORTED_PROBLEM",
-      "NORMALIZED_SYMPTOMS",
-      "ACTIVE_EVIDENCE",
-      "ACTIVE_HYPOTHESES",
-      "PROBABILITY_STATE",
-      "RULED_OUT_HYPOTHESES",
-      "CONFIRMED_FINDINGS",
-      "COMPLETED_ACTIONS",
-      "PENDING_ACTIONS",
-      "REQUESTED_EVIDENCE",
-      "UNRESOLVED_QUESTIONS",
-      "CONTRADICTIONS",
-      "RECENT_CHANGES",
-      "CORRECTIVE_ACTIONS",
-      "VALIDATION_STATE",
-      "CURRENT_ROUTE",
-      "CASE_CONSTRAINTS"
+  "reported_problem": {
+    "principle": "The original problem report shall remain distinguishable from A.R.I.A.'s normalized technical interpretation.",
+
+    "recommended_fields": [
+      "raw_report",
+      "reporter_reference",
+      "reported_at",
+      "reported_symptom_entity_ids",
+      "reported_service_impact",
+      "reported_recent_change",
+      "source_event_id"
+    ],
+
+    "rules": [
+      "The original problem statement shall remain historically available.",
+      "A.R.I.A. may normalize terminology without replacing the original report.",
+      "The reporter's proposed diagnosis shall remain distinguishable from the reported observation.",
+      "Reported information may later become structured Evidence through the Evidence Engine.",
+      "Case State shall not treat the original report as automatically verified technical truth."
     ]
   },
 
-  "state_version": {
-    "append_only": true,
+  "symptom_projection": {
+    "principle": "Case State may project current symptom references without creating a separate competing symptom-state ontology.",
 
-    "required_fields": [
+    "recommended_fields": [
+      "reported_symptom_entity_ids",
+      "observed_symptom_entity_ids",
+      "currently_present_symptom_entity_ids",
+      "apparently_resolved_symptom_entity_ids",
+      "uncertain_symptom_entity_ids"
+    ],
+
+    "rules": [
+      "Canonical symptom vocabulary belongs to the applicable Registry or entity layer.",
+      "Symptom disappearance does not automatically prove root cause.",
+      "A symptom may exist before its cause is known.",
+      "Multiple symptoms may result from one or multiple technical conditions.",
+      "Symptom projection should remain traceable to supporting evidence."
+    ]
+  },
+
+  "evidence_projection": {
+    "principle": "Evidence remains authoritative in evd_<UUID> records. Case State projects which evidence is currently material to the case.",
+
+    "rules": [
+      "Case State shall not redefine evidence status, type, confidence, or provenance.",
+      "Active evidence shall reference canonical evd_<UUID> records.",
+      "Superseded and invalidated evidence shall remain historically traceable.",
+      "Contradictory evidence shall not be removed from projection merely because it conflicts with the current leading hypothesis.",
+      "Derived evidence shall not be counted as independent corroboration of its own parents.",
+      "The Evidence Engine remains authoritative for evidence-state reasoning."
+    ]
+  },
+
+  "hypothesis_projection": {
+    "principle": "Hypotheses remain authoritative in hyp_<UUID> records. Case State projects their current relevance to the case.",
+
+    "rules": [
+      "Case State shall not maintain a competing hypothesis-status vocabulary.",
+      "Case State shall not independently calculate hypothesis probability.",
+      "Case State shall not independently confirm or eliminate hypotheses.",
+      "Current hypothesis projection shall reflect authoritative Hypothesis and Probability outputs.",
+      "Historical hypotheses shall remain auditable after elimination, deprioritization, confirmation, or supersession.",
+      "A leading or highest-probability hypothesis is not automatically a confirmed diagnosis."
+    ]
+  },
+
+  "probability_projection": {
+    "principle": "Case State may expose current probability summaries but Probability Engine remains authoritative.",
+
+    "recommended_fields": [
+      "leading_hypothesis_id",
+      "leading_hypothesis_probability",
+      "probability_state_updated_at",
+      "probability_state_version_reference"
+    ],
+
+    "rules": [
+      "Probability summaries shall be derived from authoritative hypothesis/probability state.",
+      "Case State shall not create its own probability method.",
+      "Probability confidence shall remain distinct from lifecycle status and reasoning state.",
+      "A high probability shall not automatically transition the case to RESOLVED."
+    ]
+  },
+
+  "action_projection": {
+    "principle": "Case State references canonical act_<UUID> actions and does not create a parallel action-instance or corrective-action model.",
+
+    "rules": [
+      "All diagnostic, observational, corrective, validation, monitoring, escalation, and other technical operations shall use canonical Action architecture.",
+      "Corrective actions shall remain Actions with applicable action_type and procedure semantics.",
+      "Case State shall not define separate action statuses.",
+      "Action execution status remains authoritative on action.schema.json records.",
+      "Requested, active, completed, failed, blocked, skipped, cancelled, and superseded actions may be projected from authoritative Action state.",
+      "Action results shall become Evidence through the Evidence Engine when they establish technical observations.",
+      "Completed actions shall remain historically traceable."
+    ]
+  },
+
+  "routing_projection": {
+    "principle": "Case State exposes current route references while Routing remains authoritative for route semantics.",
+
+    "rules": [
+      "Case State shall not perform rerouting.",
+      "Case State shall not score candidate routes.",
+      "Case State shall not create route predecessors, successors, branches, or dependencies.",
+      "Current route state shall be derived from authoritative rstep_<UUID> records.",
+      "Blocked, bypassed, superseded, completed, and repeated route history shall remain available.",
+      "Route exhaustion may be projected but does not itself determine lifecycle resolution."
+    ]
+  },
+
+  "validation_projection": {
+    "principle": "Case State may expose current validation state without defining a competing validation vocabulary.",
+
+    "recommended_fields": [
+      "validation_required",
+      "validation_pending",
+      "latest_validation_reference_id",
+      "validation_summary",
+      "remaining_validation_requirements"
+    ],
+
+    "rules": [
+      "Validation Engine remains authoritative for validation semantics.",
+      "Case State shall not define its own validation statuses until or unless a canonical validation Registry/schema establishes them.",
+      "Validation failure shall remain visible as a material state condition.",
+      "Validation success does not automatically establish sole root cause.",
+      "Resolution eligibility may depend on authoritative validation results."
+    ]
+  },
+
+  "decision_projection": {
+    "principle": "Case State may expose the current selected decision/action relationship but Decision remains authoritative for selection reasoning.",
+
+    "recommended_fields": [
+      "current_decision_id",
+      "selected_action_id",
+      "decision_confidence",
+      "decision_uncertainty",
+      "decision_made_at"
+    ],
+
+    "rules": [
+      "Case State shall not recalculate decision utility.",
+      "Case State shall not silently substitute an alternative action.",
+      "A Decision may become stale when current state materially changes.",
+      "A selected action does not imply execution."
+    ]
+  },
+
+  "pending_conditions": {
+    "principle": "Case State shall explicitly project what the case is waiting for or what prevents progression without inventing new lifecycle states.",
+
+    "condition_types": [
+      "USER_RESPONSE",
+      "TECHNICAL_OBSERVATION",
+      "MEASUREMENT",
+      "SCREENSHOT",
+      "PHOTOGRAPH",
+      "VIDEO",
+      "DOCUMENT",
+      "CONFIGURATION",
+      "LOG",
+      "ACTION_EXECUTION",
+      "AUTHORIZATION",
+      "ACCESS",
+      "TOOL",
+      "RESOURCE",
+      "SERVICE_WINDOW",
+      "MONITORING_INTERVAL",
+      "VALIDATION",
+      "EXTERNAL_DEPENDENCY",
+      "ENGINEERING_REVIEW",
+      "MANUFACTURER_SUPPORT",
+      "OTHER"
+    ],
+
+    "recommended_fields": [
+      "condition_id",
+      "type",
+      "description",
+      "expected_from",
+      "related_action_ids",
+      "related_route_step_ids",
+      "created_at",
+      "expected_at",
+      "satisfied",
+      "satisfied_at"
+    ],
+
+    "rules": [
+      "Pending conditions shall not become lifecycle statuses.",
+      "A case with an expected pending condition may use lifecycle WAITING.",
+      "A case whose progress is prevented may use lifecycle BLOCKED.",
+      "Satisfied pending conditions should transition to historical state rather than silently disappear.",
+      "The reason for WAITING or BLOCKED shall remain reconstructable."
+    ]
+  },
+
+  "constraint_projection": {
+    "principle": "Case State aggregates currently material constraints without becoming the owner of their technical semantics.",
+
+    "constraint_types": [
+      "SAFETY",
+      "AUTHORIZATION",
+      "ACCESS",
+      "TOOL",
+      "RESOURCE",
+      "SERVICE_IMPACT",
+      "SERVICE_WINDOW",
+      "PROCEDURE",
+      "DEPENDENCY",
+      "ENVIRONMENT",
+      "USER_CAPABILITY",
+      "KNOWLEDGE_GAP",
+      "DATA_GAP",
+      "OTHER"
+    ],
+
+    "recommended_fields": [
+      "constraint_id",
+      "type",
+      "description",
+      "severity",
+      "blocking",
+      "related_action_ids",
+      "related_route_step_ids",
+      "related_evidence_ids",
+      "created_at",
+      "resolved",
+      "resolved_at"
+    ],
+
+    "rules": [
+      "Constraint projection shall remain traceable to authoritative source information.",
+      "A blocking constraint may justify lifecycle BLOCKED.",
+      "A nonblocking constraint may influence Decision without changing lifecycle.",
+      "Case State shall not invent authorization or safety clearance."
+    ]
+  },
+
+  "contradiction_projection": {
+    "principle": "Material contradictions remain visible until resolved, bounded, superseded, or rendered irrelevant by authoritative state change.",
+
+    "recommended_fields": [
+      "contradiction_id",
+      "evidence_ids",
+      "description",
+      "materiality",
+      "status",
+      "detected_at",
+      "resolved_at",
+      "resolution_summary"
+    ],
+
+    "rules": [
+      "Contradiction vocabulary should defer to a future canonical contradiction contract if one is introduced.",
+      "Case State shall not remove a contradiction because it is inconvenient to the leading hypothesis.",
+      "Contradictions may trigger Hypothesis, Probability, Uncertainty, Decision, Routing, or Validation reevaluation.",
+      "Unresolved contradictions may remain at case closure when the final disposition accurately preserves them."
+    ]
+  },
+
+  "technical_disposition": {
+    "principle": "Technical disposition describes what is currently established about the investigated condition without becoming another lifecycle vocabulary.",
+
+    "dimensions": {
+      "symptom_condition": [
+        "PRESENT",
+        "IMPROVED",
+        "RESOLVED",
+        "INTERMITTENT",
+        "NOT_REPRODUCED",
+        "UNKNOWN"
+      ],
+
+      "causal_state": [
+        "UNKNOWN",
+        "PLAUSIBLE_CAUSES_REMAIN",
+        "PROVISIONAL_CAUSE",
+        "SUPPORTED_CAUSE",
+        "CONFIRMED_CAUSE",
+        "MULTIPLE_CAUSES",
+        "CAUSAL_ATTRIBUTION_LIMITED"
+      ],
+
+      "correction_state": [
+        "NOT_ATTEMPTED",
+        "PROPOSED",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "PARTIALLY_EFFECTIVE",
+        "EFFECTIVE",
+        "REVERSED",
+        "NOT_APPLICABLE"
+      ],
+
+      "validation_state": [
+        "NOT_REQUIRED",
+        "REQUIRED",
+        "PENDING",
+        "SUPPORTED",
+        "PARTIAL",
+        "FAILED",
+        "INCONCLUSIVE",
+        "UNKNOWN"
+      ],
+
+      "remaining_uncertainty": [
+        "NONE_IDENTIFIED",
+        "LOW",
+        "MATERIAL",
+        "HIGH",
+        "UNKNOWN"
+      ]
+    },
+
+    "rules": [
+      "Technical disposition is a case summary projection, not a replacement for specialized authoritative records.",
+      "Lifecycle RESOLVED may be appropriate with causal uncertainty when applicable resolution criteria are satisfied.",
+      "Operational restoration and causal confirmation remain distinct.",
+      "Case State shall preserve attribution limitations.",
+      "The technical disposition may be preserved after lifecycle CLOSED."
+    ]
+  },
+
+  "resolution_boundary": {
+    "principle": "Case State may project resolution readiness and final technical disposition, but lifecycle transitions must obey the lifecycle Registry and validation requirements.",
+
+    "resolution_considerations": [
+      "symptom condition",
+      "required technical outcome",
+      "validation result",
+      "remaining service impact",
+      "causal confidence when required",
+      "remaining contradictions",
+      "remaining uncertainty",
+      "required corrective state",
+      "acceptance criteria"
+    ],
+
+    "rules": [
+      "RESOLVED and CLOSED remain distinct lifecycle statuses.",
+      "A case shall not become RESOLVED solely because an action completed.",
+      "A case shall not become RESOLVED solely because a symptom temporarily disappeared.",
+      "A case may be operationally resolved while exact root cause remains uncertain when applicable criteria permit.",
+      "A case may become UNRESOLVED when responsible diagnostic progression cannot sufficiently establish resolution.",
+      "UNRESOLVED may later transition to CLOSED.",
+      "CANCELLED may later transition to CLOSED.",
+      "Closure shall preserve unresolved uncertainty and technical disposition."
+    ]
+  },
+
+  "state_version_model": {
+    "principle": "Material case-state changes create append-only reconstructable state versions.",
+
+    "identity": "state_<UUID>",
+
+    "recommended_fields": [
       "state_version_id",
       "case_id",
       "version_number",
       "created_at",
       "trigger_event_id",
       "previous_state_version_id",
+      "source_state_version_id",
       "material_changes",
-      "state_hash"
-    ],
-
-    "rules": [
-      "Material state changes shall produce a new version.",
-      "Previous versions shall not be overwritten.",
-      "Nonmaterial presentation changes need not produce a diagnostic state version.",
-      "State versions shall be reproducible from the event history when practical."
-    ]
-  },
-
-  "case_event_model": {
-    "append_only": true,
-
-    "event_types": [
-      "CASE_CREATED",
-      "USER_MESSAGE_RECEIVED",
-      "CONTEXT_RESOLVED",
-      "CONTEXT_CHANGED",
-      "SYMPTOM_ADDED",
-      "SYMPTOM_UPDATED",
-      "EVIDENCE_RECEIVED",
-      "EVIDENCE_VALIDATED",
-      "EVIDENCE_INVALIDATED",
-      "EVIDENCE_SUPERSEDED",
-      "CONTRADICTION_DETECTED",
-      "HYPOTHESIS_GENERATED",
-      "HYPOTHESIS_UPDATED",
-      "HYPOTHESIS_RULED_OUT",
-      "HYPOTHESIS_CONFIRMED",
-      "PROBABILITY_RECALCULATED",
-      "ACTION_REQUESTED",
-      "ACTION_STARTED",
-      "ACTION_COMPLETED",
-      "ACTION_FAILED",
-      "ACTION_SKIPPED",
-      "FINDING_CONFIRMED",
-      "CORRECTIVE_ACTION_PROPOSED",
-      "CORRECTIVE_ACTION_STARTED",
-      "CORRECTIVE_ACTION_COMPLETED",
-      "VALIDATION_REQUESTED",
-      "VALIDATION_COMPLETED",
-      "RESOLUTION_PROPOSED",
-      "CASE_RESOLVED",
-      "CASE_CLOSED",
-      "CASE_REOPENED",
-      "CASE_ESCALATED",
-      "CASE_SUSPENDED"
-    ],
-
-    "required_fields": [
-      "event_id",
-      "case_id",
-      "event_type",
-      "created_at",
-      "actor_type",
-      "actor_id",
-      "payload",
-      "provenance"
-    ]
-  },
-
-  "actor_types": [
-    "USER",
-    "ARIA",
-    "SYSTEM",
-    "EQUIPMENT",
-    "INTEGRATION",
-    "ADMINISTRATOR"
-  ],
-
-  "reported_problem": {
-    "description": "Preserves the problem as originally reported separately from ARIA's normalized technical interpretation.",
-
-    "required_fields": [
-      "raw_report",
-      "reporter_id",
-      "reported_at"
-    ],
-
-    "optional_fields": [
-      "reported_severity",
-      "reported_service_impact",
-      "reported_recent_change"
-    ],
-
-    "rules": [
-      "The original problem statement shall remain available.",
-      "ARIA may normalize terminology without replacing the original report.",
-      "The reporter's proposed diagnosis shall remain distinguishable from the reported symptom."
-    ]
-  },
-
-  "symptom_state": {
-    "statuses": [
-      "REPORTED",
-      "OBSERVED",
-      "VALIDATED",
-      "NOT_REPRODUCED",
-      "RESOLVED",
-      "UNKNOWN"
-    ],
-
-    "required_fields": [
-      "symptom_id",
-      "symptom_type",
+      "state_hash",
       "status",
-      "confidence",
-      "source_evidence_ids"
+      "reasoning_state",
+      "projection_snapshot_reference"
     ],
 
     "rules": [
-      "Symptoms may exist before their cause is known.",
-      "A symptom may disappear without the root cause being proven.",
-      "Multiple symptoms may belong to one failure or multiple simultaneous failures."
+      "Material state changes shall produce a new state version when state-version persistence is implemented.",
+      "Previous state versions shall not be overwritten.",
+      "Presentation-only changes need not produce a diagnostic state version.",
+      "State versions should be reproducible from event and object history when practical.",
+      "Every state version shall identify the case.",
+      "Every noninitial version should identify the previous version.",
+      "The trigger event should be recorded when one exists.",
+      "State-version creation shall preserve atomicity with materially dependent state changes.",
+      "A stale source-state version shall not silently overwrite a newer current state."
     ]
   },
 
-  "hypothesis_state": {
-    "statuses": [
-      "CANDIDATE",
-      "ACTIVE",
-      "WEAKENED",
-      "LEADING",
-      "RULED_OUT",
-      "CONFIRMED",
-      "DEFERRED"
+  "material_change_model": {
+    "material_changes_include": [
+      "lifecycle status change",
+      "reasoning-state change",
+      "current context change",
+      "material evidence added",
+      "material evidence invalidated",
+      "material evidence superseded",
+      "material hypothesis change",
+      "material probability change",
+      "material uncertainty change",
+      "action selection change",
+      "action execution-state change",
+      "route progression change",
+      "validation-state change",
+      "technical-disposition change",
+      "new blocking condition",
+      "resolved blocking condition",
+      "new pending dependency",
+      "satisfied pending dependency",
+      "new contradiction",
+      "resolved contradiction",
+      "reopen transition",
+      "resolution transition",
+      "closure transition"
     ],
 
-    "required_fields": [
-      "hypothesis_id",
-      "failure_mode_id",
-      "status",
-      "current_probability",
-      "probability_confidence",
-      "supporting_evidence_ids",
-      "contradicting_evidence_ids",
-      "last_updated_at"
+    "normally_nonmaterial_changes": [
+      "presentation formatting",
+      "wording changes that do not alter technical meaning",
+      "UI-only ordering",
+      "duplicate event retry with no state change",
+      "repeated retrieval of unchanged state"
     ],
 
     "rules": [
-      "Probability and hypothesis status shall remain separate.",
-      "A leading hypothesis is not a confirmed diagnosis.",
-      "Ruled-out hypotheses remain part of case history.",
-      "A ruled-out hypothesis may be reactivated only when new evidence or context justifies doing so."
+      "Materiality is based on technical or operational meaning rather than field count.",
+      "A small field change may be material if it changes eligibility, routing, diagnosis, validation, or lifecycle.",
+      "Nonmaterial changes shall not create unnecessary diagnostic state versions."
     ]
   },
 
-  "finding_state": {
-    "description": "Confirmed findings represent technical conditions sufficiently supported by evidence.",
+  "event_attribution": {
+    "principle": "Every material state transition must remain attributable to an event or equivalent auditable trigger.",
 
-    "required_fields": [
-      "finding_id",
-      "finding_type",
-      "statement",
-      "confidence",
-      "supporting_evidence_ids",
-      "confirmed_at"
+    "rules": [
+      "Case State shall reference canonical evt_<UUID> records when available.",
+      "Case State shall not define a competing universal Event vocabulary.",
+      "Event content shall be processed by the applicable specialized engines before becoming authoritative technical state.",
+      "Reopen, resolve, close, cancel, suspend, escalate, block, and waiting transitions shall remain auditable.",
+      "A language-model narrative shall not silently mutate authoritative state."
+    ]
+  },
+
+  "cross_object_consistency": {
+    "checks": [
+      "all referenced runtime objects belong to or are validly related to the case",
+      "all identifiers conform to Core identity contracts",
+      "case.status is valid under the lifecycle Registry",
+      "case.reasoning_state is valid under the reasoning-state Registry",
+      "current_state_version_id belongs to the case",
+      "active references do not point exclusively to objects known to be superseded or invalidated unless intentionally preserved",
+      "selected_action_id references a canonical action",
+      "active route steps reference canonical actions",
+      "route-step case_id matches the case",
+      "hypothesis references belong to the case",
+      "evidence references belong to the case",
+      "context references are applicable to the case",
+      "RESOLVED lifecycle does not exist without applicable resolution basis",
+      "CLOSED preserves final technical disposition",
+      "WAITING identifies a pending dependency when applicable",
+      "BLOCKED identifies a blocking condition",
+      "SUPERSEDED runtime objects preserve replacement relationships where required"
     ],
 
     "rules": [
-      "Findings shall be narrower than unsupported causal conclusions.",
-      "A finding may establish a condition without establishing why the condition exists.",
-      "Findings may become inputs to further hypotheses."
+      "Consistency validation shall not recompute specialized technical reasoning.",
+      "A consistency failure shall block publication of an internally contradictory authoritative state.",
+      "Specialized engines remain authoritative for correcting their owned object state."
     ]
   },
 
-  "action_state": {
-    "statuses": [
-      "PROPOSED",
-      "REQUESTED",
-      "ACKNOWLEDGED",
-      "IN_PROGRESS",
-      "COMPLETED",
-      "FAILED",
-      "SKIPPED",
-      "BLOCKED",
-      "CANCELLED"
-    ],
+  "state_publication": {
+    "principle": "Case State becomes authoritative only after applicable structural, referential, and transition checks succeed.",
 
-    "required_fields": [
-      "action_instance_id",
-      "action_id",
-      "status",
-      "requested_at",
-      "requested_from",
-      "diagnostic_purpose",
-      "target_hypothesis_ids"
-    ],
-
-    "optional_fields": [
-      "started_at",
-      "completed_at",
-      "result",
-      "result_evidence_ids",
-      "failure_reason",
-      "skip_reason",
-      "blocked_reason"
+    "publication_requirements": [
+      "schema-conformant case structure",
+      "valid lifecycle status",
+      "valid reasoning state",
+      "valid runtime-object references",
+      "valid state-version relationship",
+      "required lifecycle transition conditions",
+      "required blocking or waiting reason when applicable",
+      "required event attribution for material transitions",
+      "no unresolved referential-integrity failure"
     ],
 
     "rules": [
-      "ARIA shall distinguish requesting an action from the action actually being completed.",
-      "An action shall not be treated as completed merely because instructions were provided.",
-      "Action results shall become evidence through the Evidence Engine.",
-      "Skipped and failed actions remain part of route history."
+      "Partial publication shall be avoided.",
+      "If publication fails, the prior authoritative state remains current.",
+      "Orchestration owns runtime transaction coordination.",
+      "Case State owns the consistency requirements of the assembled case projection.",
+      "Published state shall identify its latest material update time."
     ]
   },
 
-  "pending_state": {
-    "categories": [
-      "WAITING_FOR_USER_RESPONSE",
-      "WAITING_FOR_SCREENSHOT",
-      "WAITING_FOR_MEASUREMENT",
-      "WAITING_FOR_CONFIGURATION",
-      "WAITING_FOR_PHYSICAL_ACTION",
-      "WAITING_FOR_REMOTE_ACTION",
-      "WAITING_FOR_EQUIPMENT",
-      "WAITING_FOR_ACCESS",
-      "WAITING_FOR_WEATHER",
-      "WAITING_FOR_CUSTOMER",
-      "WAITING_FOR_VALIDATION",
-      "WAITING_FOR_EXTERNAL_SYSTEM"
+  "reconstruction": {
+    "principle": "Historical case state shall remain reconstructable for audit, explanation, debugging, validation review, and learning assessment.",
+
+    "reconstruction_sources": [
+      "case record",
+      "state versions",
+      "event history",
+      "evidence history",
+      "hypothesis history",
+      "probability history",
+      "action history",
+      "route history",
+      "decision history",
+      "validation history",
+      "context history"
     ],
 
     "rules": [
-      "ARIA shall know exactly what the case is waiting for.",
-      "Pending items shall identify who or what is expected to satisfy them.",
-      "Satisfied pending items shall transition rather than simply disappear from history."
+      "Historical reconstruction shall not modify current authoritative state.",
+      "Reconstruction should preserve what was known at the historical time rather than inject later knowledge into the old state.",
+      "Historical Decision records shall remain understandable in the context of the state available when they were made.",
+      "Later evidence shall not rewrite earlier uncertainty."
     ]
   },
 
-  "contradiction_state": {
-    "statuses": [
-      "OPEN",
-      "INVESTIGATING",
-      "RECONCILED",
-      "SUPERSEDED",
-      "UNRESOLVED"
-    ],
+  "reopen_behavior": {
+    "principle": "Reopening resumes an existing historical investigation while preserving previous resolution, closure, uncertainty, and reasoning history.",
 
-    "required_fields": [
-      "contradiction_id",
-      "evidence_ids",
-      "status",
-      "materiality",
-      "detected_at"
-    ],
-
-    "rules": [
-      "Material unresolved contradictions shall remain visible to reasoning.",
-      "A contradiction shall not be removed merely because one side is inconvenient to the leading hypothesis."
-    ]
-  },
-
-  "corrective_action_state": {
-    "statuses": [
-      "PROPOSED",
-      "AUTHORIZED",
-      "IN_PROGRESS",
-      "COMPLETED",
-      "FAILED",
-      "REVERSED"
-    ],
-
-    "required_fields": [
-      "corrective_action_id",
-      "action_type",
-      "target_condition",
-      "status",
-      "causal_hypothesis_ids"
-    ],
-
-    "rules": [
-      "Corrective actions shall be distinguished from diagnostic actions.",
-      "Performing a correction does not prove the suspected cause.",
-      "The state before correction shall remain available for comparison.",
-      "Multiple simultaneous corrections shall reduce causal attribution confidence unless independently controlled."
-    ]
-  },
-
-  "validation_state": {
-    "statuses": [
-      "NOT_STARTED",
-      "PLANNED",
-      "IN_PROGRESS",
-      "PASSED",
-      "PARTIALLY_PASSED",
-      "FAILED",
-      "INCONCLUSIVE",
-      "MONITORING_REQUIRED"
-    ],
-
-    "required_fields": [
-      "status",
-      "validation_criteria",
-      "validation_actions",
-      "validation_evidence_ids"
-    ],
-
-    "rules": [
-      "Resolution requires explicit validation criteria.",
-      "The disappearance of one symptom may not satisfy all validation requirements.",
-      "Validation shall compare the post-correction state against applicable expected state.",
-      "Failed validation shall return the case to active reasoning from the new state rather than restart the case."
-    ]
-  },
-
-  "resolution_model": {
-    "required_dimensions": [
-      "SYMPTOM_RESOLUTION",
-      "ROOT_CAUSE_CONFIDENCE",
-      "CORRECTION_EFFECTIVENESS",
-      "VALIDATION_CONFIDENCE",
-      "RECURRENCE_RISK",
-      "UNRESOLVED_CONTRADICTIONS"
-    ],
-
-    "resolution_states": [
-      "UNRESOLVED",
-      "PARTIALLY_RESOLVED",
-      "OPERATIONALLY_RESOLVED",
-      "CAUSALLY_RESOLVED",
-      "VALIDATED_RESOLUTION"
-    ],
-
-    "rules": [
-      "Operational resolution and causal resolution are distinct.",
-      "A case may be operationally resolved when service is restored even if exact root cause remains uncertain.",
-      "A case shall not be represented as causally resolved without sufficient evidence.",
-      "Learning eligibility shall depend on the actual resolution state."
-    ]
-  },
-
-  "state_transition_policy": {
-    "rules": [
-      "State transitions shall be triggered by events rather than arbitrary language-model narrative.",
-      "A transition may trigger context, probability, routing, evidence, memory, or learning recalculation.",
-      "Invalid transitions shall be rejected by deterministic services.",
-      "The language model may propose a state transition but shall not silently mutate authoritative state.",
-      "State changes shall be atomic where multiple dependent updates must remain consistent."
-    ]
-  },
-
-  "rerouting_policy": {
-    "triggers": [
-      "NEW_VALID_EVIDENCE",
-      "ACTION_RESULT",
-      "CONTEXT_CHANGE",
-      "HYPOTHESIS_CHANGE",
-      "PROBABILITY_CHANGE",
-      "CONTRADICTION",
-      "CORRECTIVE_ACTION_RESULT",
-      "VALIDATION_FAILURE"
-    ],
-
-    "rule": "Rerouting shall begin from the newest authoritative state and shall preserve completed diagnostic work."
-  },
-
-  "loop_prevention": {
-    "enabled": true,
-
-    "controls": [
-      "COMPLETED_ACTION_HISTORY",
-      "SEMANTIC_ACTION_EQUIVALENCE",
-      "RULED_OUT_HYPOTHESES",
-      "VALIDATED_FINDINGS",
-      "REPEAT_ACTION_REASON",
-      "STATE_VERSION_COMPARISON"
-    ],
-
-    "rules": [
-      "ARIA shall not repeatedly request materially equivalent actions without justification.",
-      "If the state has not materially changed, repeating the same reasoning path shall receive a strong penalty.",
-      "A repeated action may become valid after a technical state change.",
-      "The system shall distinguish rerouting from backtracking."
-    ]
-  },
-
-  "case_reopening": {
-    "valid_reasons": [
+    "valid_sources": [
       "SYMPTOM_RECURRED",
       "VALIDATION_FAILED",
-      "NEW_EVIDENCE",
+      "NEW_MATERIAL_EVIDENCE",
       "PREVIOUS_EVIDENCE_INVALIDATED",
-      "ROOT_CAUSE_CHALLENGED",
-      "RELATED_FAILURE_DISCOVERED"
+      "PREVIOUS_CAUSAL_CONCLUSION_CHALLENGED",
+      "RELATED_FAILURE_DISCOVERED",
+      "NEW_TECHNICAL_CAPABILITY_AVAILABLE",
+      "AUTHORIZED_REVIEW"
     ],
 
     "rules": [
-      "Reopening shall preserve the previous resolution state.",
-      "A reopened case shall create new state versions rather than rewriting the original resolution.",
-      "Recurrence shall be visible to the Learning Engine."
+      "Reopening transitions lifecycle to ACTIVE rather than storing REOPENED as current status.",
+      "Reopening shall create a material event.",
+      "Reopening shall create a new state version.",
+      "Previous resolution or closure remains historically preserved.",
+      "Historical probabilities remain historical even when new probability calculations occur.",
+      "Prior learning derived from the case may require reassessment when reopening materially changes validated interpretation."
     ]
   },
 
   "case_branching": {
-    "enabled": true,
-
-    "description": "A case may branch when evidence indicates multiple independent technical problems.",
+    "principle": "A technical investigation may be separated into related cases when independent technical problems require distinct authoritative reasoning state.",
 
     "rules": [
-      "Independent failures may become child cases when separation improves reasoning clarity.",
-      "Shared evidence may remain linked to multiple cases.",
-      "Branching shall not duplicate evidence as independent observations.",
-      "Parent and child relationships shall remain explicit."
+      "Case branching is distinct from Routing branch creation.",
+      "Routing branches remain diagnostic paths inside one case.",
+      "A child case should be created only when independent case-level state improves technical clarity or ownership.",
+      "Shared evidence may reference multiple cases when semantically valid without duplicating the observation as independent evidence.",
+      "Parent and child case relationships shall remain explicit.",
+      "Case branching shall not erase the originating case history."
     ]
   },
 
   "case_merge": {
-    "enabled": true,
-
-    "description": "Cases discovered to represent the same underlying incident may be linked or merged logically.",
+    "principle": "Cases found to represent the same underlying technical incident may be linked or logically consolidated without destroying their historical identities.",
 
     "rules": [
-      "Original case identifiers and histories shall remain preserved.",
-      "Merged cases shall not inflate learning counts.",
-      "Evidence provenance shall remain unchanged."
+      "Original case identifiers shall remain historically preserved.",
+      "Original event and state-version history shall remain auditable.",
+      "Evidence shall not be duplicated merely because cases are consolidated.",
+      "A merge shall not create false independent corroboration.",
+      "Canonical merge semantics should be introduced through a dedicated contract if physical case consolidation is implemented."
     ]
   },
 
-  "case_state_summary": {
-    "description": "Produces a compact current-state representation for working memory and model context.",
+  "freshness": {
+    "principle": "Current Case State shall expose whether its important projections remain current relative to known material events.",
 
-    "required_output": [
-      "WHAT_IS_HAPPENING",
-      "WHAT_IS_CONFIRMED",
-      "WHAT_IS_SUSPECTED",
-      "WHAT_HAS_BEEN_RULED_OUT",
-      "WHAT_HAS_ALREADY_BEEN_DONE",
-      "WHAT_CHANGED",
-      "WHAT_IS_UNKNOWN",
-      "WHAT_ARIA_IS_WAITING_FOR",
-      "WHAT_ARIA_RECOMMENDS_NEXT",
-      "WHY"
+    "recommended_fields": [
+      "last_material_update_at",
+      "last_processed_event_id",
+      "source_state_version_id",
+      "current_state_version_id",
+      "stale",
+      "stale_reason"
+    ],
+
+    "rules": [
+      "A case projection is stale when a known material event has not yet been incorporated.",
+      "A stale projection shall not be used for irreversible or high-impact action selection without reevaluation.",
+      "Staleness shall not imply that all referenced evidence is stale.",
+      "Orchestration and concurrency controls remain responsible for preventing stale-state overwrite."
     ]
   },
 
-  "example": {
-    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+  "case_summary": {
+    "principle": "Case State may expose a concise current technical summary derived from authoritative objects.",
 
-    "state_version": 7,
-
-    "reported_problem": "Main is approximately -44 dBm and Diversity is approximately -63 dBm.",
-
-    "confirmed_findings": [
-      "Main/Diversity RSL imbalance exists",
-      "Measured delta is approximately 19 dB"
+    "recommended_fields": [
+      "reported_problem_summary",
+      "current_symptom_summary",
+      "current_context_summary",
+      "leading_hypothesis_summary",
+      "material_evidence_summary",
+      "current_action_summary",
+      "current_route_summary",
+      "current_validation_summary",
+      "current_constraint_summary",
+      "current_uncertainty_summary",
+      "technical_disposition_summary"
     ],
 
-    "active_hypotheses": [
-      {
-        "failure_mode": "RF_ROUTING_ERROR",
-        "probability": 0.61
-      },
-      {
-        "failure_mode": "CONFIGURATION_ERROR",
-        "probability": 0.19
-      },
-      {
-        "failure_mode": "RADIO_FAILURE",
-        "probability": 0.11
-      },
-      {
-        "failure_mode": "ALIGNMENT_ERROR",
-        "probability": 0.06
-      },
-      {
-        "failure_mode": "OTHER",
-        "probability": 0.03
-      }
-    ],
-
-    "completed_actions": [
-      "Reviewed configuration screenshot"
-    ],
-
-    "ruled_out_hypotheses": [
-      "Incorrect configured frequency"
-    ],
-
-    "pending_action": "Verify physical Main/Diversity RF routing",
-
-    "waiting_for": "Technician physical inspection",
-
-    "current_route_reason": "Configuration evidence reduced configuration probability and increased the relative value of physical RF routing inspection.",
-
-    "interpretation": "ARIA does not need to reread the entire conversation to continue. The current case state explicitly records where diagnosis presently stands."
+    "rules": [
+      "Summary text is derived representation and shall not replace underlying authoritative objects.",
+      "Summary shall distinguish observation from hypothesis and validated conclusion.",
+      "Summary may be regenerated without creating a material state version when technical meaning is unchanged."
+    ]
   },
 
-  "engine_interfaces": {
-    "context_engine": "Publishes the current multidimensional technical context.",
-    "evidence_engine": "Adds, validates, supersedes, contradicts, and invalidates evidence.",
-    "hypothesis_engine": "Maintains candidate and active hypotheses.",
-    "probability_engine": "Maintains probability state.",
-    "routing_engine": "Maintains requested, completed, blocked, and candidate actions.",
-    "memory_engine": "Builds working memory from current state and retrieves historical context.",
-    "learning_engine": "Consumes validated completed case history after appropriate lifecycle transitions."
+  "orchestration_boundary": {
+    "principle": "Orchestration coordinates when Case State is read, validated, versioned, and published.",
+
+    "rules": [
+      "Case State shall not invoke every reasoning engine itself.",
+      "Orchestration determines which specialized engines execute.",
+      "Case State consumes their authoritative outputs.",
+      "Case State may reject an inconsistent assembled state without independently recomputing the correct technical result.",
+      "Reasoning transactions and concurrency controls remain coordinated by Orchestration."
+    ]
   },
 
-  "semantic_rules": [
+  "reasoning_cycle_boundary": {
+    "principle": "Reasoning Cycle describes logical diagnostic progression; Case State records the authoritative current state produced by that progression.",
+
+    "rules": [
+      "Case State shall not implement the reasoning cycle.",
+      "Reasoning-state history may reflect cycle progression.",
+      "Case State shall not implement candidate scoring, next-hop selection, rerouting, or correction selection.",
+      "Reasoning Cycle may read Case State but shall not replace it as persistence authority."
+    ]
+  },
+
+  "learning_boundary": {
+    "principle": "Case State preserves the history Learning requires but does not determine what becomes learned knowledge.",
+
+    "recommended_projection": [
+      "learning_assessment_required",
+      "learning_assessment_completed",
+      "learning_reference_ids"
+    ],
+
+    "rules": [
+      "Lifecycle CLOSED does not automatically make the case eligible for learning.",
+      "Lifecycle RESOLVED does not automatically prove causal truth.",
+      "UNRESOLVED cases may still contribute limited experience when attribution limitations are preserved.",
+      "Learning Engine remains authoritative for learning scope and eligibility.",
+      "Case State shall preserve enough validated and unresolved history for Learning to make that determination."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "rule_id": "CASE-RULE-001",
-      "rule": "A case is an evolving technical state, not a chat transcript."
+      "failure_mode": "LIFECYCLE_REASONING_COLLISION",
+      "description": "Case State mixes lifecycle dispositions with diagnostic phases.",
+      "prevention": "Consume lifecycle and reasoning-state Registries separately."
     },
     {
-      "rule_id": "CASE-RULE-002",
-      "rule": "Conversation may modify case state only through attributable events."
+      "failure_mode": "SECOND_ACTION_MODEL",
+      "description": "Case State defines action_instance_id or a separate corrective-action persistence model.",
+      "prevention": "Reference canonical act_<UUID> Actions."
     },
     {
-      "rule_id": "CASE-RULE-003",
-      "rule": "Current state shall remain independently reconstructable from conversational wording."
+      "failure_mode": "SECOND_HYPOTHESIS_MODEL",
+      "description": "Case State independently owns hypothesis status, probability, or confirmation semantics.",
+      "prevention": "Project authoritative hyp_<UUID> state."
     },
     {
-      "rule_id": "CASE-RULE-004",
-      "rule": "Every material state change shall preserve the previous state."
+      "failure_mode": "SECOND_VALIDATION_MODEL",
+      "description": "Case State defines independent validation statuses and rules.",
+      "prevention": "Project authoritative Validation state."
     },
     {
-      "rule_id": "CASE-RULE-005",
-      "rule": "Reported problems, symptoms, hypotheses, findings, diagnoses, corrections, and validation are distinct objects."
+      "failure_mode": "SECOND_ROUTING_ENGINE",
+      "description": "Case State performs rerouting or route-loop scoring.",
+      "prevention": "Project rstep_<UUID> state and defer progression to Routing."
     },
     {
-      "rule_id": "CASE-RULE-006",
-      "rule": "The leading hypothesis shall never be represented as confirmed solely because it has the highest probability."
+      "failure_mode": "SECOND_EVENT_REGISTRY",
+      "description": "Case State defines a competing universal event vocabulary.",
+      "prevention": "Reference canonical events and preserve event attribution."
     },
     {
-      "rule_id": "CASE-RULE-007",
-      "rule": "Corrective action success shall not automatically prove the proposed root cause."
+      "failure_mode": "TRANSCRIPT_AS_STATE",
+      "description": "Conversation history is treated as the authoritative case database.",
+      "prevention": "Persist explicit versioned current case state."
     },
     {
-      "rule_id": "CASE-RULE-008",
-      "rule": "ARIA shall explicitly represent what the case is waiting for."
+      "failure_mode": "HISTORY_REWRITE",
+      "description": "Later evidence causes prior state, decisions, or uncertainty to be rewritten.",
+      "prevention": "Use append-only state versions and reconstruct historical state as it existed."
     },
     {
-      "rule_id": "CASE-RULE-009",
-      "rule": "ARIA shall preserve completed work so rerouting does not become unnecessary backtracking."
+      "failure_mode": "RESOLVED_EQUALS_CLOSED",
+      "description": "Technical resolution automatically closes lifecycle.",
+      "prevention": "Preserve separate RESOLVED and CLOSED statuses."
     },
     {
-      "rule_id": "CASE-RULE-010",
-      "rule": "Failed actions and failed validation shall become part of the new state rather than erase previous reasoning."
+      "failure_mode": "ACTION_COMPLETION_EQUALS_PROOF",
+      "description": "A completed correction is represented as confirmed root cause.",
+      "prevention": "Preserve Action, Evidence, Hypothesis, Validation, and technical-disposition separation."
     },
     {
-      "rule_id": "CASE-RULE-011",
-      "rule": "Operational resolution and causal resolution shall remain distinguishable."
+      "failure_mode": "ROUTE_EXHAUSTION_EQUALS_RESOLUTION",
+      "description": "No remaining route is treated as technical resolution.",
+      "prevention": "Use lifecycle UNRESOLVED, BLOCKED, ESCALATED, WAITING, or other applicable status when resolution is not established."
     },
     {
-      "rule_id": "CASE-RULE-012",
-      "rule": "A case may remain useful even when exact root cause is never proven."
+      "failure_mode": "STALE_PROJECTION",
+      "description": "Current Case State omits a known material event.",
+      "prevention": "Track state version and last processed material event."
     },
     {
-      "rule_id": "CASE-RULE-013",
-      "rule": "Material contradictions shall remain active until reconciled, superseded, invalidated, or explicitly left unresolved."
-    },
-    {
-      "rule_id": "CASE-RULE-014",
-      "rule": "Case state shall support multiple simultaneous hypotheses and multiple simultaneous failures."
-    },
-    {
-      "rule_id": "CASE-RULE-015",
-      "rule": "A reopened case shall extend history rather than rewrite it."
-    },
-    {
-      "rule_id": "CASE-RULE-016",
-      "rule": "Branching and merging shall preserve evidence provenance and prevent duplicate learning."
-    },
-    {
-      "rule_id": "CASE-RULE-017",
-      "rule": "The language model may propose state changes but deterministic ARIA services shall own authoritative state transitions."
-    },
-    {
-      "rule_id": "CASE-RULE-018",
-      "rule": "Working memory shall be generated from authoritative case state rather than treated as authoritative storage."
-    },
-    {
-      "rule_id": "CASE-RULE-019",
-      "rule": "Case state shall preserve enough information to explain why ARIA is recommending the current next action."
-    },
-    {
-      "rule_id": "CASE-RULE-020",
-      "rule": "ARIA shall always continue diagnosis from the newest validated state rather than blindly restart a troubleshooting sequence."
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Case State hardcodes microwave, RF, optical, vendor, product, protocol, customer, or named-user technical semantics.",
+      "prevention": "Keep Case State as universal state coordination infrastructure."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "CASESTATE-INV-001",
+      "statement": "Case State is an assembled authoritative projection, not a transcript."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-002",
+      "statement": "Lifecycle status is owned by Core/Registries/case_lifecycle_statuses.json."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-003",
+      "statement": "Reasoning state is owned by Core/Registries/case_states.json."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-004",
+      "statement": "Lifecycle status and reasoning state remain distinct."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-005",
+      "statement": "Case State references canonical runtime objects rather than creating competing persistence models."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-006",
+      "statement": "Correction is represented through canonical Action rather than a separate corrective-action object model."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-007",
+      "statement": "Case State does not independently calculate hypothesis probability."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-008",
+      "statement": "Case State does not perform competitive action selection."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-009",
+      "statement": "Case State does not perform routing or rerouting."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-010",
+      "statement": "Case State does not define validation truth."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-011",
+      "statement": "Material state changes remain attributable to events."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-012",
+      "statement": "Previous material states remain reconstructable."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-013",
+      "statement": "Historical state shall not be rewritten using later knowledge."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-014",
+      "statement": "RESOLVED remains distinct from CLOSED."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-015",
+      "statement": "REOPENED is a transition semantic rather than a persistent lifecycle status."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-016",
+      "statement": "Route exhaustion does not automatically imply technical resolution."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-017",
+      "statement": "Action completion does not automatically imply technical success or causal proof."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-018",
+      "statement": "Lifecycle closure preserves unresolved uncertainty and final technical disposition."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-019",
+      "statement": "A known materially stale case projection shall not be treated as current authoritative reasoning state."
+    },
+    {
+      "invariant_id": "CASESTATE-INV-020",
+      "statement": "Case State shall remain technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing lifecycle-status vocabulary.",
+    "Defining a competing reasoning-state vocabulary.",
+    "Persisting REOPENED as the current lifecycle status.",
+    "Using reasoning phases such as VALIDATION or CONTEXTUALIZATION as lifecycle statuses.",
+    "Creating action_instance_id as a second runtime Action identity.",
+    "Creating corrective_action_id solely because an Action is corrective.",
+    "Maintaining a separate corrective-action status model.",
+    "Maintaining a separate hypothesis-status model.",
+    "Calculating hypothesis probability inside Case State.",
+    "Confirming or eliminating hypotheses inside Case State.",
+    "Defining a separate validation-status vocabulary inside Case State.",
+    "Performing route scoring or rerouting inside Case State.",
+    "Defining a competing universal Event vocabulary.",
+    "Treating conversation order as authoritative case state.",
+    "Treating completed action as proof of root cause.",
+    "Treating symptom disappearance as automatic case resolution.",
+    "Treating route exhaustion as technical resolution.",
+    "Treating RESOLVED and CLOSED as equivalent.",
+    "Erasing prior resolution when a case is reopened.",
+    "Rewriting historical probability or Decision state using later evidence.",
+    "Dropping contradictory evidence because it conflicts with the current leading explanation.",
+    "Publishing a case projection containing invalid canonical references.",
+    "Publishing authoritative state from a materially stale source state without reconciliation.",
+    "Allowing lifecycle status to encode probability, confidence, reasoning phase, or learning eligibility.",
+    "Allowing Case State to determine learning truth.",
+    "Encoding microwave-specific, RF-specific, optical-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, or named-user technical logic in universal Case State semantics."
   ]
 }
