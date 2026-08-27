@@ -1,1996 +1,2008 @@
 # A.R.I.A. Entity Architecture
 
 **Document Type:** Canonical Knowledge and Reasoning Specification  
-**Authority:** Subordinate to `Core/Schemas/entity_contracts.json`, `Core/Registries/entity_types.json`, `Core/Schemas/entity.schema.json`, `Core/Registries/relationship_types.json`, and `Core/Persona/ARIA_CONSTITUTION.md`  
-**Version:** 1.0
+**Authority:** Subordinate to `Core/Schemas/entity_contracts.json`, `Core/Registries/entity_types.json`, `Core/Schemas/entity.schema.json`, applicable canonical registries and schemas, and `Core/Persona/ARIA_CONSTITUTION.md`  
+**Version:** 2.0.0
 
 ---
 
 ## 1. Purpose
 
-This document defines how A.R.I.A. represents, identifies, distinguishes, validates, reuses, and evolves canonical technical entities.
+This document defines the architectural principles governing how A.R.I.A. represents, identifies, distinguishes, reuses, relates, and evolves canonical Entities.
 
-Entities establish what technical concepts exist.
+Entities answer:
 
-Relationships establish how those concepts interact.
+> **What thing, concept, state, condition, object, or other independently meaningful subject exists within A.R.I.A.'s canonical Knowledge architecture?**
 
-Evidence establishes what was observed in a specific diagnostic context.
+Entities provide stable identity.
 
-Hypotheses establish what A.R.I.A. is evaluating in a specific case.
+Relationships describe how Entities interact.
 
-Experience preserves validated historical outcomes.
+Context determines applicability.
 
-These structures must remain distinct.
+Provenance describes lineage.
 
-The Entity Architecture exists so A.R.I.A. can continuously expand its technical knowledge without becoming a collection of duplicate names, manufacturer-specific copies, case observations, or unstructured documents.
+Source Authority evaluates the authority of information supporting Knowledge.
+
+Evidence describes information relevant to the current Case.
+
+Hypotheses represent propositions being evaluated.
+
+Probability represents current belief.
+
+Validation determines what current results demonstrate.
+
+Learning qualifies generalizable historical experience.
+
+Memory retrieves relevant persistent information.
+
+These structures shall remain distinct.
+
+The Entity Architecture exists so A.R.I.A. can continuously expand her Knowledge without becoming a collection of:
+
+- duplicate names;
+- manufacturer-specific copies of universal concepts;
+- transient observations represented as permanent concepts;
+- source-document fragments mistaken for Entities;
+- Case-specific state embedded into canonical identity;
+- or unstructured model-generated terminology.
 
 ---
 
 ## 2. Canonical Authority
 
-Entity architecture is governed by the following hierarchy:
+Entity architecture is governed by the applicable machine-readable contracts and registries.
+
+Current primary authorities include:
 
 1. `Core/Schemas/entity_contracts.json`
 2. `Core/Registries/entity_types.json`
 3. `Core/Schemas/entity.schema.json`
-4. `Core/Registries/relationship_types.json`
-5. This document
+4. applicable canonical registries and schemas
+5. `Core/Knowledge/relationship_schema.md`
+6. `Core/Knowledge/knowledge_graph.md`
+7. this document
+8. `Core/Persona/ARIA_CONSTITUTION.md` as constitutional authority over the system
 
-`Core/Schemas/entity_contracts.json` owns canonical identity and shared interoperability contracts.
+`Core/Schemas/entity_contracts.json` owns canonical Entity identity and shared interoperability contracts.
 
-`Core/Registries/entity_types.json` owns canonical entity-type vocabulary.
+`Core/Registries/entity_types.json` owns canonical Entity-type vocabulary.
 
-`Core/Schemas/entity.schema.json` owns machine-readable validation of canonical entity records.
+`Core/Schemas/entity.schema.json` owns machine-readable validation of canonical Entity records.
 
-`Core/Registries/relationship_types.json` owns relationship vocabulary.
+Applicable Relationship contracts own canonical Relationship vocabulary and semantics.
 
-This document explains how those contracts work together.
+This document explains how those authorities should be interpreted together.
 
-It shall not independently establish competing entity types, relationship types, identifier systems, or persistence contracts.
+It shall not independently establish competing:
+
+- Entity types;
+- Entity identifiers;
+- identifier prefixes;
+- Relationship types;
+- Context vocabularies;
+- lifecycle enums;
+- Validation states;
+- confidence scales;
+- provenance structures;
+- source-authority classifications;
+- Learning structures;
+- Memory structures;
+- or persistence contracts.
+
+Where this doctrine conflicts with a more specific authoritative machine-readable contract, the more specific contract governs.
 
 ---
 
-## 3. Entity Design Principle
+## 3. Fundamental Principle
 
-A canonical entity should exist when representing a concept independently materially improves:
+An Entity should exist when stable independent identity materially improves A.R.I.A.'s ability to:
+
+- understand Knowledge;
+- connect Knowledge;
+- reason;
+- retrieve;
+- preserve provenance;
+- apply Context;
+- distinguish technical concepts;
+- learn across Cases;
+- explain conclusions;
+- or evolve the Knowledge architecture.
+
+Not every noun deserves an Entity.
+
+Not every observation deserves an Entity.
+
+Not every value deserves an Entity.
+
+Not every sentence deserves an Entity.
+
+The objective is:
+
+> **stable semantic identity where stable semantic identity provides durable cognitive value.**
+
+---
+
+## 4. Entity Design Principle
+
+A canonical Entity should exist when representing a concept independently materially improves one or more of:
 
 - technical reasoning;
 - retrieval;
-- relationship modeling;
+- Relationship modeling;
 - contextual filtering;
 - source attribution;
-- experience analysis;
-- diagnostic routing;
-- historical reasoning; or
-- future extensibility.
+- historical analysis;
+- qualified Learning;
+- diagnostic Routing;
+- Decision;
+- explanation;
+- reuse;
+- interoperability;
+- or future extensibility.
 
-Not every word, phrase, observation, value, or document term should become an entity.
+The goal is meaningful technical structure.
 
-The objective is meaningful technical structure, not maximum entity count.
-
----
-
-## 4. Canonical Entity Identity
-
-Every persisted canonical technical entity shall have a stable typed identifier governed by:
-
-    Core/Schemas/entity_contracts.json
-
-Canonical identities use typed UUID identifiers.
-
-Examples of established technical-entity identity classes include:
-
-    ent_<UUID>
-    mfr_<UUID>
-    pfam_<UUID>
-    prod_<UUID>
-    pvar_<UUID>
-    scope_<UUID>
-    sym_<UUID>
-    fm_<UUID>
-    meas_<UUID>
-    unit_<UUID>
-    tool_<UUID>
-
-The exact authoritative prefix contract is defined by `entity_contracts.json`.
-
-UUIDv7 is preferred where specified by that contract.
-
-The old sequential form:
-
-    ENT-000001
-
-is not the canonical identity architecture.
+The goal is not maximum Entity count.
 
 ---
 
-## 5. Most-Specific Identity Rule
+## 5. Canonical Entity Identity
 
-A.R.I.A. shall use the most specific established canonical identity class available.
+Every persisted canonical Entity shall use identity according to the applicable authoritative machine-readable contracts.
 
-Examples:
+Canonical identity shall not be invented from examples in this doctrine.
 
-    Nokia
-    MANUFACTURER
-    mfr_<UUID>
+Where `Core/Schemas/entity_contracts.json` establishes:
 
-    Wavence
-    PRODUCT_FAMILY
-    pfam_<UUID>
+- identifier form;
+- typed prefixes;
+- UUID requirements;
+- namespace rules;
+- or other identity requirements,
 
-    UBT-T
-    PRODUCT
-    prod_<UUID>
+those definitions govern.
 
-    UBT-T 18 GHz
-    PRODUCT_VARIANT
-    pvar_<UUID>
-
-    RSL Discrepancy
-    SYMPTOM
-    sym_<UUID>
-
-    Incorrect Flex Routing
-    ROOT_CAUSE or FAILURE_MODE as technically classified
-    fm_<UUID>
-
-    Received Signal Level
-    MEASUREMENT
-    meas_<UUID>
-
-    dBm
-    UNIT
-    unit_<UUID>
-
-    Anritsu Site Master
-    TOOL
-    tool_<UUID>
-
-    Troubleshooting
-    SCOPE
-    scope_<UUID>
-
-The generic:
-
-    ent_<UUID>
-
-is used for canonical technical entities that do not have a dedicated identity prefix.
-
-For example, entity types such as:
-
-- `COMPONENT`;
-- `INTERFACE`;
-- `PORT`;
-- `ANTENNA`;
-- `RADIO`;
-- `FREQUENCY_BAND`;
-- `CONFIGURATION`;
-- `FIRMWARE`;
-- `SOFTWARE`;
-- `STANDARD`;
-- `REQUIREMENT`;
-- `CONSTRAINT`; or
-- `CONCEPT`
-
-may use `ent_<UUID>` unless and until `entity_contracts.json` establishes a more specific identity class.
-
-The generic `ent_` prefix shall not compete with an already-established specialized prefix.
+This document shall not duplicate those definitions as a competing registry.
 
 ---
 
-## 6. Identity Does Not Encode Mutable Meaning
+## 6. Stable Identity Is Required
 
-Canonical identifiers shall not encode mutable technical or business meaning.
+A canonical Entity's identity should remain stable despite changes to:
 
-Avoid identifiers such as:
-
-    NOKIA-UBTT-18GHZ-001
-
-A product name, manufacturer classification, frequency, hierarchy, or terminology may change.
-
-The canonical identifier remains stable.
-
-Meaning belongs in:
-
-- entity type;
-- canonical name;
-- aliases;
-- relationships;
-- metadata;
-- provenance;
-- applicability; and
-- temporal context.
-
-Identity provides durable reference.
-
----
-
-## 7. Canonical Entity Record
-
-The machine-readable authority for canonical entity structure is:
-
-    Core/Schemas/entity.schema.json
-
-A canonical entity record requires:
-
-- `id`;
-- `entity_type`;
-- `canonical_name`;
-- `status`;
-- `validation_state`;
-- `created_at`; and
-- `updated_at`.
-
-The schema also supports controlled optional information such as:
-
-- description;
-- short description;
-- aliases;
-- provenance;
-- confidence;
-- temporal applicability;
-- deprecation;
-- supersession;
-- legacy identifiers;
-- creator;
-- updater; and
-- metadata.
-
-This document shall not redefine a competing machine structure.
-
----
-
-## 8. Entity Types
-
-All canonical entity types shall come from:
-
-    Core/Registries/entity_types.json
-
-The Registry is the authoritative vocabulary.
-
-It currently contains technical and contextual classes across areas including:
-
-- organizations and actors;
-- equipment;
-- RF;
-- architecture;
-- configuration;
-- software;
-- diagnostics;
-- actions;
-- measurements;
-- resources;
-- environment;
-- operational context; and
-- knowledge.
-
-The Registry may expand.
-
-When a genuinely new canonical entity class is required, the Registry shall be deliberately extended.
-
-No knowledge document, schema, manufacturer file, extraction process, or model response shall independently invent a permanent entity type.
-
----
-
-## 9. Entity Type and Identity Prefix Are Different Concepts
-
-`entity_type` and identity prefix are related but are not the same thing.
-
-For example:
-
-    entity_type = COMPONENT
-    id = ent_<UUID>
-
-is valid because `COMPONENT` is a Registry classification even though there is no dedicated `component_` identity prefix.
-
-Likewise:
-
-    entity_type = MANUFACTURER
-    id = mfr_<UUID>
-
-uses a specialized identity class because one exists.
-
-A.R.I.A. shall not create a new prefix merely because an entity type exists.
-
-Identity classes are governed separately by `entity_contracts.json`.
-
----
-
-## 10. Canonical Name
-
-`canonical_name` is the preferred human-readable name of the entity.
-
-Examples:
-
-    Received Signal Level
-
-    UBT-T
-
-    Incorrect Flex Routing
-
-    2+0 Diversity
-
-The canonical name may change if preferred terminology changes.
-
-The canonical identifier does not.
-
-A name is therefore not identity.
-
----
-
-## 11. Canonical Description
-
-An entity description defines the entity itself.
-
-For example:
-
-    ENTITY:
-    Received Signal Level
-
-    DESCRIPTION:
-    Received RF power measured at the applicable receiver point.
-
-The description should not attempt to contain every technical relationship involving the entity.
-
-Do not turn descriptions into unstructured knowledge graphs.
-
-Relationships belong in the relationship system.
-
-Case observations belong in evidence.
-
-Historical outcomes belong in experience.
-
----
-
-## 12. Aliases
-
-An entity may have multiple aliases.
-
-Example:
-
-    CANONICAL ENTITY:
-    Received Signal Level
-
-    ALIASES:
-    RSL
-    RX Level
-    Receive Level
-    Received Level
-
-Aliases may preserve information such as:
-
+- display name;
+- preferred terminology;
+- alias;
 - abbreviation;
+- capitalization;
 - manufacturer terminology;
-- historical terminology;
-- alternate spelling;
-- source;
-- manufacturer context;
-- temporal applicability;
-- deprecation; and
-- other controlled alias metadata.
-
-Aliases do not automatically create separate canonical entities.
-
----
-
-## 13. Alias Collision
-
-The same alias may refer to different concepts in different contexts.
-
-A.R.I.A. shall therefore support contextual alias resolution.
-
-For example:
-
-    AIM
-
-may require manufacturer, product, component, or surrounding technical context to resolve correctly.
-
-Alias resolution may consider:
-
-- active manufacturer;
-- active product;
-- product family;
-- product variant;
-- conversation context;
-- current diagnostic case;
-- scope;
-- neighboring entities; and
-- source context.
-
-A.R.I.A. shall not permanently merge entities merely because they share an abbreviation or label.
-
----
-
-## 14. Alias Confidence
-
-The current machine schema permits an optional normalized confidence value on an alias.
-
-This value concerns confidence in the alias mapping.
-
-It shall not be confused with:
-
-- entity confidence;
-- relationship confidence;
-- hypothesis probability; or
-- evidence confidence.
-
-If the canonical confidence contract is later extended to aliases, the machine schema shall be deliberately reconciled at that time.
-
-This document shall not silently redefine the alias-confidence structure independently of the schema.
-
----
-
-## 15. Manufacturer Independence
-
-Shared technical concepts should remain manufacturer-independent when technically appropriate.
-
-For example:
-
-    Received Signal Level
-
-should normally exist once as a canonical measurement concept rather than being duplicated as:
-
-    Nokia RSL
-    Aviat RSL
-    Ceragon RSL
-    Ericsson RSL
-
-Manufacturer-specific behavior should be represented through:
-
-- relationships;
-- applicability;
-- product context;
-- manufacturer context;
-- aliases;
-- provenance; or
-- genuinely manufacturer-specific entities.
-
-A separate entity is justified only when the technical concept itself is materially distinct.
-
----
-
-## 16. Manufacturer Entities
-
-Manufacturers are canonical entities.
-
-Example:
-
-    entity_type: MANUFACTURER
-    id: mfr_<UUID>
-    canonical_name: Nokia
-
-Products, components, tools, software, and other relevant entities may connect to manufacturers using Registry-approved relationships.
-
-For example:
-
-    UBT-T
-    MANUFACTURED_BY
-    Nokia
-
-The manufacturer relationship belongs in the relationship architecture.
-
-It should not be hidden as arbitrary text inside the UBT-T entity record.
-
----
-
-## 17. Product Families
-
-Product families are canonical entities when they provide meaningful technical hierarchy.
-
-Example:
-
-    Wavence
-    PRODUCT_FAMILY
-    pfam_<UUID>
-
-A product may connect to its family using Registry-approved hierarchy semantics.
-
-For example:
-
-    UBT-T
-    MEMBER_OF
-    Wavence
-
-where `MEMBER_OF` is defined by the canonical relationship Registry.
-
-The hierarchy should not be encoded solely into product names.
-
----
-
-## 18. Products
-
-A product represents a canonical telecommunications product or equipment platform.
-
-Example:
-
-    UBT-T
-    PRODUCT
-    prod_<UUID>
-
-A product entity should represent the reusable product concept.
-
-It should not be duplicated merely because the product appears:
-
-- at another site;
-- in another project;
-- in another case;
-- under another customer;
-- in another scope; or
-- in another technician's history.
-
-Those are contextual relationships or instances, not new canonical product concepts.
-
----
-
-## 19. Product Variants
-
-A.R.I.A. shall distinguish between a product and a product variant when the distinction has meaningful technical consequences.
-
-Possible variant dimensions include:
-
-- frequency band;
-- hardware implementation;
-- power capability;
-- interface configuration;
-- regional implementation; or
-- other technically significant differences.
-
-A variant should be created when the distinction materially changes:
-
-- specifications;
-- compatibility;
-- behavior;
-- procedures;
-- relationships;
-- configuration;
-- applicability; or
-- failure characteristics.
-
-Example:
-
-    UBT-T 18 GHz
-    PRODUCT_VARIANT
-    pvar_<UUID>
-
-The variant may connect to its parent product using:
-
-    VARIANT_OF
-
-where defined by the relationship Registry.
-
-Do not create a variant merely because a product is discussed in a different context.
-
----
-
-## 20. Hardware Revisions
-
-Hardware revisions are canonical entities when revision differences materially affect technical applicability.
-
-The current Registry contains:
-
-    HARDWARE_REVISION
-
-There is not currently a dedicated hardware-revision identity prefix in the canonical contract.
-
-Therefore a hardware revision may use:
-
-    ent_<UUID>
-
-unless the identity contract is deliberately extended.
-
-Revision applicability should be represented through Registry-approved relationships and temporal/contextual information rather than encoded only into free text.
-
----
-
-## 21. Firmware and Software
-
-The Registry distinguishes:
-
-- `FIRMWARE`;
-- `SOFTWARE`; and
-- `SOFTWARE_VERSION`.
-
-These are canonical technical concepts when independently useful for reasoning.
-
-They currently use the generic:
-
-    ent_<UUID>
-
-unless `entity_contracts.json` later establishes specialized identity classes.
-
-A.R.I.A. shall not treat firmware or software version strings as arbitrary metadata when those versions materially govern:
-
-- compatibility;
-- configuration;
-- procedures;
-- symptoms;
-- requirements;
-- failure modes; or
-- technical applicability.
-
----
-
-## 22. Components, Interfaces, and Ports
-
-The Registry distinguishes structural equipment concepts including:
-
-- `COMPONENT`;
-- `INTERFACE`;
-- `PORT`;
-- `ANTENNA`;
-- `RADIO`; and
-- `RF_CHAIN_COMPONENT`.
-
-These may use:
-
-    ent_<UUID>
-
-when no specialized prefix exists.
-
-Their technical structure should be represented through Registry-approved relationships such as:
-
-    COMPONENT_OF
-    HAS_COMPONENT
-    HAS_INTERFACE
-    INTERFACE_OF
-    HAS_PORT
-    PORT_OF
-    CONNECTS_TO
-    MATES_WITH
-    FEEDS
-    FED_BY
-    PRECEDES_IN_PATH
-    FOLLOWS_IN_PATH
-
-The relationship Registry remains authoritative for exact semantics.
-
----
-
-## 23. RF Concepts
-
-Canonical RF entities may include Registry types such as:
-
-- `FREQUENCY_BAND`;
-- `POLARIZATION`;
-- `CHANNEL`;
-- `MODULATION`;
-- `ANTENNA`;
-- `RADIO`; and
-- `RF_CHAIN_COMPONENT`.
-
-Frequency, polarization, channel, or modulation should not be encoded only into a product's display name when the concept needs independent reasoning.
-
-For example, rather than relying exclusively on:
-
-    UBT-T 18 GHz
-
-A.R.I.A. may represent:
-
-    UBT-T 18 GHz
-    PRODUCT_VARIANT
-
-and separately represent:
-
-    18 GHz
-    FREQUENCY_BAND
-
-with an appropriate Registry-approved relationship establishing applicability.
-
-This preserves queryable technical structure.
-
----
-
-## 24. Configuration Entities
-
-The Registry distinguishes:
-
-- `CONFIGURATION`;
-- `CONFIGURATION_PARAMETER`; and
-- `CONFIGURATION_VALUE`.
-
-These concepts should remain separate when doing so improves reasoning.
-
-Conceptually:
-
-    CONFIGURATION:
-    2+0 Diversity
-
-    PARAMETER:
-    Radio Role
-
-    VALUE:
-    Radio B
-
-A.R.I.A. shall avoid embedding complex configuration knowledge into unstructured strings when canonical configuration entities and relationships provide better technical structure.
-
----
-
-## 25. Topology
-
-The Registry contains:
-
-    TOPOLOGY
-
-Examples may include:
-
-    1+0
-    2+0
-    2+0 Diversity
-    1+1 HSB
-
-Topology is not merely a display label.
-
-It may materially affect:
-
-- valid configurations;
-- component paths;
-- applicable procedures;
-- failure modes;
-- diagnostic routes;
-- thresholds; and
-- technical relationships.
-
-Topology should therefore remain independently addressable when useful for reasoning.
-
----
-
-## 26. Measurements
-
-A measurement entity represents a canonical measurable technical quantity.
-
-Example:
-
-    id: meas_<UUID>
-    entity_type: MEASUREMENT
-    canonical_name: Received Signal Level
-
-A unit is a separate canonical entity.
-
-Example:
-
-    id: unit_<UUID>
-    entity_type: UNIT
-    canonical_name: dBm
-
-The relationship Registry provides measurement semantics including:
-
-    MEASURED_IN
-    UNIT_FOR
-    MEASURED_BY
-    MEASURES
-    HAS_THRESHOLD
-    THRESHOLD_FOR
-
-The numeric value observed during a particular diagnostic case is not the canonical measurement entity.
-
-For example:
-
-    CANONICAL ENTITY:
-    Received Signal Level
-
-    CASE OBSERVATION:
-    -54 dBm
-
-The `-54 dBm` observation belongs in evidence or another appropriate case-specific structure.
-
----
-
-## 27. Thresholds
-
-The Registry contains:
-
-    THRESHOLD
-
-A threshold is a canonical technical boundary, tolerance, or limit when independently reusable.
-
-A threshold may be associated with measurements, tests, alarms, or technical states through Registry-approved relationships.
-
-Threshold values shall not be confused with individual case observations.
-
----
-
-## 28. Symptoms
-
-Symptoms represent observable problems or abnormal conditions contributing to diagnosis.
-
-Canonical symptoms use:
-
-    sym_<UUID>
-
-Example:
-
-    RSL Discrepancy
-    SYMPTOM
-    sym_<UUID>
-
-A symptom is not automatically a root cause.
-
-A symptom may be:
-
-- observed directly;
-- reported by a user;
-- derived from evidence;
-- exhibited by equipment; or
-- associated with multiple possible causes.
-
-The relationship system establishes those technical connections.
-
----
-
-## 29. Failure Modes, Root Causes, and Contributing Causes
-
-The Registry distinguishes:
-
-- `FAILURE_MODE`;
-- `ROOT_CAUSE`; and
-- `CONTRIBUTING_CAUSE`.
-
-These distinctions matter.
-
-A failure mode describes a technical manner of failure.
-
-A root cause describes an underlying cause capable of producing symptoms or failure modes.
-
-A contributing cause may influence a failure without being the primary root cause.
-
-The canonical identity contract currently provides:
-
-    fm_<UUID>
-
-for failure-mode/cause-class technical entities governed by that contract.
-
-The precise semantic classification remains in `entity_type`.
-
-A.R.I.A. shall not collapse symptoms, failure modes, root causes, and contributing causes merely because they frequently occur together.
-
----
-
-## 30. Causal Relationships
-
-Causality belongs in relationships, not in entity identity.
-
-Example:
-
-    Incorrect Flex Routing
-    CAN_CAUSE
-    RSL Discrepancy
-
-This does not make the two concepts one entity.
-
-It also does not establish that Incorrect Flex Routing is the cause in a particular case.
-
-The relationship represents reusable technical possibility.
-
-Current-case probability belongs to diagnostic reasoning.
-
----
-
-## 31. Alarms
-
-The Registry contains:
-
-    ALARM
-
-An alarm is a reusable canonical equipment or system alarm when independently useful for technical reasoning.
-
-An alarm observed during a specific case is evidence referencing the canonical alarm entity.
-
-The alarm definition and the alarm occurrence are not the same object.
-
----
-
-## 32. Tests
-
-The Registry contains:
-
-    TEST
-
-A test is a reusable diagnostic method capable of producing evidence.
-
-Example:
-
-    Compare Main and Diversity RSL
-
-A canonical test entity describes the reusable technical test.
-
-A completed execution of that test in a particular case is not a new canonical test entity.
-
-It is a case-specific action/event that may produce evidence.
-
-Registry-approved relationships may connect tests to technical conditions using semantics such as:
-
-    TESTS_FOR
-    TESTED_BY
-
----
-
-## 33. Procedures
-
-The Registry contains:
-
-    PROCEDURE
-
-A procedure represents a reusable defined technical or operational process.
-
-Procedures may be connected to:
-
-- products;
-- configurations;
-- scopes;
-- requirements;
-- tools;
-- tests;
-- corrective actions; and
-- other canonical entities
-
-using Registry-approved relationships.
-
-A procedure performed during a specific case is an execution of the canonical procedure, not a new canonical procedure entity.
-
----
-
-## 34. Corrective Actions
-
-The Registry contains:
-
-    CORRECTIVE_ACTION
-
-A corrective action represents a reusable technical action intended to correct a confirmed or suspected problem.
-
-Registry-approved remediation relationships include:
-
-    RESOLVED_BY
-    RESOLVES
-    MITIGATED_BY
-    MITIGATES
-
-A corrective action performed during one case does not automatically prove that the action universally resolves the associated condition.
-
-Case outcome and reusable technical knowledge remain separate.
-
----
-
-## 35. Tools
-
-Canonical tools use:
-
-    tool_<UUID>
-
-Example:
-
-    Anritsu Site Master
-    TOOL
-    tool_<UUID>
-
-Tools may participate in reusable technical relationships such as:
-
-    MEASURES
-    MEASURED_BY
-    PERFORMED_WITH
-
-where defined by the relationship Registry.
-
-A specific field reading produced by a tool belongs to evidence.
-
-The tool itself remains a reusable canonical entity.
-
----
-
-## 36. Environmental Conditions and Obstructions
-
-The Registry distinguishes:
-
-- `ENVIRONMENTAL_CONDITION`; and
-- `OBSTRUCTION`.
-
-Examples may include:
-
-    Heavy Rain
-    High Wind
-    Ice
-
-Environmental conditions may affect technical behavior without becoming manufacturer-specific concepts.
-
-An environmental observation during a case may reference a canonical environmental entity while preserving the actual observed details in evidence.
-
----
-
-## 37. Scope
-
-Canonical scopes use:
-
-    scope_<UUID>
-
-Examples include:
-
-    Installation
-    Commissioning
-    Troubleshooting
-    Maintenance
-
-Scope is a technical or operational context.
-
-Scope should affect applicability and reasoning without causing unnecessary duplication of canonical technical entities.
-
-For example, `RSL Discrepancy` remains the same canonical symptom whether encountered during commissioning or troubleshooting.
-
----
-
-## 38. Project Phase
-
-The Registry contains:
-
-    PROJECT_PHASE
-
-Project phase may be represented independently when it materially affects:
-
-- applicability;
-- procedures;
-- requirements;
-- allowable actions;
-- expected evidence; or
-- diagnostic context.
-
-Project phase is not interchangeable with scope unless the Registry and technical meaning explicitly establish that equivalence.
-
----
-
-## 39. Standards, Requirements, and Constraints
-
-The Registry distinguishes:
-
-- `STANDARD`;
-- `REQUIREMENT`; and
-- `CONSTRAINT`.
-
-These are canonical knowledge entities when independently useful.
-
-Registry-approved relationships may express semantics such as:
-
-    REQUIRES
-    REQUIRED_BY
-    PROHIBITS
-    PROHIBITED_BY
-    CONSTRAINS
-    CONSTRAINED_BY
-    APPLIES_TO
-    GOVERNED_BY
-    VALID_FOR
-
-A.R.I.A. shall preserve the difference between:
-
-- a document that contains a requirement;
-- the canonical requirement itself; and
-- the relationship establishing where that requirement applies.
-
----
-
-## 40. Concepts
-
-The Registry contains:
-
-    CONCEPT
-
-`CONCEPT` is intended for technical concepts that do not belong to a more specific canonical entity type.
-
-A.R.I.A. should prefer a more precise Registry type when one exists.
-
-`CONCEPT` shall not become a dumping ground for entities that were simply not classified carefully.
-
----
-
-## 41. Customer Entities
-
-The Registry currently contains:
-
-    CUSTOMER
-
-Customer entities may exist when customer identity is materially relevant to technical or operational context.
-
-Customer-specific requirements should not cause generic technical concepts to be duplicated.
-
-For example, a customer-specific closeout requirement may be a canonical `REQUIREMENT` associated with the relevant customer through approved relationship semantics.
-
-The technical knowledge system shall remain technical in purpose.
-
-Customer entities provide context where required; they do not transform A.R.I.A. into a general CRM.
-
----
-
-## 42. Person and Role Entities
-
-The Registry currently contains:
-
-    PERSON
-    ROLE
-
-People and roles may participate in A.R.I.A.'s broader technical graph where required for:
-
-- technical experience;
-- observations;
-- validated field history;
-- procedures;
-- competencies;
-- diagnostic context; or
-- auditability.
-
-They are canonical entities but do not currently have dedicated person or role identity prefixes in the canonical contract.
-
-Therefore they may use:
-
-    ent_<UUID>
-
-unless `entity_contracts.json` is deliberately extended.
-
-User-specific technical history shall not be embedded as a monolithic entity description.
-
-Historical experience belongs in the Experience Ledger and related relationships.
-
----
-
-## 43. Canonical Entities vs. Case Objects
-
-Not every object A.R.I.A. uses is a canonical technical entity.
-
-The broader architecture includes first-class objects with their own identity classes.
-
-Examples include:
-
-    case_<UUID>
-    evd_<UUID>
-    hyp_<UUID>
-    act_<UUID>
-    exp_<UUID>
-    rel_<UUID>
-    ke_<UUID>
-
-These objects shall not be serialized as ordinary records under `entity.schema.json` merely because they participate in the graph.
-
-They have distinct architectural roles.
-
----
-
-## 44. Canonical Entity vs. Case Evidence
-
-A canonical entity represents reusable technical meaning.
-
-Evidence represents an observation or information item relevant to a specific case.
-
-Example:
-
-    CANONICAL MEASUREMENT:
-    Received Signal Level
-    meas_<UUID>
-
-    CASE EVIDENCE:
-    Main RSL = -42 dBm
-    evd_<UUID>
-
-The evidence may reference the measurement entity.
-
-The observation does not create another `MEASUREMENT` entity.
-
----
-
-## 45. Canonical Entity vs. Hypothesis
-
-A hypothesis is a case-specific evaluation of a possible explanation.
-
-Example:
-
-    CANONICAL ROOT CAUSE:
-    Incorrect Flex Routing
-    fm_<UUID>
-
-    CURRENT CASE HYPOTHESIS:
-    Incorrect Flex Routing is causing the observed diversity RSL discrepancy.
-    hyp_<UUID>
-
-The hypothesis references canonical technical knowledge.
-
-It does not replace it.
-
-Likewise, the existence of a canonical root cause does not mean that cause is active in the current case.
-
----
-
-## 46. Canonical Entity vs. Experience
-
-Experience Ledger records use:
-
-    exp_<UUID>
-
-A validated historical experience may reference:
-
-- manufacturer entities;
-- product entities;
-- scopes;
-- symptoms;
-- failure modes;
-- root causes;
-- tests;
-- procedures;
-- corrective actions;
-- measurements;
-- tools; and
-- other canonical entities.
-
-The Experience Ledger records what happened historically.
-
-Canonical entities represent the reusable technical concepts involved.
-
-Repeated experience shall not create duplicate entities for the same technical concept.
-
----
-
-## 47. Canonical Entity vs. Relationship
-
-An entity represents a technical concept.
-
-A relationship represents a semantic assertion between concepts or other eligible first-class objects.
-
-For example:
-
-    UBT-T
-    MEMBER_OF
-    Wavence
-
-should not be encoded as arbitrary text such as:
-
-    family = "Wavence"
-
-when the relationship is important to reasoning.
-
-Likewise:
-
-    Received Signal Level
-    MEASURED_IN
-    dBm
-
-is reusable graph knowledge.
-
-Relationships belong in the relationship architecture.
-
----
-
-## 48. Canonical Entity vs. Knowledge Graph Edge
-
-Canonical entities are graph nodes.
-
-Reusable persisted graph structure uses:
-
-    ke_<UUID>
-
-Semantic assertions use:
-
-    rel_<UUID>
-
-The entity record itself does not need to contain every edge connected to it.
-
-A.R.I.A. should be able to retrieve relationships independently.
-
-This prevents entity records from becoming monolithic knowledge containers.
-
----
-
-## 49. Provenance
-
-Every material canonical entity should preserve provenance describing how the concept entered A.R.I.A.'s knowledge system.
-
-Possible origins may include:
-
-- manufacturer documentation;
-- manufacturer technical support;
-- engineering documentation;
-- standards;
-- approved internal technical sources;
-- structured imports;
-- validated field discovery;
-- approved extraction;
-- human technical contribution; or
-- migration from legacy A.R.I.A. knowledge.
-
-Provenance semantics are governed by:
-
-    Core/Schemas/entity_contracts.json
-
-Entity provenance and relationship provenance are independent.
-
-For example, A.R.I.A. may know that an `AIM` component exists from one source and know that it `MATES_WITH` another component from a different source.
-
-Both assertions must remain independently traceable.
-
----
-
-## 50. Confidence
-
-Entity confidence represents confidence in the quality or support of the entity assertion.
-
-The canonical confidence contract is governed by:
-
-    Core/Schemas/entity_contracts.json
-
-The entity machine schema represents confidence using:
-
-    value
-    basis
-
-Confidence is not probability.
-
-Entity confidence shall not be interpreted as:
-
-- probability that a hypothesis is true;
-- probability that a failure will occur;
-- relationship strength;
-- evidence confidence; or
-- diagnostic priority.
-
----
-
-## 51. Lifecycle Status
-
-Canonical entity lifecycle status is validated by `entity.schema.json`.
-
-Current lifecycle states are:
-
-    PROPOSED
-    ACTIVE
-    DEPRECATED
-    SUPERSEDED
-    REJECTED
-
-Lifecycle answers whether and how the entity should participate in the current knowledge system.
-
-Lifecycle is separate from validation state.
-
----
-
-## 52. Validation State
-
-Current entity validation states are:
-
-    PROPOSED
-    REVIEWED
-    VALIDATED
-    DISPUTED
-    REJECTED
-
-Entity validation does not automatically validate every relationship involving the entity.
-
-For example:
-
-    AIM
-
-may be a validated canonical component while a newly inferred relationship involving AIM remains unreviewed.
-
-Entity truth and relationship truth remain separable.
-
----
-
-## 53. Candidate Entities
-
-Automated extraction, model inference, imported terminology, or field discovery may identify a candidate entity.
-
-Detection does not make the candidate authoritative.
-
-Before promotion, A.R.I.A. should determine whether the candidate is:
-
-- genuinely new;
-- an alias;
-- a duplicate;
-- a contextual instance;
-- a case-specific value;
-- a typo;
-- a product variant;
-- a revision;
-- an existing concept under different terminology; or
-- a valid new canonical entity.
-
-Candidate entities should enter an appropriate validation process.
-
----
-
-## 54. Human Review
-
-Where required, entity review should support:
-
-- approval;
-- rejection;
-- canonical-name correction;
-- entity-type correction;
-- alias assignment;
-- duplicate detection;
-- merge;
-- split;
-- provenance attachment;
-- contextual clarification; and
-- requests for additional validation.
-
-Review actions should remain auditable.
-
-A model suggestion alone shall not permanently alter canonical identity.
-
----
-
-## 55. Supersession
-
-An entity may be superseded without deletion.
-
-The machine schema supports:
-
-- `superseded_at`; and
-- `superseded_by`.
-
-The relationship Registry also provides versioning semantics including:
-
-    SUPERSEDES
-    SUPERSEDED_BY
-
-Supersession preserves historical reasoning.
-
-A historical case referencing an older product, revision, requirement, or procedure must continue to resolve correctly after newer knowledge is introduced.
-
----
-
-## 56. Deprecation
-
-Deprecated entities remain queryable where historically relevant.
-
-Deprecation may indicate:
-
-- obsolete terminology;
-- retired product;
-- old hardware revision;
-- obsolete procedure;
-- replaced standard;
-- retired software; or
-- other non-current technical concepts.
-
-Deprecated does not mean historically false.
-
-Temporal and contextual applicability must be preserved.
-
----
-
-## 57. Legacy Identifiers
-
-The machine schema provides:
-
-    legacy_identifiers
-
-Legacy identifiers exist for:
-
-- migration;
-- reconciliation;
-- historical imports;
-- auditability; and
-- backward traceability.
-
-They are not authoritative canonical identities.
-
-For example, a historical identifier such as:
-
-    ENT-000427
-
-may be retained as a legacy identifier after migration to:
-
-    prod_<UUID>
-
-The new typed UUID remains authoritative.
-
----
-
-## 58. Entity Merge
-
-Duplicate canonical entities may occasionally be discovered.
-
-A controlled merge shall preserve:
-
-- canonical identity decisions;
+- UI wording;
+- repository location;
+- source-document location;
+- model terminology;
+- or ordinary descriptive text.
+
+Stable identity allows the Entity's:
+
+- Relationships;
 - provenance;
-- aliases;
-- legacy identifiers;
-- relationships;
-- case references;
-- experience references;
-- audit history; and
-- historical traceability.
+- Knowledge;
+- historical references;
+- Context;
+- learned information;
+- and downstream dependencies
 
-Automated similarity alone shall not permanently merge canonical entities.
-
-A merge is a knowledge-governance action.
+to remain attached to the same concept over time.
 
 ---
 
-## 59. Entity Split
+## 7. Identity Is Not Display Name
 
-An entity may later be discovered to represent multiple technically distinct concepts.
+The display name of an Entity is human-readable presentation.
 
-A.R.I.A. shall support controlled entity splitting.
+It is not canonical identity.
+
+Two Entities may have similar names while representing different concepts.
+
+One Entity may have many names while representing one concept.
+
+A.R.I.A. shall not use display text alone as the authoritative identity mechanism.
+
+---
+
+## 8. Identity Is Not Source Wording
+
+A source may use terminology different from A.R.I.A.'s canonical terminology.
+
+For example, multiple sources may use:
+
+- abbreviations;
+- legacy terminology;
+- vendor-specific terminology;
+- colloquial terminology;
+- translated terminology;
+- or descriptive phrases
+
+for the same underlying concept.
+
+Where technically justified, those terms should resolve to the same canonical Entity rather than creating duplicate Knowledge.
+
+---
+
+## 9. Most-Specific Established Identity Should Be Used
+
+Where authoritative contracts define dedicated identity classes for particular canonical Entity categories, A.R.I.A. should use the most specific applicable established identity.
+
+She shall not use a generic identity merely because doing so is easier if a more precise canonical identity class already exists.
+
+The exact identity classes and prefixes are owned by the applicable machine-readable contracts.
+
+This doctrine shall not freeze them through duplicated examples.
+
+---
+
+## 10. Generic Identity Remains Valid Where Appropriate
+
+A generic canonical Entity identity may be appropriate where:
+
+- no dedicated canonical identity class exists;
+- the concept is still independently meaningful;
+- and the applicable authoritative contract permits the generic identity.
+
+Generic does not mean weak.
+
+It means the architecture has not established a more specialized identity namespace for that concept.
+
+---
+
+## 11. Entity Type and Entity Identity Are Distinct
+
+An Entity's identifier and its semantic type are related but distinct concepts.
+
+The canonical type vocabulary is governed by:
+
+`Core/Registries/entity_types.json`
+
+The canonical identity contract is governed by:
+
+`Core/Schemas/entity_contracts.json`
+
+A.R.I.A. shall not infer unsupported Entity types solely from identifier appearance.
+
+Nor shall she invent identifier namespaces solely because a new Entity type exists.
+
+---
+
+## 12. Entity Types Must Be Explicitly Registered
+
+Canonical Entity types shall come from the authoritative Entity-type registry.
+
+This doctrine shall not establish additional Entity types through prose examples.
+
+If a new technical concept requires a new canonical Entity type, the appropriate registry should be deliberately extended according to governance.
+
+This prevents accidental taxonomy drift.
+
+---
+
+## 13. Examples Are Not Registries
+
+Any Entity examples appearing in documentation, prompts, Cases, source material, or model responses shall not become canonical Entity types merely because they were written in uppercase or presented as categories.
+
+Only the authoritative registry defines canonical Entity-type vocabulary.
+
+This principle applies equally to legacy documentation.
+
+---
+
+## 14. Aliases Belong to Identity Resolution
+
+An alias is another expression referring to an existing canonical Entity.
+
+Aliases may include:
+
+- abbreviations;
+- acronyms;
+- spelling variants;
+- punctuation variants;
+- vendor terminology;
+- historical names;
+- shorthand;
+- colloquial terms;
+- and other equivalent expressions.
+
+Alias handling shall follow the applicable authoritative Entity contracts.
+
+Aliases shall not automatically create separate Entities.
+
+---
+
+## 15. Alias Resolution Must Preserve Meaning
+
+A.R.I.A. shall resolve two terms to one Entity only when they genuinely represent the same underlying concept.
+
+Similarity of wording is insufficient.
+
+Entity resolution should consider, where applicable:
+
+- technical meaning;
+- product scope;
+- revision;
+- manufacturer;
+- Context;
+- units;
+- function;
+- Relationship structure;
+- provenance;
+- and other distinguishing information.
+
+False merging is as damaging as duplication.
+
+---
+
+## 16. Ambiguous Aliases Must Remain Ambiguous
+
+One term may legitimately refer to multiple different concepts.
+
+A.R.I.A. shall not force ambiguous terminology into one canonical Entity merely because the same text appears in several places.
+
+Where necessary, Context or additional information should resolve the intended Entity.
+
+If ambiguity remains unresolved, it should remain unresolved rather than being guessed.
+
+---
+
+## 17. Distinct Concepts Must Remain Distinct
+
+Canonical reuse shall not collapse materially different concepts.
+
+Entities should remain distinct where differences materially affect:
+
+- reasoning;
+- Relationships;
+- Context;
+- technical behavior;
+- source applicability;
+- historical analysis;
+- or explanation.
+
+Examples of potentially meaningful distinctions include:
+
+- product versus product variant;
+- physical interface versus logical interface;
+- symptom versus root cause;
+- measurement type versus measurement observation;
+- unit versus measured value;
+- procedure versus Action execution;
+- generic component versus specific installed component;
+- technical concept versus Case-specific instance.
+
+The authoritative Entity registry determines actual canonical types.
+
+---
+
+## 18. Universal Concepts Should Be Reused
+
+A.R.I.A. should avoid unnecessary duplication of universal concepts across:
+
+- manufacturers;
+- customers;
+- Cases;
+- projects;
+- participants;
+- applications;
+- and domains.
+
+Where the underlying concept is genuinely the same, one canonical Entity should normally be reused with appropriate Relationships and Context.
+
+This allows Knowledge learned in one area to become available elsewhere when applicable.
+
+---
+
+## 19. Manufacturer Terminology Does Not Automatically Create New Concepts
+
+Manufacturers often use proprietary terminology for concepts that may be:
+
+- universal;
+- standardized;
+- implementation-specific;
+- or partly equivalent to broader concepts.
+
+A.R.I.A. should determine whether the manufacturer term represents:
+
+1. an alias of an existing canonical Entity;
+2. a more specific Entity;
+3. a product-specific Entity;
+4. or a genuinely distinct technical concept.
+
+She shall not automatically create manufacturer-specific duplicates.
+
+She shall also not incorrectly collapse genuinely proprietary behavior into an overly generic concept.
+
+---
+
+## 20. Product-Specific Concepts May Require Distinct Entities
+
+A concept should remain product-specific when product identity materially changes its technical meaning.
+
+Examples may include:
+
+- proprietary components;
+- product-specific interfaces;
+- unique operating modes;
+- vendor-defined configuration objects;
+- model-specific procedures;
+- or implementation-specific behavior.
+
+The purpose of canonical reuse is not to erase legitimate product distinctions.
+
+---
+
+## 21. Revision Does Not Automatically Create a New Entity
+
+A revision change does not necessarily require a new canonical Entity.
+
+The appropriate representation depends upon whether the revision represents:
+
+- the same concept with changed properties;
+- a new variant;
+- a new product;
+- a new behavior;
+- a historical state;
+- or another semantically distinct object.
+
+The authoritative Entity and Context contracts should govern the representation.
+
+A.R.I.A. shall not automatically create a new Entity for every revision number.
+
+---
+
+## 22. Revision May Require a Distinct Entity
+
+Where a revision materially changes identity rather than merely Context or properties, a distinct Entity may be appropriate.
+
+The distinction should be based upon technical meaning and authoritative schema—not arbitrary version counting.
+
+This preserves precision without creating unnecessary graph explosion.
+
+---
+
+## 23. Entity and Context Must Remain Distinct
+
+Context answers:
+
+> **Under what circumstances does this Knowledge or Relationship apply?**
+
+Entity answers:
+
+> **What canonical thing or concept is being represented?**
+
+A.R.I.A. shall not create separate Entities merely to encode every possible Context combination.
+
+For example, Context such as:
+
+- firmware;
+- date;
+- jurisdiction;
+- configuration;
+- topology;
+- environment;
+- or operating mode
+
+should remain Context when the underlying Entity identity has not changed.
+
+Context Engine owns canonical Context semantics.
+
+---
+
+## 24. Entity and Property Must Remain Distinct
+
+Not every characteristic of an Entity should become another Entity.
+
+A property may be more appropriate when the information:
+
+- describes the Entity;
+- does not require independent identity;
+- does not require independent Relationships;
+- does not require separate provenance;
+- and does not materially benefit reasoning as a reusable concept.
+
+The applicable Entity schema determines canonical record structure.
+
+---
+
+## 25. Entity and Value Must Remain Distinct
+
+A value observed or assigned to an Entity is not automatically another Entity.
+
+For example, conceptually:
+
+**MEASUREMENT TYPE**
+
+may be a canonical Entity.
+
+A specific Case observation such as:
+
+> -67 dBm
+
+is typically current Evidence or observation data rather than a new permanent canonical technical Entity.
+
+The authoritative schemas determine the exact representation.
+
+---
+
+## 26. Entity and Observation Must Remain Distinct
+
+Case-specific observations shall not automatically become canonical Entities.
+
+An observation may describe:
+
+- current state;
+- measured value;
+- visible condition;
+- test result;
+- user report;
+- system output;
+- or another Case-specific fact.
+
+Evidence Engine owns current Evidence.
+
+Canonical Entities provide the stable concepts to which Evidence may refer.
+
+---
+
+## 27. Entity and Evidence Must Remain Distinct
+
+An Entity may be the subject of Evidence.
+
+The Evidence itself is not automatically an Entity.
+
+For example:
+
+**Canonical Entity**
+
+Received Signal Level
+
+**Current Evidence**
+
+Observed RSL = -71 dBm
+
+The Entity represents the reusable measurement concept.
+
+The Evidence represents what was observed now.
+
+This distinction prevents Case data from polluting canonical Knowledge.
+
+---
+
+## 28. Entity and Hypothesis Must Remain Distinct
+
+A canonical Entity may represent a:
+
+- condition;
+- failure mechanism;
+- component;
+- symptom;
+- configuration concept;
+- or another reusable technical concept.
+
+A current hypothesis is a Case-specific proposition involving one or more concepts.
+
+Hypothesis Engine owns hypothesis state.
+
+The existence of an Entity does not mean that Entity is currently suspected.
+
+---
+
+## 29. Entity and Probability Must Remain Distinct
+
+Canonical Entities do not own current diagnostic Probability.
+
+Probability attaches to current reasoning propositions according to the authoritative Probability architecture.
+
+An Entity may appear in many Cases with different probabilities.
+
+Its canonical identity remains unchanged.
+
+---
+
+## 30. Entity and Validation Must Remain Distinct
+
+Canonical Entities may represent concepts involved in Validation.
+
+They do not themselves become validated or invalidated merely because a current Case test passes or fails.
+
+Validation Engine owns what current results demonstrate.
+
+Entity architecture owns stable semantic identity.
+
+---
+
+## 31. Entity and Learning Must Remain Distinct
+
+Learning may discover useful recurring patterns involving canonical Entities.
+
+For example, qualified historical Learning may discover that a particular condition frequently appears with a particular symptom under comparable Context.
+
+Learning Engine owns qualification of that historical pattern.
+
+Entity architecture owns the identity of the concepts participating in it.
+
+There is no independent Experience Entity authority merely because historical experience exists.
+
+---
+
+## 32. There Is No Independent Experience Entity System
+
+Earlier architecture sometimes treated Experience as a separate canonical cognitive structure.
+
+That model is obsolete.
+
+Historical experience is governed through the coordinated architecture involving, as applicable:
+
+- Case State;
+- Context;
+- Evidence;
+- Actions;
+- Observations;
+- Validation;
+- Learning;
+- Memory;
+- and persistent historical records.
+
+Canonical Entities may participate in those structures.
+
+Entity architecture shall not create an independent Experience ontology unless a future explicit authoritative schema deliberately establishes one.
+
+---
+
+## 33. Entity and Memory Must Remain Distinct
+
+Memory may retrieve information about canonical Entities.
+
+Retrieval does not create or redefine Entity identity.
+
+An Entity is not more canonical because it was retrieved frequently.
+
+Memory Engine owns retrieval.
+
+Entity architecture owns canonical identity.
+
+---
+
+## 34. Entity and Source Must Remain Distinct
+
+A source may discuss or define an Entity.
+
+The source itself is not automatically the same Entity as the technical concept it describes.
+
+Where source objects require canonical representation, they shall follow the applicable authoritative schemas.
+
+Entity architecture shall preserve the distinction between:
+
+> the thing being described
+
+and
+
+> the material describing it.
+
+---
+
+## 35. Entity and Provenance Must Remain Distinct
+
+Provenance answers where Knowledge came from.
+
+Entity identity answers what concept is being represented.
+
+A.R.I.A. shall not create separate canonical technical Entities merely because the same concept came from different sources.
+
+Multiple sources may support Knowledge concerning one Entity.
+
+`provenance_schema.md` owns provenance.
+
+---
+
+## 36. Entity and Source Authority Must Remain Distinct
+
+An Entity does not become more or less real because one source has stronger authority.
+
+Source Authority evaluates information supporting claims involving Entities.
+
+It does not determine Entity identity by itself.
+
+`source_authority.md` owns Source Authority principles.
+
+---
+
+## 37. Entity and Relationship Must Remain Distinct
+
+Entities represent concepts.
+
+Relationships represent semantic connections between concepts.
+
+A.R.I.A. shall not encode a Relationship solely by creating compound Entity names when the authoritative Relationship architecture provides the appropriate structure.
+
+For example, conceptually:
+
+**A CAUSES B**
+
+should normally be represented through canonical Entities and a canonical Relationship rather than inventing an Entity named:
+
+> "A-causes-B"
+
+unless such a compound concept independently deserves Entity identity.
+
+---
+
+## 38. Relationship Schema Owns Relationship Semantics
+
+`Core/Knowledge/relationship_schema.md` and applicable machine-readable Relationship contracts own:
+
+- Relationship vocabulary;
+- Relationship directionality;
+- inverse semantics;
+- Relationship identity;
+- Relationship properties;
+- causal meaning;
+- dependency meaning;
+- compatibility meaning;
+- and other canonical Relationship semantics.
+
+Entity Architecture shall not redefine those concepts.
+
+---
+
+## 39. Entity Creation Requires Semantic Justification
+
+Before creating a new canonical Entity, A.R.I.A. should determine whether the proposed concept is:
+
+- already represented;
+- an alias;
+- a property;
+- a value;
+- a Context condition;
+- a Relationship;
+- current Evidence;
+- a current hypothesis;
+- a Case-specific instance;
+- or genuinely a new canonical Entity.
+
+This decision protects Knowledge quality.
+
+---
+
+## 40. Entity Creation Should Prefer Reuse
+
+When a technically equivalent canonical Entity already exists, A.R.I.A. should reuse it.
+
+Creating duplicates damages:
+
+- graph traversal;
+- Learning;
+- retrieval;
+- provenance;
+- Relationship analysis;
+- historical reasoning;
+- and explanation.
+
+Reuse is the default when identity equivalence is established.
+
+---
+
+## 41. Entity Creation Must Not Force False Reuse
+
+Reuse shall not be pursued at the expense of correctness.
+
+When two concepts are materially different, A.R.I.A. shall preserve separate Entities.
+
+False merging can cause more severe reasoning errors than duplication.
+
+Canonicalization requires semantic judgment.
+
+---
+
+## 42. Entity Resolution May Require Investigation
+
+A.R.I.A. may encounter two candidate Entities whose equivalence cannot immediately be determined.
+
+She should be able to investigate:
+
+- source definitions;
+- product scope;
+- revision;
+- Relationships;
+- properties;
+- Context;
+- aliases;
+- and provenance.
+
+If equivalence remains uncertain, A.R.I.A. shall not invent a merge.
+
+---
+
+## 43. Unknown Identity Is Valid
+
+A.R.I.A. may encounter a concept that appears meaningful but cannot yet be confidently resolved to an existing Entity or established as a new canonical Entity.
+
+Unknown identity is a valid state.
+
+The system may preserve candidate information according to the authoritative ingestion architecture.
+
+A.R.I.A. shall not fabricate canonical identity merely to avoid uncertainty.
+
+---
+
+## 44. Candidate Entities Must Remain Distinguishable
+
+A model, source-ingestion process, user, or Learning process may propose a candidate Entity.
+
+Candidate status does not automatically create canonical status.
+
+Canonical promotion shall follow applicable Knowledge governance.
+
+This doctrine shall not create a competing Entity lifecycle enum.
+
+---
+
+## 45. Canonical Entity Governance Must Be Explicit
+
+If canonical lifecycle states for Entities are required, they shall be defined by an explicit authoritative registry or schema.
+
+This doctrine shall not silently establish universal states such as:
+
+- proposed;
+- validated;
+- approved;
+- deprecated;
+- rejected;
+- superseded;
+
+merely through descriptive language.
+
+Descriptions are not registries.
+
+---
+
+## 46. Entity Evolution Must Preserve Identity Where Appropriate
+
+When understanding of an existing Entity improves, A.R.I.A. should normally evolve its:
+
+- properties;
+- aliases;
+- Relationships;
+- provenance;
+- Context;
+- or documentation
+
+without changing canonical identity unless the original identity itself was incorrect.
+
+This allows Knowledge to mature without breaking historical references.
+
+---
+
+## 47. Identity Correction Must Preserve History
+
+If an Entity was incorrectly identified, duplicated, or merged, correction should preserve enough history to understand:
+
+- the prior identity;
+- the corrected identity;
+- affected aliases;
+- affected Relationships;
+- affected Knowledge;
+- affected provenance;
+- and downstream dependencies.
+
+The applicable governance and orchestration architecture owns the correction process.
+
+---
+
+## 48. Entity Merge Must Be Governed
+
+Merging Entities can materially change the Knowledge Graph.
+
+A merge should occur only when the Entities are determined to represent the same canonical concept.
+
+A merge may require reconciliation of:
+
+- aliases;
+- properties;
+- Relationships;
+- provenance;
+- source references;
+- historical Cases;
+- learned information;
+- and dependent Knowledge.
+
+A.R.I.A. shall not perform semantic merges casually.
+
+---
+
+## 49. Entity Split Must Be Governed
+
+A previously unified Entity may later be discovered to contain multiple materially distinct concepts.
 
 A split may require:
 
-- creation of new canonical identities;
-- reassignment of aliases;
-- relationship reclassification;
-- provenance preservation;
-- historical case reconciliation;
-- experience reconciliation; and
-- audit records.
+- new canonical identities;
+- Relationship reassignment;
+- provenance review;
+- source review;
+- Context review;
+- historical reprocessing;
+- and downstream dependency analysis.
 
-Historical information should be reclassified where justified rather than silently deleted.
-
----
-
-## 60. Metadata Extensibility
-
-The machine schema provides controlled:
-
-    metadata
-
-for entity-type-specific technical information.
-
-Metadata may support future domain-specific requirements.
-
-Metadata shall not be used to:
-
-- create hidden relationship systems;
-- duplicate canonical entities;
-- store case-specific evidence;
-- replace Registry vocabulary;
-- bypass provenance;
-- bypass validation; or
-- serialize entire technical documents into entity records.
-
-Core semantic structure remains strongly modeled.
+The architecture must support correction rather than freezing early modeling mistakes.
 
 ---
 
-## 61. Product-Specific Metadata
+## 50. Deletion Should Be Exceptional
 
-Some technical attributes may reasonably remain metadata when they describe the entity rather than another independently useful concept.
+Canonical Entities with historical dependencies should not normally disappear merely because they are no longer current.
 
-However, if an attribute becomes independently useful for:
+Historical identity may remain necessary for:
 
-- reasoning;
-- relationships;
-- filtering;
-- applicability;
-- historical analysis; or
-- reuse,
+- legacy systems;
+- old Cases;
+- superseded products;
+- prior documentation;
+- historical decisions;
+- or auditability.
 
-A.R.I.A. should consider representing it as a canonical entity instead.
-
-The choice should be driven by technical reasoning value, not convenience alone.
+Where governance requires retirement, the architecture should preserve appropriate historical lineage.
 
 ---
 
-## 62. Relationship Integrity
+## 51. Supersession Does Not Necessarily Replace Identity
 
-Entity records shall not become hidden relationship stores.
+A newer Entity may supersede an older Entity without becoming the same Entity.
 
-For example, avoid using arbitrary metadata to encode:
+For example, a new product may replace an old product commercially while remaining technically distinct.
 
-    manufacturer = Nokia
-    family = Wavence
-    unit = dBm
-    tool = Anritsu
+Supersession is a Relationship or governance concept.
 
-when those concepts are canonical entities and the relationship matters to reasoning.
-
-Prefer Registry-approved semantic relationships such as:
-
-    MANUFACTURED_BY
-    MEMBER_OF
-    MEASURED_IN
-    MEASURED_BY
-
-where appropriate.
-
-This preserves graph consistency and queryability.
+It shall not automatically collapse identities.
 
 ---
 
-## 63. No Duplicate Entity Vocabulary
+## 52. Historical Entities Remain Valuable
 
-`Core/Registries/entity_types.json` is the sole canonical entity-type vocabulary.
+Entities representing:
 
-This document shall not maintain a second exhaustive entity-type registry.
+- legacy products;
+- obsolete standards;
+- retired components;
+- superseded procedures;
+- or historical technical concepts
 
-`Core/Schemas/entity.schema.json` shall not maintain a competing enum of Registry values unless architecture is deliberately changed to generate or synchronize that validation automatically.
+may remain necessary for historical reasoning.
 
-Manufacturer knowledge files shall not independently create entity classes.
-
-Extraction systems shall not invent permanent entity types.
-
-The Registry owns vocabulary.
-
----
-
-## 64. No Duplicate Relationship Vocabulary
-
-`Core/Registries/relationship_types.json` is the sole canonical relationship vocabulary.
-
-Entity documentation may use relationship examples only when those semantics exist in the Registry.
-
-This document shall not invent relationship names such as:
-
-    OPERATES_AT
-    AFFECTED_BY
-    BELONGS_TO
-    INTERFACES_WITH
-    USED_BY
-
-unless those relationship types are deliberately added to the Registry.
-
-Technical meaning shall conform to the canonical relationship architecture.
+Current applicability and historical existence are different questions.
 
 ---
 
-## 65. Model Independence
+## 53. Entity Properties Must Not Become Hidden Relationships
 
-Canonical entity identity exists independently of the language model.
+Where information represents a meaningful connection between independently identifiable concepts, it may belong as a Relationship rather than an opaque property.
 
-A model may:
+The applicable schemas govern the implementation.
 
-- recognize entities;
-- propose candidate entities;
-- resolve aliases;
-- identify possible duplicates;
-- interpret ambiguous terminology;
-- propose relationships;
-- explain entities; and
-- assist validation.
-
-The model is not the authoritative Registry.
-
-Changing the model shall not change canonical entity identity.
+A.R.I.A. should avoid burying reasoning-relevant semantics inside unstructured text properties when canonical Relationships exist.
 
 ---
 
-## 66. Repository Independence
+## 54. Relationships Must Not Become Hidden Properties
 
-Canonical identity shall not depend upon repository location.
+If the authoritative Relationship architecture defines a semantic connection, Entity records should not independently invent competing ad hoc fields expressing the same relationship.
 
-Moving manufacturer documents, reorganizing folders, changing databases, or replacing application components shall not alter canonical identity.
+This prevents parallel representations such as:
 
-Repository files are sources and implementation artifacts.
+- one source using a Relationship;
+- another using a property;
+- another using free text
 
-Canonical identity belongs to A.R.I.A.'s knowledge architecture.
+for the same canonical meaning.
 
----
-
-## 67. Database Readiness
-
-The entity architecture shall map cleanly into structured persistence.
-
-Conceptually, a canonical entity record includes strongly structured fields such as:
-
-    id
-    entity_type
-    canonical_name
-    description
-    status
-    validation_state
-    valid_from
-    valid_to
-    deprecated_at
-    superseded_at
-    superseded_by
-    created_at
-    updated_at
-    created_by
-    updated_by
-
-Aliases, relationships, provenance, and other structures may be normalized or separately persisted as implementation evolves.
-
-Database design shall preserve the canonical contracts rather than redefining them.
+Canonical structure should converge.
 
 ---
 
-## 68. Entity Creation Rules
+## 55. Free Text Is Not Canonical Semantics
 
-Before creating a new canonical entity, A.R.I.A. or the reviewing system should ask:
+Descriptive text may be valuable for:
 
-1. Does this technical concept already exist?
-2. Is the proposed term merely an alias?
-3. Is it only a contextual instance of an existing entity?
-4. Is it a case-specific observation rather than reusable knowledge?
-5. Is it a hypothesis rather than a canonical technical concept?
-6. Is it an Experience Ledger record rather than a canonical concept?
-7. Is it a relationship rather than an entity?
-8. Is it a product variant rather than a new product?
-9. Is it a hardware/software revision?
-10. Does representing it independently materially improve reasoning or retrieval?
-11. Can its meaning be clearly defined?
-12. Is there sufficient provenance to justify creation?
-13. Does an approved entity type exist in the Registry?
-14. What is the correct canonical identity prefix?
+- explanation;
+- source excerpts;
+- notes;
+- human readability;
+- and context.
 
-If the answers indicate duplication, A.R.I.A. should reuse the existing entity.
+Free text shall not substitute for canonical Entity identity or canonical Relationships when structured semantics are required.
+
+A.R.I.A. should preserve both where useful.
 
 ---
 
-## 69. Example: Received Signal Level
+## 56. Entity Granularity Must Serve Reasoning
 
-Conceptually:
+Entity granularity should be neither excessively broad nor excessively narrow.
 
-    ID:
-    meas_<UUID>
+An Entity is too broad when materially different concepts become indistinguishable.
 
-    ENTITY TYPE:
-    MEASUREMENT
+An Entity is too narrow when every trivial variation creates a new identity without reasoning benefit.
 
-    CANONICAL NAME:
-    Received Signal Level
+Granularity should support:
 
-    ALIASES:
-    RSL
-    RX Level
-    Receive Level
-
-    STATUS:
-    ACTIVE
-
-    VALIDATION STATE:
-    VALIDATED
-
-    DESCRIPTION:
-    Received RF power measured at the applicable receiver point.
-
-Related reusable knowledge may include:
-
-    Received Signal Level
-    MEASURED_IN
-    dBm
-
-    Received Signal Level
-    MEASURED_BY
-    Applicable Measurement Tool
-
-The measurement entity exists once.
-
-A specific case observation such as:
-
-    -54 dBm
-
-is evidence referencing the canonical measurement and unit.
-
----
-
-## 70. Example: UBT-T
-
-Conceptually:
-
-    ID:
-    prod_<UUID>
-
-    ENTITY TYPE:
-    PRODUCT
-
-    CANONICAL NAME:
-    UBT-T
-
-    STATUS:
-    ACTIVE
-
-Related reusable knowledge may include:
-
-    UBT-T
-    MANUFACTURED_BY
-    Nokia
-
-    UBT-T
-    MEMBER_OF
-    Wavence
-
-    UBT-T
-    HAS_VARIANT
-    UBT-T 18 GHz
-
-    UBT-T
-    HAS_COMPONENT
-    Applicable Component
-
-    UBT-T
-    SUPPORTS
-    Applicable Configuration
-
-Every relationship type in this example is governed by the canonical relationship Registry.
-
-The product entity should not require separate duplicate knowledge trees for every project, case, frequency, technician, or procedure.
-
----
-
-## 71. Example: Symptom and Root Cause
-
-Conceptually:
-
-    SYMPTOM:
-    RSL Discrepancy
-    sym_<UUID>
-
-    ROOT CAUSE:
-    Incorrect Flex Routing
-    fm_<UUID>
-
-Reusable technical relationship:
-
-    Incorrect Flex Routing
-    CAN_CAUSE
-    RSL Discrepancy
-
-Current-case hypothesis:
-
-    hyp_<UUID>
-
-Current-case evidence:
-
-    evd_<UUID>
-
-These are four different architectural concepts.
-
-A.R.I.A. shall preserve those distinctions.
-
----
-
-## 72. Example: Person and Experience
-
-Conceptually:
-
-    PERSON:
-    Technician
-    ent_<UUID>
-
-A validated historical technical event may be represented in:
-
-    exp_<UUID>
-
-The Experience Ledger may reference:
-
-- the person;
-- manufacturer;
-- product;
-- scope;
-- symptom;
-- root cause;
-- action;
-- evidence; and
-- outcome.
-
-The person's canonical entity should not become a giant serialized history of everything that technician has ever encountered.
-
-Experience remains independently queryable.
-
----
-
-## 73. Technical Resource Boundary
-
-A.R.I.A. is intended to be a technical resource.
-
-The Entity Architecture therefore exists primarily to support:
-
-- telecommunications equipment knowledge;
-- RF engineering;
-- configuration;
-- diagnostics;
-- procedures;
-- technical requirements;
-- technical experience;
-- field troubleshooting;
-- technical reasoning; and
-- related operational context necessary to perform that technical mission.
-
-The existence of `PERSON`, `CUSTOMER`, `ROLE`, or similar contextual entity types does not authorize expansion into unrelated CRM, HR, sales, financial, or general business knowledge.
-
-Contextual entities should be represented only when they materially support A.R.I.A.'s technical function.
-
----
-
-## 74. Entity Integrity Rules
-
-A.R.I.A. shall preserve the following invariants:
-
-1. Every persisted canonical technical entity has stable typed identity.
-2. Identity follows `Core/Schemas/entity_contracts.json`.
-3. Entity type follows `Core/Registries/entity_types.json`.
-4. Machine structure follows `Core/Schemas/entity.schema.json`.
-5. Relationship semantics follow `Core/Registries/relationship_types.json`.
-6. The most specific established identity prefix is used.
-7. `ent_<UUID>` is the generic fallback, not a competing universal prefix.
-8. Names are not identity.
-9. Aliases are not automatically entities.
-10. Shared technical concepts are not duplicated by manufacturer without technical justification.
-11. Products are not duplicated by project, site, customer, technician, or case.
-12. Product variants exist only when technically meaningful.
-13. Measurements are concepts; measured case values are evidence.
-14. Symptoms are not causes.
-15. Canonical root causes are not current-case hypotheses.
-16. Tests and procedures are reusable concepts; executions are case-specific.
-17. Tools are canonical resources; readings are evidence.
-18. Entity confidence is not probability.
-19. Lifecycle state and validation state remain distinct.
-20. Deprecated and superseded entities remain available for historical reasoning.
-21. Legacy identifiers are not canonical identity.
-22. Metadata does not become a hidden relationship system.
-23. Case objects are not serialized as ordinary canonical entities.
-24. Experience records are not canonical entities.
-25. Semantic relationships are not canonical entities.
-26. Knowledge Graph edges are not canonical entities.
-27. Automated extraction may propose entities but does not silently establish canonical truth.
-28. Duplicate entities are merged only through controlled reconciliation.
-29. Entity splits preserve historical traceability.
-30. A.R.I.A.'s entity system remains focused on its technical mission.
-
----
-
-## 75. Architecture Summary
-
-The canonical entity layer can be summarized as:
-
-    TECHNICAL CONCEPT
-          |
-          v
-    CANONICAL ENTITY
-    typed UUID identity
-          |
-          +------------------------------+
-          |                              |
-          v                              v
-    rel_<UUID>                      reusable references
-    semantic relationships          from cases/experience
-          |
-          v
-    ke_<UUID>
-    reusable graph structure
-
-Case-specific reasoning remains separate:
-
-    case_<UUID>
-        |
-        +--> evd_<UUID>
-        |
-        +--> hyp_<UUID>
-        |
-        +--> act_<UUID>
-
-Validated historical experience remains separate:
-
-    exp_<UUID>
-
-These structures may reference canonical entities without becoming duplicate canonical entities themselves.
-
----
-
-## 76. Final Principle
-
-A.R.I.A.'s Entity Architecture exists to give technical knowledge durable identity.
-
-A canonical entity is not merely a word in a document.
-
-It is a stable, reusable technical concept with:
-
-- canonical identity;
-- controlled classification;
-- human-readable terminology;
-- aliases;
+- meaningful Relationships;
+- Context;
+- retrieval;
+- Learning;
 - provenance;
+- and explanation.
+
+---
+
+## 57. Avoid Entity Explosion
+
+A.R.I.A. shall not create permanent canonical Entities for every:
+
+- observed value;
+- conversation phrase;
+- source sentence;
+- temporary state;
+- one-time Action;
+- incidental object;
+- typo;
+- UI string;
+- or unqualified model suggestion.
+
+Entity growth should be deliberate.
+
+---
+
+## 58. Avoid Entity Scarcity
+
+The opposite error is also harmful.
+
+A.R.I.A. shall not force materially independent concepts into:
+
+- free text;
+- generic blobs;
+- oversized records;
+- or vague labels
+
+merely to minimize Entity count.
+
+If independent identity materially improves reasoning, an Entity may be appropriate.
+
+---
+
+## 59. Case-Specific Instances May Differ From Canonical Concepts
+
+A canonical Entity may represent a reusable technical concept.
+
+A specific Case may involve an instance of that concept.
+
+Conceptually:
+
+**Canonical Entity**
+
+Ethernet cable
+
+**Case-specific instance**
+
+The physical cable currently connecting Device A to Device B.
+
+These are not necessarily the same object.
+
+The applicable Case and Entity schemas determine whether and how instance identity is persisted.
+
+---
+
+## 60. Installed Equipment May Require Instance Identity
+
+A physical installed object may require persistent identity when doing so materially supports:
+
+- asset tracking;
+- configuration history;
+- topology;
+- maintenance;
+- failure history;
+- customer infrastructure;
+- or Case continuity.
+
+Such identity shall follow applicable authoritative schemas.
+
+The universal Entity doctrine shall not invent a parallel asset-management system.
+
+---
+
+## 61. Concept Identity and Instance Identity Must Remain Distinguishable
+
+A.R.I.A. shall distinguish where applicable between:
+
+> the canonical concept of a product
+
+and
+
+> one specific physical instance of that product.
+
+Knowledge about the product may apply to many instances.
+
+Evidence concerning one physical instance shall not automatically become universal product Knowledge.
+
+---
+
+## 62. Manufacturer, Product Family, Product, and Variant Must Remain Semantically Distinct
+
+Where the canonical registry defines these or comparable Entity types, A.R.I.A. shall preserve their distinct semantic roles.
+
+A manufacturer is not a product.
+
+A product family is not necessarily a product.
+
+A product is not necessarily a product variant.
+
+A.R.I.A. shall use the authoritative taxonomy rather than flattening hierarchy into names.
+
+---
+
+## 63. Hierarchy Is Not Identity
+
+An Entity may participate in hierarchical Relationships without its identity being derived solely from its parent.
+
+Moving or reclassifying an Entity within a hierarchy shall not automatically require changing canonical identity.
+
+Relationship Schema owns hierarchy semantics.
+
+---
+
+## 64. Entity Identity Must Survive Taxonomy Evolution
+
+A.R.I.A.'s taxonomy may improve.
+
+An Entity may later be classified more precisely.
+
+Where the underlying concept has not changed, canonical identity should normally survive the classification improvement.
+
+This prevents taxonomy evolution from breaking Knowledge history.
+
+---
+
+## 65. Domain Expansion Should Reuse the Entity Architecture
+
+Adding new technical domains should primarily require:
+
+- new canonical Entities;
+- new registered Entity types where genuinely necessary;
+- new Relationships;
+- new Context;
+- and new Knowledge.
+
+It should not require rebuilding the Entity architecture.
+
+The architecture shall remain domain-independent.
+
+---
+
+## 66. New Entity Types Should Be Added Deliberately
+
+A new domain does not automatically require dozens of new Entity types.
+
+Before adding a type, A.R.I.A.'s governance process should determine whether:
+
+- an existing type already fits;
+- a generic canonical Entity is sufficient;
+- the distinction materially improves reasoning;
+- the distinction is stable;
+- and the distinction is broadly useful.
+
+Taxonomy should grow deliberately.
+
+---
+
+## 67. Entity Types Should Not Encode One Product's Ontology Universally
+
+A product may contain proprietary concepts.
+
+Those concepts may deserve Entities.
+
+They do not automatically deserve new universal Entity types.
+
+A.R.I.A. shall distinguish:
+
+> new Entity
+
+from
+
+> new Entity type.
+
+This is essential for long-term extensibility.
+
+---
+
+## 68. Entity Architecture Must Remain Domain-Independent
+
+The universal Entity architecture shall not hardcode its cognitive structure around:
+
+- microwave backhaul;
+- RF;
+- Ethernet;
+- telecommunications;
+- a specific manufacturer;
+- a specific customer;
+- a specific organization;
+- or a named participant.
+
+Those domains populate the architecture.
+
+They do not define its universal limits.
+
+---
+
+## 69. Telecommunications Is Knowledge, Not the Architecture
+
+A.R.I.A. may become deeply knowledgeable about telecommunications.
+
+Telecommunications-specific:
+
+- manufacturers;
+- products;
+- components;
+- measurements;
+- tools;
+- failure mechanisms;
+- procedures;
+- and technical concepts
+
+belong in canonical Knowledge and applicable registries.
+
+They shall not turn the universal Entity doctrine into a telecommunications-only ontology.
+
+---
+
+## 70. Entity Architecture Must Support Future Domains
+
+The same architecture should be capable of representing future domains such as:
+
+- software;
+- electrical systems;
+- mechanical systems;
+- construction;
+- finance;
+- business operations;
+- logistics;
+- regulatory processes;
+- or other authorized areas
+
+without fundamental redesign.
+
+New domain Knowledge should extend the system rather than replace its foundations.
+
+---
+
+## 71. Provenance Must Attach to Knowledge About Entities
+
+A canonical Entity may be referenced by many Knowledge claims originating from many sources.
+
+A.R.I.A. should preserve provenance for material Knowledge concerning the Entity.
+
+She shall not assume that the Entity itself requires one single source explaining everything known about it.
+
+Different claims may have different provenance.
+
+---
+
+## 72. Entity Existence and Claim Provenance Are Different
+
+An Entity may be well established while one particular claim about it has weak provenance.
+
+Likewise, a newly introduced Entity may be supported by highly authoritative documentation.
+
+A.R.I.A. shall evaluate claims independently rather than treating all information concerning an Entity as equally sourced.
+
+---
+
+## 73. Source Authority Is Claim-Specific
+
+Source Authority concerning an Entity must remain claim-specific and contextual.
+
+One source may be highly authoritative regarding:
+
+- product specifications
+
+while another is authoritative regarding:
+
+- customer implementation
+
+and another regarding:
+
+- current Case observation.
+
+The Entity provides shared identity across those claims.
+
+It does not flatten their authority.
+
+---
+
+## 74. Contradictory Claims May Reference the Same Entity
+
+A.R.I.A. shall allow conflicting Knowledge about the same Entity to remain represented when unresolved.
+
+She shall not create duplicate Entities merely to separate contradictory claims if the claims concern the same underlying concept.
+
+Contradiction belongs to Knowledge governance and provenance.
+
+Identity should remain stable.
+
+---
+
+## 75. Contradiction May Reveal Identity Error
+
+Sometimes contradictory information indicates that two references thought to concern one Entity actually concern different concepts.
+
+A.R.I.A. should investigate whether the conflict arises from:
+
+- revision;
+- variant;
+- product;
+- manufacturer;
+- Context;
+- terminology;
+- or mistaken Entity resolution.
+
+Contradiction may therefore trigger identity review.
+
+---
+
+## 76. Entity Resolution Should Use Relationships
+
+Relationships may provide important evidence for identity resolution.
+
+Two similarly named concepts connected to different:
+
+- manufacturers;
+- products;
+- functions;
+- units;
+- components;
+- or technical behaviors
+
+may be distinct.
+
+Likewise, two differently named concepts with equivalent Relationship structure may be aliases.
+
+Entity resolution should not rely on string similarity alone.
+
+---
+
+## 77. Entity Resolution Should Use Context
+
+Context may determine whether two references identify the same concept.
+
+For example, the same shorthand may mean different things:
+
+- across manufacturers;
+- across technical domains;
+- across software systems;
+- across jurisdictions;
+- or across organizations.
+
+Context Engine owns canonical Context semantics.
+
+Entity resolution may consume Context.
+
+---
+
+## 78. Entity Resolution Should Use Provenance
+
+Source provenance may clarify:
+
+- intended terminology;
+- product scope;
+- revision;
+- author meaning;
+- manufacturer terminology;
+- or historical naming.
+
+Provenance may therefore assist Entity resolution.
+
+Provenance does not independently own identity.
+
+---
+
+## 79. Entity Resolution Should Be Explainable
+
+Where materially important, A.R.I.A. should be able to explain why two terms were:
+
+- merged;
+- kept separate;
+- treated as aliases;
+- or left unresolved.
+
+For example:
+
+> "These are the same canonical measurement concept; one is the vendor abbreviation and the other is the full technical name."
+
+Or:
+
+> "These names look similar, but they refer to different product variants and must remain separate."
+
+The explanation should reflect actual canonical state.
+
+---
+
+## 80. Entity Resolution Must Not Be Post-Hoc
+
+A.R.I.A. shall not manipulate Entity identity merely to make a preferred reasoning conclusion appear consistent.
+
+Entity resolution should follow semantic evidence and authoritative architecture.
+
+Identity shall not be rewritten to fit a desired diagnosis.
+
+---
+
+## 81. Entity Changes May Affect Downstream Knowledge
+
+Changing canonical Entity identity or resolution may affect:
+
+- Relationships;
+- source mappings;
+- historical Cases;
+- learned patterns;
+- routing Knowledge;
+- current reasoning;
+- application data;
+- and downstream derived Knowledge.
+
+Material Entity changes should therefore support dependency review.
+
+---
+
+## 82. Entity Corrections May Require Reprocessing
+
+If A.R.I.A. discovers that Entities were:
+
+- duplicated;
+- incorrectly merged;
+- incorrectly typed;
+- incorrectly mapped;
+- or incorrectly resolved,
+
+dependent Knowledge may require reprocessing.
+
+Orchestration and Knowledge governance own that process.
+
+Entity architecture must make correction possible.
+
+---
+
+## 83. Entity Architecture Must Support Auditability
+
+Authorized review should be able to determine, where applicable:
+
+- what Entity exists;
+- its canonical identity;
+- its canonical type;
+- its aliases;
+- its Relationships;
+- how it changed;
+- what prior identities were reconciled;
+- and what Knowledge depends upon it.
+
+Auditability supports trustworthy evolution.
+
+---
+
+## 84. Entity Architecture Must Support Reproducibility
+
+Where practical, A.R.I.A. should preserve enough information to reproduce material Entity-resolution decisions.
+
+This may involve:
+
+- aliases;
+- source references;
+- provenance;
+- Context;
+- Relationship structure;
+- prior candidate identities;
+- and governance history.
+
+The exact persistence structure belongs to the authoritative schemas.
+
+---
+
+## 85. Entity Architecture Must Survive Conversation Length
+
+Canonical Entity identity shall not depend upon temporary conversational context.
+
+A.R.I.A. shall not forget that two terms refer to the same canonical Entity merely because an earlier conversation left the model context window.
+
+Persistent architecture owns identity.
+
+---
+
+## 86. Entity Architecture Must Survive Model Replacement
+
+Canonical Entity identity shall not belong to one language model.
+
+Replacing:
+
+- model provider;
+- model version;
+- inference implementation;
+- prompt architecture;
+- or reasoning model
+
+shall not destroy:
+
+- Entity IDs;
+- aliases;
+- types;
+- Relationships;
+- provenance;
+- or identity history.
+
+The language model may assist with resolution.
+
+It does not own canonical identity.
+
+---
+
+## 87. Entity Architecture Must Survive Repository Reorganization
+
+Moving source files or Knowledge files shall not inherently create new canonical Entities.
+
+Repository paths are storage locations.
+
+They are not Entity identity.
+
+This prevents ordinary development work from breaking the Knowledge Graph.
+
+---
+
+## 88. Entity Architecture Must Support Schema Evolution
+
+Canonical machine-readable schemas and registries may evolve.
+
+The architecture should permit:
+
+- new Entity types;
+- improved validation;
+- new properties;
+- new identity namespaces;
+- better interoperability;
+- and improved governance
+
+without requiring wholesale replacement of existing Knowledge.
+
+Schema evolution should be deliberate and migration-aware.
+
+---
+
+## 89. Entity Architecture Must Not Freeze Early Assumptions
+
+Early A.R.I.A. development may contain incomplete Entity classifications.
+
+The architecture shall not preserve those assumptions forever merely because they were first.
+
+A.R.I.A. should be capable of improving:
+
+- taxonomy;
+- alias resolution;
+- granularity;
+- identity mappings;
+- and domain coverage
+
+while preserving historical integrity.
+
+---
+
+## 90. Machine-Readable Contracts Are Authoritative
+
+Where prose and machine-readable contracts differ concerning:
+
+- valid Entity types;
+- identifier formats;
+- required fields;
+- field types;
 - validation;
-- lifecycle;
-- temporal applicability;
-- relationships; and
-- historical continuity.
+- canonical enums;
+- or persistence structure,
 
-A.R.I.A. shall create a new entity when a genuinely distinct technical concept needs independent identity.
+the applicable machine-readable authoritative contract governs unless constitutional authority requires otherwise.
 
-A.R.I.A. shall reuse an existing entity when the concept already exists.
+This doctrine explains architecture.
 
-A.R.I.A. shall use relationships to express how entities interact.
+It does not replace validation contracts.
 
-A.R.I.A. shall use evidence to represent what was observed.
+---
 
-A.R.I.A. shall use hypotheses to represent what is being evaluated.
+## 91. Prose Shall Not Become a Shadow Schema
 
-A.R.I.A. shall use experience to preserve what happened historically.
+This document shall not be maintained as a second manual copy of every field and enum contained in machine-readable schemas.
 
-Maintaining these boundaries allows A.R.I.A.'s technical intelligence to grow without sacrificing consistency, explainability, or trust.
+Duplicating machine contracts into prose creates drift.
+
+The prose should define:
+
+- principles;
+- boundaries;
+- responsibilities;
+- invariants;
+- and interpretation.
+
+The schemas define exact machine contracts.
+
+---
+
+## 92. Canonical Registries Must Remain Canonical
+
+When a canonical registry defines vocabulary, A.R.I.A. shall use that registry rather than silently introducing new values in:
+
+- model output;
+- documentation;
+- ingestion code;
+- source normalization;
+- or application logic.
+
+If a new value is necessary, the registry should be deliberately extended.
+
+---
+
+## 93. Entity Architecture and Knowledge Graph
+
+The Knowledge Graph uses canonical Entities as stable nodes or equivalent semantic objects according to implementation.
+
+Entity Architecture owns:
+
+> **what the canonical thing is.**
+
+Relationship Architecture owns:
+
+> **how canonical things relate.**
+
+Knowledge Graph doctrine owns:
+
+> **how durable structured Knowledge forms a connected system.**
+
+These responsibilities shall remain separate.
+
+---
+
+## 94. Entity Architecture and Reasoning
+
+Reasoning systems may consume canonical Entities to understand:
+
+- symptoms;
+- components;
+- conditions;
+- measurements;
+- products;
+- procedures;
+- tools;
+- configurations;
+- and other concepts.
+
+Reasoning state shall not redefine canonical identity merely because one Entity becomes more diagnostically important than another.
+
+Entity identity is durable.
+
+Reasoning relevance is contextual.
+
+---
+
+## 95. Entity Architecture and Routing
+
+Routing may use canonical Entities when constructing or evaluating diagnostic paths.
+
+Entity Architecture does not independently select the route.
+
+Routing Engine owns route progression.
+
+Canonical Entities provide stable semantic references used by the route.
+
+---
+
+## 96. Entity Architecture and Decision
+
+Decision Engine may select Actions involving canonical Entities.
+
+Entity Architecture does not independently decide what should be done.
+
+For example, a Tool Entity may identify a reusable technical tool concept.
+
+Decision determines whether using that tool is appropriate now.
+
+---
+
+## 97. Entity Architecture and Learning
+
+Learning may generalize patterns involving canonical Entities across historical Cases.
+
+Stable identity is essential for this.
+
+If the same concept is represented by many duplicate Entities, Learning becomes fragmented.
+
+If different concepts are incorrectly merged, Learning becomes corrupted.
+
+Entity quality therefore directly affects Learning quality.
+
+---
+
+## 98. Entity Architecture and Memory
+
+Memory may use canonical Entity identity to retrieve:
+
+- prior Cases;
+- relevant Knowledge;
+- source material;
+- learned patterns;
+- and Relationships.
+
+Stable Entity identity improves retrieval continuity.
+
+Memory shall not create new canonical identity solely because a term appears frequently.
+
+---
+
+## 99. Entity Architecture and Explanation
+
+Canonical Entities help A.R.I.A. explain technical reasoning consistently.
+
+She may translate canonical terminology into user-friendly language without changing underlying identity.
+
+The user does not need to see internal IDs during ordinary interaction.
+
+Stable internal identity and natural external language should coexist.
+
+---
+
+## 100. User Terminology Should Be Respected Without Corrupting Canonical Identity
+
+A user may use:
+
+- shorthand;
+- field terminology;
+- informal names;
+- customer terminology;
+- or technically imperfect wording.
+
+A.R.I.A. may understand and respond naturally using the user's language while internally resolving the intended canonical Entity where possible.
+
+She shall not force the user to speak the ontology.
+
+Nor shall she allow conversational wording to create unnecessary duplicate canonical Entities.
+
+---
+
+## 101. Unknown User Terminology Should Not Be Guessed Into Canonical Identity
+
+If a user's term could refer to multiple Entities and Context does not resolve it, A.R.I.A. should preserve ambiguity or ask for clarification when materially necessary.
+
+She shall not silently map ambiguous terminology to whichever Entity best fits a preferred conclusion.
+
+---
+
+## 102. Core Entity Invariants
+
+The following principles shall remain true throughout A.R.I.A.'s architecture:
+
+1. Entities provide stable canonical identity.
+2. Entity Architecture is subordinate to authoritative machine-readable contracts and registries.
+3. Entity types come from the canonical Entity-type registry.
+4. Identifier rules come from the canonical Entity identity contracts.
+5. Prose examples do not create canonical registry values.
+6. Stable identity shall survive ordinary naming changes.
+7. Identity is distinct from display name.
+8. Identity is distinct from source wording.
+9. The most-specific established canonical identity should be used where applicable.
+10. Generic canonical identity remains valid where permitted.
+11. Entity type and Entity identifier are distinct concepts.
+12. Canonical Entity types must be explicitly registered.
+13. Aliases do not automatically create new Entities.
+14. Alias resolution must preserve technical meaning.
+15. Ambiguous aliases may remain ambiguous.
+16. Materially distinct concepts shall remain distinct.
+17. Universal concepts should be reused where technically appropriate.
+18. Manufacturer terminology does not automatically create duplicate universal concepts.
+19. Product-specific concepts may remain distinct where technically necessary.
+20. Revision does not automatically create a new Entity.
+21. Revision may justify distinct identity when technical identity materially changes.
+22. Entity and Context are distinct.
+23. Entity and property are distinct.
+24. Entity and value are distinct.
+25. Entity and observation are distinct.
+26. Entity and Evidence are distinct.
+27. Entity and hypothesis are distinct.
+28. Entity and Probability are distinct.
+29. Entity and Validation are distinct.
+30. Entity and Learning are distinct.
+31. There is no independent Experience Entity authority.
+32. Entity and Memory are distinct.
+33. Entity and source are distinct.
+34. Entity and provenance are distinct.
+35. Entity and Source Authority are distinct.
+36. Entity and Relationship are distinct.
+37. Relationship Schema owns Relationship semantics.
+38. Entity creation requires semantic justification.
+39. Entity creation should prefer legitimate reuse.
+40. Reuse shall not force false merging.
+41. Entity resolution may require investigation.
+42. Unknown identity is valid.
+43. Candidate Entities shall remain distinguishable from canonical Entities.
+44. Canonical Entity lifecycle states require explicit authoritative definition.
+45. Entity evolution should preserve identity where appropriate.
+46. Identity correction should preserve history.
+47. Entity merge must be governed.
+48. Entity split must be governed.
+49. Deletion of historically referenced Entities should be exceptional.
+50. Supersession does not automatically collapse identity.
+51. Historical Entities may remain valuable.
+52. Properties shall not hide canonical Relationships.
+53. Relationships shall not be duplicated through competing ad hoc properties.
+54. Free text shall not replace canonical semantics where structure is required.
+55. Entity granularity shall serve reasoning.
+56. Entity explosion shall be avoided.
+57. Entity scarcity shall also be avoided.
+58. Canonical concepts and Case-specific instances may be distinct.
+59. Physical installed objects may require instance identity when authoritative schemas support it.
+60. Concept identity and instance identity shall remain distinguishable.
+61. Canonical hierarchy types shall remain semantically distinct where registered.
+62. Hierarchy does not define identity by itself.
+63. Identity should survive taxonomy refinement where the underlying concept remains the same.
+64. Domain expansion should reuse the Entity architecture.
+65. New Entity types should be added deliberately.
+66. A new Entity does not automatically require a new Entity type.
+67. Universal Entity architecture shall remain domain-independent.
+68. Domain Knowledge populates the architecture rather than redefining it.
+69. Provenance concerning Entity claims shall remain traceable.
+70. Entity existence and claim provenance are distinct.
+71. Source Authority concerning Entity claims is contextual and claim-specific.
+72. Contradictory claims may reference the same canonical Entity.
+73. Contradiction may trigger Entity-resolution review.
+74. Entity resolution may use Relationships.
+75. Entity resolution may use Context.
+76. Entity resolution may use provenance.
+77. Entity-resolution decisions should remain explainable.
+78. Entity identity shall not be manipulated post-hoc to fit a desired conclusion.
+79. Entity changes may affect downstream Knowledge.
+80. Entity corrections may require reprocessing.
+81. Entity architecture should support auditability.
+82. Entity architecture should support reproducibility.
+83. Entity identity shall survive conversation length.
+84. Entity identity shall survive model replacement.
+85. Entity identity shall survive repository reorganization.
+86. Entity architecture shall support schema evolution.
+87. Early taxonomy assumptions shall remain correctable.
+88. Machine-readable contracts govern exact machine structure.
+89. Prose shall not become a shadow schema.
+90. Canonical registries shall remain authoritative.
+91. Entity Architecture and Knowledge Graph responsibilities shall remain distinct.
+92. Reasoning relevance shall not redefine canonical identity.
+93. Routing owns route progression.
+94. Decision owns Action selection.
+95. Stable Entity identity supports reliable Learning.
+96. Stable Entity identity supports reliable Memory.
+97. Internal canonical identity and user-friendly language may coexist.
+98. User terminology may be respected without corrupting canonical identity.
+99. Ambiguous user terminology shall not be silently forced into unsupported identity.
+
+---
+
+## 103. Prohibited Cognitive Behaviors
+
+A.R.I.A. shall not:
+
+- create canonical Entity types outside the authoritative registry;
+- invent identifier formats outside authoritative contracts;
+- treat prose examples as canonical enums;
+- use display names as canonical identity;
+- use source wording as canonical identity;
+- create duplicate Entities for simple aliases;
+- merge terms solely because their strings are similar;
+- force ambiguous aliases into one Entity;
+- collapse materially distinct concepts;
+- create manufacturer-specific copies of universal concepts without technical justification;
+- erase legitimate product-specific distinctions in the name of reuse;
+- create a new Entity automatically for every revision;
+- encode Context solely by multiplying Entity identities;
+- turn every Entity property into another Entity;
+- turn every observed value into a canonical Entity;
+- turn Case observations into permanent canonical technical Entities without justification;
+- treat Evidence as Entity identity;
+- treat current hypotheses as canonical Entities merely because they reference canonical concepts;
+- attach diagnostic Probability to permanent Entity identity as though it were intrinsic;
+- treat a current Validation result as permanent Entity validity;
+- recreate an independent Experience ontology;
+- treat Memory retrieval as Entity creation;
+- confuse a source with the technical Entity described by that source;
+- create duplicate Entities merely because provenance differs;
+- use Source Authority as a substitute for identity resolution;
+- encode canonical Relationships through arbitrary compound Entity names when proper Relationship semantics exist;
+- redefine Relationship semantics inside Entity Architecture;
+- create Entities without checking whether the concept is already represented;
+- force reuse when concepts are materially different;
+- invent identity when resolution is uncertain;
+- silently promote candidate Entities to canonical status;
+- create implicit Entity lifecycle enums through prose;
+- unnecessarily change canonical IDs when aliases or properties change;
+- merge Entities without dependency reconciliation;
+- split Entities without preserving historical lineage;
+- delete historically important Entities merely because they are obsolete;
+- collapse superseding and superseded Entities automatically;
+- hide meaningful Relationships in free-text properties;
+- create competing ad hoc fields for canonical Relationship semantics;
+- use free text as a substitute for structured identity where canonical structure is required;
+- create an Entity for every incidental phrase, value, observation, or model suggestion;
+- refuse to create Entities where independent identity materially improves reasoning;
+- confuse canonical concepts with specific physical instances;
+- convert every physical instance into a universal technical concept;
+- flatten canonical taxonomy distinctions into display names;
+- derive permanent identity solely from hierarchy position;
+- replace Entity IDs merely because taxonomy improves;
+- rebuild Entity architecture for every new domain;
+- create universal Entity types for every product-specific concept;
+- hardcode telecommunications as the limit of the universal Entity architecture;
+- treat all claims concerning one Entity as having identical provenance;
+- treat all claims concerning one Entity as having identical Source Authority;
+- create duplicate Entities merely to separate contradictory claims;
+- ignore the possibility that contradiction reveals mistaken Entity resolution;
+- resolve identity using string similarity alone;
+- ignore Context during ambiguous identity resolution;
+- ignore provenance where it materially clarifies identity;
+- fabricate Entity-resolution explanations after the fact;
+- manipulate identity to support a preferred diagnosis;
+- modify material Entity identity without considering downstream dependencies;
+- store canonical Entity identity only in temporary conversational context;
+- make canonical identity dependent upon one language model;
+- bind canonical identity permanently to repository paths;
+- freeze early Entity taxonomy assumptions permanently;
+- allow prose documentation to become a competing machine-readable Entity schema;
+- silently introduce unregistered Entity types through application code or model output;
+- allow current reasoning importance to redefine permanent Entity identity;
+- allow Routing to redefine Entity identity;
+- allow Decision to redefine Entity identity;
+- allow Learning frequency to redefine identity;
+- force users to speak canonical ontology terminology;
+- or silently map ambiguous user terminology to whichever Entity best supports the desired answer.
+
+---
+
+## 104. Final Principle
+
+A.R.I.A.'s Entity Architecture gives durable identity to the things she understands.
+
+An Entity is not merely a word.
+
+It is not merely a database row.
+
+It is not a sentence from a manual.
+
+It is not a current observation.
+
+It is not a hypothesis.
+
+It is not a probability.
+
+It is not an Action.
+
+And it is not a fragment of temporary language-model memory.
+
+A canonical Entity should exist because preserving independent identity improves A.R.I.A.'s ability to connect Knowledge across sources, Cases, products, domains, time, and reasoning processes.
+
+The architecture should aggressively avoid meaningless duplication while equally refusing to collapse concepts that are technically different.
+
+Aliases should change without breaking identity.
+
+Taxonomies should improve without destroying history.
+
+New manufacturers and domains should extend the system without requiring its foundations to be rebuilt.
+
+Historical experience should connect to canonical Entities through Learning and persistent Case history rather than through a competing Experience ontology.
+
+Exact machine structure should remain governed by explicit schemas and registries so prose does not become a second drifting implementation contract.
+
+The language model may help A.R.I.A. recognize and resolve Entities, but it shall not own them.
+
+And as A.R.I.A.'s Knowledge expands, the same stable canonical identities should allow what she learns today to remain connected, interpretable, correctable, and useful years later — without requiring the cognitive architecture to be rebuilt every time her understanding evolves.
