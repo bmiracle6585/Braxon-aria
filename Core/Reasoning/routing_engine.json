@@ -1,394 +1,403 @@
 {
-  "specification": "ARIA_ROUTING_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. selects, scores, executes, evaluates, and reroutes diagnostic next hops through a dynamic microwave backhaul reasoning graph.",
+  "engine": "ARIA_ROUTING_ENGINE",
+  "version": "2.0.0",
+  "description": "Canonical routing behavior for A.R.I.A. technical investigations. The Routing Engine manages diagnostic progression after technical actions have been evaluated or selected. It creates and maintains route-step structure, dependencies, branches, progression, repetition handling, rerouting, exhaustion, and route history. It does not independently own candidate-action utility scoring, technical action semantics, evidence semantics, hypothesis probability, case lifecycle, or technical outcome semantics.",
+
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "route_step_schema": "Core/Schemas/route_step.schema.json",
+    "action_schema": "Core/Schemas/action.schema.json",
+    "action_registry": "Core/Registries/action_types.json",
+
+    "role": "DIAGNOSTIC_PROGRESSION_AND_ROUTE_MANAGEMENT",
+
+    "owns": [
+      "route-step creation",
+      "route-step progression",
+      "route dependencies",
+      "route predecessor and successor relationships",
+      "route branches",
+      "parallel route progression",
+      "alternative route-step representation",
+      "route blocking",
+      "route bypass",
+      "route cancellation",
+      "route supersession",
+      "route repetition handling",
+      "rerouting",
+      "route exhaustion detection",
+      "route history",
+      "routing consequences",
+      "realized routing value"
+    ],
+
+    "does_not_own": [
+      "universal action class vocabulary",
+      "runtime action execution",
+      "technical procedure definitions",
+      "candidate action utility scoring",
+      "final candidate action selection policy",
+      "evidence truth",
+      "evidence confidence",
+      "measurement semantics",
+      "technical outcome vocabulary",
+      "hypothesis probability",
+      "hypothesis confirmation",
+      "hypothesis elimination",
+      "source authority",
+      "case lifecycle status",
+      "case reasoning state vocabulary",
+      "knowledge graph truth"
+    ]
+  },
 
   "core_principle": {
-    "statement": "ARIA shall select the diagnostic next hop expected to produce the greatest useful reduction in uncertainty or advancement toward resolution for the lowest justified operational cost, risk, and disruption.",
+    "statement": "Decision determines what technical action should be preferred next. Routing determines how that decision advances the investigation.",
+
     "rules": [
-      "The most probable hypothesis does not automatically determine the next action.",
-      "The cheapest action does not automatically determine the next action.",
-      "The highest-information action does not automatically determine the next action.",
-      "Routing shall balance diagnostic value against operational cost and constraints.",
-      "Every completed action changes the current routing state.",
-      "ARIA reroutes from the resulting state rather than restarting a predetermined troubleshooting tree."
+      "Routing shall consume selected or otherwise authorized runtime actions rather than redefine technical action semantics.",
+      "Routing shall preserve the distinction between action execution and diagnostic progression.",
+      "Routing shall not maintain a competing action vocabulary.",
+      "Routing shall not maintain a competing candidate-action utility model.",
+      "Routing shall not treat route completion as technical resolution.",
+      "Routing shall not treat action success as causal proof.",
+      "Routing shall preserve why diagnostic progression changed.",
+      "Routing shall preserve alternative, bypassed, blocked, superseded, and repeated paths when materially relevant.",
+      "Routing shall support branching, convergence, parallel progression, and rerouting without requiring a fixed troubleshooting tree."
     ]
   },
 
-  "routing_model": {
-    "graph_type": "DYNAMIC_WEIGHTED_DIRECTED_GRAPH",
+  "canonical_objects": {
+    "route_step": {
+      "identity": "rstep_<UUID>",
+      "schema": "Core/Schemas/route_step.schema.json",
+      "description": "Persisted case-specific record representing one routing position associated with one canonical runtime action."
+    },
 
-    "node_types": [
-      "CASE_STATE",
-      "SYMPTOM",
-      "HYPOTHESIS",
-      "EVIDENCE",
-      "QUESTION",
-      "DIAGNOSTIC_ACTION",
-      "OBSERVATION",
-      "FAILURE_MODE",
-      "CORRECTIVE_ACTION",
-      "VALIDATION_ACTION",
-      "ESCALATION"
-    ],
+    "action": {
+      "identity": "act_<UUID>",
+      "schema": "Core/Schemas/action.schema.json",
+      "description": "Canonical runtime technical action referenced by a route step."
+    },
 
-    "edge_properties": [
-      "relationship_type",
-      "applicability",
-      "expected_information_gain",
-      "expected_discrimination",
-      "execution_cost",
-      "time_cost",
-      "physical_effort",
-      "service_impact",
-      "safety_risk",
-      "reversibility",
-      "user_capability",
-      "historical_effectiveness",
-      "context_similarity",
-      "availability",
-      "route_penalty",
-      "route_score"
-    ],
+    "case": {
+      "identity": "case_<UUID>",
+      "description": "Diagnostic case within which route progression occurs."
+    },
 
-    "rules": [
-      "Graph topology may change as evidence is received.",
-      "Edge weights are dynamic rather than permanent universal values.",
-      "The same diagnostic action may have different route value in different cases.",
-      "A previously poor route may become valuable when context changes."
-    ]
+    "hypothesis": {
+      "identity": "hyp_<UUID>",
+      "description": "Canonical case hypothesis that may motivate or be affected by route progression."
+    },
+
+    "event": {
+      "identity": "evt_<UUID>",
+      "description": "Canonical event that may trigger or document a route transition."
+    },
+
+    "decision": {
+      "identity": "dec_<UUID>",
+      "description": "Persisted Decision result when Decision persistence is available."
+    }
   },
 
-  "route_candidate": {
-    "required_fields": [
-      "route_candidate_id",
+  "routing_inputs": {
+    "required": [
       "case_id",
-      "action_id",
-      "target_hypothesis_ids",
-      "target_uncertainties",
-      "expected_outcomes",
-      "applicability",
-      "information_gain_score",
-      "discrimination_score",
-      "time_cost_score",
-      "execution_cost_score",
-      "effort_score",
-      "service_impact_score",
-      "safety_risk_score",
-      "reversibility_score",
-      "user_capability_score",
-      "historical_effectiveness_score",
-      "context_match_score",
-      "repeat_penalty",
-      "availability_score",
-      "route_score",
-      "score_confidence",
-      "generated_at"
-    ]
-  },
+      "current_reasoning_state",
+      "candidate_or_selected_action_state",
+      "existing_route_state"
+    ],
 
-  "candidate_generation": {
-    "sources": [
-      "KNOWLEDGE_GRAPH",
-      "ACTIVE_HYPOTHESES",
-      "MISSING_EVIDENCE",
-      "UNRESOLVED_CONTRADICTIONS",
-      "HISTORICAL_ROUTES",
-      "PRODUCT_PROCEDURES",
-      "MANUFACTURER_PROCEDURES",
-      "USER_CAPABILITIES",
-      "CURRENT_CASE_CONSTRAINTS"
+    "optional": [
+      "decision_id",
+      "selection_event_id",
+      "active_hypotheses",
+      "current_evidence",
+      "action_execution_updates",
+      "new_events",
+      "changed_context",
+      "changed_constraints",
+      "authorization_updates",
+      "resource_updates",
+      "user_or_technician_direction",
+      "procedure_dependencies",
+      "validation_requirements"
     ],
 
     "rules": [
-      "Candidate actions shall have a defined diagnostic purpose.",
-      "ARIA shall not generate actions merely because they appear in a generic troubleshooting procedure.",
-      "Actions incompatible with the current technical context shall be excluded.",
-      "Actions prohibited by safety or authorization constraints shall not be executable candidates.",
-      "Questions are valid diagnostic actions when the answer has meaningful expected information value."
+      "Routing shall use canonical object references whenever those objects are persisted.",
+      "Routing shall not copy authoritative action execution data into route-step state.",
+      "Routing may inspect action execution state when determining whether route progression is possible.",
+      "Routing may inspect hypothesis and evidence state but shall not independently mutate their authoritative semantics.",
+      "Routing may react to changed context without owning the Context contract."
     ]
   },
 
-  "routing_dimensions": [
-    {
-      "name": "EXPECTED_INFORMATION_GAIN",
-      "direction": "MAXIMIZE",
-      "description": "Expected reduction in meaningful diagnostic uncertainty."
-    },
-
-    {
-      "name": "DIAGNOSTIC_DISCRIMINATION",
-      "direction": "MAXIMIZE",
-      "description": "Ability of the action's possible outcomes to distinguish between competing hypotheses."
-    },
-
-    {
-      "name": "HYPOTHESIS_COVERAGE",
-      "direction": "MAXIMIZE",
-      "description": "Amount of relevant active hypothesis space affected by the action."
-    },
-
-    {
-      "name": "TIME_COST",
-      "direction": "MINIMIZE",
-      "description": "Expected time required to perform the action and obtain usable evidence."
-    },
-
-    {
-      "name": "EXECUTION_COST",
-      "direction": "MINIMIZE",
-      "description": "Financial or resource cost of executing the action."
-    },
-
-    {
-      "name": "PHYSICAL_EFFORT",
-      "direction": "MINIMIZE",
-      "description": "Human effort required to perform the action."
-    },
-
-    {
-      "name": "SERVICE_IMPACT",
-      "direction": "MINIMIZE",
-      "description": "Potential disruption to live network service."
-    },
-
-    {
-      "name": "SAFETY_RISK",
-      "direction": "MINIMIZE",
-      "description": "Potential safety consequence associated with the action."
-    },
-
-    {
-      "name": "INVASIVENESS",
-      "direction": "MINIMIZE",
-      "description": "Degree to which the action modifies the current technical state merely to obtain information."
-    },
-
-    {
-      "name": "REVERSIBILITY",
-      "direction": "MAXIMIZE",
-      "description": "Ease with which the technical state can be restored after the action."
-    },
-
-    {
-      "name": "HISTORICAL_EFFECTIVENESS",
-      "direction": "MAXIMIZE",
-      "description": "Validated historical ability of the action to advance similar cases."
-    },
-
-    {
-      "name": "USER_CAPABILITY",
-      "direction": "MAXIMIZE",
-      "description": "Likelihood that the current user can correctly perform the action and return reliable evidence."
-    },
-
-    {
-      "name": "CONTEXT_APPLICABILITY",
-      "direction": "MAXIMIZE",
-      "description": "Technical applicability of the action to the current equipment, configuration, scope, and case state."
-    },
-
-    {
-      "name": "RESULT_AVAILABILITY",
-      "direction": "MAXIMIZE",
-      "description": "Likelihood that the requested action can actually produce usable evidence under current conditions."
-    }
-  ],
-
-  "route_score_model": {
-    "method": "WEIGHTED_UTILITY",
-
-    "conceptual_formula": "route_score = diagnostic_value - operational_cost - penalties",
-
-    "diagnostic_value": [
-      "expected_information_gain",
-      "diagnostic_discrimination",
-      "hypothesis_coverage",
-      "historical_effectiveness",
-      "context_applicability",
-      "result_availability"
-    ],
-
-    "operational_cost": [
-      "time_cost",
-      "execution_cost",
-      "physical_effort",
-      "service_impact",
-      "safety_risk",
-      "invasiveness"
-    ],
-
-    "penalties": [
-      "repeat_penalty",
-      "dependency_penalty",
-      "low_evidence_reliability_penalty",
-      "authorization_penalty",
-      "unavailable_resource_penalty"
+  "routing_outputs": {
+    "primary": [
+      "created_route_step_ids",
+      "updated_route_step_ids",
+      "active_route_step_ids",
+      "completed_route_step_ids",
+      "blocked_route_step_ids",
+      "bypassed_route_step_ids",
+      "superseded_route_step_ids",
+      "successor_route_step_ids",
+      "reroute_state",
+      "branch_effects",
+      "route_exhaustion_state"
     ],
 
     "rules": [
-      "Weight values shall remain configurable.",
-      "Weights may vary by operational context.",
-      "Safety constraints may act as hard gates rather than ordinary weighted penalties.",
-      "Service-impact constraints may act as hard gates where applicable.",
-      "ARIA shall preserve the component scores used to calculate route utility."
+      "Persisted route-step output shall conform to Core/Schemas/route_step.schema.json.",
+      "Routing output shall reference canonical act_<UUID> actions.",
+      "Routing output shall not create substitute evidence, measurements, technical outcomes, or hypothesis records.",
+      "Routing consequences shall remain distinct from technical action outcomes."
     ]
   },
 
-  "information_gain": {
-    "enabled": true,
+  "route_step_creation": {
+    "principle": "A persisted route step represents diagnostic progression around a canonical runtime action.",
 
-    "description": "ARIA shall prefer actions whose possible outcomes are expected to meaningfully reduce uncertainty among important hypotheses.",
+    "required_relationships": [
+      "route_step_id -> case_id",
+      "route_step_id -> action_id"
+    ],
 
-    "conceptual_method": "EXPECTED_ENTROPY_REDUCTION",
-
-    "conceptual_formula": "information_gain = current_entropy - expected_posterior_entropy",
-
-    "rules": [
-      "Information gain shall consider all materially likely action outcomes.",
-      "A test that returns the same expected result under every major hypothesis has low discriminatory value.",
-      "A test capable of sharply separating competing hypotheses may have high information value even when it does not directly fix the problem.",
-      "Information gain estimates may initially be qualitative when empirical outcome probabilities are unavailable."
-    ]
-  },
-
-  "expected_outcome_model": {
-    "required_fields": [
-      "action_id",
-      "possible_outcome",
-      "estimated_outcome_probability",
-      "hypothesis_effects",
-      "expected_probability_state",
-      "expected_information_gain"
+    "creation_sources": [
+      "DECISION_SELECTED",
+      "ARIA_GENERATED",
+      "USER_DIRECTED",
+      "TECHNICIAN_DIRECTED",
+      "ENGINEER_DIRECTED",
+      "PROCEDURE_DERIVED",
+      "REROUTE_GENERATED",
+      "DEPENDENCY_GENERATED",
+      "VALIDATION_GENERATED",
+      "ESCALATION_GENERATED",
+      "OTHER"
     ],
 
     "rules": [
-      "ARIA should predict diagnostically meaningful possible outcomes before requesting an action when practical.",
-      "Actual outcomes shall be compared against expected outcomes.",
-      "Unexpected results shall trigger rerouting rather than being discarded."
+      "Routing shall not create a route step without a canonical runtime action.",
+      "If a specific procedure must occur, an applicable runtime action shall exist before the route step references it.",
+      "Multiple route steps may reference different runtime actions of the same universal action class.",
+      "Repeated execution shall normally create a new runtime action when the execution itself is distinct.",
+      "A route step shall not be used as a substitute action record."
     ]
   },
 
-  "action_cost_classes": [
-    {
-      "name": "NEGLIGIBLE",
-      "examples": [
-        "Answer an available question",
-        "Read an existing displayed value",
-        "Review an already available screenshot"
-      ]
+  "route_status_model": {
+    "statuses": [
+      "CANDIDATE",
+      "SELECTED",
+      "QUEUED",
+      "ACTIVE",
+      "COMPLETED",
+      "BYPASSED",
+      "BLOCKED",
+      "CANCELLED",
+      "SUPERSEDED"
+    ],
+
+    "semantics": {
+      "CANDIDATE": "The route step exists as a materially considered routing possibility but has not been selected for progression.",
+
+      "SELECTED": "The route step has been chosen for progression but has not necessarily become executable or active.",
+
+      "QUEUED": "The route step has been selected but is waiting for dependencies, sequencing, resources, authorization, or another routing condition.",
+
+      "ACTIVE": "Diagnostic progression is currently occupying this route step.",
+
+      "COMPLETED": "Routing has finished processing this step and may progress to successor routing state. This does not independently mean the referenced technical action succeeded.",
+
+      "BYPASSED": "The step was relevant enough to persist but was intentionally not taken.",
+
+      "BLOCKED": "Routing cannot currently progress through the step.",
+
+      "CANCELLED": "The step was intentionally withdrawn from progression.",
+
+      "SUPERSEDED": "A newer route step replaced this routing representation."
     },
-
-    {
-      "name": "LOW",
-      "examples": [
-        "Open a configuration page",
-        "Capture a screenshot",
-        "Verify a cable label"
-      ]
-    },
-
-    {
-      "name": "MODERATE",
-      "examples": [
-        "Perform a local measurement",
-        "Access equipment requiring additional field effort",
-        "Inspect an installed RF component"
-      ]
-    },
-
-    {
-      "name": "HIGH",
-      "examples": [
-        "Tower climb",
-        "Physical component replacement",
-        "Service-affecting test"
-      ]
-    },
-
-    {
-      "name": "VERY_HIGH",
-      "examples": [
-        "Major outage",
-        "Complex replacement requiring multiple resources",
-        "High-risk invasive technical intervention"
-      ]
-    }
-  ],
-
-  "cheap_test_preference": {
-    "enabled": true,
-
-    "rule": "When multiple actions provide comparable diagnostic value, ARIA should prefer the action requiring less time, effort, risk, cost, and service disruption.",
-
-    "example": {
-      "hypothesis": "CONFIGURATION_ERROR",
-      "probability": 0.18,
-      "action": "Review configuration screenshot",
-      "cost": "NEGLIGIBLE",
-      "interpretation": "This action may outrank testing a 55 percent physical RF hypothesis when physical verification requires a tower climb."
-    }
-  },
-
-  "high_consequence_policy": {
-    "enabled": true,
-
-    "description": "Low-probability hypotheses may justify early investigation when failure consequences are severe and the available test is proportionate.",
 
     "rules": [
-      "Probability alone shall not determine diagnostic priority.",
-      "Expected consequence may modify route priority.",
-      "Safety-critical conditions may require immediate evaluation regardless of ordinary route score.",
-      "Low-probability high-consequence hypotheses should not trigger disproportionate invasive action without justification."
+      "Route status shall not be used as action execution status.",
+      "ACTIVE does not necessarily mean the referenced action is currently executing.",
+      "COMPLETED does not imply successful technical outcome.",
+      "BLOCKED shall preserve a routing-level reason.",
+      "BYPASSED shall preserve why the path was not taken.",
+      "SUPERSEDED shall preserve the replacement route-step relationship."
     ]
   },
 
-  "user_adaptive_routing": {
-    "enabled": true,
+  "progression_model": {
+    "principle": "Routing progression is graph-based rather than constrained to a fixed linear troubleshooting sequence.",
 
-    "description": "ARIA may adapt diagnostic route selection according to validated history of how individual users perform diagnostic actions and provide evidence.",
-
-    "user_route_factors": [
-      "historical_action_accuracy",
-      "evidence_reliability",
-      "response_latency",
-      "technical_capability",
-      "known_tool_access",
-      "known_site_access",
-      "historical_need_for_clarification"
+    "relationship_types": [
+      "PREDECESSOR",
+      "SUCCESSOR",
+      "DEPENDENCY",
+      "PARALLEL",
+      "ALTERNATIVE",
+      "SUPERSEDES"
     ],
 
     "rules": [
-      "User adaptation shall improve route efficiency rather than punish or stereotype users.",
-      "User-specific route effects shall be based on validated experience.",
-      "User capability shall be contextual to the action.",
-      "ARIA may provide more explicit instructions when historical evidence indicates that doing so improves result quality.",
-      "User-specific routing shall not override safety or technical truth."
+      "A route step may have zero, one, or multiple predecessors.",
+      "A route step may have zero, one, or multiple successors.",
+      "Multiple predecessors permit convergence.",
+      "Multiple successors permit branching.",
+      "Parallel steps may progress independently when dependencies and constraints allow.",
+      "A dependency relationship shall not be inferred solely from chronological order.",
+      "Sequence values may assist presentation or chronology but shall not replace explicit graph relationships.",
+      "Routing shall prevent accidental self-reference.",
+      "Routing shall detect invalid dependency cycles when those cycles prevent legitimate progression.",
+      "A diagnostic revisit is not automatically an invalid cycle."
     ]
   },
 
-  "parallel_actions": {
-    "enabled": true,
+  "selection_boundary": {
+    "decision_engine_owns": [
+      "candidate technical action evaluation",
+      "expected information gain",
+      "expected discrimination power",
+      "expected technical usefulness",
+      "expected cost",
+      "expected time",
+      "expected user effort",
+      "expected service impact",
+      "expected safety impact",
+      "expected reversibility impact",
+      "candidate utility comparison",
+      "candidate preference",
+      "technical next-action selection"
+    ],
+
+    "routing_engine_owns": [
+      "representing selected action in route progression",
+      "placing the selected action relative to existing route steps",
+      "enforcing route dependencies",
+      "managing route branches",
+      "handling blocked progression",
+      "handling bypassed paths",
+      "handling route repetition",
+      "recording reroutes",
+      "recording routing consequences",
+      "determining whether the current route has executable progression remaining"
+    ],
 
     "rules": [
-      "ARIA may request multiple actions in parallel when they are independent, low-cost, and operationally efficient.",
-      "Parallel actions should not create unnecessary workload.",
-      "Actions whose interpretation depends on earlier results should remain sequential.",
-      "ARIA shall preserve which evidence resulted from which parallel branch."
+      "Routing shall not recompute an independent utility score to overrule Decision.",
+      "Routing may reject immediate progression when a selected action cannot currently be routed because of dependency, authorization, safety, access, resource, or structural constraints.",
+      "When Routing cannot progress a selected action, it shall return the blocking condition to orchestration or Decision rather than silently choosing a different technical action.",
+      "If Decision is unavailable and an external authorized actor explicitly directs an action, Routing may represent that directed action without pretending Routing selected it."
     ]
   },
 
-  "dependency_handling": {
+  "candidate_representation": {
+    "principle": "Routing may persist materially relevant alternatives without becoming the owner of candidate evaluation.",
+
     "rules": [
-      "An action requiring unavailable prerequisite information shall be deferred.",
-      "Prerequisite actions may receive increased route value when they unlock multiple downstream diagnostic routes.",
-      "ARIA shall avoid requesting information that can already be derived reliably from existing evidence.",
-      "Dependencies shall be represented explicitly rather than hidden in conversational instructions."
+      "Not every candidate considered by Decision must become a persisted route step.",
+      "A candidate should become a persisted CANDIDATE route step when preserving the alternative materially improves auditability, branch management, later rerouting, or explanation.",
+      "Alternative route steps may reference the same decision point.",
+      "Candidate route steps shall reference actual runtime actions.",
+      "Routing shall not invent candidate utility scores absent authoritative Decision output."
     ]
   },
 
-  "repeat_action_policy": {
-    "default_repeat_penalty": true,
+  "dependency_management": {
+    "dependency_sources": [
+      "PRIOR_ACTION_REQUIRED",
+      "PRIOR_ROUTE_STEP_REQUIRED",
+      "EVIDENCE_REQUIRED",
+      "MEASUREMENT_REQUIRED",
+      "AUTHORIZATION_REQUIRED",
+      "ACCESS_REQUIRED",
+      "TOOL_REQUIRED",
+      "RESOURCE_REQUIRED",
+      "SERVICE_WINDOW_REQUIRED",
+      "SAFETY_REQUIREMENT",
+      "PROCEDURE_PREREQUISITE",
+      "VALIDATION_PREREQUISITE",
+      "EXTERNAL_DEPENDENCY",
+      "OTHER"
+    ],
+
+    "rules": [
+      "Route dependencies shall describe progression requirements rather than duplicate detailed action prerequisites.",
+      "Action-specific prerequisites remain authoritative on the Action record.",
+      "Routing may translate unsatisfied action prerequisites into routing blockage or queue state.",
+      "A route step shall not become ACTIVE when a mandatory route dependency remains unsatisfied.",
+      "Resolved dependencies may allow automatic reevaluation of queued or blocked route steps."
+    ]
+  },
+
+  "branching": {
+    "principle": "Branches represent meaningful alternative or concurrent diagnostic progression, not arbitrary UI grouping.",
+
+    "branch_operations": [
+      "OPEN",
+      "CONTINUE",
+      "DEFER",
+      "CLOSE",
+      "REOPEN",
+      "CONVERGE"
+    ],
+
+    "open_when": [
+      "multiple materially distinct diagnostic paths remain relevant",
+      "parallel investigation is useful",
+      "an unresolved uncertainty creates independent diagnostic paths",
+      "a contingency path must be preserved"
+    ],
+
+    "close_when": [
+      "the branch no longer contains useful progression",
+      "its motivating hypothesis or uncertainty is no longer material",
+      "another branch supersedes it",
+      "the branch converges into another active route",
+      "the case reaches an applicable terminal reasoning state"
+    ],
+
+    "rules": [
+      "Closing a route branch does not itself eliminate a hypothesis.",
+      "Opening a branch does not itself create a hypothesis.",
+      "Branch effects shall preserve which branch identifiers were opened, closed, deferred, or reopened.",
+      "Converging branches may share successor route steps.",
+      "Branch identifiers are routing-local unless a separate canonical branch contract is introduced."
+    ]
+  },
+
+  "parallel_progression": {
+    "principle": "Independent diagnostic work may proceed in parallel when doing so does not corrupt causal interpretation or violate dependencies.",
+
+    "appropriate_when": [
+      "actions operate on independent targets",
+      "actions collect independent evidence",
+      "one action has a long wait or monitoring interval",
+      "multiple non-invasive observations can occur concurrently",
+      "parallel execution materially reduces diagnostic delay"
+    ],
+
+    "avoid_when": [
+      "one action changes state needed to interpret another",
+      "simultaneous changes would destroy isolation value",
+      "one action is a prerequisite for another",
+      "parallel execution increases unacceptable safety or service risk",
+      "ordering is necessary for causal interpretation"
+    ],
+
+    "rules": [
+      "Routing shall preserve explicit parallel relationships.",
+      "Parallel routing permission does not itself authorize simultaneous technical execution.",
+      "Action authorization and execution constraints remain authoritative."
+    ]
+  },
+
+  "repetition_management": {
+    "principle": "ARIA should not repeat equivalent diagnostic work without a material technical reason.",
 
     "valid_repeat_reasons": [
       "PREVIOUS_EVIDENCE_LOW_CONFIDENCE",
@@ -398,261 +407,464 @@
       "TIME_DEPENDENT_CONDITION",
       "RECURRENCE",
       "INDEPENDENT_VERIFICATION_REQUIRED",
-      "PREVIOUS_ACTION_INCOMPLETE"
+      "PREVIOUS_ACTION_INCOMPLETE",
+      "PREVIOUS_ACTION_FAILED",
+      "CONTEXT_CHANGED",
+      "OTHER"
     ],
 
+    "repeat_detection": {
+      "consider": [
+        "action_type",
+        "procedure identity",
+        "target entities",
+        "technical context",
+        "relevant configuration state",
+        "prior execution state",
+        "prior evidence quality",
+        "elapsed time",
+        "material system changes"
+      ],
+
+      "rules": [
+        "Different wording shall not prevent equivalent-action detection.",
+        "The same action class alone is insufficient to declare two actions equivalent.",
+        "The same procedure on a materially changed target state may be diagnostically distinct.",
+        "Monitoring and recurrence testing may legitimately repeat over time."
+      ]
+    },
+
     "rules": [
-      "A completed valid diagnostic action shall normally receive a substantial repeat penalty.",
-      "Repeating an action requires an explicit reason.",
-      "A repeated action after a meaningful technical change is not considered redundant.",
-      "ARIA shall recognize semantically equivalent actions to prevent disguised loops."
-    ]
-  },
-
-  "route_failure_learning": {
-    "enabled": true,
-
-    "description": "Diagnostic routes that fail to produce useful information shall influence future route selection without becoming permanently prohibited.",
-
-    "metrics": [
-      "information_gain_realized",
-      "time_consumed",
-      "action_completion_rate",
-      "evidence_quality_returned",
-      "hypothesis_discrimination_realized",
-      "resolution_contribution"
-    ],
-
-    "rules": [
-      "Low-yield actions may receive reduced future route value in similar contexts.",
-      "An action may remain valuable in other contexts.",
-      "Failure to confirm the tested hypothesis does not mean the action itself was unsuccessful if it produced useful discrimination.",
-      "Route performance shall be evaluated according to information gained, not merely whether the suspected failure was found."
+      "A repeated route step shall preserve prior related action and route-step references when known.",
+      "A repeated action requires justification when valid equivalent evidence already exists.",
+      "Routing shall not use repetition penalties as a substitute for Decision utility scoring.",
+      "Routing may identify repetition and return that fact to Decision for candidate evaluation."
     ]
   },
 
   "rerouting": {
+    "principle": "Rerouting occurs when material diagnostic state changes make the current route inappropriate, incomplete, blocked, or no longer optimal.",
+
     "triggers": [
       "NEW_EVIDENCE",
       "ACTION_COMPLETED",
       "ACTION_FAILED",
+      "ACTION_BLOCKED",
       "UNEXPECTED_RESULT",
-      "HYPOTHESIS_RULED_OUT",
+      "HYPOTHESIS_DEPRIORITIZED",
+      "HYPOTHESIS_ELIMINATED",
       "HYPOTHESIS_CONFIRMED",
       "NEW_HYPOTHESIS",
       "CONTEXT_CHANGED",
       "CONSTRAINT_CHANGED",
+      "RESOURCE_AVAILABILITY_CHANGED",
+      "AUTHORIZATION_CHANGED",
       "USER_CAPABILITY_CHANGED",
-      "RESOURCE_AVAILABILITY_CHANGED"
+      "VALIDATION_RESULT",
+      "ROUTE_EXHAUSTED",
+      "OTHER"
+    ],
+
+    "process": [
+      "detect material routing trigger",
+      "identify route steps affected by the changed state",
+      "preserve existing route history",
+      "close, defer, block, bypass, cancel, or supersede affected route steps when appropriate",
+      "return changed diagnostic state to Decision when a new technical action selection is required",
+      "create or activate successor route steps after authoritative selection or direction",
+      "record reroute reason and resulting route relationships"
     ],
 
     "rules": [
-      "Every material state change may trigger route recalculation.",
-      "ARIA shall calculate from the current state rather than return to the beginning of the original route.",
-      "Previously completed actions remain part of the current graph state.",
-      "Previously obtained valid evidence remains active unless invalidated."
+      "Rerouting shall not erase the path that led to the change.",
+      "Rerouting shall not silently rewrite completed route history.",
+      "A reroute may return to a previously explored technical area when material state has changed.",
+      "Rerouting does not authorize Routing to independently select a new technical action when Decision evaluation is required.",
+      "A deterministic dependency successor may be activated without a new competitive Decision when no meaningful technical choice exists."
     ]
   },
 
-  "route_history": {
-    "append_only": true,
+  "deterministic_progression": {
+    "description": "Some route transitions do not require a new candidate-action competition because only one structurally required successor exists.",
 
-    "required_fields": [
-      "route_event_id",
-      "case_id",
-      "timestamp",
-      "candidate_actions",
-      "candidate_scores",
-      "selected_action",
-      "selected_score",
-      "selection_reason",
-      "expected_outcomes",
-      "actual_outcome",
-      "information_gain_realized",
-      "probability_state_before",
-      "probability_state_after"
-    ]
-  },
-
-  "route_explainability": {
-    "required_capabilities": [
-      "Explain why an action was selected.",
-      "Explain why a higher-probability hypothesis was not tested first.",
-      "Explain what information the action is expected to provide.",
-      "Explain which hypotheses the action discriminates between.",
-      "Explain operational costs or risks affecting route selection.",
-      "Explain when user history materially affected route selection.",
-      "Explain why an action was not repeated."
-    ]
-  },
-
-  "example_route": {
-    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
-
-    "probability_state": {
-      "rf_routing": 0.46,
-      "configuration": 0.23,
-      "radio_failure": 0.15,
-      "alignment": 0.09,
-      "unknown": 0.07
-    },
-
-    "candidate_actions": [
-      {
-        "action": "Review existing configuration",
-        "target_hypotheses": [
-          "configuration",
-          "radio_assignment"
-        ],
-        "information_gain": 0.72,
-        "cost": "NEGLIGIBLE",
-        "risk": "LOW",
-        "route_score": 0.88
-      },
-
-      {
-        "action": "Verify Main and Diversity physical RF routing",
-        "target_hypotheses": [
-          "rf_routing"
-        ],
-        "information_gain": 0.91,
-        "cost": "HIGH",
-        "risk": "MODERATE",
-        "route_score": 0.63
-      },
-
-      {
-        "action": "Replace suspected radio",
-        "target_hypotheses": [
-          "radio_failure"
-        ],
-        "information_gain": 0.39,
-        "cost": "HIGH",
-        "risk": "MODERATE",
-        "route_score": 0.21
-      }
+    "examples": [
+      "mandatory validation following a completed corrective action",
+      "required rollback after a failed controlled change",
+      "required safety verification before progression",
+      "explicit procedure dependency with no alternative",
+      "externally directed continuation"
     ],
 
-    "selected_next_hop": "Review existing configuration",
-
-    "reason": "Although RF routing is currently more probable, reviewing existing configuration provides substantial discrimination at negligible operational cost and may eliminate multiple competing hypotheses before physical tower work is requested."
+    "rules": [
+      "Deterministic progression must be supported by an existing procedure, dependency, authorization, validation requirement, or explicit direction.",
+      "Routing shall not label a competitive technical choice deterministic merely to bypass Decision.",
+      "When multiple materially different successors exist, Decision should evaluate the choice unless an authorized external actor directs it."
+    ]
   },
 
-  "ospf_analogy": {
-    "description": "ARIA's routing behavior is conceptually similar to dynamic network path selection but shall not literally implement OSPF metrics.",
+  "action_execution_interaction": {
+    "principle": "Routing observes action execution state but does not own it.",
 
-    "mapping": {
-      "network_node": "diagnostic_state",
-      "network_link": "possible diagnostic transition",
-      "link_cost": "diagnostic and operational cost",
-      "routing_table": "current ranked candidate actions",
-      "topology_change": "new evidence or changed case state",
-      "route_recalculation": "next-hop rescoring",
-      "destination": "sufficiently validated resolution"
+    "examples": {
+      "action_PROPOSED": "Route step may remain CANDIDATE or SELECTED.",
+
+      "action_AUTHORIZED": "Route step may progress toward QUEUED or ACTIVE when routing dependencies permit.",
+
+      "action_READY": "Route step may become ACTIVE when appropriate.",
+
+      "action_IN_PROGRESS": "Route step will commonly be ACTIVE, but route status remains independently meaningful.",
+
+      "action_COMPLETED": "Routing evaluates the resulting diagnostic state and may complete the route step, reroute, validate, or request a new Decision.",
+
+      "action_FAILED": "Routing records the route consequence and may block, reroute, or return to Decision.",
+
+      "action_BLOCKED": "Routing may mark the route step BLOCKED or QUEUED depending on whether the blocking condition is expected to resolve.",
+
+      "action_SKIPPED": "Routing determines whether the route step should become BYPASSED, CANCELLED, or otherwise transition based on why execution was skipped.",
+
+      "action_CANCELLED": "Routing normally cancels or supersedes the associated route progression.",
+
+      "action_SUPERSEDED": "Routing should evaluate whether the route step itself is superseded by progression associated with the replacement action."
     },
 
-    "important_difference": "ARIA is navigating an uncertain information graph. The destination and graph topology may themselves be partially unknown until evidence is gathered."
+    "rules": [
+      "Routing shall never infer technical success merely from action execution status COMPLETED.",
+      "Routing shall inspect authoritative action outcome and produced evidence when evaluating route consequence.",
+      "Routing shall not duplicate action execution timestamps as authoritative execution timestamps."
+    ]
   },
 
-  "semantic_rules": [
-    {
-      "rule_id": "ROUTE-RULE-001",
-      "rule": "The most probable diagnosis and the best next diagnostic action are separate calculations."
+  "routing_consequence_evaluation": {
+    "principle": "After a route step progresses, Routing evaluates what changed about the investigation rather than redefining what happened technically.",
+
+    "evaluate": [
+      "whether diagnostic progression occurred",
+      "whether the route changed",
+      "whether uncertainty was reduced",
+      "whether meaningful hypothesis discrimination occurred",
+      "whether a new uncertainty emerged",
+      "whether a new hypothesis was generated elsewhere",
+      "whether the hypothesis space was reduced elsewhere",
+      "whether additional action is required",
+      "whether branches opened or closed",
+      "whether rerouting is required",
+      "whether the current route is exhausted"
+    ],
+
+    "do_not_treat_as_routing_consequence": [
+      "raw measurement value",
+      "technical evidence record",
+      "action execution success",
+      "technical repair outcome",
+      "hypothesis probability",
+      "source authority",
+      "evidence confidence"
+    ]
+  },
+
+  "realized_routing_value": {
+    "information_gain": {
+      "range": [
+        0.0,
+        1.0
+      ],
+      "description": "Normalized retrospective assessment of uncertainty reduction realized through the route step."
     },
 
-    {
-      "rule_id": "ROUTE-RULE-002",
-      "rule": "ARIA shall optimize expected diagnostic progress rather than blindly pursue the leading hypothesis."
+    "discrimination": {
+      "range": [
+        0.0,
+        1.0
+      ],
+      "description": "Normalized retrospective assessment of how effectively progression through the step distinguished materially competing explanations."
     },
 
-    {
-      "rule_id": "ROUTE-RULE-003",
-      "rule": "Low-cost high-information actions should generally precede high-cost invasive actions when their diagnostic value is comparable."
-    },
+    "rules": [
+      "Realized routing value is retrospective and shall not replace Decision's pre-action expected utility.",
+      "Realized information gain is not evidence confidence.",
+      "Realized discrimination is not hypothesis probability.",
+      "A technically unsuccessful action may still produce high realized routing value.",
+      "A technically successful corrective action may produce low diagnostic discrimination if several causes remain plausible."
+    ]
+  },
 
-    {
-      "rule_id": "ROUTE-RULE-004",
-      "rule": "Every diagnostic action shall have an identifiable purpose within the current reasoning state."
-    },
+  "blocked_progression": {
+    "routing_block_types": [
+      "DEPENDENCY_UNSATISFIED",
+      "ACTION_BLOCKED",
+      "AUTHORIZATION_UNAVAILABLE",
+      "ACCESS_UNAVAILABLE",
+      "RESOURCE_UNAVAILABLE",
+      "TOOL_UNAVAILABLE",
+      "SERVICE_WINDOW_UNAVAILABLE",
+      "SAFETY_CONSTRAINT",
+      "EXTERNAL_DEPENDENCY",
+      "STATE_INCONSISTENCY",
+      "OTHER"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-005",
-      "rule": "ARIA shall predict useful possible outcomes before selecting an action when practical."
-    },
+    "rules": [
+      "Routing shall preserve why progression is blocked.",
+      "A temporary blocking condition may result in QUEUED rather than BLOCKED when continued eligibility is clear.",
+      "A blocked route shall be reevaluated when the blocking state materially changes.",
+      "Blocking shall not automatically cause selection of a lower-value alternative without Decision reevaluation when a meaningful choice exists."
+    ]
+  },
 
-    {
-      "rule_id": "ROUTE-RULE-006",
-      "rule": "Unexpected results shall become evidence and trigger rerouting."
-    },
+  "bypass_behavior": {
+    "appropriate_when": [
+      "an alternative path provides materially better diagnostic progression",
+      "the step is redundant because authoritative equivalent evidence already exists",
+      "the motivating uncertainty is no longer material",
+      "a prerequisite path made the step unnecessary",
+      "an authorized actor explicitly directs bypass",
+      "the step is no longer applicable to current context"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-007",
-      "rule": "ARIA shall reroute from the current state rather than restart a static troubleshooting sequence."
-    },
+    "rules": [
+      "Bypass shall preserve the reason.",
+      "Bypassed route steps remain part of route history when persisted.",
+      "Bypass shall not falsely mark the referenced action as executed or completed."
+    ]
+  },
 
-    {
-      "rule_id": "ROUTE-RULE-008",
-      "rule": "Previously completed diagnostic work shall remain represented in route state."
-    },
+  "route_exhaustion": {
+    "definition": "A routing condition in which the current diagnostic route contains no immediately useful or executable progression under the current state.",
 
-    {
-      "rule_id": "ROUTE-RULE-009",
-      "rule": "A diagnostic action that rules out a hypothesis may be highly successful even though it did not identify the final root cause."
-    },
+    "possible_causes": [
+      "all current branches completed",
+      "all remaining route steps blocked",
+      "all remaining alternatives exhausted",
+      "no eligible successor exists",
+      "available evidence cannot discriminate remaining hypotheses",
+      "required external dependency is unavailable",
+      "current authority or capability is insufficient"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-010",
-      "rule": "ARIA shall penalize unjustified repetition of completed diagnostic actions."
-    },
+    "responses": [
+      "request Decision reevaluation",
+      "generate or request additional hypotheses through the appropriate reasoning component",
+      "request additional context or evidence through Decision",
+      "escalate through a canonical ESCALATE action when appropriate",
+      "enter an applicable waiting reasoning state when an external condition must change",
+      "support resolution evaluation when sufficient technical criteria are met"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-011",
-      "rule": "Route costs and benefits may vary according to user, equipment, project phase, access, safety, service state, and available evidence."
-    },
+    "rules": [
+      "Route exhaustion is not equivalent to case resolution.",
+      "Route exhaustion is not proof that no technical cause exists.",
+      "Route exhaustion shall be surfaced rather than hidden by arbitrary repeated actions.",
+      "Escalation is preferable to fabricated certainty."
+    ]
+  },
 
-    {
-      "rule_id": "ROUTE-RULE-012",
-      "rule": "User-specific routing shall optimize communication and execution efficiency without substituting historical user behavior for technical evidence."
-    },
+  "termination_and_handoff": {
+    "routing_terminal_conditions": [
+      "no further route progression is required",
+      "case reasoning has transitioned to validation",
+      "case reasoning has transitioned to resolution evaluation",
+      "technical handling has been escalated",
+      "the route is waiting on an external dependency",
+      "the current route is exhausted"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-013",
-      "rule": "Safety and authorization constraints may prohibit a route regardless of calculated diagnostic utility."
-    },
+    "rules": [
+      "Routing terminal state does not independently close a case.",
+      "Case lifecycle and reasoning-state transitions are owned by their authoritative contracts.",
+      "Routing may provide route history and route-exhaustion state to the component evaluating case progression."
+    ]
+  },
 
-    {
-      "rule_id": "ROUTE-RULE-014",
-      "rule": "ARIA shall preserve sufficient routing history to reconstruct why each next hop was chosen."
-    },
+  "auditability": {
+    "must_preserve_when_material": [
+      "selected route steps",
+      "selection rationale",
+      "decision references",
+      "predecessor and successor relationships",
+      "dependencies",
+      "alternatives",
+      "bypassed paths",
+      "blocked paths",
+      "repeated paths",
+      "repeat justification",
+      "reroute triggers",
+      "reroute reasons",
+      "branch changes",
+      "route supersession",
+      "realized routing value",
+      "route exhaustion"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-015",
-      "rule": "Route-performance learning shall be context-sensitive and shall not convert one unsuccessful action into a universal prohibition."
-    },
+    "rules": [
+      "Completed history shall not be rewritten to make the final route appear more linear than it actually was.",
+      "ARIA should be able to explain why it progressed from one material diagnostic step to another.",
+      "Auditability shall not require duplicating authoritative technical objects inside route records."
+    ]
+  },
 
-    {
-      "rule_id": "ROUTE-RULE-016",
-      "rule": "When no available route provides sufficient expected value, ARIA shall seek additional context, broaden the hypothesis space, wait for required conditions, or escalate."
-    },
+  "domain_independence": {
+    "principle": "The Routing Engine is universal Core reasoning infrastructure and shall not encode technology-specific troubleshooting knowledge.",
 
-    {
-      "rule_id": "ROUTE-RULE-017",
-      "rule": "ARIA's routing graph shall be capable of expanding as new products, failure modes, diagnostic actions, and learned relationships are introduced."
-    },
+    "prohibited_core_examples": [
+      "microwave-specific routing nodes",
+      "RF-specific branch types",
+      "optical-specific route statuses",
+      "vendor-specific troubleshooting sequences",
+      "product-specific diagnostic commands",
+      "protocol-specific next-hop names"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-018",
-      "rule": "The routing engine shall remain deterministic and auditable even when a language model assists in generating candidate actions."
-    },
+    "appropriate_domain_knowledge": [
+      "specific troubleshooting procedures",
+      "manufacturer workflows",
+      "technology-specific action dependencies",
+      "expected measurements",
+      "known failure signatures",
+      "product-specific validation requirements",
+      "tool requirements",
+      "technical safety constraints"
+    ],
 
-    {
-      "rule_id": "ROUTE-RULE-019",
-      "rule": "No language-model recommendation shall bypass hard safety, authorization, or state-transition constraints."
-    },
+    "rules": [
+      "Domain knowledge may influence available actions and dependencies.",
+      "Domain knowledge shall not redefine Routing Engine semantics.",
+      "The same Routing Engine shall be capable of managing investigations across different technical domains."
+    ]
+  },
 
+  "failure_modes": [
     {
-      "rule_id": "ROUTE-RULE-020",
-      "rule": "The destination of diagnostic routing is not merely an answer; it is a sufficiently supported diagnosis, effective correction, and validated resolution."
+      "failure_mode": "SECOND_DECISION_ENGINE",
+      "description": "Routing independently scores and chooses among competing technical actions.",
+      "prevention": "Return competitive action selection to Decision."
+    },
+    {
+      "failure_mode": "ACTION_DUPLICATION",
+      "description": "Route records duplicate authoritative action execution, outcome, or procedure data.",
+      "prevention": "Reference act_<UUID> and preserve Action as authoritative."
+    },
+    {
+      "failure_mode": "FIXED_TREE_LOCK_IN",
+      "description": "Routing assumes diagnosis must follow one predefined linear troubleshooting tree.",
+      "prevention": "Use graph-based branching, convergence, rerouting, and parallel progression."
+    },
+    {
+      "failure_mode": "REPETITION_LOOP",
+      "description": "ARIA repeatedly performs equivalent actions without material justification.",
+      "prevention": "Detect equivalent prior work and require a valid repeat reason."
+    },
+    {
+      "failure_mode": "HISTORY_ERASURE",
+      "description": "Rerouting overwrites the path that produced the current state.",
+      "prevention": "Preserve prior route steps and record reroute relationships."
+    },
+    {
+      "failure_mode": "FALSE_SUCCESS",
+      "description": "Route completion is interpreted as technical success or causal proof.",
+      "prevention": "Keep route status, action execution, technical outcome, evidence, and hypothesis state separate."
+    },
+    {
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Core routing semantics contain microwave, RF, optical, vendor, product, or other domain-specific troubleshooting knowledge.",
+      "prevention": "Keep specific technical procedures in technical knowledge and preserve universal routing semantics."
+    },
+    {
+      "failure_mode": "SILENT_FALLBACK",
+      "description": "A blocked selected action causes Routing to silently choose another technical action.",
+      "prevention": "Return changed eligibility or blocking state to Decision when competitive reselection is required."
+    },
+    {
+      "failure_mode": "ROUTE_EQUALS_CASE",
+      "description": "Routing state is treated as authoritative case lifecycle or reasoning state.",
+      "prevention": "Keep Routing, lifecycle, and reasoning-state contracts independent."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "ROUTE-INV-001",
+      "statement": "Every persisted route step references exactly one canonical runtime action."
+    },
+    {
+      "invariant_id": "ROUTE-INV-002",
+      "statement": "Routing shall not own or redefine the universal action vocabulary."
+    },
+    {
+      "invariant_id": "ROUTE-INV-003",
+      "statement": "Routing shall not independently maintain a competing technical action utility model."
+    },
+    {
+      "invariant_id": "ROUTE-INV-004",
+      "statement": "Route status remains distinct from action execution status."
+    },
+    {
+      "invariant_id": "ROUTE-INV-005",
+      "statement": "Routing consequence remains distinct from technical action outcome."
+    },
+    {
+      "invariant_id": "ROUTE-INV-006",
+      "statement": "Route completion does not imply case resolution."
+    },
+    {
+      "invariant_id": "ROUTE-INV-007",
+      "statement": "Successful corrective action does not automatically establish causal proof."
+    },
+    {
+      "invariant_id": "ROUTE-INV-008",
+      "statement": "Rerouting preserves material route history."
+    },
+    {
+      "invariant_id": "ROUTE-INV-009",
+      "statement": "Equivalent diagnostic work shall not be repeated without material justification."
+    },
+    {
+      "invariant_id": "ROUTE-INV-010",
+      "statement": "A blocked selected action shall not cause silent competitive reselection by Routing."
+    },
+    {
+      "invariant_id": "ROUTE-INV-011",
+      "statement": "Branch closure does not independently eliminate a hypothesis."
+    },
+    {
+      "invariant_id": "ROUTE-INV-012",
+      "statement": "Branch creation does not independently create a hypothesis."
+    },
+    {
+      "invariant_id": "ROUTE-INV-013",
+      "statement": "Realized routing value shall not be represented as evidence confidence or hypothesis probability."
+    },
+    {
+      "invariant_id": "ROUTE-INV-014",
+      "statement": "Routing shall remain technically domain-independent."
+    },
+    {
+      "invariant_id": "ROUTE-INV-015",
+      "statement": "When no meaningful technical choice exists, deterministic progression may occur without fabricating a competitive Decision."
+    },
+    {
+      "invariant_id": "ROUTE-INV-016",
+      "statement": "When materially different technical choices exist, Routing shall defer candidate evaluation and preference to Decision or an authorized external direction."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining microwave-specific or manufacturer-specific route node types in Core.",
+    "Using route_step.action_type instead of referencing act_<UUID>.",
+    "Copying authoritative action execution data into route-step persistence.",
+    "Copying authoritative technical outcome data into routing consequence.",
+    "Treating route completion as technical success.",
+    "Treating route completion as case resolution.",
+    "Treating corrective success as causal proof.",
+    "Maintaining a second candidate-action utility formula inside Routing.",
+    "Silently replacing a Decision-selected action because Routing prefers another candidate.",
+    "Repeating equivalent actions solely because wording differs.",
+    "Discarding blocked, bypassed, repeated, or rerouted history when it is materially relevant.",
+    "Using branch closure as hypothesis elimination.",
+    "Using route exhaustion as proof that no diagnosis exists.",
+    "Using Routing as the owner of case lifecycle.",
+    "Using Routing as the owner of reasoning-state vocabulary.",
+    "Using realized information gain as evidence confidence.",
+    "Using realized discrimination as hypothesis probability.",
+    "Allowing domain-specific troubleshooting knowledge to redefine universal Routing semantics."
   ]
 }
