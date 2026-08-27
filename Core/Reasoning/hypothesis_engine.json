@@ -1,553 +1,930 @@
 {
   "specification": "ARIA_HYPOTHESIS_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. creates, represents, prioritizes, updates, suppresses, rules out, confirms, combines, and reactivates diagnostic hypotheses during microwave backhaul reasoning.",
+  "version": "2.0.0",
+  "description": "Canonical hypothesis reasoning behavior for A.R.I.A. The Hypothesis Engine generates, structures, relates, refines, maintains, eliminates, confirms, supersedes, and reactivates case-specific candidate explanations. It preserves competing, coexisting, hierarchical, and unknown explanations while delegating probability calculation to the Probability Engine, evidence semantics to the Evidence Engine, canonical relationship semantics to the relationship architecture, action selection to Decision, and downstream coordination to Orchestration.",
 
-  "core_principle": {
-    "statement": "A hypothesis is a candidate explanation for one or more observed conditions. Hypotheses remain provisional until sufficient evidence supports confirmation and shall compete, coexist, weaken, strengthen, or be ruled out as evidence changes.",
-    "principles": [
-      "Do not confuse plausibility with proof.",
-      "Do not confuse historical frequency with current diagnosis.",
-      "Do not discard alternatives merely because one hypothesis currently leads.",
-      "Do not preserve weak hypotheses indefinitely when evidence has materially ruled them out.",
-      "Allow multiple simultaneous failure modes when technically plausible.",
-      "Preserve an unknown explanation when the modeled hypothesis set may be incomplete."
-    ]
-  },
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "hypothesis_schema": "Core/Schemas/hypothesis.schema.json",
 
-  "hypothesis_record": {
-    "required_fields": [
-      "hypothesis_id",
-      "case_id",
-      "failure_mode_id",
-      "status",
-      "created_at",
-      "creation_reason",
-      "applicable_symptom_ids",
-      "applicable_context",
-      "prior_probability",
-      "current_probability",
-      "diagnostic_confidence",
-      "supporting_evidence_ids",
-      "contradicting_evidence_ids",
-      "unresolved_evidence_ids",
-      "required_discriminating_evidence",
-      "related_hypothesis_ids",
-      "last_updated_at"
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "validation": "Core/Reasoning/validating_engine.json",
+      "memory": "Core/Reasoning/memory_engine.json"
+    },
+
+    "role": "DIAGNOSTIC_HYPOTHESIS_GENERATION_AND_STATE_REASONING",
+
+    "owns": [
+      "hypothesis candidate generation",
+      "hypothesis applicability reasoning",
+      "hypothesis technical plausibility reasoning",
+      "hypothesis deduplication",
+      "hypothesis refinement",
+      "hypothesis hierarchy reasoning",
+      "hypothesis coexistence reasoning",
+      "hypothesis competition reasoning",
+      "hypothesis dependency reasoning",
+      "unknown or unmodeled cause preservation",
+      "hypothesis active-set management",
+      "hypothesis deprioritization reasoning",
+      "hypothesis elimination reasoning",
+      "hypothesis confirmation reasoning",
+      "hypothesis supersession reasoning",
+      "hypothesis reactivation reasoning",
+      "hypothesis evaluation requirement identification",
+      "hypothesis explanation",
+      "hypothesis state-transition recommendation"
     ],
 
-    "optional_fields": [
-      "parent_hypothesis_id",
-      "component_entity_id",
-      "path_entity_id",
-      "endpoint_entity_id",
-      "product_entity_id",
-      "user_entity_id",
-      "manufacturer_entity_id",
-      "scope_entity_id",
-      "confirmation_reason",
-      "rule_out_reason",
-      "reactivation_reason"
+    "does_not_own": [
+      "hypothesis persistence schema",
+      "canonical technical entity identity",
+      "evidence semantics",
+      "evidence confidence",
+      "evidence persistence",
+      "probability calculation",
+      "prior calculation",
+      "probability normalization",
+      "probability redistribution",
+      "probability confidence",
+      "confidence vocabulary",
+      "canonical relationship persistence",
+      "context resolution",
+      "candidate action selection",
+      "action execution",
+      "route progression",
+      "rerouting",
+      "validation semantics",
+      "case lifecycle status",
+      "case reasoning state",
+      "engine invocation",
+      "learning eligibility",
+      "historical frequency calculation"
     ]
   },
 
-  "hypothesis_statuses": [
-    {
-      "name": "CANDIDATE",
-      "description": "Technically plausible hypothesis generated for evaluation."
+  "core_principle": {
+    "statement": "A hypothesis is a case-specific candidate explanation for an observed technical condition. A hypothesis remains provisional until sufficient applicable evidence and technical reasoning justify elimination, confirmation, or supersession. Plausibility is not proof, probability is not confidence, historical frequency is not current-case evidence, and the leading hypothesis does not invalidate viable alternatives.",
+
+    "rules": [
+      "Persisted hypotheses shall conform to Core/Schemas/hypothesis.schema.json.",
+      "Every case-specific hypothesis shall use canonical hyp_<UUID> identity.",
+      "The technical explanation being evaluated shall be referenced through hypothesis_entity_id.",
+      "The case-specific hypothesis identity and the canonical technical entity identity shall remain distinct.",
+      "Hypotheses shall remain provisional unless applicable confirmation requirements are satisfied.",
+      "A.R.I.A. shall preserve viable alternatives when evidence does not justify elimination.",
+      "A.R.I.A. shall not preserve technically impossible hypotheses merely to maintain diversity.",
+      "Multiple simultaneous failure modes shall remain possible when technically compatible.",
+      "An unknown or unmodeled explanation shall remain available when the candidate set cannot responsibly be assumed exhaustive.",
+      "Probability shall influence hypothesis management but shall be calculated by the Probability Engine.",
+      "Probability and probability confidence shall remain distinct.",
+      "Historical experience may influence candidate generation and priors but shall not become current-case evidence.",
+      "Hypothesis state changes shall preserve historical traceability.",
+      "The Hypothesis Engine shall remain technically domain-independent."
+    ]
+  },
+
+  "canonical_identity_model": {
+    "hypothesis": "hyp_<UUID>",
+    "case": "case_<UUID>",
+    "hypothesis_entity": "typed canonical entity identifier",
+    "evidence": "evd_<UUID>",
+    "relationship": "rel_<UUID>",
+    "context": "ctx_<UUID>",
+    "experience": "exp_<UUID>",
+    "action": "act_<UUID>",
+
+    "rules": [
+      "hypothesis_id identifies the case-specific candidate explanation.",
+      "hypothesis_entity_id identifies the canonical technical failure mode, cause, condition, or explanation being evaluated.",
+      "Two cases evaluating the same technical failure mode shall normally have different hypothesis_id values while referencing the same applicable canonical hypothesis_entity_id.",
+      "Hypothesis Engine shall not create duplicate canonical technical entities merely to instantiate a case-specific hypothesis.",
+      "Evidence, Context, Experience, Actions, and Relationships shall be referenced through canonical identities when available."
+    ]
+  },
+
+  "persistence_boundary": {
+    "schema": "Core/Schemas/hypothesis.schema.json",
+
+    "canonical_statuses": [
+      "CANDIDATE",
+      "ACTIVE",
+      "DEPRIORITIZED",
+      "UNLIKELY",
+      "ELIMINATED",
+      "CONFIRMED",
+      "SUPERSEDED"
+    ],
+
+    "rules": [
+      "Hypothesis Engine shall not define a competing hypothesis_record.",
+      "Hypothesis Engine shall not define a competing persisted status vocabulary.",
+      "LEADING is a comparative reasoning property and shall not be introduced as a competing persistence status.",
+      "SUPPORTED and WEAKENED are reasoning descriptions and shall not be introduced as competing persistence statuses.",
+      "DORMANT behavior shall be represented through DEPRIORITIZED or UNLIKELY as appropriate.",
+      "RULED_OUT behavior shall use ELIMINATED.",
+      "MERGED behavior shall normally be represented through supersession and canonical relationship semantics rather than a competing MERGED persistence status.",
+      "Persisted probability and probability confidence shall conform to the Hypothesis Schema."
+    ]
+  },
+
+  "status_semantics": {
+    "CANDIDATE": {
+      "description": "A technically plausible case-specific explanation generated for evaluation but not yet fully admitted into active diagnostic competition."
     },
-    {
-      "name": "ACTIVE",
-      "description": "Hypothesis currently participating in diagnostic reasoning."
+    "ACTIVE": {
+      "description": "A hypothesis currently participating materially in diagnostic reasoning."
     },
-    {
-      "name": "LEADING",
-      "description": "Hypothesis currently having the strongest justified support among the applicable candidate explanations."
+    "DEPRIORITIZED": {
+      "description": "A hypothesis that remains technically plausible but currently does not justify significant diagnostic attention relative to stronger or more valuable alternatives."
     },
-    {
-      "name": "SUPPORTED",
-      "description": "Evidence materially supports the hypothesis but confirmation requirements are not satisfied."
+    "UNLIKELY": {
+      "description": "A hypothesis materially weakened by applicable evidence or technical reasoning but not sufficiently excluded to justify elimination."
     },
-    {
-      "name": "WEAKENED",
-      "description": "Evidence has materially reduced support for the hypothesis."
+    "ELIMINATED": {
+      "description": "A hypothesis removed from active technical consideration because sufficiently applicable evidence or technical constraints establish incompatibility with the represented condition."
     },
-    {
-      "name": "DORMANT",
-      "description": "Hypothesis remains technically possible but currently has insufficient probability or relevance to justify active diagnostic effort."
+    "CONFIRMED": {
+      "description": "A hypothesis for which applicable confirmation requirements have been satisfied to the level required for the technical consequence."
     },
-    {
-      "name": "RULED_OUT",
-      "description": "Available evidence is sufficient to remove the hypothesis from active consideration under the current technical state."
-    },
-    {
-      "name": "CONFIRMED",
-      "description": "Available evidence satisfies applicable diagnostic confirmation requirements."
-    },
-    {
-      "name": "SUPERSEDED",
-      "description": "A more precise or technically appropriate hypothesis has replaced this hypothesis while preserving its historical role."
-    },
-    {
-      "name": "MERGED",
-      "description": "The hypothesis has been incorporated into another hypothesis because they represented the same underlying explanation."
+    "SUPERSEDED": {
+      "description": "A hypothesis replaced by a more technically appropriate, specific, or corrected case-specific hypothesis while preserving historical lineage."
     }
-  ],
+  },
 
   "generation_sources": [
-    {
-      "name": "KNOWLEDGE_GRAPH",
-      "description": "Failure modes connected to observed symptoms, products, configurations, components, topologies, or technical mechanisms."
-    },
-    {
-      "name": "EXPERIENCE_LEDGER",
-      "description": "Failure modes observed in sufficiently similar historical cases."
-    },
-    {
-      "name": "USER_HISTORY",
-      "description": "Historically relevant failure patterns associated with the applicable user."
-    },
-    {
-      "name": "PRODUCT_HISTORY",
-      "description": "Historically relevant failure patterns associated with the applicable product or variant."
-    },
-    {
-      "name": "MANUFACTURER_HISTORY",
-      "description": "Historically relevant failure patterns associated with the applicable manufacturer."
-    },
-    {
-      "name": "CURRENT_EVIDENCE",
-      "description": "Candidate explanations directly suggested by current measurements, alarms, configuration, visual evidence, logs, or test results."
-    },
-    {
-      "name": "TECHNICAL_INFERENCE",
-      "description": "A technically valid explanation inferred from relationships between current observations."
-    },
-    {
-      "name": "UNKNOWN_BUCKET",
-      "description": "Explicit representation of explanations not currently modeled or recognized."
-    }
+    "CANONICAL_TECHNICAL_KNOWLEDGE",
+    "CURRENT_EVIDENCE",
+    "CURRENT_CONTEXT",
+    "CANONICAL_RELATIONSHIPS",
+    "VALIDATED_EXPERIENCE",
+    "SIMILAR_CASE_ANALYSIS",
+    "TECHNICAL_INFERENCE",
+    "UNKNOWN_OR_UNMODELED_CAUSE"
   ],
 
-  "generation_process": [
+  "generation_rules": [
+    "Candidate generation shall begin from the conditions requiring explanation.",
+    "Candidates shall be technically applicable to the current context or explicitly preserved as uncertain when applicability cannot yet be resolved.",
+    "Current evidence may suggest candidate explanations but Evidence itself shall not be rewritten as a hypothesis.",
+    "Historical experience may suggest candidates without becoming current-case evidence.",
+    "Technical inference may generate a candidate when the inference is explainable from current evidence, context, and canonical technical relationships.",
+    "Candidate generation shall not be limited to historically common failures.",
+    "A rare but technically plausible high-consequence explanation may remain in the candidate set.",
+    "A.R.I.A. shall preserve an unknown or unmodeled candidate when the known candidate set may be incomplete.",
+    "Candidate generation shall avoid uncontrolled combinatorial expansion."
+  ],
+
+  "generation_pipeline": [
     {
       "step": 1,
-      "name": "IDENTIFY_EXPLAINED_SYMPTOMS",
-      "description": "Determine which canonical symptoms require explanation."
+      "name": "IDENTIFY_CONDITIONS_REQUIRING_EXPLANATION",
+      "description": "Identify the symptoms, anomalies, failures, validation failures, or other technical conditions that require explanation."
     },
     {
       "step": 2,
-      "name": "RETRIEVE_APPLICABLE_FAILURE_MODES",
-      "description": "Retrieve failure modes capable of producing the symptoms within the resolved technical context."
+      "name": "RESOLVE_APPLICABLE_CONTEXT",
+      "description": "Consume the applicable canonical context needed to constrain hypothesis generation."
     },
     {
       "step": 3,
-      "name": "RETRIEVE_HISTORICAL_FAILURES",
-      "description": "Retrieve relevant historical failure modes using contextual similarity."
+      "name": "RETRIEVE_CANONICAL_EXPLANATIONS",
+      "description": "Retrieve canonical technical failure modes, causes, conditions, mechanisms, and relationships capable of explaining the represented condition."
     },
     {
       "step": 4,
-      "name": "APPLY_TECHNICAL_CONSTRAINTS",
-      "description": "Remove technically impossible candidates while preserving uncertain candidates."
+      "name": "CONSIDER_CURRENT_EVIDENCE",
+      "description": "Identify explanations suggested, constrained, weakened, or excluded by current applicable evidence."
     },
     {
       "step": 5,
-      "name": "DEDUPLICATE",
-      "description": "Merge semantically equivalent hypotheses referring to the same underlying technical condition."
+      "name": "CONSIDER_VALIDATED_EXPERIENCE",
+      "description": "Use sufficiently applicable historical experience to broaden or prioritize candidate generation without treating historical outcomes as current evidence."
     },
     {
       "step": 6,
-      "name": "ADD_UNKNOWN",
-      "description": "Add unknown or unmodeled hypothesis mass when the candidate set cannot reasonably be assumed exhaustive."
+      "name": "APPLY_TECHNICAL_CONSTRAINTS",
+      "description": "Remove technically impossible candidates while preserving candidates whose applicability remains uncertain."
     },
     {
       "step": 7,
-      "name": "INITIALIZE_PRIORS",
-      "description": "Assign regularized starting probabilities before applying current evidence."
+      "name": "DEDUPLICATE_AND_RELATE",
+      "description": "Detect equivalent, overlapping, hierarchical, dependent, competing, or coexisting candidates."
+    },
+    {
+      "step": 8,
+      "name": "PRESERVE_UNKNOWN",
+      "description": "Represent an unknown or unmodeled explanation when the candidate set cannot responsibly be considered exhaustive."
+    },
+    {
+      "step": 9,
+      "name": "CREATE_CASE_SPECIFIC_HYPOTHESES",
+      "description": "Instantiate canonical hyp_<UUID> records referencing the applicable canonical hypothesis_entity_id values."
+    },
+    {
+      "step": 10,
+      "name": "REQUEST_PROBABILITY_INITIALIZATION",
+      "description": "Return hypotheses requiring prior and probability initialization to Orchestration for Probability Engine evaluation."
     }
   ],
+
+  "technical_plausibility": {
+    "principle": "A hypothesis must remain technically possible under the known system state unless uncertainty prevents that determination.",
+
+    "consider": [
+      "canonical technical relationships",
+      "current context",
+      "system topology",
+      "configuration",
+      "component presence",
+      "product compatibility",
+      "version compatibility",
+      "temporal state",
+      "known physical constraints",
+      "observed symptoms",
+      "applicable evidence"
+    ],
+
+    "rules": [
+      "Technical impossibility may justify elimination independent of historical frequency.",
+      "Missing context shall not be treated as proof of incompatibility.",
+      "A candidate shall not be eliminated solely because it is uncommon.",
+      "A candidate requiring a component that is authoritatively known not to exist in the applicable system may be eliminated when no alternative mechanism remains.",
+      "Technical plausibility shall remain distinguishable from probability."
+    ]
+  },
 
   "hierarchical_hypotheses": {
     "enabled": true,
 
-    "description": "ARIA may begin with a broad hypothesis and progressively refine it into more specific hypotheses as evidence becomes available.",
-
-    "example": {
-      "level_1": "PHYSICAL_RF_CHAIN_FAILURE",
-      "level_2": "RF_ROUTING_FAILURE",
-      "level_3": "MAIN_DIVERSITY_ROUTING_FAILURE",
-      "level_4": "DIVERSITY_FLEX_CONNECTED_TO_INCORRECT_PORT"
-    },
+    "principle": "A.R.I.A. may begin with a broad explanation and refine it into more specific case-specific hypotheses as evidence permits.",
 
     "rules": [
-      "Broad hypotheses may remain active while insufficient evidence exists to justify greater specificity.",
-      "A child hypothesis inherits technical compatibility constraints from its parent.",
-      "Confirmation of a specific child hypothesis may supersede broader parent hypotheses for diagnosis while preserving lineage.",
-      "Probability assigned to hierarchical hypotheses shall avoid double counting parent and child explanations."
-    ]
-  },
-
-  "evidence_effects": [
-    {
-      "name": "STRONGLY_SUPPORTS",
-      "description": "Evidence substantially increases support for the hypothesis."
-    },
-    {
-      "name": "SUPPORTS",
-      "description": "Evidence moderately increases support for the hypothesis."
-    },
-    {
-      "name": "WEAKLY_SUPPORTS",
-      "description": "Evidence slightly increases support for the hypothesis."
-    },
-    {
-      "name": "NEUTRAL",
-      "description": "Evidence has no material effect on the hypothesis."
-    },
-    {
-      "name": "WEAKENS",
-      "description": "Evidence moderately reduces support for the hypothesis."
-    },
-    {
-      "name": "STRONGLY_WEAKENS",
-      "description": "Evidence substantially reduces support for the hypothesis."
-    },
-    {
-      "name": "CONTRADICTS",
-      "description": "Evidence is materially inconsistent with the hypothesis."
-    },
-    {
-      "name": "EXCLUDES",
-      "description": "Validated evidence establishes a condition incompatible with the hypothesis under the applicable technical model."
-    }
-  ],
-
-  "evidence_evaluation": {
-    "required_questions": [
-      "Is this evidence technically relevant to the hypothesis?",
-      "Is the evidence applicable to the current product and context?",
-      "How reliable is the evidence?",
-      "How direct is the evidence?",
-      "Is the evidence current enough to represent the present condition?",
-      "Is the evidence independent from other supporting evidence?",
-      "Does the evidence support or contradict the mechanism predicted by the hypothesis?",
-      "How strongly should the evidence change belief?"
-    ]
-  },
-
-  "prior_model": {
-    "inputs": [
-      "global_failure_frequency",
-      "manufacturer_failure_frequency",
-      "product_family_failure_frequency",
-      "product_failure_frequency",
-      "product_variant_failure_frequency",
-      "topology_failure_frequency",
-      "frequency_band_failure_frequency",
-      "scope_failure_frequency",
-      "symptom_failure_frequency",
-      "user_failure_frequency",
-      "contextually_similar_case_frequency"
-    ],
-
-    "rules": [
-      "Specific historical populations may influence priors more strongly when sufficient sample size and contextual similarity exist.",
-      "Broad populations shall remain available as fallback priors when specific historical populations are sparse.",
-      "Small sample populations shall be regularized toward broader applicable populations.",
-      "Historical priors shall not override strong current evidence.",
-      "Historical priors shall preserve their source population and sample size."
-    ]
-  },
-
-  "regularization": {
-    "enabled": true,
-
-    "purpose": "Prevent ARIA from overlearning from small or noisy historical samples.",
-
-    "rules": [
-      "One successful case shall not establish a dominant future prior.",
-      "Small user-specific samples shall be blended with broader applicable experience.",
-      "As validated sample size increases, specific historical populations may receive greater influence.",
-      "Cases with restricted learning confidence shall contribute proportionally less weight.",
-      "Cases excluded from learning shall contribute no learned probability weight."
+      "Broad hypotheses may remain active while available evidence does not justify greater specificity.",
+      "A more specific hypothesis shall reference an appropriate canonical technical entity rather than encoding specificity only in free text.",
+      "Parent and child hypotheses shall not receive independent probability treatment that double counts the same underlying explanation.",
+      "Confirmation of a specific child may justify supersession of a broader case-specific parent.",
+      "Supersession shall preserve historical lineage.",
+      "Canonical relationship records should represent meaningful hierarchy or dependency when persistence is required.",
+      "Hypothesis Engine shall not invent a universal failure-mode hierarchy independent of canonical technical knowledge."
     ]
   },
 
   "competing_hypotheses": {
+    "principle": "Multiple explanations may compete for the same observed condition.",
+
     "rules": [
-      "ARIA shall maintain multiple active hypotheses when technically justified.",
-      "A leading hypothesis shall not cause automatic suppression of viable alternatives.",
-      "Diagnostic actions should preferentially discriminate between high-value competing hypotheses.",
-      "Probability shall be redistributed only according to the applicable probability model.",
-      "Evidence supporting one hypothesis does not automatically weaken another unless the hypotheses compete or the evidence has discriminatory value."
+      "A leading hypothesis shall not automatically eliminate alternatives.",
+      "Comparative rank is not a persistence status.",
+      "Evidence supporting one hypothesis does not automatically weaken another unless the evidence is discriminatory or the hypotheses materially compete.",
+      "Probability redistribution shall be performed only by the Probability Engine.",
+      "Hypothesis Engine may identify which hypotheses are materially competing.",
+      "Evaluation requirements should favor observations capable of discriminating important competing hypotheses."
     ]
   },
 
   "coexisting_hypotheses": {
     "enabled": true,
 
-    "description": "ARIA shall support cases where multiple failures exist simultaneously.",
+    "principle": "Multiple hypotheses may simultaneously be true when multiple failures or contributing conditions can coexist.",
 
     "rules": [
-      "Potentially coexisting hypotheses shall not be forced into a mutually exclusive probability distribution.",
-      "ARIA may create hypothesis groups representing independent or partially dependent fault domains.",
-      "Resolution of one failure shall not automatically close the case when unresolved symptoms remain.",
-      "Remaining symptoms shall be reevaluated after each confirmed correction."
-    ],
-
-    "example": {
-      "hypothesis_1": "ANTENNA_MISALIGNMENT",
-      "hypothesis_2": "WATER_INGRESS",
-      "relationship": "CAN_COEXIST"
-    }
-  },
-
-  "hypothesis_relationships": [
-    {
-      "name": "MUTUALLY_EXCLUSIVE",
-      "description": "Both hypotheses cannot simultaneously explain the defined condition under the applicable technical model."
-    },
-    {
-      "name": "CAN_COEXIST",
-      "description": "Both hypotheses may simultaneously be true."
-    },
-    {
-      "name": "DEPENDENT",
-      "description": "Probability or validity of one hypothesis depends materially on another."
-    },
-    {
-      "name": "CAUSAL_CHAIN",
-      "description": "One hypothesis may cause or contribute to the other."
-    },
-    {
-      "name": "SHARED_PARENT",
-      "description": "Hypotheses are more specific alternatives beneath a common broader hypothesis."
-    },
-    {
-      "name": "OVERLAPPING",
-      "description": "Hypotheses partially describe the same technical mechanism and require careful probability handling to avoid double counting."
-    },
-    {
-      "name": "UNRELATED",
-      "description": "No material dependency is currently known."
-    }
-  ],
-
-  "rule_out_policy": {
-    "requirements": [
-      "Evidence materially incompatible with the hypothesis exists.",
-      "Evidence quality is sufficient for the technical consequence of ruling out the hypothesis.",
-      "Applicability of the excluding evidence is established.",
-      "Material contradictions in the excluding evidence have been addressed."
-    ],
-
-    "rules": [
-      "Low probability alone shall not rule out a hypothesis.",
-      "Failure to find supporting evidence shall not automatically rule out a hypothesis.",
-      "A hypothesis may be ruled out when validated evidence establishes an incompatible condition.",
-      "Rule-out reason and supporting evidence shall be preserved."
+      "Potentially coexisting hypotheses shall not be forced into a mutually exclusive probability model.",
+      "Resolution or confirmation of one hypothesis shall not automatically eliminate another compatible hypothesis.",
+      "Remaining unexplained conditions shall be reevaluated after confirmed corrections.",
+      "Probability Engine shall determine the appropriate probability treatment for mutually exclusive versus coexisting hypotheses.",
+      "Hypothesis relationships shall be represented canonically when persisted."
     ]
   },
 
-  "reactivation_policy": {
-    "description": "A ruled-out or dormant hypothesis may return to active reasoning only when the technical state materially changes.",
-
-    "valid_reactivation_triggers": [
-      "NEW_CONTRADICTORY_EVIDENCE",
-      "PRIOR_EVIDENCE_INVALIDATED",
-      "CONTEXT_CHANGED",
-      "NEW_SYMPTOM",
-      "NEW_FAILURE_MODE_RELATIONSHIP",
-      "PREVIOUS_TEST_FOUND_UNRELIABLE",
-      "RECURRENCE",
-      "PRODUCT_OR_CONFIGURATION_REIDENTIFIED"
+  "hypothesis_relationship_reasoning": {
+    "conceptual_relationships": [
+      "MUTUALLY_EXCLUSIVE",
+      "CAN_COEXIST",
+      "DEPENDENT",
+      "CAUSAL_CHAIN",
+      "SHARED_PARENT",
+      "OVERLAPPING",
+      "UNRELATED"
     ],
 
     "rules": [
-      "Reactivation requires an explicit reason.",
-      "ARIA shall preserve why the hypothesis was previously ruled out.",
-      "Reactivation shall not erase prior probability history.",
-      "Repeated unjustified reactivation shall be treated as a reasoning-loop defect."
+      "These concepts guide hypothesis reasoning but shall not replace canonical Relationship records.",
+      "Canonical relationship records are authoritative when support, contradiction, causality, dependency, hierarchy, or other graph semantics are persisted.",
+      "Relationship directionality shall be preserved when technically meaningful.",
+      "Overlapping hypotheses shall be handled carefully to prevent probability double counting.",
+      "Unknown relationship shall not be silently treated as independence."
     ]
   },
 
-  "confirmation_policy": {
-    "factors": [
-      "posterior_probability",
-      "diagnostic_confidence",
-      "evidence_quality",
-      "evidence_completeness",
-      "causal_evidence",
-      "contradictory_evidence",
-      "test_discrimination",
-      "corrective_action_risk"
+  "evidence_boundary": {
+    "principle": "Hypothesis Engine consumes evidence relationships and diagnostic effects but does not redefine Evidence.",
+
+    "rules": [
+      "supporting_evidence_ids and contradicting_evidence_ids are convenience indexes permitted by hypothesis.schema.json.",
+      "Canonical relationship records remain authoritative for support and contradiction semantics and strength.",
+      "Evidence quality, provenance, independence, freshness, and applicability are evaluated by Evidence Engine.",
+      "Hypothesis Engine shall not invent evidence confidence.",
+      "The same evidence may affect multiple hypotheses differently.",
+      "Failure to find supporting evidence shall not automatically eliminate a hypothesis.",
+      "Contradictory evidence shall remain visible even when the hypothesis remains active."
+    ]
+  },
+
+  "probability_boundary": {
+    "principle": "Hypothesis Engine owns the candidate explanation and its reasoning state; Probability Engine owns numerical belief calculation.",
+
+    "probability_engine_owns": [
+      "initial_probability calculation",
+      "current_probability calculation",
+      "prior construction",
+      "prior regularization",
+      "historical frequency weighting",
+      "evidence likelihood treatment",
+      "probability normalization",
+      "probability redistribution",
+      "probability history calculation",
+      "probability confidence calculation"
+    ],
+
+    "hypothesis_engine_may_use": [
+      "current_probability",
+      "probability_confidence",
+      "probability history",
+      "relative probability ranking"
     ],
 
     "rules": [
-      "No universal probability threshold alone shall confirm every diagnosis.",
-      "Higher-risk corrective actions may require stronger confirmation.",
-      "Direct isolation evidence may justify confirmation more strongly than historical frequency.",
-      "Material unexplained contradictions shall reduce confirmation confidence.",
-      "ARIA may maintain a provisional diagnosis when confirmation requirements are not satisfied."
+      "Hypothesis Engine shall not calculate priors.",
+      "Hypothesis Engine shall not calculate posterior probability.",
+      "Hypothesis Engine shall not hardcode probability update weights.",
+      "Hypothesis Engine shall not normalize mutually exclusive candidate sets.",
+      "Hypothesis Engine shall not force coexisting hypotheses into a mutually exclusive probability distribution.",
+      "Probability alone shall not establish confirmation or elimination.",
+      "Low probability may justify DEPRIORITIZED or UNLIKELY state but not automatic ELIMINATED state.",
+      "Probability confidence shall remain distinct from probability."
+    ]
+  },
+
+  "historical_basis": {
+    "principle": "Historical experience may influence candidate generation and probability reasoning without becoming current-case evidence.",
+
+    "rules": [
+      "Validated experience may suggest candidate hypotheses.",
+      "Similar cases may be recorded in historical_basis when applicable.",
+      "Historical frequency calculations belong to Probability or learning infrastructure rather than Hypothesis Engine.",
+      "Historical sample size shall remain visible when materially relevant.",
+      "Context similarity shall influence historical applicability.",
+      "A historically common failure shall not override contradictory current evidence.",
+      "A historically rare failure shall not be excluded solely because it is rare.",
+      "Cases excluded from statistical learning shall not silently influence learned priors."
     ]
   },
 
   "unknown_hypothesis": {
     "enabled": true,
-    "canonical_name": "UNKNOWN_OR_UNMODELED_CAUSE",
+    "concept": "UNKNOWN_OR_UNMODELED_CAUSE",
 
-    "purpose": "Prevent ARIA from forcing every case into an existing failure mode.",
+    "principle": "A.R.I.A. shall not force every technical condition into an existing modeled explanation.",
 
     "rules": [
-      "Unknown may receive nonzero probability whenever the candidate hypothesis set is not known to be exhaustive.",
-      "Unknown probability may increase when known hypotheses are weakened without another explanation gaining support.",
-      "Unknown probability should decrease when evidence strongly supports sufficiently comprehensive modeled explanations.",
-      "A persistent high unknown probability should trigger broader knowledge retrieval, alternative hypothesis generation, or escalation."
+      "Unknown or unmodeled cause shall remain available when the known candidate set may be incomplete.",
+      "The unknown candidate shall be represented through an appropriate canonical technical entity when persisted.",
+      "Hypothesis Engine shall not assign the unknown candidate's probability.",
+      "Probability Engine determines applicable unknown probability treatment.",
+      "Persistent material unknown probability may justify broader retrieval, candidate generation, escalation, or additional evidence acquisition through the appropriate engines.",
+      "Unknown shall not be eliminated merely because one known hypothesis currently leads."
     ]
   },
 
-  "hypothesis_pruning": {
-    "purpose": "Control computational growth without destroying diagnostically meaningful alternatives.",
+  "evaluation_requirements": {
+    "principle": "Hypothesis Engine identifies what information would materially evaluate or discriminate a hypothesis without selecting the Action used to obtain it.",
 
-    "strategies": [
-      "DORMANT_LOW_VALUE_HYPOTHESES",
-      "MERGE_DUPLICATES",
-      "SUPERSEDE_BROAD_PARENTS",
-      "GROUP_RELATED_HYPOTHESES",
-      "RETAIN_TOP_ACTIVE_SET",
-      "PRESERVE_RULED_OUT_HISTORY"
+    "may_identify": [
+      "required observation",
+      "required measurement",
+      "required artifact",
+      "required technical fact",
+      "required context",
+      "required isolation result",
+      "required validation result",
+      "discriminating condition",
+      "expected outcome if hypothesis is true",
+      "expected outcome if hypothesis is false"
     ],
 
     "rules": [
-      "Pruning shall not delete hypothesis history.",
-      "Low-probability hypotheses with high consequence or inexpensive discriminating tests may remain active.",
-      "Dormant hypotheses remain retrievable.",
-      "The number of actively scored hypotheses may be bounded independently from the number of hypotheses preserved in case history."
+      "Evaluation requirements that have not produced evidence shall not receive fabricated evidence IDs.",
+      "Evaluation requirements shall conform to the structure provided by hypothesis.schema.json.",
+      "Requirements should preferentially discriminate materially competing hypotheses.",
+      "Hypothesis Engine shall not select the Action used to satisfy a requirement.",
+      "Evidence Engine may identify evidence characteristics needed.",
+      "Decision Engine determines which candidate Action is worth performing.",
+      "Routing Engine manages progression after an Action is selected."
     ]
   },
 
-  "active_set_policy": {
-    "description": "ARIA shall maintain a manageable working set of hypotheses while preserving the broader hypothesis graph.",
+  "active_set_management": {
+    "principle": "A.R.I.A. shall maintain a computationally manageable working set without destroying diagnostically meaningful alternatives.",
 
-    "default_targets": {
-      "preferred_active_hypotheses": 5,
-      "soft_maximum_active_hypotheses": 10
-    },
+    "strategies": [
+      "DEPRIORITIZE_LOW_VALUE_HYPOTHESES",
+      "MARK_MATERIALLY_WEAK_HYPOTHESES_UNLIKELY",
+      "SUPERSEDE_BROADER_OR_DUPLICATIVE_HYPOTHESES",
+      "GROUP_RELATED_HYPOTHESES_FOR_REASONING",
+      "PRESERVE_ELIMINATED_HISTORY",
+      "PRESERVE_HIGH_CONSEQUENCE_ALTERNATIVES",
+      "PRESERVE_UNKNOWN_WHEN_REQUIRED"
+    ],
 
     "rules": [
-      "These values are computational defaults rather than technical limits.",
-      "ARIA may exceed the soft maximum when case complexity justifies it.",
-      "Hypotheses outside the active set remain available as dormant candidates.",
-      "High-consequence hypotheses may remain active despite relatively low probability."
+      "Active-set management shall not delete hypothesis history.",
+      "Low probability alone shall not justify elimination.",
+      "A low-probability hypothesis may remain ACTIVE when consequence is high or discrimination is inexpensive.",
+      "DEPRIORITIZED hypotheses remain retrievable.",
+      "UNLIKELY hypotheses remain retrievable and may return to ACTIVE when the technical state materially changes.",
+      "The number of actively reasoned hypotheses may be bounded independently from the number preserved in case history."
     ]
   },
 
-  "example_reasoning_state": {
-    "symptom": "MAIN_DIVERSITY_RSL_IMBALANCE",
+  "deprioritization_policy": {
+    "principle": "Deprioritization reduces diagnostic attention without asserting technical incompatibility.",
 
-    "context": {
-      "manufacturer": "Nokia",
-      "product": "UBT-T",
-      "frequency_band": "18 GHz",
-      "topology": "2+0",
-      "diversity_mode": "Space Diversity",
-      "project_phase": "Commissioning"
-    },
+    "possible_reasons": [
+      "low comparative probability",
+      "low information value",
+      "stronger competing explanations",
+      "high evaluation burden",
+      "limited current relevance",
+      "temporarily insufficient context"
+    ],
 
-    "hypotheses": [
-      {
-        "name": "MAIN_DIVERSITY_RF_ROUTING_ERROR",
-        "probability": 0.42,
-        "status": "LEADING"
-      },
-      {
-        "name": "RADIO_OR_PORT_ASSIGNMENT_ERROR",
-        "probability": 0.24,
-        "status": "ACTIVE"
-      },
-      {
-        "name": "RF_COMPONENT_FAILURE",
-        "probability": 0.16,
-        "status": "ACTIVE"
-      },
-      {
-        "name": "CONFIGURATION_ERROR",
-        "probability": 0.10,
-        "status": "ACTIVE"
-      },
-      {
-        "name": "ALIGNMENT_OR_POLARIZATION",
-        "probability": 0.05,
-        "status": "ACTIVE"
-      },
-      {
-        "name": "UNKNOWN_OR_UNMODELED_CAUSE",
-        "probability": 0.03,
-        "status": "ACTIVE"
-      }
+    "rules": [
+      "DEPRIORITIZED is not ELIMINATED.",
+      "Deprioritized hypotheses remain available for reactivation.",
+      "Deprioritization shall not erase supporting or contradicting evidence.",
+      "Probability Engine supplies probability information; Hypothesis Engine determines whether state management should change."
     ]
   },
 
-  "semantic_rules": [
+  "unlikely_policy": {
+    "principle": "UNLIKELY indicates materially weakened plausibility without sufficient basis for elimination.",
+
+    "rules": [
+      "A hypothesis may become UNLIKELY when applicable evidence materially weakens it.",
+      "Low probability may contribute to UNLIKELY state but shall not be the sole universal criterion.",
+      "UNLIKELY hypotheses remain part of case history and may return to ACTIVE.",
+      "Materially contradictory evidence shall remain linked."
+    ]
+  },
+
+  "elimination_policy": {
+    "principle": "Elimination requires sufficient technical basis to remove a hypothesis from active consideration under the applicable state.",
+
+    "requirements": [
+      "The hypothesis is technically incompatible with sufficiently established current conditions, or sufficiently applicable evidence excludes the required mechanism.",
+      "The excluding evidence or technical constraint is applicable to the current context.",
+      "Material contradictions affecting the elimination basis have been addressed or bounded.",
+      "The consequence of elimination is justified by the quality of the available basis."
+    ],
+
+    "rules": [
+      "Low probability alone shall not eliminate a hypothesis.",
+      "Absence of supporting evidence alone shall not eliminate a hypothesis.",
+      "Historical rarity shall not eliminate a hypothesis.",
+      "Elimination reason shall be persisted through the schema's elimination structure.",
+      "Evidence and canonical relationships supporting elimination shall be preserved.",
+      "ELIMINATED hypotheses shall remain historically reconstructable.",
+      "An eliminated hypothesis may return to consideration only when a material technical basis for reevaluation exists."
+    ]
+  },
+
+  "reactivation_policy": {
+    "principle": "A DEPRIORITIZED, UNLIKELY, or ELIMINATED hypothesis may return to active reasoning when the basis for its prior state materially changes.",
+
+    "valid_triggers": [
+      "NEW_MATERIAL_EVIDENCE",
+      "PRIOR_EVIDENCE_INVALIDATED",
+      "PRIOR_EVIDENCE_RETRACTED",
+      "CONTEXT_CHANGED",
+      "NEW_CONDITION_OR_SYMPTOM",
+      "CANONICAL_RELATIONSHIP_CHANGED",
+      "PRIOR_TEST_FOUND_UNRELIABLE",
+      "RECURRENCE",
+      "TECHNICAL_ENTITY_REIDENTIFIED",
+      "PREVIOUS_ELIMINATION_BASIS_INVALIDATED"
+    ],
+
+    "rules": [
+      "Reactivation requires an explainable material reason.",
+      "Prior elimination or deprioritization history shall remain preserved.",
+      "Reactivation shall not erase probability history.",
+      "Probability shall be reevaluated by Probability Engine after material reactivation.",
+      "Repeated reactivation without a material technical trigger shall be treated as a reasoning-loop defect."
+    ]
+  },
+
+  "confirmation_policy": {
+    "principle": "Confirmation means the applicable technical confirmation burden has been satisfied; it is not merely the state of having the highest probability.",
+
+    "consider": [
+      "applicable evidence",
+      "evidence quality",
+      "evidence independence",
+      "technical isolation",
+      "causal mechanism support",
+      "material contradictory evidence",
+      "validation results",
+      "current probability",
+      "probability confidence",
+      "technical consequence of confirmation"
+    ],
+
+    "rules": [
+      "No universal probability threshold alone shall confirm every hypothesis.",
+      "Being the leading hypothesis shall not establish confirmation.",
+      "Historical frequency shall not establish confirmation.",
+      "Direct isolation or causal evidence may justify confirmation more strongly than historical similarity.",
+      "Material unexplained contradiction shall constrain confirmation.",
+      "Higher-consequence technical decisions may require stronger confirmation.",
+      "Confirmation shall use the schema's confirmation structure.",
+      "Confirmation evidence and applicable canonical relationships shall remain traceable.",
+      "Validation Engine owns validation semantics; Hypothesis Engine consumes applicable validation results when assessing confirmation."
+    ]
+  },
+
+  "supersession_policy": {
+    "principle": "Supersession replaces a case-specific hypothesis with a more technically appropriate hypothesis without destroying history.",
+
+    "valid_reasons": [
+      "more specific explanation established",
+      "canonical technical entity corrected",
+      "duplicate case-specific hypotheses consolidated",
+      "broader hypothesis refined",
+      "original hypothesis represented the wrong technical mechanism"
+    ],
+
+    "rules": [
+      "Superseded hypotheses shall remain historically available.",
+      "supersedes_hypothesis_ids and superseded_by_hypothesis_id shall conform to hypothesis.schema.json.",
+      "Supersession shall not be used merely because another hypothesis currently has higher probability.",
+      "Supersession shall preserve evidence and relationship traceability.",
+      "A more specific child may supersede a broader parent when the technical explanation has genuinely been refined."
+    ]
+  },
+
+  "confirmation_and_coexistence": {
+    "rules": [
+      "Confirmation of one hypothesis does not automatically eliminate compatible coexisting hypotheses.",
+      "A case may contain multiple CONFIRMED hypotheses when multiple failure modes are demonstrated.",
+      "Case resolution requires the applicable Case State and Validation logic rather than merely one CONFIRMED hypothesis.",
+      "Remaining unexplained conditions shall remain available for continued reasoning."
+    ]
+  },
+
+  "probability_state_interaction": {
+    "principle": "Probability informs state management but does not mechanically dictate it.",
+
+    "rules": [
+      "The highest-probability hypothesis may remain ACTIVE rather than CONFIRMED.",
+      "A very low-probability hypothesis may remain ACTIVE when consequence or discrimination value warrants attention.",
+      "Probability changes may justify reevaluation of ACTIVE, DEPRIORITIZED, or UNLIKELY status.",
+      "ELIMINATED requires technical exclusion rather than merely low probability.",
+      "CONFIRMED requires confirmation basis rather than merely high probability.",
+      "Hypothesis Engine shall explain state changes independently from the numerical probability calculation."
+    ]
+  },
+
+  "relationship_boundary": {
+    "principle": "Canonical Relationship records are authoritative for persisted support, contradiction, causality, hierarchy, dependency, and graph semantics.",
+
+    "rules": [
+      "relationship_ids in hypothesis.schema.json shall reference canonical rel_<UUID> records.",
+      "supporting_evidence_ids and contradicting_evidence_ids are convenience indexes rather than replacement relationship authorities.",
+      "Hypothesis Engine may reason about relationship concepts before persistence.",
+      "Persisted graph semantics shall use the canonical relationship architecture.",
+      "Hypothesis Engine shall not create a second relationship schema."
+    ]
+  },
+
+  "context_boundary": {
+    "principle": "Context constrains hypothesis applicability; Hypothesis Engine does not recreate Context reasoning.",
+
+    "rules": [
+      "Hypothesis Engine shall consume canonical ctx_<UUID> context when available.",
+      "Context Engine determines contextual applicability and material context change.",
+      "A context change may require candidate regeneration, reactivation, elimination reevaluation, or probability reevaluation.",
+      "Hypothesis Engine shall not define its own context dimension vocabulary.",
+      "Case-local context fields permitted by hypothesis.schema.json are convenience projections and shall not supersede canonical Context."
+    ]
+  },
+
+  "decision_boundary": {
+    "principle": "Hypothesis Engine identifies diagnostic needs; Decision selects competitive Actions.",
+
+    "rules": [
+      "Hypothesis Engine may identify evaluation requirements and discriminating conditions.",
+      "Hypothesis Engine may identify which hypotheses an observation could discriminate.",
+      "Hypothesis Engine shall not select act_<UUID>.",
+      "Decision Engine determines which candidate Action provides the best justified utility.",
+      "Corrective Action selection shall not be performed merely because a hypothesis currently leads."
+    ]
+  },
+
+  "routing_boundary": {
+    "principle": "Hypothesis Engine does not own route progression.",
+
+    "rules": [
+      "Hypothesis Engine shall not create route steps.",
+      "Hypothesis Engine shall not select next hops.",
+      "Hypothesis Engine shall not reroute.",
+      "Routing state may inform which hypothesis evaluations are operationally available.",
+      "Material hypothesis change shall be returned to Orchestration for downstream coordination."
+    ]
+  },
+
+  "validation_boundary": {
+    "principle": "Validation establishes whether defined technical criteria or expected outcomes have been demonstrated; Hypothesis Engine consumes those results without redefining validation.",
+
+    "rules": [
+      "Validation results may support confirmation, elimination, or reactivation.",
+      "Hypothesis Engine shall not redefine validation success criteria.",
+      "A successful corrective action followed by applicable validation may provide strong confirmation evidence.",
+      "Symptom disappearance alone shall not automatically establish root-cause confirmation.",
+      "Failed validation may require hypothesis regeneration or reactivation through Orchestration."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Case State owns the assembled projection of current hypothesis state.",
+
+    "rules": [
+      "Hypothesis Engine owns hypothesis reasoning.",
+      "Case State projects canonical hyp_<UUID> records and current hypothesis state.",
+      "Hypothesis Engine shall not redefine case lifecycle status.",
+      "Hypothesis Engine shall not redefine case reasoning state.",
+      "Confirmation of a hypothesis shall not directly close or resolve a case.",
+      "Material hypothesis changes shall be returned to Orchestration for Case State reconciliation."
+    ]
+  },
+
+  "orchestration_boundary": {
+    "principle": "Hypothesis Engine returns hypothesis reasoning results; Orchestration coordinates downstream reevaluation.",
+
+    "rules": [
+      "Hypothesis Engine shall not directly invoke all downstream engines.",
+      "New hypotheses shall be returned to Orchestration for Probability evaluation and Case State integration.",
+      "Material evidence changes may cause Orchestration to invoke Hypothesis reevaluation.",
+      "Material context changes may cause Orchestration to invoke Hypothesis reevaluation.",
+      "Hypothesis elimination, confirmation, supersession, reactivation, or active-set change shall be reported to Orchestration.",
+      "Orchestration determines whether Probability, Uncertainty, Decision, Routing, Validation, or Case State require reevaluation."
+    ]
+  },
+
+  "historical_integrity": {
+    "principle": "Hypothesis history shall preserve what A.R.I.A. considered and believed at each material point in the case.",
+
+    "rules": [
+      "Eliminated hypotheses shall remain historically available.",
+      "Superseded hypotheses shall remain historically available.",
+      "Probability history shall remain immutable according to hypothesis.schema.json.",
+      "Later evidence shall not rewrite earlier probability history.",
+      "Later confirmation shall not erase prior uncertainty.",
+      "Historical decisions shall remain reconstructable from the hypotheses, probabilities, evidence, and context available at the time."
+    ]
+  },
+
+  "hypothesis_result": {
+    "recommended_outputs": [
+      "hypothesis_id",
+      "proposed_hypothesis_record",
+      "hypothesis_entity_id",
+      "recommended_status",
+      "generation_basis",
+      "technical_plausibility",
+      "applicable_context_id",
+      "supporting_evidence_ids",
+      "contradicting_evidence_ids",
+      "relationship_ids",
+      "evaluation_requirements",
+      "competing_hypothesis_ids",
+      "coexisting_hypothesis_ids",
+      "supersession_recommendation",
+      "elimination_recommendation",
+      "confirmation_recommendation",
+      "reactivation_recommendation",
+      "probability_reevaluation_required",
+      "material_change_detected",
+      "reasoning_summary"
+    ],
+
+    "rules": [
+      "Outputs shall distinguish persisted state from proposed state.",
+      "Outputs shall not fabricate probability values.",
+      "Outputs shall not fabricate evidence IDs for unmet requirements.",
+      "Outputs shall not select Actions.",
+      "Outputs shall preserve uncertainty and viable alternatives.",
+      "Material changes shall be returned to Orchestration."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "rule_id": "HYP-RULE-001",
-      "rule": "A hypothesis is a temporary explanatory model and shall never be treated as fact merely because ARIA generated it."
+      "failure_mode": "SECOND_HYPOTHESIS_SCHEMA",
+      "description": "Hypothesis Engine defines a competing hypothesis persistence record or status vocabulary.",
+      "prevention": "Use Core/Schemas/hypothesis.schema.json."
     },
     {
-      "rule_id": "HYP-RULE-002",
-      "rule": "ARIA shall preserve meaningful competing explanations until evidence justifies weakening, dormancy, rule-out, merging, supersession, or confirmation."
+      "failure_mode": "CASE_AND_ENTITY_IDENTITY_COLLAPSE",
+      "description": "Case-specific hypothesis identity is confused with canonical failure-mode identity.",
+      "prevention": "Keep hypothesis_id and hypothesis_entity_id distinct."
     },
     {
-      "rule_id": "HYP-RULE-003",
-      "rule": "The leading hypothesis is the currently strongest candidate, not necessarily the diagnosis."
+      "failure_mode": "PROBABILITY_OWNERSHIP_LEAK",
+      "description": "Hypothesis Engine calculates priors, posteriors, normalization, redistribution, or probability confidence.",
+      "prevention": "Delegate numerical belief calculation to Probability Engine."
     },
     {
-      "rule_id": "HYP-RULE-004",
-      "rule": "Historical experience influences prior probability but current evidence determines whether the historical expectation remains applicable."
+      "failure_mode": "PROBABILITY_EQUALS_CONFIRMATION",
+      "description": "A high probability automatically changes a hypothesis to CONFIRMED.",
+      "prevention": "Require applicable confirmation basis."
     },
     {
-      "rule_id": "HYP-RULE-005",
-      "rule": "ARIA shall not repeatedly resurrect a ruled-out hypothesis without new technical justification."
+      "failure_mode": "LOW_PROBABILITY_EQUALS_ELIMINATION",
+      "description": "A low probability automatically eliminates a hypothesis.",
+      "prevention": "Require technical incompatibility or sufficiently excluding evidence."
     },
     {
-      "rule_id": "HYP-RULE-006",
-      "rule": "Hypothesis probability changes shall preserve traceability to the evidence and operations responsible for the change."
+      "failure_mode": "LEADER_SUPPRESSES_ALTERNATIVES",
+      "description": "The highest-ranked hypothesis causes viable alternatives to disappear.",
+      "prevention": "Preserve technically viable competing hypotheses."
     },
     {
-      "rule_id": "HYP-RULE-007",
-      "rule": "ARIA shall distinguish broad fault domains from specific root causes and progressively refine hypotheses when evidence supports greater specificity."
+      "failure_mode": "FORCED_MUTUAL_EXCLUSIVITY",
+      "description": "Coexisting failures are forced into a mutually exclusive hypothesis set.",
+      "prevention": "Represent coexistence and delegate probability treatment to Probability Engine."
     },
     {
-      "rule_id": "HYP-RULE-008",
-      "rule": "Parent and child hypotheses shall not be independently counted as separate competing causes when they represent the same causal explanation at different levels of specificity."
+      "failure_mode": "UNKNOWN_SUPPRESSION",
+      "description": "A.R.I.A. forces the case into known failure modes even when the candidate set may be incomplete.",
+      "prevention": "Preserve unknown or unmodeled cause."
     },
     {
-      "rule_id": "HYP-RULE-009",
-      "rule": "Multiple simultaneous faults are valid and shall not be forced into a single-root-cause model."
+      "failure_mode": "HISTORICAL_OUTCOME_AS_EVIDENCE",
+      "description": "A similar historical case is treated as current-case evidence.",
+      "prevention": "Keep historical_basis separate from Evidence."
     },
     {
-      "rule_id": "HYP-RULE-010",
-      "rule": "Unknown is preferable to an unsupported known hypothesis."
+      "failure_mode": "RELATIONSHIP_DUPLICATION",
+      "description": "Hypothesis Engine creates a competing persisted relationship system.",
+      "prevention": "Use canonical rel_<UUID> records."
     },
     {
-      "rule_id": "HYP-RULE-011",
-      "rule": "Hypothesis pruning is a computational optimization and shall not destroy diagnostic history."
+      "failure_mode": "EVALUATION_REQUIREMENT_AS_EVIDENCE",
+      "description": "A desired observation is assigned an evidence ID before it exists.",
+      "prevention": "Keep unmet evaluation requirements separate from Evidence."
     },
     {
-      "rule_id": "HYP-RULE-012",
-      "rule": "ARIA shall avoid confirmation bias by selecting diagnostic actions according to discriminatory utility rather than merely seeking evidence supporting the leading hypothesis."
+      "failure_mode": "HYPOTHESIS_SELECTS_ACTION",
+      "description": "Hypothesis Engine directly selects a diagnostic or corrective Action.",
+      "prevention": "Return evaluation requirements to Decision through Orchestration."
     },
     {
-      "rule_id": "HYP-RULE-013",
-      "rule": "Evidence shall be allowed to increase the probability of an initially unlikely hypothesis when the evidence strongly discriminates in its favor."
+      "failure_mode": "CONFIRMATION_CLOSES_CASE",
+      "description": "Confirmation of one hypothesis automatically resolves or closes the case.",
+      "prevention": "Case State and Validation determine resolution readiness."
     },
     {
-      "rule_id": "HYP-RULE-014",
-      "rule": "ARIA shall distinguish correlation, mechanism compatibility, isolation evidence, and causal confirmation."
+      "failure_mode": "HISTORY_DELETION",
+      "description": "Eliminated, superseded, or deprioritized hypotheses are deleted.",
+      "prevention": "Preserve hypothesis history and probability history."
     },
     {
-      "rule_id": "HYP-RULE-015",
-      "rule": "When all known hypotheses become weak, ARIA shall broaden the search space rather than artificially promoting the least-wrong known explanation."
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal Hypothesis Engine logic hardcodes microwave, RF, optical, vendor, product, customer, or named-user failure semantics.",
+      "prevention": "Keep universal hypothesis reasoning domain-independent."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "HYP-INV-001",
+      "statement": "Persisted hypothesis structure and status vocabulary are owned by Core/Schemas/hypothesis.schema.json."
+    },
+    {
+      "invariant_id": "HYP-INV-002",
+      "statement": "Every case-specific hypothesis uses canonical hyp_<UUID> identity."
+    },
+    {
+      "invariant_id": "HYP-INV-003",
+      "statement": "hypothesis_id and hypothesis_entity_id remain distinct."
+    },
+    {
+      "invariant_id": "HYP-INV-004",
+      "statement": "Hypothesis Engine does not calculate hypothesis probability."
+    },
+    {
+      "invariant_id": "HYP-INV-005",
+      "statement": "Probability and probability confidence remain distinct."
+    },
+    {
+      "invariant_id": "HYP-INV-006",
+      "statement": "Historical experience is not current-case evidence."
+    },
+    {
+      "invariant_id": "HYP-INV-007",
+      "statement": "A leading hypothesis does not automatically eliminate viable alternatives."
+    },
+    {
+      "invariant_id": "HYP-INV-008",
+      "statement": "Coexisting hypotheses are not forced into mutual exclusivity."
+    },
+    {
+      "invariant_id": "HYP-INV-009",
+      "statement": "Unknown or unmodeled cause remains available when the candidate set may be incomplete."
+    },
+    {
+      "invariant_id": "HYP-INV-010",
+      "statement": "Low probability alone does not eliminate a hypothesis."
+    },
+    {
+      "invariant_id": "HYP-INV-011",
+      "statement": "High probability alone does not confirm a hypothesis."
+    },
+    {
+      "invariant_id": "HYP-INV-012",
+      "statement": "Canonical Relationship records remain authoritative for persisted support, contradiction, causality, hierarchy, and dependency."
+    },
+    {
+      "invariant_id": "HYP-INV-013",
+      "statement": "Unmet evaluation requirements are not Evidence."
+    },
+    {
+      "invariant_id": "HYP-INV-014",
+      "statement": "Hypothesis Engine does not select competitive Actions."
+    },
+    {
+      "invariant_id": "HYP-INV-015",
+      "statement": "Hypothesis Engine does not perform route progression or rerouting."
+    },
+    {
+      "invariant_id": "HYP-INV-016",
+      "statement": "Confirmation of a hypothesis does not directly resolve or close the case."
+    },
+    {
+      "invariant_id": "HYP-INV-017",
+      "statement": "Eliminated and superseded hypotheses remain historically reconstructable."
+    },
+    {
+      "invariant_id": "HYP-INV-018",
+      "statement": "Material hypothesis changes are returned to Orchestration for downstream coordination."
+    },
+    {
+      "invariant_id": "HYP-INV-019",
+      "statement": "Hypothesis state management remains distinct from numerical probability calculation."
+    },
+    {
+      "invariant_id": "HYP-INV-020",
+      "statement": "Hypothesis Engine remains technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing hypothesis_record structure.",
+    "Defining hypothesis persistence statuses outside the canonical Hypothesis Schema.",
+    "Treating LEADING as a competing persisted hypothesis status.",
+    "Treating SUPPORTED or WEAKENED as competing persisted hypothesis statuses.",
+    "Using a separate MERGED persistence status instead of supersession and canonical relationships.",
+    "Collapsing hypothesis_id and hypothesis_entity_id into one identity.",
+    "Creating duplicate canonical failure-mode entities for each case.",
+    "Calculating priors inside Hypothesis Engine.",
+    "Calculating posterior probability inside Hypothesis Engine.",
+    "Normalizing or redistributing probability inside Hypothesis Engine.",
+    "Calculating probability confidence inside Hypothesis Engine.",
+    "Treating historical frequency as current-case evidence.",
+    "Treating the highest-probability hypothesis as confirmed.",
+    "Eliminating a hypothesis solely because its probability is low.",
+    "Eliminating a hypothesis solely because supporting evidence has not yet been found.",
+    "Suppressing viable alternatives because one hypothesis currently leads.",
+    "Forcing technically compatible failures into a mutually exclusive probability model.",
+    "Removing unknown or unmodeled cause merely because known candidates exist.",
+    "Creating a competing relationship persistence model.",
+    "Assigning evidence IDs to observations that have not occurred.",
+    "Directly selecting act_<UUID>.",
+    "Directly creating route steps.",
+    "Directly rerouting.",
+    "Directly changing case lifecycle status.",
+    "Automatically resolving or closing a case because one hypothesis is CONFIRMED.",
+    "Deleting eliminated or superseded hypothesis history.",
+    "Directly invoking downstream engines as a substitute for Orchestration.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, or named-user hypothesis logic into universal Hypothesis Engine semantics."
   ]
 }
