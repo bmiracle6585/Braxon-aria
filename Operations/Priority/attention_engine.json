@@ -1,0 +1,421 @@
+{
+  "engine": {
+    "id": "aria.operations.attention_engine",
+    "name": "A.R.I.A. Attention Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "attention_management",
+    "status": "active",
+    "purpose": "Determine which active work items should be surfaced to a user at a given moment, which should remain visible but non-interruptive, which should be deferred, and which should remain quietly monitored. The engine converts operational priority into useful attention without overwhelming the user.",
+    "principles": [
+      "Priority and attention are related but distinct.",
+      "High-priority work does not always require immediate interruption.",
+      "Attention is contextual to the user, time, current circumstances, and actionability.",
+      "A.R.I.A. should protect the user from both forgotten obligations and unnecessary noise.",
+      "The purpose of attention management is not to display everything that exists.",
+      "The purpose of attention management is to surface what is useful to deal with now.",
+      "Work that cannot currently be acted upon should not repeatedly consume attention without reason.",
+      "Small actions that prevent future escalation may deserve attention before larger but non-actionable work.",
+      "A materially changed condition may justify resurfacing an item.",
+      "Snoozing changes presentation timing, not the underlying truth or priority of the work.",
+      "Delegated and waiting work may require attention when intervention or follow-up becomes appropriate.",
+      "Strategic work must receive deliberate attention opportunities so recurring emergencies do not eliminate it indefinitely.",
+      "Attention decisions must remain explainable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+
+    "required_context": [
+      "current_time",
+      "target_user"
+    ],
+
+    "optional_context": [
+      "current_activity",
+      "calendar_context",
+      "availability",
+      "location_context",
+      "workload",
+      "recent_presentations",
+      "related_work_items",
+      "organizational_context",
+      "project_context"
+    ],
+
+    "requirements": [
+      "The latest available priority evaluation should be used when practical.",
+      "Stale priority may trigger reevaluation before an attention decision.",
+      "Attention evaluation must not silently alter authoritative source facts.",
+      "User context may affect presentation but must not redefine the underlying operational truth."
+    ]
+  },
+
+  "eligibility": {
+    "eligible_statuses": [
+      "captured",
+      "ready",
+      "in_progress",
+      "waiting",
+      "delegated",
+      "blocked",
+      "scheduled"
+    ],
+
+    "normally_ineligible_statuses": [
+      "completed",
+      "cancelled",
+      "superseded"
+    ],
+
+    "rules": [
+      "Inactive work items should not appear in ordinary current-attention results.",
+      "A waiting item remains eligible when follow-up, escalation, verification, or intervention is appropriate.",
+      "A delegated item remains eligible when oversight or follow-up is appropriate.",
+      "A blocked item remains eligible when the user can remove or influence the blocker.",
+      "A scheduled item may remain quiet until preparation or action becomes useful.",
+      "Captured items with unresolved interpretation may be surfaced when clarification from the user is materially necessary."
+    ]
+  },
+
+  "attention_states": {
+    "interrupt": {
+      "description": "Surface immediately or at the earliest appropriate interruption point because delay is likely to create substantial consequence.",
+      "examples": [
+        "critical actionable issue",
+        "imminent consequential deadline",
+        "material safety concern",
+        "important commitment at immediate risk",
+        "major blocker requiring the user's direct action",
+        "time-sensitive opportunity likely to be lost"
+      ]
+    },
+
+    "now": {
+      "description": "Present as work the user should reasonably address in the current working period.",
+      "examples": [
+        "high-priority actionable work",
+        "due follow-up",
+        "important response requiring action",
+        "decision blocking meaningful progress",
+        "short action that prevents likely escalation"
+      ]
+    },
+
+    "soon": {
+      "description": "Keep prominently visible for upcoming attention but do not displace more consequential current work.",
+      "examples": [
+        "approaching deadline",
+        "important strategic work",
+        "delegated work approaching expected completion",
+        "preparation required for a future obligation"
+      ]
+    },
+
+    "watch": {
+      "description": "Keep active and monitor without routinely consuming the user's attention.",
+      "examples": [
+        "waiting for an expected response",
+        "delegated work progressing normally",
+        "monitoring condition with no current intervention required",
+        "scheduled work not yet actionable"
+      ]
+    },
+
+    "deferred": {
+      "description": "Intentionally suppress ordinary presentation until a defined condition or time while preserving the work item.",
+      "examples": [
+        "user snoozed item",
+        "work intentionally postponed",
+        "item not actionable until a known future date"
+      ]
+    },
+
+    "clarify": {
+      "description": "Surface because a small amount of user input is materially necessary to correctly handle the work.",
+      "examples": [
+        "uncertain ownership",
+        "materially ambiguous request",
+        "uncertain deadline with meaningful consequence",
+        "unclear whether an obligation was accepted"
+      ]
+    }
+  },
+
+  "evaluation": {
+    "considerations": {
+      "priority": {
+        "description": "Current operational priority score, band, factors, and reason."
+      },
+
+      "actionability": {
+        "description": "Whether meaningful action can be taken by the target user now."
+      },
+
+      "consequence_of_delay": {
+        "description": "Expected consequence if the item is not addressed during the relevant attention window."
+      },
+
+      "deadline_proximity": {
+        "description": "Proximity and consequence of applicable deadlines or commitments."
+      },
+
+      "follow_up_state": {
+        "description": "Whether follow-up is currently appropriate, due, or overdue."
+      },
+
+      "blocking_effect": {
+        "description": "Whether the user's action would unblock other people, systems, projects, or work."
+      },
+
+      "waiting_state": {
+        "description": "Whether the item is legitimately waiting and whether intervention is now useful."
+      },
+
+      "delegation_state": {
+        "description": "Whether another party owns the next action and whether oversight is currently required."
+      },
+
+      "material_change": {
+        "description": "Whether new information has materially changed the item's significance or required action."
+      },
+
+      "strategic_value": {
+        "description": "Whether the item requires protected attention despite lacking immediate urgency."
+      },
+
+      "presentation_history": {
+        "description": "Whether the item has recently been surfaced and whether repeating it would add value."
+      },
+
+      "snooze_state": {
+        "description": "Whether presentation has intentionally been deferred."
+      },
+
+      "user_availability": {
+        "description": "Whether the user is reasonably available for the type of attention being considered."
+      },
+
+      "required_effort": {
+        "description": "Approximate effort required for the next meaningful action when that information is available."
+      }
+    }
+  },
+
+  "actionability": {
+    "states": [
+      "actionable_now",
+      "actionable_with_preparation",
+      "waiting_external",
+      "delegated_external",
+      "blocked",
+      "scheduled_future",
+      "clarification_required",
+      "unknown"
+    ],
+
+    "rules": [
+      "Actionability affects presentation but does not directly redefine priority.",
+      "A critical non-actionable item may remain under active monitoring without repeated interruption.",
+      "A low-effort action that prevents a high-consequence future problem may warrant immediate attention.",
+      "Unknown actionability should not automatically be interpreted as actionable."
+    ]
+  },
+
+  "interruption_policy": {
+    "purpose": "Prevent A.R.I.A. from becoming another source of constant distraction.",
+
+    "rules": [
+      "Interrupt only when the expected value of immediate awareness materially exceeds the cost of interruption.",
+      "Critical priority alone does not require interruption when no meaningful user action is possible.",
+      "Interruptions should identify what changed, why it matters now, and what action is available.",
+      "Repeated interruption for the same unchanged condition should be avoided.",
+      "A materially worsening condition may justify renewed interruption.",
+      "Safety-critical or severe consequence conditions may override ordinary interruption suppression.",
+      "User-defined do-not-disturb or availability rules should be respected except where authorized escalation policy permits otherwise."
+    ]
+  },
+
+  "resurfacing": {
+    "triggers": [
+      "snooze expiration",
+      "follow-up becomes due",
+      "deadline approaches materially",
+      "deadline becomes overdue",
+      "commitment becomes at risk",
+      "new meaningful message or activity",
+      "dependency clears",
+      "blocker changes",
+      "delegated work reaches expected completion",
+      "waiting duration exceeds expected response window",
+      "priority materially increases",
+      "risk materially increases",
+      "opportunity window begins closing",
+      "scheduled preparation window begins",
+      "strategic work reaches protected review point"
+    ],
+
+    "rules": [
+      "Resurfacing should occur because circumstances justify renewed attention, not merely because time passed.",
+      "Aging may contribute to resurfacing when an obligation risks being forgotten.",
+      "Repeated unchanged resurfacing should be suppressed when it adds no value.",
+      "A user dismissal is not equivalent to completion unless the user explicitly resolves the underlying work."
+    ]
+  },
+
+  "snooze": {
+    "supported": true,
+
+    "rules": [
+      "Snooze suppresses ordinary presentation until a time or condition.",
+      "Snooze does not change work item status by itself.",
+      "Snooze does not reduce the underlying priority score merely because the user does not want to see the item.",
+      "A materially changed condition may override snooze when authorized by attention policy.",
+      "Snooze expiration requires reevaluation rather than automatic escalation."
+    ]
+  },
+
+  "strategic_attention": {
+    "purpose": "Prevent important non-urgent work from being permanently displaced by urgent operational demands.",
+
+    "rules": [
+      "Strategically important work may receive protected attention windows.",
+      "Strategic work should not be falsely labeled urgent merely to keep it visible.",
+      "Repeated displacement of strategic work should increase its presentation significance without manufacturing a false deadline.",
+      "The system should distinguish urgent interruption from deliberate strategic focus.",
+      "Protected strategic attention should consider the user's actual availability."
+    ]
+  },
+
+  "clarification_policy": {
+    "purpose": "Ask the user only when their input materially improves operational handling.",
+
+    "rules": [
+      "Do not ask for information that can be reliably obtained from authorized sources.",
+      "Do not ask the user to classify every captured item.",
+      "Ask when unresolved ambiguity materially affects ownership, timing, commitment, action, or consequence.",
+      "Prefer concise clarification questions.",
+      "Where safe and useful, preserve the work candidate and continue other processing while clarification is pending.",
+      "Clarification requests themselves should not become unnecessary recurring interruptions."
+    ]
+  },
+
+  "presentation": {
+    "requirements": [
+      "Tell the user what needs attention.",
+      "Explain why it needs attention now.",
+      "Identify the next meaningful action when known.",
+      "Identify important deadlines or commitments when relevant.",
+      "Identify what is blocking progress when relevant.",
+      "Avoid requiring the user to reconstruct the source history merely to understand the obligation.",
+      "Provide source context when it materially helps the user act or verify the recommendation."
+    ],
+
+    "default_information": [
+      "title",
+      "attention_state",
+      "priority_band",
+      "reason",
+      "next_action",
+      "relevant_timing"
+    ],
+
+    "optional_information": [
+      "requester",
+      "customer",
+      "project",
+      "delegation",
+      "waiting_on",
+      "commitment",
+      "source_reference"
+    ]
+  },
+
+  "daily_attention_view": {
+    "supported": true,
+
+    "purpose": "Provide a concise operational view of what deserves the user's attention without presenting the entire work inventory.",
+
+    "sections": [
+      "needs_attention_now",
+      "important_today",
+      "waiting_or_delegated_to_watch",
+      "approaching",
+      "strategic_focus",
+      "clarification_needed"
+    ],
+
+    "rules": [
+      "Sections may be omitted when empty.",
+      "The same item should not be unnecessarily repeated across sections.",
+      "The view should emphasize decisions and actions rather than raw message volume.",
+      "The view must not imply that omitted active work has been deleted or completed.",
+      "The user should be able to request the broader work inventory separately."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.attention",
+
+    "canonical_fields": [
+      "requires_attention",
+      "attention_reason",
+      "attention_since",
+      "last_presented_at",
+      "snoozed_until"
+    ],
+
+    "evaluation_output": [
+      "work_item_id",
+      "attention_state",
+      "reason",
+      "recommended_next_action",
+      "presentation_priority",
+      "evaluated_at"
+    ],
+
+    "requirements": [
+      "Attention decisions must reference the applicable work_item_id.",
+      "Attention state must not silently alter work item status.",
+      "Presentation ranking must not overwrite the Priority Engine's canonical score.",
+      "Material reasons for surfacing an item should be explainable.",
+      "Presentation history should be updated when an item is actually surfaced."
+    ]
+  },
+
+  "priority_boundary": {
+    "rules": [
+      "The Priority Engine determines current operational priority.",
+      "The Attention Engine determines whether, when, and how that priority should consume user attention.",
+      "The Attention Engine may request priority reevaluation when the existing evaluation is stale or circumstances changed.",
+      "The Attention Engine must not independently replace the canonical priority score."
+    ]
+  },
+
+  "capture_boundary": {
+    "rules": [
+      "The Capture Engine determines whether operational work exists.",
+      "The Attention Engine does not create work merely because information is interesting.",
+      "A clarification need discovered during attention evaluation may be returned to capture or workflow handling when the underlying work item requires correction."
+    ]
+  },
+
+  "guardrails": [
+    "Do not show every active work item as urgent.",
+    "Do not interrupt merely because an item exists.",
+    "Do not equate priority with interruption.",
+    "Do not repeatedly surface unchanged non-actionable work.",
+    "Do not allow waiting work to disappear.",
+    "Do not allow delegated work to disappear.",
+    "Do not allow strategic work to disappear indefinitely.",
+    "Do not treat snooze as completion.",
+    "Do not reduce objective priority solely because an item was snoozed.",
+    "Do not invent user availability.",
+    "Do not assume the user must personally perform every important action.",
+    "Do not ask unnecessary clarification questions.",
+    "Do not overwrite canonical priority during presentation ranking.",
+    "Do not modify Core reasoning architecture as part of attention management."
+  ]
+}
