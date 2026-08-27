@@ -1,0 +1,1226 @@
+{
+  "schema_version": "2.0.0",
+  "schema_name": "ARIA Core Contracts",
+  "description": "Canonical interoperability, identity, ownership, persistence, lineage, and semantic contracts for A.R.I.A. This file is the authoritative cross-system contract for Core. Registries own controlled vocabulary, schemas own persisted record validation, reasoning engines own behavior, and explanatory documents describe the architecture without redefining it.",
+
+  "authority": {
+    "role": "PRIMARY_CORE_INTEROPERABILITY_CONTRACT",
+    "scope": [
+      "identity",
+      "persistence boundaries",
+      "cross-system semantics",
+      "shared object contracts",
+      "lineage",
+      "temporal semantics",
+      "confidence",
+      "probability",
+      "case state separation",
+      "knowledge promotion",
+      "learning boundaries",
+      "registry ownership",
+      "schema ownership",
+      "engine ownership"
+    ],
+    "subordinate_to": [
+      "Core/Persona/ARIA_CONSTITUTION.md"
+    ],
+    "authoritative_over": [
+      "Core/Registries/",
+      "Core/Schemas/",
+      "Core/Reasoning/",
+      "Core/Cognition/",
+      "Core/Knowledge/",
+      "Core/Experience/"
+    ],
+    "external_corpus_policy": "Global and Manufacturers contain technical source and knowledge corpus material. They do not redefine Core contracts."
+  },
+
+  "architecture_layers": {
+    "constitution": {
+      "owner": "Core/Persona/ARIA_CONSTITUTION.md",
+      "responsibility": "Defines ARIA's purpose, mission, governing principles, behavioral boundaries, and immutable architectural intent.",
+      "must_not": [
+        "duplicate machine schemas",
+        "maintain controlled technical vocabularies",
+        "define implementation-specific record structures"
+      ]
+    },
+
+    "core_contract": {
+      "owner": "Core/Schemas/core_contracts.json",
+      "responsibility": "Defines universal identity, interoperability, persistence boundaries, shared semantics, and cross-system invariants."
+    },
+
+    "registries": {
+      "owner": "Core/Registries/",
+      "responsibility": "Own controlled semantic vocabularies and stable registry-definition codes.",
+      "must_not": [
+        "act as runtime object stores",
+        "replace canonical runtime identity",
+        "define competing persistence schemas"
+      ]
+    },
+
+    "schemas": {
+      "owner": "Core/Schemas/",
+      "responsibility": "Validate persisted record structures.",
+      "must_not": [
+        "invent controlled vocabulary already owned by a Registry",
+        "redefine Core identity semantics",
+        "define reasoning algorithms"
+      ]
+    },
+
+    "reasoning_engines": {
+      "owner": "Core/Reasoning/",
+      "responsibility": "Define deterministic and probabilistic reasoning behavior, transitions, calculations, routing, validation, orchestration, and learning behavior.",
+      "must_not": [
+        "invent canonical identity systems",
+        "maintain competing controlled vocabularies",
+        "replace persisted record schemas",
+        "silently promote model output into authoritative state"
+      ]
+    },
+
+    "explanatory_architecture": {
+      "owners": [
+        "Core/Cognition/",
+        "Core/Knowledge/",
+        "Core/Experience/"
+      ],
+      "responsibility": "Explain architecture, reasoning semantics, technical boundaries, and intended behavior in human-readable form.",
+      "must_not": [
+        "redefine canonical identity",
+        "create competing Registry vocabularies",
+        "create competing machine contracts"
+      ]
+    },
+
+    "technical_corpus": {
+      "owners": [
+        "Global/",
+        "Manufacturers/"
+      ],
+      "responsibility": "Provide technical source material, reference knowledge, manufacturer documentation, field knowledge, and domain corpus.",
+      "must_not": [
+        "override Core architecture",
+        "silently establish canonical truth without provenance and validation"
+      ]
+    }
+  },
+
+  "core_principles": {
+    "technical_mission": "ARIA is a technical reasoning resource. Business, customer, person, project, and organizational context may be represented only where it materially supports the technical mission.",
+
+    "canonical_identity": "Every persisted first-class runtime object has one stable canonical typed identifier.",
+
+    "typed_uuid_identity": "Runtime canonical identifiers use a defined lowercase prefix followed by an underscore and globally unique UUID. UUIDv7 is preferred.",
+
+    "registry_runtime_separation": "Registry-definition codes identify vocabulary entries. They are not runtime canonical object identifiers.",
+
+    "knowledge_reuse": "Reusable technical concepts are created once and referenced. Manufacturer, product, scope, customer, user, project, and case context shall not cause unnecessary duplication.",
+
+    "observation_interpretation_separation": "Observed information remains distinguishable from interpretation, inference, hypothesis, conclusion, and learned knowledge.",
+
+    "source_claim_knowledge_separation": "A source, a claim extracted from that source, a normalized semantic relationship, and a persisted Knowledge Graph edge are distinct architectural objects.",
+
+    "case_experience_separation": "A diagnostic case is an investigation. An Experience Ledger record is validated learning derived from qualifying historical case information. A case is not itself an experience record.",
+
+    "probability_confidence_separation": "Probability represents estimated likelihood. Confidence represents trust in the quality, support, reliability, or calibration of information or reasoning.",
+
+    "lifecycle_reasoning_state_separation": "A case's broad lifecycle status and its current reasoning state are separate dimensions.",
+
+    "provenance_required": "Material technical information must retain sufficient provenance to explain where it came from and how it was transformed.",
+
+    "independent_corroboration": "Repeated representations of one underlying source do not become independent evidence merely because they appear in multiple artifacts or records.",
+
+    "explicit_relationships": "Semantic relationships are explicit first-class assertions. Reverse semantics shall not be assumed unless the relationship Registry defines symmetry or an inverse.",
+
+    "validated_learning": "Historical interaction does not automatically become learned experience. Learning requires appropriate validation and eligibility.",
+
+    "model_non_authority": "A language model may interpret, propose, classify, summarize, and reason. It does not independently own authoritative state, canonical truth, probabilities, validated outcomes, or permanent knowledge.",
+
+    "append_only_history": "Material case events, probability changes, route history, evidence history, validation outcomes, and learning lineage shall remain auditable rather than being silently overwritten.",
+
+    "unknown_is_valid": "Unknown, missing, unresolved, unavailable, and not-applicable states shall remain representable. ARIA shall not manufacture certainty to fill information gaps."
+  },
+
+  "identifier_contract": {
+    "format": "<prefix>_<uuid>",
+    "preferred_uuid": "UUIDv7",
+    "case_sensitive": true,
+    "runtime_prefixes": {
+      "generic_entity": "ent",
+      "event": "evt",
+      "case": "case",
+      "context": "ctx",
+      "evidence": "evd",
+      "hypothesis": "hyp",
+      "action": "act",
+      "experience": "exp",
+      "user": "usr",
+      "manufacturer": "mfr",
+      "product_family": "pfam",
+      "product": "prod",
+      "product_variant": "pvar",
+      "scope": "scope",
+      "symptom": "sym",
+      "failure_mode": "fm",
+      "measurement": "meas",
+      "unit": "unit",
+      "tool": "tool",
+      "source": "src",
+      "relationship": "rel",
+      "knowledge_node": "kn",
+      "knowledge_edge": "ke",
+      "claim": "claim",
+      "route_step": "rstep",
+      "outcome": "out",
+      "artifact": "artifact"
+    },
+
+    "specialized_entity_rule": "Use the most specific established runtime identity prefix when one exists. Use ent_<UUID> only for reusable canonical technical entities without a dedicated prefix.",
+
+    "non_runtime_registry_codes": {
+      "description": "Registry-definition codes are stable vocabulary keys. They are not runtime canonical identities.",
+      "examples": [
+        "ACT-RF-003",
+        "FM-RF-001",
+        "SYM-RF-003",
+        "CASE-STATE-014",
+        "CONF-DIM-003"
+      ]
+    },
+
+    "forbidden_legacy_runtime_patterns": [
+      "ENT-######",
+      "SRC-######",
+      "CLM-######",
+      "REL-######",
+      "EVD-######",
+      "HYP-######",
+      "EXP-######",
+      "EVT-######",
+      "RTE-######"
+    ],
+
+    "legacy_policy": "Legacy identifiers may be preserved for migration and auditability but shall not remain authoritative runtime identity."
+  },
+
+  "registry_contract": {
+    "purpose": "Registries own controlled vocabulary and semantic catalog definitions.",
+
+    "registry_entry_identity": {
+      "type": "REGISTRY_DEFINITION_CODE",
+      "runtime_identity": false
+    },
+
+    "rules": [
+      "A Registry may define type names, canonical labels, categories, inverses, defaults, semantic rules, or static technical catalog definitions.",
+      "A Registry code shall not be used as the identifier of a runtime case object.",
+      "A runtime action instance uses act_<UUID> even when its action_type references ACT-RF-003.",
+      "A canonical failure-mode entity uses fm_<UUID> even when its classification originates from FM-RF-001.",
+      "A canonical symptom entity uses sym_<UUID> even when its catalog definition originates from SYM-RF-003.",
+      "Schemas and engines shall reference Registry vocabulary rather than reproducing independent lists.",
+      "Registry vocabulary changes must be deliberate and auditable."
+    ]
+  },
+
+  "shared_temporal_contract": {
+    "fields": {
+      "created_at": "When the ARIA record was created.",
+      "updated_at": "When the persisted record was most recently materially updated.",
+      "observed_at": "When the underlying technical condition was actually observed.",
+      "recorded_at": "When an observation or statement was recorded.",
+      "occurred_at": "When an event actually occurred.",
+      "valid_from": "Beginning of known applicability or validity.",
+      "valid_to": "End of known applicability or validity.",
+      "superseded_at": "When the object or assertion was superseded."
+    },
+
+    "rules": [
+      "Observed time and recorded time are not interchangeable.",
+      "Record creation time does not imply technical occurrence time.",
+      "Current knowledge shall not automatically be applied retroactively when historical applicability differs.",
+      "Superseded information may remain historically valid."
+    ]
+  },
+
+  "confidence_contract": {
+    "description": "Confidence expresses trust in quality, support, reliability, calibration, or applicability. Confidence is not probability.",
+
+    "required": [
+      "value",
+      "basis"
+    ],
+
+    "properties": {
+      "value": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+
+      "basis": {
+        "type": "string"
+      },
+
+      "dimension": {
+        "type": "nullable_registry_confidence_dimension"
+      },
+
+      "calculated_at": {
+        "type": "nullable_datetime"
+      }
+    },
+
+    "rules": [
+      "Confidence values shall not imply precision unsupported by the evidence.",
+      "Different confidence dimensions shall not be collapsed into one generic number when that would hide material uncertainty.",
+      "Confidence may be high while hypothesis probability remains low.",
+      "Probability may be high while confidence in that probability remains low."
+    ]
+  },
+
+  "probability_contract": {
+    "description": "Probability expresses current estimated likelihood within a defined reasoning model.",
+
+    "required": [
+      "value"
+    ],
+
+    "properties": {
+      "value": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+
+      "confidence": {
+        "type": "nullable_confidence_contract"
+      },
+
+      "method": {
+        "type": "nullable_string"
+      },
+
+      "domain": {
+        "type": "nullable_string"
+      },
+
+      "sample_size": {
+        "type": "nullable_nonnegative_integer"
+      },
+
+      "effective_sample_size": {
+        "type": "nullable_nonnegative_number"
+      },
+
+      "calculated_at": {
+        "type": "nullable_datetime"
+      }
+    },
+
+    "rules": [
+      "Probability and confidence are separately persisted.",
+      "Mutually exclusive hypotheses may be normalized within a defined probability group.",
+      "Coexisting hypotheses are not required to sum to one.",
+      "Unknown probability mass may be preserved.",
+      "Historical frequency primarily informs priors.",
+      "Current validated evidence primarily informs posterior updates.",
+      "Probability changes must remain explainable and auditable."
+    ]
+  },
+
+  "provenance_contract": {
+    "description": "Canonical lineage contract for technical information.",
+
+    "required": [
+      "lineage_type"
+    ],
+
+    "properties": {
+      "source_id": {
+        "type": "nullable_source_identifier"
+      },
+
+      "artifact_id": {
+        "type": "nullable_artifact_identifier"
+      },
+
+      "lineage_type": {
+        "allowed_values": [
+          "PRIMARY",
+          "COPIED",
+          "TRANSFORMED",
+          "DERIVED",
+          "INFERRED",
+          "AGGREGATED",
+          "SUMMARIZED"
+        ]
+      },
+
+      "parent_ids": {
+        "type": "array_of_canonical_identifiers"
+      },
+
+      "original_reference": {
+        "type": "nullable_string"
+      },
+
+      "acquired_at": {
+        "type": "nullable_datetime"
+      },
+
+      "integrity_status": {
+        "type": "nullable_string"
+      },
+
+      "extraction_confidence": {
+        "type": "nullable_confidence_contract"
+      }
+    },
+
+    "rules": [
+      "Derived information retains lineage to its parent information.",
+      "Summaries and transformations do not become independent sources merely because their text differs.",
+      "Model inference must be marked as inferred lineage.",
+      "Provenance describes lineage; source authority is evaluated separately."
+    ]
+  },
+
+  "authority_contract": {
+    "description": "Authority evaluates how strongly a source should govern a particular technical question within applicable context.",
+
+    "dimensions": [
+      "source_origin",
+      "technical_scope",
+      "product_applicability",
+      "revision_applicability",
+      "temporal_applicability",
+      "directness",
+      "official_status",
+      "independence",
+      "validation_quality"
+    ],
+
+    "rules": [
+      "Authority is contextual, not universal.",
+      "Manufacturer documentation may be authoritative for design intent but does not establish what physically occurred in a specific field case.",
+      "Direct measurement may establish observed behavior without rewriting design requirements.",
+      "Historical frequency may inform probability without overriding deterministic technical requirements.",
+      "Newer documentation shall not automatically supersede older documentation when the older material remains applicable to the relevant revision.",
+      "Authority, confidence, probability, and applicability are separate concepts."
+    ]
+  },
+
+  "artifact_contract": {
+    "identity_prefix": "artifact",
+    "description": "A concrete digital or physical source-bearing artifact such as a PDF, screenshot, configuration export, photograph, log file, video, manual, drawing, or other retrievable technical object.",
+
+    "required": [
+      "artifact_id",
+      "artifact_type",
+      "created_at"
+    ],
+
+    "rules": [
+      "An artifact is not automatically a logical technical source.",
+      "Multiple artifacts may represent the same source.",
+      "The same artifact may support multiple claims.",
+      "Artifact storage location is not canonical technical identity."
+    ]
+  },
+
+  "source_contract": {
+    "identity_prefix": "src",
+    "description": "A logical technical source from which claims, observations, requirements, or other technical information originate.",
+
+    "required": [
+      "source_id",
+      "source_type",
+      "created_at",
+      "updated_at"
+    ],
+
+    "properties": {
+      "artifact_ids": {
+        "type": "array_of_artifact_identifiers"
+      },
+
+      "authority": {
+        "type": "nullable_authority_assessment"
+      },
+
+      "provenance": {
+        "type": "nullable_provenance_contract"
+      },
+
+      "valid_from": {
+        "type": "nullable_datetime"
+      },
+
+      "valid_to": {
+        "type": "nullable_datetime"
+      }
+    },
+
+    "rules": [
+      "A source identifies origin, not automatically truth.",
+      "A source may contain multiple independent claims.",
+      "Source authority depends on technical question and applicability.",
+      "Source identity shall not be replaced by a filesystem path."
+    ]
+  },
+
+  "claim_contract": {
+    "identity_prefix": "claim",
+    "description": "A proposition asserted, extracted, reported, derived, or inferred from one or more sources or observations.",
+
+    "required": [
+      "claim_id",
+      "claim_type",
+      "statement",
+      "created_at",
+      "updated_at"
+    ],
+
+    "properties": {
+      "source_ids": {
+        "type": "array_of_source_identifiers"
+      },
+
+      "provenance": {
+        "type": "provenance_contract"
+      },
+
+      "confidence": {
+        "type": "nullable_confidence_contract"
+      },
+
+      "validation_state": {
+        "type": "string"
+      },
+
+      "normalized_relationship_id": {
+        "type": "nullable_relationship_identifier"
+      }
+    },
+
+    "rules": [
+      "Claims preserve what was asserted before canonical normalization.",
+      "A claim is not automatically canonical technical truth.",
+      "Multiple claims may normalize to one semantic relationship.",
+      "Conflicting claims may coexist until reconciled.",
+      "A claim extracted by a language model remains candidate information until accepted by applicable validation logic."
+    ]
+  },
+
+  "canonical_entity_contract": {
+    "description": "Reusable technical concept represented independently from case-specific observations.",
+
+    "schema_owner": "Core/Schemas/entity.schema.json",
+    "type_registry_owner": "Core/Registries/entity_types.json",
+
+    "required": [
+      "id",
+      "entity_type",
+      "canonical_name",
+      "status",
+      "validation_state",
+      "created_at",
+      "updated_at"
+    ],
+
+    "rules": [
+      "Names are not identity.",
+      "Aliases are not automatically separate canonical entities.",
+      "A canonical entity shall not embed case-specific observation history.",
+      "Relationships shall not be hidden inside arbitrary metadata when graph semantics materially matter.",
+      "Canonical entities may be reused across manufacturers, products, cases, customers, teams, and users where technically appropriate."
+    ]
+  },
+
+  "relationship_contract": {
+    "identity_prefix": "rel",
+    "schema_owner": "Core/Schemas/relationships.schema.json",
+    "type_registry_owner": "Core/Registries/relationship_types.json",
+
+    "description": "First-class semantic assertion connecting eligible canonical ARIA objects. Relationships may be reusable, case-specific, evidentiary, experiential, procedural, or contextual.",
+
+    "required": [
+      "relationship_id",
+      "relationship_type",
+      "source_entity_id",
+      "target_entity_id",
+      "created_at"
+    ],
+
+    "rules": [
+      "Relationship vocabulary is owned exclusively by the relationship Registry.",
+      "A reverse relationship is not assumed unless the Registry defines symmetry or an inverse.",
+      "Relationship confidence is not hypothesis probability.",
+      "Case-specific relationships do not automatically become reusable Knowledge Graph edges.",
+      "A reusable Knowledge Graph edge may correspond to a semantic relationship without sharing its identifier."
+    ]
+  },
+
+  "knowledge_graph_contract": {
+    "description": "Reusable canonical technical graph built from validated technical concepts and relationships.",
+
+    "node": {
+      "identity_prefix": "kn",
+
+      "required": [
+        "knowledge_node_id",
+        "canonical_entity_id",
+        "created_at"
+      ],
+
+      "rules": [
+        "A Knowledge Graph node projects a canonical technical entity into reusable graph structure.",
+        "Knowledge nodes do not replace canonical entity identity."
+      ]
+    },
+
+    "edge": {
+      "identity_prefix": "ke",
+
+      "required": [
+        "knowledge_edge_id",
+        "relationship_type",
+        "source_node_id",
+        "target_node_id",
+        "created_at"
+      ],
+
+      "rules": [
+        "Knowledge Graph edges represent reusable validated graph structure.",
+        "Knowledge edges shall not store transient case reasoning as permanent technical truth.",
+        "Knowledge edges use Registry relationship semantics.",
+        "A Knowledge Graph edge and a general semantic relationship are distinct records."
+      ]
+    },
+
+    "promotion_gate": {
+      "required_considerations": [
+        "reusability beyond one case",
+        "technical generalizability",
+        "validation",
+        "provenance",
+        "source authority",
+        "contextual scope",
+        "contradiction status",
+        "temporal applicability"
+      ],
+
+      "rule": "No case-specific observation, model inference, or Experience Ledger pattern silently becomes canonical Knowledge Graph truth."
+    }
+  },
+
+  "case_contract": {
+    "identity_prefix": "case",
+    "description": "A diagnostic or technical investigation with preserved evolving state.",
+
+    "required": [
+      "case_id",
+      "status",
+      "reasoning_state",
+      "opened_at",
+      "created_at",
+      "updated_at"
+    ],
+
+    "lifecycle_status_semantics": {
+      "description": "Broad case lifecycle. Detailed diagnostic phase belongs in reasoning_state.",
+      "conceptual_values": [
+        "ACTIVE",
+        "WAITING",
+        "BLOCKED",
+        "SUSPENDED",
+        "RESOLVED",
+        "CLOSED",
+        "ESCALATED",
+        "UNRESOLVED",
+        "CANCELLED"
+      ],
+      "registry_rule": "Final controlled values shall be owned by the applicable case lifecycle Registry or schema, not duplicated by reasoning engines."
+    },
+
+    "reasoning_state_semantics": {
+      "description": "Current reasoning or diagnostic phase.",
+      "registry_owner": "Core/Registries/case_states.json",
+      "examples": [
+        "INTAKE",
+        "CONTEXTUALIZATION",
+        "INITIAL_EVIDENCE_ASSESSMENT",
+        "HYPOTHESIS_GENERATION",
+        "DIAGNOSTIC_DISCRIMINATION",
+        "ISOLATION",
+        "VALIDATION",
+        "LEARNING_ASSESSMENT"
+      ]
+    },
+
+    "rules": [
+      "Case lifecycle status and reasoning state are separate.",
+      "A case is not itself an Experience Ledger record.",
+      "Case history shall not be erased when reasoning reroutes.",
+      "New evidence updates the current case state rather than restarting the investigation.",
+      "A case may contain multiple simultaneous failure modes.",
+      "Case closure does not automatically establish learning eligibility."
+    ]
+  },
+
+  "context_contract": {
+    "identity_prefix": "ctx",
+    "description": "Resolved multidimensional technical context applicable to a case, claim, relationship, source, experience, or reasoning operation.",
+
+    "required": [
+      "context_id",
+      "created_at",
+      "updated_at"
+    ],
+
+    "registry_owner": "Core/Registries/context_types.json",
+
+    "rules": [
+      "Context dimensions and contextual values are different concepts.",
+      "Context may reference canonical entities instead of duplicating them.",
+      "Unknown context remains explicitly unknown.",
+      "Missing context shall only be requested when expected to materially improve reasoning.",
+      "Context similarity is not binary and may be dimension-specific."
+    ]
+  },
+
+  "event_contract": {
+    "identity_prefix": "evt",
+    "description": "Immutable record of a material occurrence affecting case state, reasoning, external input, execution, or system behavior.",
+
+    "required": [
+      "event_id",
+      "event_type",
+      "occurred_at",
+      "created_at"
+    ],
+
+    "rules": [
+      "Events are append-only.",
+      "Events shall identify their originating case when case-specific.",
+      "Events may trigger reasoning but do not themselves replace authoritative case state.",
+      "Repeated ingestion of the same stable external event should be idempotent."
+    ]
+  },
+
+  "evidence_contract": {
+    "identity_prefix": "evd",
+    "description": "Case-specific observed, measured, reported, recorded, or derived information used during reasoning.",
+
+    "type_registry_owner": "Core/Registries/evidence_types.json",
+
+    "required": [
+      "evidence_id",
+      "case_id",
+      "evidence_type",
+      "status",
+      "provenance",
+      "created_at",
+      "updated_at"
+    ],
+
+    "rules": [
+      "Evidence and interpretation remain distinguishable.",
+      "Evidence may reference canonical entities without becoming those entities.",
+      "Derived evidence retains parent lineage.",
+      "Duplicate representations of the same underlying observation shall not count as independent corroboration.",
+      "Evidence reliability is not hypothesis probability.",
+      "Evidence status vocabulary shall be owned in one Registry or schema rather than independently by engines."
+    ]
+  },
+
+  "hypothesis_contract": {
+    "identity_prefix": "hyp",
+    "description": "Case-specific candidate explanation evaluating a canonical failure mode, cause, condition, or other technically meaningful explanation.",
+
+    "required": [
+      "hypothesis_id",
+      "case_id",
+      "hypothesis_entity_id",
+      "status",
+      "current_probability",
+      "created_at",
+      "updated_at"
+    ],
+
+    "rules": [
+      "A hypothesis instance is distinct from the canonical entity being evaluated.",
+      "Historical priors are not current case evidence.",
+      "Probability history shall remain auditable.",
+      "Hypothesis status vocabulary shall have one canonical owner.",
+      "A hypothesis is not promoted directly into Knowledge Graph truth."
+    ]
+  },
+
+  "action_contract": {
+    "identity_prefix": "act",
+    "description": "A runtime diagnostic, inspection, verification, measurement, corrective, informational, validation, or operational action.",
+
+    "type_registry_owner": "Core/Registries/action_types.json",
+
+    "required": [
+      "action_id",
+      "case_id",
+      "action_type",
+      "status",
+      "created_at"
+    ],
+
+    "rules": [
+      "Registry action code identifies action definition; act_<UUID> identifies runtime action instance.",
+      "Action completion and action effectiveness are separate.",
+      "An action may produce evidence and outcomes.",
+      "Repeated actions require a technical justification when an equivalent valid result already exists.",
+      "Safety, authorization, access, and service-impact gates may prohibit execution."
+    ]
+  },
+
+  "route_step_contract": {
+    "identity_prefix": "rstep",
+    "description": "Persisted diagnostic routing decision or route-history step.",
+
+    "required": [
+      "route_step_id",
+      "case_id",
+      "created_at"
+    ],
+
+    "rules": [
+      "Route history is append-only.",
+      "A route step records why a diagnostic next hop was chosen.",
+      "Route selection is not equivalent to hypothesis probability.",
+      "Failed or low-yield routes remain useful historical information."
+    ]
+  },
+
+  "outcome_contract": {
+    "identity_prefix": "out",
+    "description": "Recorded result of an action, test, observation interval, validation step, learning decision, or case disposition.",
+
+    "type_registry_owner": "Core/Registries/outcome_types.json",
+
+    "required": [
+      "outcome_id",
+      "outcome_type",
+      "created_at"
+    ],
+
+    "rules": [
+      "Action completion and technical success are separate outcomes.",
+      "Condition improvement is not equivalent to validated resolution.",
+      "A validation outcome is not automatically proof of exact causal mechanism.",
+      "Outcome records preserve what actually occurred rather than what was predicted."
+    ]
+  },
+
+  "experience_contract": {
+    "identity_prefix": "exp",
+    "description": "Validated historical learning derived from qualifying case history or other explicitly eligible validated observations.",
+
+    "required": [
+      "experience_id",
+      "created_at",
+      "updated_at"
+    ],
+
+    "rules": [
+      "A case is not an Experience Ledger record.",
+      "Experience must retain source case lineage.",
+      "Experience shall preserve relevant technical context.",
+      "Learning weight depends on evidence quality, attribution quality, validation, context completeness, and applicable learning policy.",
+      "Experience may influence priors, route performance, contextual similarity, and candidate knowledge.",
+      "Experience shall not silently rewrite canonical technical truth.",
+      "User-specific learning remains scoped to the relevant user and context.",
+      "One case does not establish a universal causal rule."
+    ]
+  },
+
+  "user_contract": {
+    "identity_prefix": "usr",
+    "description": "Technical participant identity used when user-specific experience, capability, provenance, responsibility, or reasoning context is materially relevant.",
+
+    "rules": [
+      "User identity exists only where technically useful.",
+      "Reporter identity does not establish fault attribution.",
+      "User-specific history may influence priors or routing only when validated and contextually relevant.",
+      "ARIA shall not become an HR performance system."
+    ]
+  },
+
+  "source_to_knowledge_pipeline": {
+    "stages": [
+      {
+        "stage": "ARTIFACT",
+        "identity": "artifact_<UUID>",
+        "meaning": "Concrete source-bearing object."
+      },
+      {
+        "stage": "SOURCE",
+        "identity": "src_<UUID>",
+        "meaning": "Logical origin of technical information."
+      },
+      {
+        "stage": "CLAIM",
+        "identity": "claim_<UUID>",
+        "meaning": "What a source or observation asserts."
+      },
+      {
+        "stage": "SEMANTIC_NORMALIZATION",
+        "identity": "rel_<UUID>",
+        "meaning": "Normalized semantic assertion using canonical entities and Registry relationship vocabulary."
+      },
+      {
+        "stage": "KNOWLEDGE_PROMOTION",
+        "identity": "kn_<UUID> / ke_<UUID>",
+        "meaning": "Validated reusable technical graph structure."
+      }
+    ],
+
+    "rules": [
+      "Not every artifact requires a distinct logical source.",
+      "Not every claim becomes a semantic relationship.",
+      "Not every semantic relationship becomes reusable Knowledge Graph knowledge.",
+      "Every transformation retains lineage.",
+      "Contradictory claims may coexist until appropriately resolved."
+    ]
+  },
+
+  "case_reasoning_pipeline": {
+    "conceptual_flow": [
+      "case_<UUID>",
+      "ctx_<UUID>",
+      "evt_<UUID>",
+      "evd_<UUID>",
+      "hyp_<UUID>",
+      "act_<UUID>",
+      "rstep_<UUID>",
+      "out_<UUID>",
+      "exp_<UUID>"
+    ],
+
+    "rules": [
+      "The sequence is conceptual rather than a mandatory fixed workflow.",
+      "ARIA is event-driven and may revisit reasoning functions as state changes.",
+      "Not every case requires every object type.",
+      "Reasoning resumes from current authoritative state.",
+      "Validated completed experience may later influence future cases."
+    ]
+  },
+
+  "reasoning_engine_boundaries": {
+    "ORCHESTRATION_ENGINE": {
+      "owns": [
+        "engine invocation order",
+        "event-driven coordination",
+        "selective execution",
+        "reasoning transaction coordination"
+      ],
+      "does_not_own": [
+        "technical vocabulary",
+        "canonical state schemas"
+      ]
+    },
+
+    "CASE_STATE_ENGINE": {
+      "owns": [
+        "authoritative current case state",
+        "state versioning",
+        "allowed deterministic state transitions"
+      ],
+      "does_not_own": [
+        "case-state vocabulary",
+        "probability calculation"
+      ]
+    },
+
+    "CONTEXT_ENGINE": {
+      "owns": [
+        "context resolution",
+        "context applicability",
+        "context similarity",
+        "missing-context evaluation"
+      ],
+      "does_not_own": [
+        "context vocabulary"
+      ]
+    },
+
+    "EVIDENCE_ENGINE": {
+      "owns": [
+        "evidence classification",
+        "evidence validation",
+        "evidence quality evaluation",
+        "evidence contradiction handling",
+        "evidence independence handling"
+      ],
+      "does_not_own": [
+        "evidence type vocabulary",
+        "hypothesis probability calculation"
+      ]
+    },
+
+    "HYPOTHESIS_ENGINE": {
+      "owns": [
+        "candidate hypothesis generation",
+        "hypothesis activation/deactivation logic",
+        "technical plausibility evaluation"
+      ],
+      "does_not_own": [
+        "probability calculation",
+        "canonical failure-mode vocabulary"
+      ]
+    },
+
+    "PROBABILITY_ENGINE": {
+      "owns": [
+        "priors",
+        "posterior updates",
+        "probability normalization",
+        "smoothing",
+        "calibration-related probability mechanics"
+      ],
+      "does_not_own": [
+        "generic confidence vocabulary",
+        "source authority"
+      ]
+    },
+
+    "UNCERTAINTY_ENGINE": {
+      "owns": [
+        "uncertainty representation",
+        "uncertainty propagation",
+        "assumption handling",
+        "contradiction uncertainty",
+        "uncertainty-reduction opportunities"
+      ],
+      "does_not_own": [
+        "hypothesis probability",
+        "canonical confidence dimension vocabulary"
+      ]
+    },
+
+    "DECISION_ENGINE": {
+      "owns": [
+        "decision utility",
+        "candidate action value comparison",
+        "tradeoff evaluation"
+      ],
+      "does_not_own": [
+        "persistent route history",
+        "action type vocabulary"
+      ]
+    },
+
+    "ROUTING_ENGINE": {
+      "owns": [
+        "route graph state",
+        "route history",
+        "next-hop selection from scored candidates",
+        "rerouting behavior",
+        "repeat-route penalties"
+      ],
+      "does_not_own": [
+        "duplicate independent action-scoring semantics",
+        "probability calculation"
+      ]
+    },
+
+    "VALIDATION_ENGINE": {
+      "owns": [
+        "validation plans",
+        "success criteria",
+        "before-after evaluation",
+        "resolution gates",
+        "causal validation",
+        "learning restrictions derived from validation"
+      ],
+      "does_not_own": [
+        "case lifecycle vocabulary",
+        "learning probability updates"
+      ]
+    },
+
+    "LEARNING_ENGINE": {
+      "owns": [
+        "learning eligibility",
+        "experience extraction",
+        "learning weight",
+        "experience aggregation",
+        "candidate knowledge proposal"
+      ],
+      "does_not_own": [
+        "automatic canonical truth promotion",
+        "Knowledge Graph vocabulary"
+      ]
+    },
+
+    "MEMORY_ENGINE": {
+      "owns": [
+        "relevant retrieval assembly",
+        "persistent-memory retrieval strategy",
+        "case-history retrieval",
+        "experience retrieval",
+        "knowledge retrieval"
+      ],
+      "does_not_own": [
+        "canonical source truth",
+        "canonical knowledge creation"
+      ]
+    }
+  },
+
+  "decision_routing_boundary": {
+    "principle": "Decision determines comparative diagnostic utility. Routing determines path progression and operational next-hop history.",
+
+    "decision_engine": [
+      "scores candidate decisions",
+      "evaluates information value",
+      "evaluates cost, risk, discrimination, and expected utility"
+    ],
+
+    "routing_engine": [
+      "maintains current route graph",
+      "selects and records next hop from eligible scored actions",
+      "applies route-history penalties and dependencies",
+      "reroutes after material state changes"
+    ],
+
+    "rule": "Decision and Routing may exchange scores and candidates but shall not independently implement two competing utility models."
+  },
+
+  "validation_learning_boundary": {
+    "principle": "Validation establishes what the evidence supports. Learning determines what validated history is allowed to teach.",
+
+    "rules": [
+      "Symptom resolution does not automatically prove root cause.",
+      "Operational recovery may be validated while causal confidence remains limited.",
+      "Validation determines learning restrictions.",
+      "Learning Engine applies those restrictions when creating Experience Ledger records.",
+      "Knowledge promotion remains a separate governance action."
+    ]
+  },
+
+  "confidence_probability_boundary": {
+    "rules": [
+      "HYPOTHESIS_PROBABILITY is a probability dimension, not a confidence dimension.",
+      "Evidence quality is confidence-related metadata.",
+      "Diagnostic confidence evaluates sufficiency of evidence for a diagnosis.",
+      "Causal confidence evaluates support for causal attribution.",
+      "Resolution confidence evaluates support for successful resolution.",
+      "Learning confidence evaluates whether historical information is safe to influence future reasoning.",
+      "Context-match confidence evaluates technical applicability of retrieved information."
+    ]
+  },
+
+  "persistent_state_policy": {
+    "authoritative_state": "Structured persisted services, not conversational model output.",
+
+    "append_only_or_versioned": [
+      "events",
+      "evidence history",
+      "probability history",
+      "route history",
+      "validation outcomes",
+      "learning lineage",
+      "material state versions"
+    ],
+
+    "rules": [
+      "Partial multi-object reasoning updates should be transactionally consistent.",
+      "Concurrent state writes must not silently overwrite newer state.",
+      "External event ingestion should support idempotency.",
+      "Model-generated proposals require structured-service acceptance before becoming authoritative state."
+    ]
+  },
+
+  "knowledge_governance": {
+    "candidate_sources": [
+      "manufacturer documentation",
+      "engineering documentation",
+      "standards",
+      "field evidence",
+      "validated Experience Ledger records",
+      "human technical contribution",
+      "structured extraction",
+      "ARIA inference"
+    ],
+
+    "promotion_rules": [
+      "Source authority shall be evaluated.",
+      "Technical applicability shall be established.",
+      "Contradictions shall be preserved or resolved.",
+      "Provenance shall remain traceable.",
+      "Causal claims require stronger validation than simple association.",
+      "Repeated experience may propose canonical knowledge but does not independently authorize it."
+    ]
+  },
+
+  "technical_scope_boundary": {
+    "allowed_contextual_support": [
+      "customers",
+      "people",
+      "roles",
+      "projects",
+      "sites",
+      "contractors",
+      "scope of work",
+      "technical responsibilities"
+    ],
+
+    "rule": "These contextual concepts may exist only to support technical reasoning, provenance, applicability, experience, or execution. Core shall not evolve into CRM, HR, accounting, sales, or general business-management architecture."
+  },
+
+  "repository_migration_rules": {
+    "current_transition": {
+      "superseded_contract": "Core/Schemas/entity_contracts.json",
+      "replacement_contract": "Core/Schemas/core_contracts.json",
+      "delete_superseded_contract_now": false
+    },
+
+    "rules": [
+      "entity_contracts.json remains temporarily until all dependent Core files reference core_contracts.json.",
+      "No existing schema shall be considered final until reconciled against this contract.",
+      "No existing reasoning engine shall be considered final until its vocabulary ownership and persistence boundaries are reconciled.",
+      "No explanatory Markdown file shall be considered final until its authority references and semantics align with this contract.",
+      "The final migration step shall remove superseded contracts only after repository-wide validation."
+    ]
+  },
+
+  "global_invariants": [
+    "One controlled vocabulary owner per semantic domain.",
+    "One canonical identity system.",
+    "Registry codes are not runtime IDs.",
+    "Runtime IDs use typed UUID identity.",
+    "Case status and reasoning state are separate.",
+    "Case and Experience Ledger records are separate.",
+    "Source and artifact are separate.",
+    "Source and claim are separate.",
+    "Claim and canonical relationship are separate.",
+    "Semantic relationship and Knowledge Graph edge are separate.",
+    "Observation and interpretation are separate.",
+    "Probability and confidence are separate.",
+    "Authority and confidence are separate.",
+    "Applicability and authority are separate.",
+    "Action completion and action success are separate.",
+    "Symptom resolution and causal proof are separate.",
+    "Historical frequency and technical causality are separate.",
+    "Repeated representations of one source are not independent corroboration.",
+    "Unknown information remains representable.",
+    "Context shall not create unnecessary canonical duplication.",
+    "Model output is proposal until accepted by structured services.",
+    "Case evidence does not silently rewrite canonical knowledge.",
+    "Experience does not silently rewrite canonical knowledge.",
+    "Deprecated and superseded knowledge remains historically traceable.",
+    "Global and Manufacturers are technical corpus, not architectural authority.",
+    "ARIA remains a technical reasoning resource."
+  ]
+}
