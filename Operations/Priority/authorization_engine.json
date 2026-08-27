@@ -1,0 +1,636 @@
+{
+  "engine": {
+    "id": "aria.operations.authorization_engine",
+    "name": "A.R.I.A. Operational Authorization Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_authorization",
+    "status": "active",
+    "purpose": "Establish, validate, scope, preserve, and revoke operational authority for actions A.R.I.A. may perform or cause to be performed. The engine provides the canonical representation of who authorized what, for which subjects and action classes, under what conditions, for what duration, and with what limits, while preventing identity, access, recommendation, decision support, prior behavior, or technical capability from being mistaken for permission.",
+    "principles": [
+      "Authentication is not authorization.",
+      "System access is not authorization.",
+      "Recommendation is not authorization.",
+      "Priority is not authorization.",
+      "Plan inclusion is not authorization.",
+      "Technical capability is not authorization.",
+      "Authority must be attributable to an authorized source.",
+      "Authority must be scoped to the action actually permitted.",
+      "Authority should be no broader than supported evidence allows.",
+      "Standing authority must remain bounded and revocable.",
+      "Consequential authority requires stronger evidence than routine authority.",
+      "Expired or revoked authority must not remain usable.",
+      "Ambiguous authority must remain ambiguous until resolved.",
+      "Authorization does not prove that an action occurred.",
+      "Operational authorization must remain traceable and auditable.",
+      "Authorization governance must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "authorization_record",
+    "sources": [
+      "explicit user instructions",
+      "authorized decisions",
+      "organizational role policies",
+      "approved operational workflows",
+      "standing authorization records",
+      "customer authority",
+      "contractual authority",
+      "financial authority",
+      "technical authority",
+      "delegated authority",
+      "action requests",
+      "context",
+      "commitments",
+      "delegations",
+      "decisions",
+      "available execution capabilities",
+      "revocation records",
+      "authorized organizational policy"
+    ]
+  },
+
+  "authorization_types": {
+    "single_action": {
+      "description": "Authority for one specifically identified operational action."
+    },
+    "action_class": {
+      "description": "Authority for a defined class of materially similar actions."
+    },
+    "standing": {
+      "description": "Continuing authority within explicit scope and limits until expiration or revocation."
+    },
+    "workflow": {
+      "description": "Authority granted through an approved operational workflow under defined conditions."
+    },
+    "role_based": {
+      "description": "Authority derived from an authorized organizational role policy."
+    },
+    "delegated": {
+      "description": "Authority validly delegated by an actor permitted to delegate that authority."
+    },
+    "conditional": {
+      "description": "Authority that becomes usable only when specified supported conditions are satisfied."
+    },
+    "emergency": {
+      "description": "Exceptional authority valid only under explicitly supported emergency conditions and boundaries."
+    }
+  },
+
+  "authorization_states": {
+    "proposed": {
+      "description": "Potential authorization has been identified but validity has not been established."
+    },
+    "pending_confirmation": {
+      "description": "Material ambiguity or required confirmation prevents authority from being considered active."
+    },
+    "active": {
+      "description": "Authorization is currently valid within its defined scope."
+    },
+    "conditionally_active": {
+      "description": "Authorization is valid only while defined conditions remain satisfied."
+    },
+    "suspended": {
+      "description": "Authorization temporarily cannot be used."
+    },
+    "expired": {
+      "description": "The authorization's supported validity period has ended."
+    },
+    "revoked": {
+      "description": "The authorization was explicitly withdrawn."
+    },
+    "superseded": {
+      "description": "A newer authorization record replaces the prior record."
+    },
+    "exhausted": {
+      "description": "A bounded authorization has been fully consumed."
+    },
+    "invalid": {
+      "description": "Available evidence establishes that the purported authorization is not valid."
+    }
+  },
+
+  "authorization_record": {
+    "fields": [
+      "authorization_id",
+      "authorization_type",
+      "authorization_state",
+      "grantor",
+      "grantor_authority_basis",
+      "grantee",
+      "action_scope",
+      "subject_scope",
+      "system_scope",
+      "financial_limit",
+      "customer_scope",
+      "project_scope",
+      "conditions",
+      "prohibitions",
+      "confirmation_requirement",
+      "delegation_allowed",
+      "usage_limit",
+      "usage_count",
+      "valid_from",
+      "valid_until",
+      "revoked_at",
+      "revoked_by",
+      "supersedes",
+      "evidence",
+      "source_references",
+      "created_at",
+      "updated_at"
+    ],
+    "requirements": [
+      "The grantor must be identifiable when authority depends on a specific actor.",
+      "The authority basis must be supportable.",
+      "The action scope must be explicit enough for Action Engine validation.",
+      "Material limits and prohibitions must remain attached to the authorization.",
+      "Validity period must not be fabricated.",
+      "Revocation must take effect for future execution eligibility.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "authority_classes": {
+    "user_authority": {
+      "description": "Authority belonging directly to the user."
+    },
+    "delegated_user_authority": {
+      "description": "A supported subset of user authority delegated to another actor or A.R.I.A."
+    },
+    "manager_authority": {
+      "description": "Authority derived from an authorized management role."
+    },
+    "organizational_authority": {
+      "description": "Authority derived from approved organizational policy."
+    },
+    "customer_authority": {
+      "description": "Authority belonging to an authorized customer representative."
+    },
+    "contractual_authority": {
+      "description": "Authority or permission established through a supported contractual arrangement."
+    },
+    "financial_authority": {
+      "description": "Authority to create or approve defined financial consequences."
+    },
+    "technical_authority": {
+      "description": "Authority to perform defined technical or infrastructure actions."
+    },
+    "system_authority": {
+      "description": "Permission granted by an authorized system-governance policy."
+    },
+    "unknown_authority": {
+      "description": "Available evidence does not establish the required authority."
+    }
+  },
+
+  "scope_model": {
+    "dimensions": [
+      "action",
+      "subject",
+      "project",
+      "customer",
+      "person",
+      "team",
+      "system",
+      "data",
+      "financial_amount",
+      "time",
+      "frequency",
+      "condition",
+      "execution_mode"
+    ],
+    "rules": [
+      "Authorization applies only within supported scope dimensions.",
+      "Missing scope must not automatically be interpreted as unlimited scope.",
+      "Specific authority should override broader ambiguous interpretation.",
+      "A materially different target may require separate authorization.",
+      "A materially different action may require separate authorization.",
+      "Financial authority should preserve supported monetary limits.",
+      "Time-bounded authority becomes unusable after expiration.",
+      "Conditional authority becomes unusable when required conditions are not satisfied."
+    ]
+  },
+
+  "authorization_sources": {
+    "supported": {
+      "explicit_current_user_instruction": {
+        "strength": "high",
+        "description": "A current explicit instruction from the user authorizing a sufficiently defined action."
+      },
+      "authorized_decision": {
+        "strength": "high",
+        "description": "An authorized decision whose disposition explicitly permits the resulting action."
+      },
+      "standing_user_authorization": {
+        "strength": "high",
+        "description": "A previously established standing authorization that remains active and applicable."
+      },
+      "authorized_role_policy": {
+        "strength": "high",
+        "description": "An approved policy granting defined authority to an organizational role."
+      },
+      "approved_operational_workflow": {
+        "strength": "high",
+        "description": "A governed workflow that explicitly authorizes defined actions when its conditions are met."
+      },
+      "authorized_organizational_policy": {
+        "strength": "high",
+        "description": "An organizational policy explicitly establishing defined authority."
+      },
+      "supported_delegation": {
+        "strength": "conditional",
+        "description": "Authority delegated by an actor who is permitted to delegate the applicable authority."
+      }
+    },
+    "not_authorization": [
+      "recommendation",
+      "prediction",
+      "priority",
+      "plan inclusion",
+      "schedule inclusion",
+      "historical user acceptance",
+      "historical user behavior",
+      "technical capability",
+      "connector availability",
+      "system authentication",
+      "possession of credentials",
+      "task assignment without action authority",
+      "operational urgency",
+      "customer importance"
+    ]
+  },
+
+  "explicit_authorization": {
+    "rules": [
+      "Explicit authorization should be interpreted according to its ordinary supported meaning.",
+      "A.R.I.A. should not artificially narrow clear authorization until it becomes unusable.",
+      "A.R.I.A. should not broaden authorization beyond what the instruction reasonably supports.",
+      "Context may resolve ordinary references such as 'send it' or 'schedule that' when the target and action are already unambiguous.",
+      "If a consequential material element remains ambiguous, confirmation is required.",
+      "Authorization for preparation does not automatically authorize the final external side effect.",
+      "Authorization for one execution does not automatically create standing authority."
+    ]
+  },
+
+  "standing_authorization": {
+    "purpose": "Allow A.R.I.A. to perform recurring classes of approved actions without repeatedly requesting permission while preserving explicit boundaries.",
+    "requirements": [
+      "defined action class",
+      "defined scope",
+      "authorized grantor",
+      "supported grantor authority",
+      "applicable conditions",
+      "material prohibitions",
+      "confirmation rules where applicable",
+      "revocation capability"
+    ],
+    "rules": [
+      "Standing authorization must never be inferred merely from repeated user approval.",
+      "Standing authority should be created only from explicit supported authorization or approved policy.",
+      "Standing authority should be narrow enough to avoid materially different unintended actions.",
+      "A.R.I.A. should not repeatedly request confirmation for actions clearly inside active standing authority unless another safeguard requires it.",
+      "Materially exceptional circumstances may require confirmation even when ordinary standing authority exists.",
+      "Standing authority remains subject to current operational state and Action Engine safeguards."
+    ]
+  },
+
+  "delegated_authority": {
+    "rules": [
+      "An actor may delegate only authority they possess and are permitted to delegate.",
+      "Delegated authority cannot exceed the grantor's applicable authority.",
+      "A prohibition on delegation must be respected.",
+      "Delegated authority should preserve the original material limitations.",
+      "Revocation of underlying authority may invalidate dependent delegated authority.",
+      "Delegation of execution responsibility and delegation of action authority are distinct."
+    ]
+  },
+
+  "conditional_authority": {
+    "rules": [
+      "Conditions must be objectively evaluable where practical.",
+      "Unsatisfied conditions prevent execution under that authorization.",
+      "Unknown condition state must not be treated as satisfied for consequential action.",
+      "Condition satisfaction should be reevaluated immediately before execution when materially volatile.",
+      "Loss of a required condition suspends practical usability without necessarily erasing historical authorization."
+    ]
+  },
+
+  "confirmation_requirements": {
+    "levels": {
+      "none": "No additional confirmation is required within valid authorization scope.",
+      "contextual": "Confirmation is required only when defined contextual exceptions occur.",
+      "per_action": "Each consequential execution requires explicit confirmation.",
+      "enhanced": "Execution requires stronger confirmation appropriate to the consequence."
+    },
+    "factors": [
+      "action_risk",
+      "reversibility",
+      "financial_consequence",
+      "customer_consequence",
+      "contractual_consequence",
+      "technical_consequence",
+      "blast_radius",
+      "uncertainty",
+      "scope_exception"
+    ],
+    "rules": [
+      "Confirmation requirements must not be silently removed because execution is technically easy.",
+      "Valid standing authority may legitimately specify no per-action confirmation.",
+      "High-consequence exceptions may require stronger confirmation than ordinary actions in the same class.",
+      "Confirmation is an authorization safeguard, not proof of successful execution."
+    ]
+  },
+
+  "financial_authorization": {
+    "rules": [
+      "Financial authority must preserve supported monetary and transaction limits.",
+      "Authorization to prepare a transaction does not automatically authorize submission.",
+      "Authorization to submit one transaction does not automatically authorize future transactions.",
+      "A transaction exceeding the authorized limit requires additional authority.",
+      "Splitting a transaction must not be used to evade an authorization limit.",
+      "Unknown financial authority must block consequential financial execution."
+    ]
+  },
+
+  "customer_and_external_authority": {
+    "rules": [
+      "The user's authority cannot substitute for authority that legitimately belongs to a customer or external party.",
+      "A.R.I.A. must distinguish permission to communicate with an external party from authority to bind that party.",
+      "Customer silence must not be interpreted as authorization unless a supported governing agreement explicitly establishes that mechanism.",
+      "Past customer approval does not automatically authorize a new materially different request.",
+      "External authority should retain source evidence when consequential."
+    ]
+  },
+
+  "technical_and_system_authority": {
+    "rules": [
+      "Administrative access does not automatically establish organizational authority to make a change.",
+      "System permissions may be narrower or broader than legitimate operational authority.",
+      "A.R.I.A. must honor the narrower applicable authority boundary.",
+      "Possession of credentials must never be treated as permission.",
+      "Technical emergency procedures may establish exceptional authority only when explicitly governed."
+    ]
+  },
+
+  "authorization_validation": {
+    "checks": [
+      "authorization_exists",
+      "authorization_state_is_usable",
+      "grantor_is_valid",
+      "grantor_had_required_authority",
+      "action_is_within_scope",
+      "subject_is_within_scope",
+      "system_is_within_scope",
+      "financial_limit_is_satisfied",
+      "conditions_are_satisfied",
+      "prohibitions_are_not_violated",
+      "confirmation_requirement_is_satisfied",
+      "usage_limit_is_not_exhausted",
+      "authorization_is_not_expired",
+      "authorization_is_not_revoked",
+      "authorization_has_not_been_superseded"
+    ],
+    "outcomes": [
+      "valid",
+      "valid_with_conditions",
+      "confirmation_required",
+      "out_of_scope",
+      "expired",
+      "revoked",
+      "exhausted",
+      "invalid",
+      "insufficient_evidence"
+    ],
+    "rules": [
+      "Authorization validation should occur before consequential execution.",
+      "Materially volatile authorization conditions should be checked immediately before execution.",
+      "Insufficient evidence must not be converted into valid authorization.",
+      "Validation result should identify the blocking reason when practical."
+    ]
+  },
+
+  "revocation": {
+    "rules": [
+      "Authorized grantors or governing authority may revoke authorization within their authority.",
+      "Revocation should prevent future execution as soon as practically enforceable.",
+      "Revocation does not erase historical actions performed while authorization was valid.",
+      "Dependent delegated authority should be reevaluated after underlying revocation.",
+      "Pending actions relying on revoked authority should become ineligible unless another valid authorization applies."
+    ]
+  },
+
+  "expiration_and_usage": {
+    "rules": [
+      "Expiration should be enforced when a validity period exists.",
+      "Usage-limited authority should track material consumption.",
+      "An exhausted authorization must not silently reset.",
+      "Failed execution should count against usage only when the governing authorization explicitly requires it or a material side effect may have occurred.",
+      "Authorization history should remain recoverable after expiration or exhaustion."
+    ]
+  },
+
+  "authority_conflict": {
+    "examples": [
+      "two authorized instructions materially conflict",
+      "role policy conflicts with explicit user instruction",
+      "standing authorization conflicts with newer restriction",
+      "delegated authority conflicts with grantor revocation",
+      "customer authority conflicts with internal execution preference"
+    ],
+    "rules": [
+      "Newer explicit restrictions should normally constrain older broader authority when issued by appropriate authority.",
+      "A lower-authority actor must not override a higher-authority restriction outside their authority.",
+      "Material unresolved authority conflict should block consequential execution.",
+      "Conflict Engine or Decision Engine may be required where authority cannot be resolved mechanically.",
+      "Authorization Engine should preserve the competing evidence rather than silently selecting convenient authority."
+    ]
+  },
+
+  "authorization_vs_decision": {
+    "rules": [
+      "Decision Engine owns the selection of an authorized choice.",
+      "Authorization Engine determines whether the resulting action is permitted.",
+      "Some decisions inherently carry action authority when the decision maker possesses and exercises that authority.",
+      "A recommendation accepted conversationally should not automatically be interpreted as broader standing authorization.",
+      "Decision and authorization should remain separately traceable when materially useful."
+    ]
+  },
+
+  "authorization_vs_action": {
+    "rules": [
+      "Authorization Engine owns canonical permission state.",
+      "Action Engine owns execution eligibility, execution, and verification.",
+      "Active authorization does not prove the action is feasible or safe.",
+      "Active authorization does not prove the action occurred.",
+      "Action Engine must validate applicable authorization before consequential execution.",
+      "Action outcome does not retroactively create authorization."
+    ]
+  },
+
+  "authorization_vs_delegation": {
+    "rules": [
+      "Delegation Engine owns responsibility for execution.",
+      "Authorization Engine owns permission to perform consequential actions.",
+      "A person may be responsible for work without authority to perform every action required.",
+      "A person may have authority to perform an action without owning the underlying work.",
+      "Delegation and authorization must not be collapsed into one state."
+    ]
+  },
+
+  "authorization_vs_commitment": {
+    "rules": [
+      "Commitment Engine owns actual promises and commitment terms.",
+      "Authorization Engine determines whether an actor may create, modify, or release a commitment.",
+      "Authority to execute work does not automatically include authority to make commitments.",
+      "Authority to communicate does not automatically include authority to bind the organization."
+    ]
+  },
+
+  "authorization_vs_communication": {
+    "rules": [
+      "Communication Engine owns communication need, form, recipient, and content handling.",
+      "Authorization Engine determines whether the external side effect is permitted.",
+      "Authority to draft does not automatically authorize sending.",
+      "Authority to send routine communication does not automatically authorize contractual or financial representations."
+    ]
+  },
+
+  "authorization_vs_scheduling": {
+    "rules": [
+      "Scheduling Engine owns practical execution timing.",
+      "Authorization Engine determines whether calendar or schedule state may actually be changed.",
+      "A scheduling recommendation does not authorize creating or modifying an external calendar event.",
+      "Standing scheduling authority may be established within defined boundaries."
+    ]
+  },
+
+  "authorization_vs_priority": {
+    "rules": [
+      "Priority Engine owns canonical operational importance.",
+      "Urgency and importance do not create authority.",
+      "High priority does not justify bypassing required authorization.",
+      "Authorization Engine must not change canonical priority."
+    ]
+  },
+
+  "authorization_vs_prediction": {
+    "rules": [
+      "Prediction Engine forecasts future conditions.",
+      "Predicted consequence does not create authority.",
+      "Forecast urgency must not be used to manufacture permission.",
+      "Supported emergency authority may apply only when its actual governed conditions are satisfied."
+    ]
+  },
+
+  "authorization_vs_recommendation": {
+    "rules": [
+      "Recommendation Engine identifies what appears useful.",
+      "Recommendation strength does not create authority.",
+      "An accepted recommendation may produce explicit authorization when the authorized actor clearly approves the action.",
+      "The resulting authorization must remain scoped to what was actually approved."
+    ]
+  },
+
+  "authorization_vs_learning": {
+    "rules": [
+      "Learning Engine may retain supported knowledge about authorization preferences or workflows.",
+      "Historical approval patterns must never independently create authority.",
+      "Repeated approval may suggest that standing authorization would be useful, but A.R.I.A. must obtain or identify actual standing authority before treating it as such."
+    ]
+  },
+
+  "authorization_vs_context": {
+    "rules": [
+      "Context may affect whether authorization applies.",
+      "Context cannot independently create authority.",
+      "Changed context may cause conditional authorization to become unusable.",
+      "Expected context must not be treated as confirmed when authorization depends on it."
+    ]
+  },
+
+  "authorization_refresh": {
+    "triggers": [
+      "new explicit user instruction",
+      "new authorized decision",
+      "new standing authorization",
+      "authorization amendment",
+      "authorization revocation",
+      "authorization expiration",
+      "usage limit changes",
+      "grantor authority changes",
+      "role changes",
+      "organizational policy changes",
+      "customer authority changes",
+      "contractual authority changes",
+      "required condition changes",
+      "action scope changes",
+      "material context changes"
+    ],
+    "rules": [
+      "Authorization should be reevaluated when material validity conditions change.",
+      "Pending actions must not rely indefinitely on stale authorization evaluation.",
+      "Minor unrelated operational changes should not create authorization churn.",
+      "Superseded authorization must not remain concurrently usable when the newer record replaces it."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_authorization",
+    "authorization_evaluation": [
+      "authorization_id",
+      "authorization_type",
+      "authorization_state",
+      "grantor",
+      "grantee",
+      "authority_class",
+      "action_scope",
+      "subject_scope",
+      "system_scope",
+      "conditions",
+      "prohibitions",
+      "confirmation_requirement",
+      "financial_limit",
+      "usage_remaining",
+      "valid_from",
+      "valid_until",
+      "validation_outcome",
+      "blocking_reason",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Authorization output must distinguish identity, access, responsibility, recommendation, decision, and permission.",
+      "Scope and material limitations must remain explicit.",
+      "Revoked, expired, exhausted, invalid, and superseded authority must not appear active.",
+      "Unknown authority must remain unknown.",
+      "Material provenance must remain recoverable.",
+      "Authorization history must remain auditable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not infer authority from system access.",
+    "Do not infer authority from authentication.",
+    "Do not infer authority from possession of credentials.",
+    "Do not infer authority from recommendation.",
+    "Do not infer authority from prediction.",
+    "Do not infer authority from priority.",
+    "Do not infer authority from plan inclusion.",
+    "Do not infer standing authority from repeated prior approval.",
+    "Do not broaden ambiguous authorization.",
+    "Do not treat silence as authorization without an explicit governing basis.",
+    "Do not treat task responsibility as action authority.",
+    "Do not treat communication authority as authority to bind the organization.",
+    "Do not allow delegated authority to exceed the grantor's authority.",
+    "Do not ignore authorization limits, conditions, prohibitions, expiration, or revocation.",
+    "Do not split transactions or actions to evade authority limits.",
+    "Do not allow urgency to manufacture authority.",
+    "Do not execute actions.",
+    "Do not modify canonical priority.",
+    "Do not make decisions.",
+    "Do not create commitments independently.",
+    "Do not modify Core reasoning architecture as part of operational authorization."
+  ]
+}
