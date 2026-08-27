@@ -1,0 +1,661 @@
+{
+  "engine": {
+    "id": "aria.operations.execution_engine",
+    "name": "A.R.I.A. Operational Execution Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_execution",
+    "status": "active",
+    "purpose": "Maintain the canonical operational understanding of how authorized work is actually progressing through execution. The engine distinguishes intended work from started work, activity from meaningful progress, progress from completion, blocked work from inactive work, and claimed completion from verified outcome. It evaluates execution trajectory, plan adherence, interruptions, blockers, recovery needs, and resulting operational state without independently creating authority, priority, commitments, delegation, or terminal resolution.",
+    "principles": [
+      "Planned work is not executed work.",
+      "Assigned work is not started work.",
+      "Started work is not completed work.",
+      "Activity is not necessarily progress.",
+      "Progress should reflect supported operational evidence.",
+      "Claimed completion and verified completion must remain distinguishable.",
+      "Blocked work and inactive work are materially different conditions.",
+      "Execution should be evaluated against the intended outcome, not merely elapsed effort.",
+      "Execution deviation is not automatically failure.",
+      "Exceptional effort should not silently become the expected baseline.",
+      "Execution state should reflect what is actually happening now.",
+      "Material execution deterioration should be recognized before terminal failure when evidence supports it.",
+      "Execution outcomes should feed future learning and planning.",
+      "Execution must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "execution_record",
+    "sources": [
+      "work_items",
+      "operational plans",
+      "action outcomes",
+      "authorization state",
+      "delegations",
+      "dependencies",
+      "commitments",
+      "priority evaluations",
+      "portfolio evaluations",
+      "capacity evaluations",
+      "scheduling evaluations",
+      "follow_up evaluations",
+      "issues",
+      "risks",
+      "decisions",
+      "context",
+      "communication outcomes",
+      "source activity",
+      "progress evidence",
+      "completion evidence",
+      "verification evidence",
+      "user updates",
+      "authorized organizational systems"
+    ]
+  },
+
+  "execution_states": {
+    "not_started": {
+      "description": "Supported evidence indicates execution has not begun."
+    },
+    "preparing": {
+      "description": "Prerequisite or preparatory execution is actively occurring but primary execution has not materially begun."
+    },
+    "in_progress": {
+      "description": "Meaningful execution toward the intended outcome is actively occurring."
+    },
+    "progressing": {
+      "description": "Execution is advancing at a materially acceptable trajectory."
+    },
+    "at_risk": {
+      "description": "Execution remains active but supported evidence indicates meaningful threat to expected outcome, timing, or feasibility."
+    },
+    "stalled": {
+      "description": "Execution began but meaningful progress has materially stopped without a confirmed external blocking condition."
+    },
+    "blocked": {
+      "description": "Meaningful progress cannot continue because a supported blocking condition exists."
+    },
+    "paused": {
+      "description": "Execution was intentionally suspended."
+    },
+    "partially_complete": {
+      "description": "A material portion of the intended execution is complete while remaining execution is still required."
+    },
+    "completion_claimed": {
+      "description": "A person or system reports completion but required completion evidence has not yet been established."
+    },
+    "completed": {
+      "description": "Supported evidence indicates the intended execution has been materially performed."
+    },
+    "verified_complete": {
+      "description": "Required verification confirms the intended execution outcome."
+    },
+    "failed": {
+      "description": "Execution materially failed to produce the intended outcome and ordinary continuation is not sufficient."
+    },
+    "abandoned": {
+      "description": "Execution ceased without completion and is no longer being actively pursued under the current execution path."
+    },
+    "superseded": {
+      "description": "A newer execution path replaces the prior path."
+    },
+    "unknown": {
+      "description": "Available evidence is insufficient to establish execution state."
+    }
+  },
+
+  "execution_record": {
+    "fields": [
+      "execution_id",
+      "subject_type",
+      "subject_reference",
+      "plan_reference",
+      "execution_state",
+      "intended_outcome",
+      "execution_owner",
+      "execution_path",
+      "started_at",
+      "last_progress_at",
+      "expected_completion",
+      "actual_completion",
+      "progress_measure",
+      "progress_confidence",
+      "trajectory",
+      "blockers",
+      "interruptions",
+      "deviations",
+      "remaining_work",
+      "completion_claim",
+      "completion_evidence",
+      "verification_requirement",
+      "verification_state",
+      "failure_details",
+      "recovery_state",
+      "updated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Execution state must be grounded in supported evidence.",
+      "Intended outcome must be identifiable where execution success is evaluated.",
+      "Progress and completion must remain distinguishable.",
+      "Claimed completion and verified completion must remain distinguishable when verification is required.",
+      "Material blockers and deviations must remain visible.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "execution_start": {
+    "evidence": [
+      "confirmed human start",
+      "supported system activity",
+      "authorized action execution",
+      "material work product creation",
+      "supported field activity",
+      "supported workflow transition"
+    ],
+    "rules": [
+      "Scheduled start does not prove execution began.",
+      "Assignment does not prove execution began.",
+      "Opening or viewing work does not necessarily prove meaningful execution.",
+      "Preparation may be represented separately from primary execution.",
+      "Start time should remain unknown when evidence does not support a reliable timestamp."
+    ]
+  },
+
+  "progress_model": {
+    "dimensions": [
+      "work_completed",
+      "milestones_achieved",
+      "required_outputs_produced",
+      "dependencies_satisfied",
+      "remaining_effort",
+      "remaining_duration",
+      "quality_acceptance",
+      "verification_progress"
+    ],
+    "rules": [
+      "Progress should use the most meaningful supported dimensions for the work.",
+      "Elapsed time must not automatically be treated as progress.",
+      "Effort expended must not automatically be treated as progress.",
+      "Percentage completion must not be fabricated when no defensible measurement exists.",
+      "Qualitative progress is valid when quantitative progress is unsupported.",
+      "Progress measurement should remain consistent enough to identify material trajectory changes."
+    ]
+  },
+
+  "progress_confidence": {
+    "levels": {
+      "low": "Progress understanding depends materially on incomplete, indirect, or stale evidence.",
+      "moderate": "Progress is reasonably supported but material uncertainty remains.",
+      "high": "Current progress is strongly supported by direct or authoritative evidence.",
+      "unknown": "Available evidence is insufficient to classify progress confidence."
+    },
+    "rules": [
+      "Self-reported progress may be valid evidence but should remain distinguishable from independently verified evidence where material.",
+      "System-generated progress is not automatically accurate merely because it is automated.",
+      "Stale progress evidence should reduce confidence.",
+      "Conflicting progress evidence should remain visible."
+    ]
+  },
+
+  "trajectory": {
+    "states": {
+      "ahead": "Execution is materially ahead of the currently supported expected trajectory.",
+      "on_track": "Execution remains materially consistent with the expected trajectory.",
+      "slipping": "Execution is deteriorating relative to expected trajectory but recovery remains reasonably possible.",
+      "materially_behind": "Execution is substantially behind expected trajectory.",
+      "recovering": "Execution previously deteriorated and is now materially improving.",
+      "unknown": "Available evidence does not support trajectory classification."
+    },
+    "factors": [
+      "current_progress",
+      "elapsed_execution_window",
+      "remaining_work",
+      "remaining_time",
+      "capacity",
+      "dependency_state",
+      "blockers",
+      "interruptions",
+      "historical_execution_pattern",
+      "current_plan",
+      "supported_predictions"
+    ],
+    "rules": [
+      "Trajectory should compare current reality against a supported expectation.",
+      "No authoritative expected trajectory means trajectory may remain unknown.",
+      "A short-term delay does not automatically mean materially behind.",
+      "Temporary acceleration does not automatically mean ahead.",
+      "Trajectory should account for remaining work, not only work already completed."
+    ]
+  },
+
+  "blocker_management": {
+    "blocker_types": [
+      "dependency",
+      "decision",
+      "authorization",
+      "customer",
+      "vendor",
+      "resource",
+      "capacity",
+      "technical",
+      "access",
+      "information",
+      "financial",
+      "contractual",
+      "weather",
+      "travel",
+      "safety",
+      "other"
+    ],
+    "rules": [
+      "A blocker must materially prevent meaningful progress.",
+      "A difficulty that slows execution but does not prevent progress should not automatically be classified as blocked.",
+      "Blocker source, owner, and required clearing condition should be retained when known.",
+      "Multiple simultaneous blockers may exist.",
+      "Clearing a blocker should trigger execution reevaluation.",
+      "Blocked work may still require active follow-up, escalation, preparation, or alternate-path planning."
+    ]
+  },
+
+  "stall_detection": {
+    "signals": [
+      "meaningful progress stopped",
+      "no supported blocker explains inactivity",
+      "execution owner remains assigned",
+      "expected progress window passed",
+      "repeated activity without material advancement",
+      "required next action remains unperformed"
+    ],
+    "rules": [
+      "Stall should not be inferred solely from elapsed clock time.",
+      "Known intentional pause must not be represented as stall.",
+      "Known external blocker should normally be represented as blocked rather than stalled.",
+      "Stall may trigger Follow-Up, Issue, Risk, Recommendation, or Attention evaluation."
+    ]
+  },
+
+  "execution_deviation": {
+    "types": [
+      "sequence_change",
+      "method_change",
+      "scope_variance",
+      "timing_variance",
+      "resource_variance",
+      "dependency_variance",
+      "quality_variance",
+      "unplanned_work",
+      "workaround",
+      "contingency_activation"
+    ],
+    "rules": [
+      "Deviation from plan is not automatically negative.",
+      "Material deviations should be recorded when they affect outcome, timing, cost, risk, or future learning.",
+      "Successful field adaptation should not be mislabeled as failure merely because the original plan changed.",
+      "Unauthorized material scope change should route to appropriate governance rather than be normalized as execution.",
+      "Repeated deviations may indicate the plan or learned assumptions require revision."
+    ]
+  },
+
+  "interruption_management": {
+    "types": [
+      "higher_priority_work",
+      "emergency",
+      "customer_request",
+      "resource_reassignment",
+      "dependency_wait",
+      "decision_wait",
+      "technical_failure",
+      "personal_unavailability",
+      "scheduled_pause",
+      "other"
+    ],
+    "rules": [
+      "Interruptions should be distinguished from execution failure.",
+      "Material interruption should preserve why execution stopped and whether the work is expected to resume.",
+      "Repeated displacement of important work should be available to Portfolio, Priority, Aging, and Learning.",
+      "An interruption caused by higher-priority work should not automatically reduce confidence in the execution owner."
+    ]
+  },
+
+  "completion_model": {
+    "levels": {
+      "execution_complete": "The required execution activity has materially been performed.",
+      "deliverable_complete": "The required deliverable has materially been produced.",
+      "accepted": "The appropriate accepting party or process has accepted the outcome where acceptance is required.",
+      "verified": "Required verification confirms the outcome.",
+      "operationally_closed": "Resolution Engine has established terminal operational disposition."
+    },
+    "rules": [
+      "These completion levels must not be collapsed when the workflow materially distinguishes them.",
+      "Execution complete does not automatically mean customer accepted.",
+      "Deliverable complete does not automatically mean commitment satisfied.",
+      "Verified execution does not automatically mean the work item is resolved.",
+      "Resolution Engine remains authoritative for terminal operational closure."
+    ]
+  },
+
+  "completion_claims": {
+    "sources": [
+      "execution owner",
+      "manager",
+      "customer",
+      "vendor",
+      "system",
+      "automated workflow",
+      "other authorized source"
+    ],
+    "rules": [
+      "A completion claim is evidence, not automatically verified truth.",
+      "Low-consequence work may permit authoritative completion claims without separate verification when policy supports it.",
+      "Consequential or quality-sensitive work may require independent verification.",
+      "Conflicting completion evidence should prevent false certainty."
+    ]
+  },
+
+  "verification": {
+    "states": [
+      "not_required",
+      "not_started",
+      "pending",
+      "verified",
+      "partial",
+      "failed",
+      "unknown"
+    ],
+    "rules": [
+      "Verification requirements should come from applicable workflow, plan, commitment, quality standard, policy, or action requirement.",
+      "Execution Engine should track verification but must not invent verification requirements.",
+      "Verification failure may reopen execution or create Issue evaluation.",
+      "Unknown verification state must not be represented as verified."
+    ]
+  },
+
+  "execution_failure": {
+    "conditions": [
+      "intended outcome cannot be achieved through the current execution path",
+      "material execution attempt produced an unrecoverable result",
+      "required execution window irreversibly passed",
+      "authorized execution was rejected by an essential external condition",
+      "continuation requires materially new planning or decision"
+    ],
+    "rules": [
+      "Failure should not be declared merely because execution is difficult.",
+      "Recoverable delay should not automatically be classified as failure.",
+      "Failed execution may still leave useful partial work.",
+      "Failure should preserve evidence of what occurred and what remains recoverable.",
+      "Failure may trigger Issue, Risk, Planning, Recommendation, Decision, Attention, or Learning evaluation."
+    ]
+  },
+
+  "recovery": {
+    "states": [
+      "not_required",
+      "needed",
+      "planned",
+      "in_progress",
+      "successful",
+      "unsuccessful",
+      "unknown"
+    ],
+    "strategies": [
+      "resume_existing_path",
+      "remove_blocker",
+      "restore_capacity",
+      "change_sequence",
+      "activate_contingency",
+      "replan",
+      "seek_decision",
+      "seek_authorization",
+      "reassign",
+      "renegotiate_timing",
+      "reduce_scope",
+      "restart",
+      "abandon_path"
+    ],
+    "rules": [
+      "Recovery strategy must be governed by the engines owning the required change.",
+      "Execution Engine may identify recovery need but must not silently reprioritize, reassign, alter commitments, or authorize new action.",
+      "Successful recovery should update trajectory and execution state.",
+      "Repeated recovery patterns should be available to Learning Engine."
+    ]
+  },
+
+  "execution_vs_action": {
+    "rules": [
+      "Action Engine governs discrete authorized side effects.",
+      "Execution Engine governs the broader operational progression of work.",
+      "One execution path may contain many governed actions.",
+      "Successful Action execution may contribute to progress without completing the overall work.",
+      "Execution Engine must not bypass Action governance for consequential side effects."
+    ]
+  },
+
+  "execution_vs_authorization": {
+    "rules": [
+      "Authorization Engine owns canonical permission state.",
+      "Execution Engine does not create authority.",
+      "Observed work occurring without supported authorization should not cause authorization to be retroactively invented.",
+      "Execution may continue only within applicable governance."
+    ]
+  },
+
+  "execution_vs_planning": {
+    "rules": [
+      "Planning Engine owns intended execution paths.",
+      "Execution Engine owns supported actual execution state.",
+      "Execution should be compared with plan without rewriting history.",
+      "Material deviation may trigger Planning reevaluation.",
+      "Actual execution evidence should improve future planning through Learning."
+    ]
+  },
+
+  "execution_vs_scheduling": {
+    "rules": [
+      "Scheduling Engine owns practical intended timing.",
+      "Execution Engine owns actual timing and trajectory evidence.",
+      "Scheduled start does not prove actual start.",
+      "Scheduled completion does not prove actual completion.",
+      "Actual execution timing should be available to Scheduling for recalculation."
+    ]
+  },
+
+  "execution_vs_priority": {
+    "rules": [
+      "Priority Engine owns canonical operational importance.",
+      "Execution Engine must not change priority merely because work has started.",
+      "Execution deterioration may provide evidence for Priority reevaluation.",
+      "Work already in progress must not automatically outrank more important work solely because of sunk effort."
+    ]
+  },
+
+  "execution_vs_delegation": {
+    "rules": [
+      "Delegation Engine owns execution responsibility.",
+      "Execution Engine tracks whether delegated work is actually progressing.",
+      "Poor execution evidence must not silently reassign responsibility.",
+      "Material execution behavior may trigger Delegation reevaluation."
+    ]
+  },
+
+  "execution_vs_dependency": {
+    "rules": [
+      "Dependency Engine owns dependency existence and satisfaction state.",
+      "Execution Engine consumes dependency state when evaluating progress.",
+      "Execution activity intended to satisfy a dependency does not prove dependency satisfaction.",
+      "Blocked execution should identify dependency blockage when supported."
+    ]
+  },
+
+  "execution_vs_commitment": {
+    "rules": [
+      "Commitment Engine owns promises and commitment terms.",
+      "Execution Engine tracks progress relevant to fulfilling commitments.",
+      "Execution complete does not automatically prove commitment satisfaction.",
+      "Material execution deterioration may trigger Commitment, Risk, Prediction, or Communication reevaluation."
+    ]
+  },
+
+  "execution_vs_issue": {
+    "rules": [
+      "Issue Engine owns active operational problems.",
+      "Execution Engine may identify execution conditions that warrant Issue evaluation.",
+      "An execution blocker is not automatically an Issue when it is expected and properly managed.",
+      "Issue correction does not automatically mean execution is complete."
+    ]
+  },
+
+  "execution_vs_risk": {
+    "rules": [
+      "Risk Engine owns future adverse exposure.",
+      "Execution Engine provides current evidence affecting risk.",
+      "At-risk execution is an execution posture and must not replace formal Risk evaluation.",
+      "Risk mitigation activity does not automatically mean execution trajectory has recovered."
+    ]
+  },
+
+  "execution_vs_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal operational disposition.",
+      "Execution Engine may establish supported completion evidence.",
+      "Completed execution must not independently mark the work item resolved.",
+      "Resolution may require commitments, documentation, acceptance, verification, or other conditions beyond execution."
+    ]
+  },
+
+  "execution_vs_prediction": {
+    "rules": [
+      "Prediction Engine forecasts future execution conditions.",
+      "Execution Engine owns supported current execution reality.",
+      "Prediction must yield to observed execution evidence when they conflict.",
+      "Actual outcomes should be returned for prediction calibration."
+    ]
+  },
+
+  "execution_vs_recommendation": {
+    "rules": [
+      "Recommendation Engine determines what handling appears useful.",
+      "Execution Engine provides current execution evidence for recommendation construction.",
+      "A recommendation to act does not mean execution started.",
+      "Execution Engine must not treat an accepted recommendation as performed work."
+    ]
+  },
+
+  "execution_vs_learning": {
+    "rules": [
+      "Learning Engine owns reusable operational knowledge.",
+      "Execution Engine provides high-value evidence about actual durations, blockers, adaptations, failures, recoveries, and outcomes.",
+      "Learning must preserve contextual differences before generalizing execution behavior."
+    ]
+  },
+
+  "execution_vs_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Execution Engine may expose stalled, blocked, failing, materially behind, or verification-sensitive work.",
+      "Execution Engine must not independently interrupt the user.",
+      "Routine normal progress should not create unnecessary attention."
+    ]
+  },
+
+  "execution_vs_briefing": {
+    "rules": [
+      "Briefing Engine owns executive presentation.",
+      "Execution Engine should provide concise current execution posture, material deviations, blockers, trajectory, and completion state.",
+      "Routine low-value activity should remain compressed.",
+      "Briefing should emphasize operational meaning rather than raw activity logs."
+    ]
+  },
+
+  "execution_refresh": {
+    "triggers": [
+      "execution starts",
+      "progress evidence arrives",
+      "action executes",
+      "blocker appears",
+      "blocker clears",
+      "dependency changes",
+      "capacity changes",
+      "schedule changes",
+      "plan changes",
+      "delegation changes",
+      "commitment changes",
+      "material interruption occurs",
+      "execution resumes",
+      "completion is claimed",
+      "completion evidence arrives",
+      "verification changes",
+      "failure occurs",
+      "recovery begins",
+      "recovery completes",
+      "material context changes"
+    ],
+    "rules": [
+      "Execution state should refresh when evidence materially changes actual operational posture.",
+      "Minor system activity should not create false progress.",
+      "Stale execution state should not persist when stronger current evidence exists.",
+      "Refresh must not create uncontrolled engine-to-engine loops."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_execution",
+    "execution_evaluation": [
+      "execution_id",
+      "subject",
+      "execution_state",
+      "intended_outcome",
+      "execution_owner",
+      "started_at",
+      "last_progress_at",
+      "progress_measure",
+      "progress_confidence",
+      "trajectory",
+      "blockers",
+      "interruptions",
+      "deviations",
+      "remaining_work",
+      "expected_completion",
+      "actual_completion",
+      "completion_evidence",
+      "verification_state",
+      "recovery_state",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Execution output must distinguish intended work from actual work.",
+      "Execution output must distinguish activity from meaningful progress.",
+      "Execution output must distinguish progress from completion.",
+      "Execution output must distinguish claimed completion from verified completion when applicable.",
+      "Blocked, stalled, paused, failed, and inactive conditions must not be collapsed.",
+      "Unknown state must remain unknown.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat assignment as execution.",
+    "Do not treat scheduling as execution.",
+    "Do not treat planning as execution.",
+    "Do not treat recommendation as execution.",
+    "Do not treat authorization as execution.",
+    "Do not treat activity as meaningful progress without support.",
+    "Do not fabricate completion percentages.",
+    "Do not represent claimed completion as verified completion when verification is required.",
+    "Do not represent blocked work as failed merely because progress stopped.",
+    "Do not represent intentional pause as stall.",
+    "Do not retroactively invent authorization because work occurred.",
+    "Do not silently change priority.",
+    "Do not silently change delegation.",
+    "Do not silently alter commitments.",
+    "Do not silently alter schedules.",
+    "Do not silently revise plans.",
+    "Do not execute consequential external actions outside Action Engine governance.",
+    "Do not mark work resolved.",
+    "Do not convert exceptional execution effort into expected normal capacity.",
+    "Do not ignore contradictory execution evidence.",
+    "Do not modify Core reasoning architecture as part of operational execution."
+  ]
+}
