@@ -1,0 +1,374 @@
+{
+  "engine": {
+    "id": "aria.operations.follow_up_engine",
+    "name": "A.R.I.A. Follow-Up Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "follow_up_management",
+    "status": "active",
+    "purpose": "Manage operational work that requires future verification, response, continuation, or intervention. The engine ensures waiting, delegated, and deferred obligations remain actively governed without repeatedly consuming unnecessary user attention.",
+    "principles": [
+      "Waiting is an operational state, not the absence of work.",
+      "Delegation does not eliminate accountability.",
+      "Follow-up should occur when it adds operational value, not merely because time passed.",
+      "Known expectations should govern follow-up timing when available.",
+      "A.R.I.A. should not repeatedly ask for updates before a reasonable response window has elapsed.",
+      "Silence may become meaningful as expected response windows expire.",
+      "Follow-up timing should reflect consequence, commitment, dependency, and context.",
+      "A missed expected response does not automatically mean failure.",
+      "Repeated non-response may justify escalation.",
+      "Follow-up must remain distinguishable from priority and attention.",
+      "The engine should minimize both forgotten obligations and unnecessary chasing.",
+      "Follow-up decisions must remain explainable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+
+    "applicable_conditions": [
+      "follow_up.required is true",
+      "status is waiting",
+      "status is delegated",
+      "an expected response exists",
+      "a future verification is required",
+      "a commitment requires confirmation",
+      "a dependency requires later rechecking",
+      "a monitoring condition requires future evaluation"
+    ],
+
+    "context": [
+      "current_time",
+      "waiting_on",
+      "delegation",
+      "commitment",
+      "timing",
+      "priority",
+      "attention",
+      "activity",
+      "dependencies",
+      "source history",
+      "related work items"
+    ]
+  },
+
+  "follow_up_states": {
+    "not_required": {
+      "description": "No future follow-up obligation currently exists."
+    },
+
+    "scheduled": {
+      "description": "A future follow-up point is known and has not yet arrived."
+    },
+
+    "eligible": {
+      "description": "Follow-up may now be useful, but delay is not yet materially concerning."
+    },
+
+    "due": {
+      "description": "The expected or appropriate follow-up point has arrived."
+    },
+
+    "overdue": {
+      "description": "A meaningful follow-up point has passed without sufficient resolution or activity."
+    },
+
+    "escalation_candidate": {
+      "description": "Continued waiting or non-response may now warrant a different intervention, recipient, method, or level of attention."
+    },
+
+    "satisfied": {
+      "description": "The expected response, verification, or condition occurred and the current follow-up obligation has been fulfilled."
+    }
+  },
+
+  "scheduling": {
+    "preferred_basis_order": [
+      "explicit_follow_up_at",
+      "explicit_expected_response",
+      "delegated_expected_by",
+      "commitment_promised_by",
+      "contractual_or_authoritative_timing",
+      "contextually_supported_response_window",
+      "learned_operational_pattern",
+      "conservative_default"
+    ],
+
+    "rules": [
+      "Use an explicit follow-up time when one has been intentionally established.",
+      "Use a known expected response date when it reliably defines when intervention becomes useful.",
+      "Do not invent a false deadline merely to schedule follow-up.",
+      "When no explicit expectation exists, a contextually reasonable follow-up window may be derived.",
+      "Derived follow-up timing must remain distinguishable from explicit timing.",
+      "Higher-consequence work may justify shorter follow-up windows.",
+      "Routine low-consequence work should not generate aggressive follow-up behavior.",
+      "A known future event may provide a better follow-up trigger than an arbitrary elapsed duration."
+    ]
+  },
+
+  "response_window": {
+    "factors": [
+      "explicit expectation",
+      "priority",
+      "consequence of delay",
+      "customer impact",
+      "business impact",
+      "financial impact",
+      "dependency impact",
+      "blocking effect",
+      "commitment",
+      "historical response pattern",
+      "business hours",
+      "weekends and holidays",
+      "recipient role",
+      "communication channel",
+      "known availability"
+    ],
+
+    "rules": [
+      "Historical response patterns may inform expectations but must not become guarantees.",
+      "A person who usually responds quickly should not automatically be considered delinquent because one response takes longer.",
+      "Business-hour context should be considered when appropriate.",
+      "The engine should distinguish an expected response from a required response.",
+      "Response-window calculations must not create unsupported contractual or organizational obligations."
+    ]
+  },
+
+  "activity_detection": {
+    "meaningful_activity": [
+      "requested information received",
+      "substantive response received",
+      "delegated party reports progress",
+      "commitment is fulfilled",
+      "dependency changes",
+      "new expected date is established",
+      "requested approval is provided",
+      "requested deliverable is received",
+      "relevant condition changes"
+    ],
+
+    "non_resolving_activity": [
+      "automated acknowledgement",
+      "delivery receipt",
+      "out-of-office response",
+      "non-substantive acknowledgement",
+      "duplicate message",
+      "unrelated communication"
+    ],
+
+    "rules": [
+      "Any activity does not automatically satisfy follow-up.",
+      "The engine must evaluate whether the activity materially addresses what was being awaited.",
+      "A substantive response may satisfy one follow-up while creating a new obligation.",
+      "A new expected date may reschedule follow-up rather than satisfy the underlying work item."
+    ]
+  },
+
+  "follow_up_action": {
+    "action_types": [
+      "wait",
+      "recheck",
+      "remind_user",
+      "recommend_contact",
+      "prepare_response",
+      "request_status",
+      "verify_completion",
+      "escalate",
+      "reschedule",
+      "mark_satisfied"
+    ],
+
+    "rules": [
+      "The engine determines the appropriate follow-up action but must respect authorization boundaries for external actions.",
+      "A.R.I.A. may recommend communication without automatically sending it.",
+      "Automatic external communication requires separately authorized action capability.",
+      "The least disruptive action that adequately protects the obligation should normally be preferred.",
+      "Follow-up should identify what is being awaited and why intervention is now useful."
+    ]
+  },
+
+  "escalation": {
+    "purpose": "Recognize when ordinary waiting or repeated follow-up is no longer sufficient.",
+
+    "signals": [
+      "multiple unanswered follow-ups",
+      "materially overdue commitment",
+      "deadline approaching while dependency remains unresolved",
+      "work blocked by continued non-response",
+      "customer consequence increasing",
+      "financial consequence increasing",
+      "safety consequence increasing",
+      "explicit escalation requirement",
+      "repeated promised dates missed",
+      "critical information remains unavailable"
+    ],
+
+    "possible_outcomes": [
+      "increase_attention",
+      "increase_priority",
+      "recommend_alternate_contact",
+      "recommend_different_channel",
+      "recommend_direct_user_intervention",
+      "recommend_management_escalation",
+      "create_related_work_item"
+    ],
+
+    "rules": [
+      "Escalation must be proportional to consequence and context.",
+      "One unanswered message does not automatically justify escalation.",
+      "Repeated non-response does not automatically imply negligence or bad intent.",
+      "Escalation should focus on protecting the operational outcome rather than assigning blame.",
+      "Priority changes resulting from escalation signals must be evaluated by the Priority Engine.",
+      "User-facing escalation should be governed by the Attention Engine."
+    ]
+  },
+
+  "delegated_work": {
+    "rules": [
+      "Delegated work remains active until appropriately resolved.",
+      "Normal delegation should not require constant status checking.",
+      "An expected completion date should establish a natural review point when available.",
+      "Lack of progress evidence becomes more relevant as the expected completion point approaches.",
+      "Completion claims may require verification when consequence or workflow requires it.",
+      "Delegated work may return to the user when intervention becomes materially useful.",
+      "Delegation follow-up must not silently reassign ownership."
+    ]
+  },
+
+  "waiting_work": {
+    "rules": [
+      "Waiting status should identify what or whom the work is waiting on when known.",
+      "waiting_since should be preserved when available.",
+      "An expected response or condition should be recorded when known.",
+      "Waiting work should normally remain quiet while expectations are being met.",
+      "Waiting work should be reevaluated when the expected response window expires.",
+      "A waiting item may become actionable without receiving a response if circumstances change.",
+      "Waiting must not become a permanent sink for unresolved work."
+    ]
+  },
+
+  "monitoring_work": {
+    "rules": [
+      "Monitoring may use a time-based or condition-based follow-up trigger.",
+      "Condition-based monitoring should not repeatedly surface unchanged conditions.",
+      "A meaningful condition change should trigger reevaluation.",
+      "Monitoring should stop when the condition is resolved, no longer relevant, or explicitly cancelled.",
+      "Monitoring frequency should reflect how quickly the underlying condition can meaningfully change."
+    ]
+  },
+
+  "user_interaction": {
+    "presentation_requirements": [
+      "Identify what is being waited on.",
+      "Identify how long it has been waiting when relevant.",
+      "Identify the expected response or completion point when known.",
+      "Explain why follow-up is useful now.",
+      "Recommend the next intervention when known."
+    ],
+
+    "examples": [
+      "Melissa was expected to send the revised RFP yesterday. Nothing substantive has arrived. Follow up today.",
+      "Jackie is handling the licensing application and the expected completion date is still three days away. No action needed.",
+      "The quote request has been waiting on vendor pricing for five business days and is now blocking submission. Contact the vendor.",
+      "The customer replied with the missing information. This follow-up is satisfied; the underlying work item is ready to continue."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "follow_up_at arrives",
+      "expected response time arrives",
+      "delegated expected completion arrives",
+      "new communication is received",
+      "meaningful activity occurs",
+      "commitment changes",
+      "deadline changes",
+      "priority materially changes",
+      "dependency changes",
+      "blocking condition changes",
+      "user manually requests review",
+      "scheduled monitoring interval arrives",
+      "monitored condition changes"
+    ],
+
+    "rules": [
+      "Reevaluation should determine whether follow-up remains necessary.",
+      "Reevaluation may reschedule follow-up when new supported expectations exist.",
+      "Reevaluation should not automatically increase priority.",
+      "Material new consequences should be submitted to the Priority Engine."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.follow_up",
+
+    "canonical_fields": [
+      "required",
+      "follow_up_at",
+      "follow_up_with",
+      "reason",
+      "last_follow_up_at",
+      "follow_up_count"
+    ],
+
+    "evaluation_output": [
+      "work_item_id",
+      "follow_up_state",
+      "recommended_action",
+      "reason",
+      "expected_response_at",
+      "evaluated_at"
+    ],
+
+    "requirements": [
+      "Follow-up output must reference the applicable work_item_id.",
+      "Derived timing must not be represented as an explicit source deadline.",
+      "A performed follow-up should update last_follow_up_at and follow_up_count.",
+      "Satisfied follow-up must not automatically mark the underlying work item completed.",
+      "Material changes discovered through follow-up must be routed to the appropriate engine."
+    ]
+  },
+
+  "priority_boundary": {
+    "rules": [
+      "The Follow-Up Engine may identify circumstances relevant to priority.",
+      "The Priority Engine owns canonical priority scoring and banding.",
+      "The Follow-Up Engine must not independently overwrite priority."
+    ]
+  },
+
+  "attention_boundary": {
+    "rules": [
+      "The Follow-Up Engine determines whether follow-up is operationally appropriate.",
+      "The Attention Engine determines when and how the user should be presented with that need.",
+      "A due follow-up does not automatically require interruption."
+    ]
+  },
+
+  "capture_boundary": {
+    "rules": [
+      "A substantive response may update an existing work item.",
+      "A response may also contain a materially new obligation requiring Capture Engine evaluation.",
+      "The Follow-Up Engine must not silently create unrelated work from new source content."
+    ]
+  },
+
+  "guardrails": [
+    "Do not forget work because it is waiting.",
+    "Do not forget work because it is delegated.",
+    "Do not follow up merely because time passed.",
+    "Do not harass people with unnecessary repeated follow-ups.",
+    "Do not interpret silence as refusal without evidence.",
+    "Do not interpret silence as completion.",
+    "Do not invent response commitments.",
+    "Do not invent deadlines.",
+    "Do not treat automated acknowledgements as substantive resolution.",
+    "Do not automatically close the underlying work item when a follow-up is satisfied.",
+    "Do not automatically escalate after one missed response.",
+    "Do not assign blame from response latency alone.",
+    "Do not send external communications without authorized action capability.",
+    "Do not overwrite canonical priority.",
+    "Do not modify Core reasoning architecture as part of follow-up management."
+  ]
+}
