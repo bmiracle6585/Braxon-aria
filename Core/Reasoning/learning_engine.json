@@ -1,679 +1,1307 @@
 {
   "specification": "ARIA_LEARNING_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. converts validated case experience into future diagnostic priors, route-performance knowledge, user-specific experience, contextual patterns, and candidate canonical knowledge without corrupting the underlying knowledge graph.",
+  "version": "2.0.0",
+  "description": "Canonical learning reasoning behavior for A.R.I.A. The Learning Engine determines what validated experience may contribute to future reasoning, how strongly that experience should influence learned patterns, and what distinctions must be preserved between observed history, empirical association, route performance, contextual experience, causal learning, and candidate canonical knowledge. It does not redefine Evidence, Confidence, Context, Hypothesis, Probability, Uncertainty, Validation, Decision, Routing, Memory, Relationships, or Case State contracts.",
+
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "confidence_registry": "Core/Registries/confidence_levels.json",
+
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "context": "Core/Reasoning/context_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "validation": "Core/Reasoning/validating_engine.json",
+      "memory": "Core/Reasoning/memory_engine.json"
+    },
+
+    "role": "EXPERIENCE_LEARNING_AND_GENERALIZATION_REASONING",
+
+    "owns": [
+      "learning eligibility reasoning",
+      "learning scope reasoning",
+      "learning-strength reasoning",
+      "experience generalization reasoning",
+      "historical pattern extraction reasoning",
+      "contextual pattern learning",
+      "failure-frequency learning reasoning",
+      "route-performance learning reasoning",
+      "action-performance learning reasoning",
+      "sequence-performance learning reasoning",
+      "symptom-pattern learning reasoning",
+      "evidence-pattern learning reasoning",
+      "recurrence learning reasoning",
+      "causal-learning eligibility reasoning",
+      "participant-attribution learning reasoning",
+      "user-context learning reasoning",
+      "team-context learning reasoning",
+      "product-context learning reasoning",
+      "manufacturer-context learning reasoning",
+      "duplicate-experience handling reasoning",
+      "learning contamination prevention",
+      "learning contradiction handling",
+      "candidate knowledge proposal reasoning",
+      "learning explainability"
+    ],
+
+    "does_not_own": [
+      "a universal learning persistence schema",
+      "confidence vocabulary",
+      "confidence numeric ranges",
+      "evidence persistence",
+      "evidence quality semantics",
+      "context vocabulary",
+      "context resolution",
+      "hypothesis generation",
+      "hypothesis state transitions",
+      "probability calculation",
+      "probability calibration",
+      "uncertainty persistence",
+      "validation criteria",
+      "validation result classification",
+      "action selection",
+      "route selection",
+      "route progression",
+      "canonical relationship creation",
+      "canonical relationship mutation",
+      "canonical knowledge approval",
+      "canonical knowledge promotion",
+      "memory persistence policy",
+      "memory retrieval policy",
+      "case lifecycle state",
+      "case reasoning state",
+      "engine invocation"
+    ]
+  },
 
   "core_principle": {
-    "statement": "ARIA shall learn from validated experience by adjusting future expectations and routing behavior while preserving the distinction between observed history, statistical pattern, technical inference, and canonical truth.",
+    "statement": "A.R.I.A. shall learn from demonstrated experience without converting repetition into truth. What happened, what appeared associated, what improved routing, what was causally demonstrated, and what is sufficiently authoritative to become canonical knowledge are separate questions and shall remain separate.",
+
     "rules": [
       "A completed case is not automatically a trustworthy learning example.",
-      "Learning strength shall depend on evidence quality, diagnosis quality, causal confidence, validation quality, context completeness, and outcome certainty.",
-      "User-specific learning shall remain attributable to the applicable user.",
-      "Shared technical learning shall preserve context.",
-      "Repeated experience may propose new canonical knowledge but shall not silently promote correlation into truth.",
-      "Case history shall remain immutable even when learned aggregates change."
+      "A resolved case is not automatically a causally understood case.",
+      "Operational recovery is not automatically causal learning.",
+      "Action effectiveness is not automatically root-cause validation.",
+      "Repeated correlation is not automatically causation.",
+      "Repeated experience is not automatically canonical truth.",
+      "Learning strength shall reflect what was actually demonstrated.",
+      "Learning shall preserve applicable Context.",
+      "Learning shall preserve provenance and attribution when available.",
+      "Dependent or duplicated experience shall not create artificial frequency.",
+      "Contradictory experience shall remain visible.",
+      "Historical case facts shall not be rewritten when learned aggregates change.",
+      "Learned statistical patterns shall remain distinguishable from canonical technical knowledge.",
+      "Learning Engine shall report downstream implications through Orchestration rather than directly manipulating other reasoning engines.",
+      "The Learning Engine shall remain technically domain-independent."
     ]
   },
 
-  "learning_outputs": [
-    {
-      "name": "CASE_EXPERIENCE_RECORD",
-      "description": "Permanent structured record of what occurred in the completed case."
-    },
+  "persistence_boundary": {
+    "principle": "Learning Engine defines canonical learning behavior but shall not create a competing universal persistence contract unless an authoritative schema explicitly establishes one.",
 
-    {
-      "name": "FAILURE_PRIOR_UPDATE",
-      "description": "Adjustment to learned historical frequency for failure modes within applicable context."
-    },
+    "rules": [
+      "Learning Engine shall not define a canonical learning_event object without an authoritative schema.",
+      "Learning Engine shall not define a canonical experience_ledger record without an authoritative schema.",
+      "Learning Engine shall not invent canonical IDs for learned entities unless an applicable schema establishes them.",
+      "Temporary learning assessments and candidate patterns may exist as reasoning outputs.",
+      "Persistent learned structures shall use schema-authorized contracts when available.",
+      "If a future Learning schema is established, this engine shall defer field names, IDs, statuses, and persistence semantics to that schema.",
+      "Historical source Evidence and case records shall remain independently identifiable from derived learned patterns."
+    ]
+  },
 
+  "learning_classes": [
     {
-      "name": "ROUTE_PERFORMANCE_UPDATE",
-      "description": "Adjustment to learned performance of diagnostic actions and routes."
+      "class": "CASE_EXPERIENCE",
+      "description": "Learning from what occurred in a specific case without asserting broader generalization."
     },
-
     {
-      "name": "USER_EXPERIENCE_UPDATE",
-      "description": "Contextual learning associated with a specific user's demonstrated observations, actions, outcomes, or recurring patterns."
+      "class": "FREQUENCY_LEARNING",
+      "description": "Learning empirical occurrence frequency within applicable Context."
     },
-
     {
-      "name": "TEAM_EXPERIENCE_UPDATE",
-      "description": "Contextual learning associated with a crew or team when individual attribution is not appropriate."
+      "class": "PATTERN_LEARNING",
+      "description": "Learning recurring associations among symptoms, evidence, conditions, actions, outcomes, or other contextual factors."
     },
-
     {
-      "name": "PRODUCT_EXPERIENCE_UPDATE",
-      "description": "Historical learning associated with a product, variant, hardware revision, firmware, topology, or configuration."
+      "class": "ROUTE_LEARNING",
+      "description": "Learning how diagnostic routes and route steps perform under applicable Context."
     },
-
     {
-      "name": "MANUFACTURER_EXPERIENCE_UPDATE",
-      "description": "Historical learning associated with equipment from an applicable manufacturer."
+      "class": "ACTION_LEARNING",
+      "description": "Learning the information value, effectiveness, cost, risk, or practical performance of Actions."
     },
-
     {
-      "name": "SYMPTOM_PATTERN_UPDATE",
-      "description": "Learning about combinations of symptoms and their relationship to confirmed outcomes."
+      "class": "SEQUENCE_LEARNING",
+      "description": "Learning how ordered diagnostic or corrective sequences perform."
     },
-
     {
-      "name": "EVIDENCE_PATTERN_UPDATE",
-      "description": "Learning about the diagnostic value of evidence patterns."
+      "class": "CAUSAL_LEARNING",
+      "description": "Learning from sufficiently causally discriminating validated experience."
     },
-
     {
-      "name": "CANDIDATE_KNOWLEDGE_CLAIM",
-      "description": "Proposed technical knowledge derived from repeated validated experience and routed through the knowledge-governance process."
+      "class": "RECURRENCE_LEARNING",
+      "description": "Learning from reappearance of a condition after prior correction or resolution."
+    },
+    {
+      "class": "PARTICIPANT_CONTEXT_LEARNING",
+      "description": "Learning contextual patterns associated with users, teams, roles, or other participants without creating universal credibility judgments."
+    },
+    {
+      "class": "TECHNICAL_CONTEXT_LEARNING",
+      "description": "Learning contextual patterns associated with products, variants, manufacturers, configurations, environments, architectures, or other technical Context."
+    },
+    {
+      "class": "CANDIDATE_KNOWLEDGE",
+      "description": "A proposed generalizable claim derived from accumulated experience that requires the applicable knowledge-governance process before becoming canonical."
     }
   ],
 
-  "learning_assessment": {
-    "required_inputs": [
-      "case_id",
-      "case_outcome",
-      "diagnosis",
-      "causal_confidence",
-      "diagnostic_confidence",
-      "resolution_confidence",
-      "evidence_quality",
-      "evidence_completeness",
-      "context_completeness",
-      "route_history",
-      "participant_attribution",
-      "validation_state",
-      "recurrence_state"
-    ],
-
-    "outputs": [
-      "learning_eligibility",
-      "learning_confidence",
-      "learning_weight",
-      "allowed_learning_targets",
-      "restricted_learning_targets",
-      "exclusion_reasons"
-    ]
-  },
-
-  "learning_eligibility_states": [
+  "learning_pipeline": [
     {
-      "name": "FULL",
-      "description": "Case is sufficiently validated for normal contribution to applicable learned experience."
+      "step": 1,
+      "name": "IDENTIFY_LEARNING_SOURCE",
+      "description": "Identify the case, event, Action, route, validation result, recurrence, or other experience from which learning is being considered."
     },
-
     {
-      "name": "RESTRICTED",
-      "description": "Case contains useful validated information but uncertainty limits which learning targets or weights are appropriate."
+      "step": 2,
+      "name": "RESOLVE_SOURCE_CONTEXT",
+      "description": "Consume applicable canonical Context necessary to interpret and generalize the experience."
     },
-
     {
-      "name": "ROUTE_ONLY",
-      "description": "Case is insufficient to teach root-cause frequency but can still teach diagnostic route performance."
+      "step": 3,
+      "name": "ASSESS_SOURCE_EVIDENCE",
+      "description": "Consume canonical Evidence assessments relevant to the experience."
     },
-
     {
-      "name": "EVIDENCE_ONLY",
-      "description": "Case can teach evidence interpretation or measurement patterns but not validated root-cause probability."
+      "step": 4,
+      "name": "ASSESS_VALIDATION_STATE",
+      "description": "Consume Validation results to determine what the experience actually demonstrated."
     },
-
     {
-      "name": "USER_ONLY",
-      "description": "Case may update a user-specific action or evidence pattern without supporting broader technical generalization."
+      "step": 5,
+      "name": "ASSESS_CAUSAL_STATE",
+      "description": "Determine whether causal attribution is demonstrated, merely supported, unresolved, or not applicable."
     },
-
     {
-      "name": "EXCLUDED",
-      "description": "Case shall not modify learned diagnostic aggregates."
+      "step": 6,
+      "name": "ASSESS_RESOLUTION_STATE",
+      "description": "Determine whether operational recovery, corrective effectiveness, stability, and durable resolution were sufficiently demonstrated."
+    },
+    {
+      "step": 7,
+      "name": "ASSESS_ATTRIBUTION",
+      "description": "Determine whether actions, observations, decisions, or outcomes can be defensibly attributed to specific participants or entities."
+    },
+    {
+      "step": 8,
+      "name": "ASSESS_INDEPENDENCE_AND_DUPLICATION",
+      "description": "Determine whether the experience represents an independent learning observation or duplicates/dependently reflects another underlying event."
+    },
+    {
+      "step": 9,
+      "name": "CLASSIFY_ALLOWED_LEARNING",
+      "description": "Determine which learning classes the experience can legitimately support."
+    },
+    {
+      "step": 10,
+      "name": "ASSESS_GENERALIZATION_SCOPE",
+      "description": "Determine how broadly the experience may be generalized across Context."
+    },
+    {
+      "step": 11,
+      "name": "ASSESS_LEARNING_CONFIDENCE",
+      "description": "Assess confidence in the proposed learning using the canonical confidence architecture."
+    },
+    {
+      "step": 12,
+      "name": "ASSESS_LEARNING_INFLUENCE",
+      "description": "Determine the relative influence the experience should have on learned patterns without defining competing probability mechanics."
+    },
+    {
+      "step": 13,
+      "name": "CHECK_CONTRADICTIONS_AND_POISONING_RISK",
+      "description": "Check for contradictory experience, duplication, manipulation, attribution problems, invalidated Evidence, or other contamination risks."
+    },
+    {
+      "step": 14,
+      "name": "GENERATE_LEARNING_RESULT",
+      "description": "Produce a scoped learning result that states what may be learned, what may not be learned, and why."
+    },
+    {
+      "step": 15,
+      "name": "RETURN_LEARNING_RESULT",
+      "description": "Return learned-pattern and downstream implications to Orchestration and applicable persistence/governance mechanisms."
     }
   ],
 
-  "learning_confidence_model": {
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "candidate_factors": [
-      "DIAGNOSTIC_CONFIDENCE",
-      "CAUSAL_CONFIDENCE",
-      "RESOLUTION_CONFIDENCE",
-      "EVIDENCE_QUALITY",
-      "EVIDENCE_COMPLETENESS",
-      "CONTEXT_COMPLETENESS",
-      "VARIABLE_CONTROL",
-      "OUTCOME_VALIDATION",
-      "PARTICIPANT_ATTRIBUTION_CONFIDENCE",
-      "RECURRENCE_STATUS"
-    ],
-
-    "rules": [
-      "Learning confidence shall not exceed what the weakest critical causal factor can reasonably support.",
-      "A resolved case with uncertain root cause may have high resolution confidence but low causal learning confidence.",
-      "A case with strong root-cause isolation but incomplete long-term validation may contribute causal learning while receiving reduced resolution learning weight.",
-      "Exact weighting shall remain configurable and calibratable."
-    ]
-  },
-
-  "case_weight": {
-    "description": "Each case contributes to learned aggregates according to a bounded learning weight rather than raw count alone.",
-
-    "conceptual_formula": "case_weight = learning_confidence * context_applicability * attribution_confidence * recency_weight * independence_weight",
-
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "rules": [
-      "Fully validated high-quality cases may approach weight 1.0.",
-      "Restricted cases shall contribute less than fully validated cases.",
-      "Excluded cases contribute 0.",
-      "Raw case count shall remain separately available."
-    ]
-  },
-
-  "experience_ledger_update": {
-    "append_only": true,
-
-    "required_fields": [
-      "learning_event_id",
-      "case_id",
-      "learning_target",
-      "context_signature",
-      "failure_mode_id",
-      "action_ids",
-      "outcome_ids",
-      "participant_attribution",
-      "learning_confidence",
-      "learning_weight",
-      "created_at"
-    ],
-
-    "rules": [
-      "The Experience Ledger stores the learning event, not merely the resulting aggregate.",
-      "Aggregates shall be reproducible from underlying learning events.",
-      "Historical learning events shall not be rewritten when later weighting models change.",
-      "New aggregation logic may recalculate current statistics from preserved ledger records."
-    ]
-  },
-
-  "failure_frequency_learning": {
-    "enabled": true,
-
-    "description": "Validated resolved cases may update the empirical frequency of confirmed failure modes within applicable contexts.",
+  "learning_eligibility": {
+    "principle": "Learning eligibility is multidimensional. An experience may be suitable for one type of learning while being unsuitable for another.",
 
     "dimensions": [
-      "domain",
-      "organization",
-      "manufacturer",
-      "product_family",
-      "product",
-      "product_variant",
-      "hardware_revision",
-      "firmware",
-      "frequency_band",
-      "topology",
-      "scope",
-      "project_phase",
-      "symptom_pattern",
-      "user",
-      "team"
+      "CASE_EXPERIENCE_ELIGIBILITY",
+      "FREQUENCY_LEARNING_ELIGIBILITY",
+      "PATTERN_LEARNING_ELIGIBILITY",
+      "ROUTE_LEARNING_ELIGIBILITY",
+      "ACTION_LEARNING_ELIGIBILITY",
+      "SEQUENCE_LEARNING_ELIGIBILITY",
+      "CAUSAL_LEARNING_ELIGIBILITY",
+      "RECURRENCE_LEARNING_ELIGIBILITY",
+      "PARTICIPANT_CONTEXT_LEARNING_ELIGIBILITY",
+      "TECHNICAL_CONTEXT_LEARNING_ELIGIBILITY",
+      "CANDIDATE_KNOWLEDGE_ELIGIBILITY"
+    ],
+
+    "result_concepts": [
+      "ELIGIBLE",
+      "RESTRICTED",
+      "INSUFFICIENT",
+      "EXCLUDED",
+      "NOT_APPLICABLE"
     ],
 
     "rules": [
-      "Failure frequency shall be stored as weighted experience, not universal truth.",
-      "A case may contribute to multiple contextual aggregates using the same underlying learning event.",
-      "Aggregation across dimensions shall not duplicate the case as independent evidence.",
-      "Probability calculations shall use effective sample size and regularization."
+      "Eligibility concepts are reasoning classifications unless an authoritative schema establishes persisted statuses.",
+      "An experience may be ELIGIBLE for route learning while INSUFFICIENT for causal learning.",
+      "An experience may be ELIGIBLE for symptom-pattern learning while RESTRICTED for failure-frequency learning.",
+      "An unresolved root cause does not automatically exclude route-performance learning.",
+      "An ineffective Action may still be highly valuable for Action or route learning.",
+      "Invalidated source Evidence may exclude learning that depended on that Evidence.",
+      "Insufficient Context may restrict generalization without eliminating case-specific experience.",
+      "Learning Engine shall not collapse all learning eligibility into a single pass/fail gate."
     ]
   },
 
-  "route_learning": {
+  "validation_boundary": {
+    "principle": "Validation determines what the experience demonstrated. Learning determines what may defensibly be generalized from that demonstrated experience.",
+
+    "rules": [
+      "Learning Engine shall consume Validation results rather than recreate validation logic.",
+      "Action completion alone supports only limited learning.",
+      "Action effectiveness may support Action-performance learning without supporting causal learning.",
+      "Symptom resolution may support operational-outcome learning without proving root cause.",
+      "Causal validation may support causal learning.",
+      "Stability validation may strengthen resolution and recurrence-related learning.",
+      "Regression-free validation may strengthen corrective-action learning.",
+      "Partial validation shall restrict learning to the demonstrated portion.",
+      "Inconclusive validation shall not be converted into validated causal learning.",
+      "Validation Confidence, Causal Confidence, and Resolution Confidence shall remain distinct inputs."
+    ]
+  },
+
+  "confidence_boundary": {
+    "registry": "Core/Registries/confidence_levels.json",
+
+    "principle": "Learning confidence shall use the canonical confidence architecture and shall not define a competing numeric confidence system.",
+
+    "candidate_inputs": [
+      "Evidence Quality Confidence",
+      "Diagnostic Confidence",
+      "Causal Confidence",
+      "Validation Confidence",
+      "Resolution Confidence",
+      "Context Confidence",
+      "Attribution Confidence",
+      "applicability confidence",
+      "independence confidence"
+    ],
+
+    "rules": [
+      "Learning Engine shall not define confidence ranges.",
+      "Learning Engine shall not define competing confidence labels.",
+      "Learning Confidence represents confidence that a proposed learned pattern is supported within its stated scope.",
+      "Learning Confidence shall remain scoped to the specific learning claim.",
+      "High Resolution Confidence does not imply high Causal Confidence.",
+      "High Causal Confidence does not imply broad generalizability.",
+      "Weak Context Confidence may constrain generalization.",
+      "Weak attribution confidence may constrain participant-specific learning.",
+      "Dependent observations shall constrain confidence in apparent repetition.",
+      "UNKNOWN shall remain UNKNOWN when confidence cannot meaningfully be established."
+    ]
+  },
+
+  "learning_influence": {
+    "principle": "Learned experience may have different influence based on demonstrated quality and applicability, but Learning Engine shall not create a competing universal numerical probability formula.",
+
+    "candidate_factors": [
+      "learning confidence",
+      "context applicability",
+      "evidence quality",
+      "validation strength",
+      "causal discrimination",
+      "resolution durability",
+      "source independence",
+      "participant attribution quality",
+      "recency relevance",
+      "sample diversity",
+      "contradiction burden",
+      "effective sample support"
+    ],
+
+    "rules": [
+      "Learning influence shall not be equivalent to raw case count.",
+      "A duplicated incident shall not receive independent influence merely because it appears in multiple records.",
+      "A highly applicable validated case may influence a learned pattern more than a weakly applicable case.",
+      "Recency may matter when the underlying system, process, population, or technical state changes over time.",
+      "Older experience shall not be discarded solely because it is old.",
+      "Learning Engine may provide qualitative or schema-authorized influence information.",
+      "Probability Engine owns numerical hypothesis probability updates.",
+      "Calibration mechanics remain outside Learning authority unless explicitly established by an authoritative contract."
+    ]
+  },
+
+  "case_experience_learning": {
+    "principle": "A case may contribute useful historical experience even when it cannot support broad statistical or causal generalization.",
+
+    "candidate_elements": [
+      "applicable Context",
+      "reported symptoms",
+      "observed symptoms",
+      "material Evidence",
+      "hypotheses considered",
+      "Actions performed",
+      "route followed",
+      "information gained",
+      "validated outcomes",
+      "causal state",
+      "resolution state",
+      "recurrence state",
+      "participant attribution",
+      "material uncertainty"
+    ],
+
+    "rules": [
+      "Case history shall remain distinguishable from derived learned aggregates.",
+      "The historical case shall not be rewritten when future interpretation changes.",
+      "Later invalidation may change whether the case contributes to current learned patterns without erasing historical facts.",
+      "Case-specific learning may remain useful even when generalization is restricted."
+    ]
+  },
+
+  "frequency_learning": {
     "enabled": true,
 
-    "description": "ARIA shall learn whether diagnostic actions actually reduced uncertainty, saved time, produced reliable evidence, or contributed to successful resolution.",
-
-    "route_metrics": [
-      "ACTION_COMPLETION_RATE",
-      "EVIDENCE_RETURN_RATE",
-      "EVIDENCE_QUALITY_RETURNED",
-      "EXPECTED_INFORMATION_GAIN",
-      "REALIZED_INFORMATION_GAIN",
-      "HYPOTHESIS_DISCRIMINATION",
-      "TIME_TO_RESULT",
-      "USER_FRICTION",
-      "SERVICE_IMPACT",
-      "RESOLUTION_CONTRIBUTION",
-      "REPEAT_REQUIREMENT"
-    ],
+    "principle": "A.R.I.A. may learn empirical occurrence frequency within sufficiently comparable Context, but empirical frequency is not universal technical truth.",
 
     "rules": [
-      "An action that rules out a hypothesis may be considered successful.",
-      "An action that finds the root cause but consumes excessive time may still receive lower routing efficiency than a faster alternative.",
-      "Route success and diagnosis correctness are separate learning dimensions.",
-      "Route statistics shall preserve context.",
-      "Failed routes remain valuable learning data."
-    ]
-  },
-
-  "user_learning": {
-    "enabled": true,
-
-    "description": "ARIA may learn contextual patterns about how specific users observe, configure, troubleshoot, execute actions, and communicate technical information.",
-
-    "allowed_dimensions": [
-      "ACTION_ACCURACY",
-      "OBSERVATION_RELIABILITY",
-      "CONFIGURATION_ACCURACY",
-      "MEASUREMENT_ACCURACY",
-      "ACTION_COMPLETION_RATE",
-      "EVIDENCE_QUALITY",
-      "HISTORICAL_FAILURE_ATTRIBUTION",
-      "PROCEDURAL_COMPETENCY",
-      "PRODUCT_EXPERIENCE",
-      "MANUFACTURER_EXPERIENCE",
-      "SCOPE_EXPERIENCE",
-      "PREFERRED_COMMUNICATION_DEPTH"
-    ],
-
-    "rules": [
-      "User learning must remain contextual.",
-      "ARIA shall not create one universal competence or credibility score.",
-      "Reporter identity shall not imply fault attribution.",
-      "Improvement over time shall be reflected in learned user experience.",
-      "Older user history may receive less predictive weight when newer validated experience indicates change.",
-      "User-specific learning may affect priors, routing, evidence requests, and communication style.",
-      "User-specific learning shall not override direct validated evidence.",
-      "Personal judgment labels shall not be stored as technical learning."
-    ]
-  },
-
-  "attribution_learning": {
-    "description": "Learning about human actions requires clear attribution of who performed, observed, diagnosed, corrected, and validated relevant technical work.",
-
-    "roles": [
-      "REPORTER",
-      "OBSERVER",
-      "INSTALLER",
-      "CONFIGURATOR",
-      "ALIGNER",
-      "TESTER",
-      "TROUBLESHOOTER",
-      "DIAGNOSTICIAN",
-      "CORRECTIVE_ACTION_PERFORMER",
-      "VALIDATOR",
-      "SUPERVISOR"
-    ],
-
-    "rules": [
-      "A case shall not assign an error to the reporter merely because they opened the case.",
-      "Shared work may attribute different actions to different participants.",
-      "When attribution is unknown, learning should remain at team, case, or organizational level rather than invent individual responsibility.",
-      "Attribution confidence shall influence learning weight."
+      "Frequency learning shall preserve applicable Context.",
+      "Frequency learning shall distinguish raw observation count from effective independent support.",
+      "Duplicate and dependent cases shall not inflate effective frequency.",
+      "Uncertain causal attribution shall constrain root-cause frequency learning.",
+      "A case may contribute to symptom frequency without qualifying for confirmed-cause frequency.",
+      "Changing populations, products, configurations, environments, processes, or other material Context may reduce historical applicability.",
+      "Frequency learning shall remain empirical experience.",
+      "Probability Engine determines how learned frequency influences current hypothesis probability."
     ]
   },
 
   "pattern_learning": {
     "enabled": true,
 
-    "pattern_types": [
+    "pattern_classes": [
+      "SYMPTOM_TO_OUTCOME",
       "SYMPTOM_TO_FAILURE",
+      "EVIDENCE_TO_OUTCOME",
       "EVIDENCE_TO_FAILURE",
-      "ACTION_TO_INFORMATION_GAIN",
+      "CONTEXT_TO_OUTCOME",
+      "CONTEXT_TO_FAILURE",
+      "ACTION_TO_INFORMATION",
       "ACTION_TO_OUTCOME",
-      "SEQUENCE_TO_RESOLUTION",
-      "RECENT_CHANGE_TO_FAILURE",
-      "USER_CONTEXT_TO_FAILURE",
-      "PRODUCT_CONTEXT_TO_FAILURE",
+      "SEQUENCE_TO_OUTCOME",
+      "CHANGE_TO_OUTCOME",
       "MULTI_SYMPTOM_PATTERN",
-      "FAILURE_CO_OCCURRENCE"
+      "MULTI_EVIDENCE_PATTERN",
+      "FAILURE_CO_OCCURRENCE",
+      "RECURRENCE_PATTERN"
     ],
 
     "rules": [
-      "Patterns shall preserve sample size and contextual scope.",
-      "Correlation shall not automatically become causal knowledge.",
-      "Rare patterns shall remain low-confidence until sufficient support accumulates.",
-      "Pattern learning may generate candidate claims for review."
+      "Pattern learning shall preserve sample size and effective independent support when available.",
+      "Pattern learning shall preserve applicable Context.",
+      "Association shall not automatically be labeled causal.",
+      "Rare patterns shall not be overstated.",
+      "Contradictory examples shall remain represented.",
+      "A strong empirical pattern may generate a candidate knowledge claim.",
+      "Pattern learning shall not directly create canonical Relationships."
+    ]
+  },
+
+  "route_learning": {
+    "enabled": true,
+
+    "principle": "A.R.I.A. may learn how diagnostic routes and route steps perform, including whether they produced useful information even when they did not directly resolve the case.",
+
+    "candidate_metrics": [
+      "completion success",
+      "evidence return",
+      "evidence usefulness",
+      "realized information gain",
+      "hypothesis discrimination",
+      "uncertainty reduction",
+      "time to result",
+      "resource demand",
+      "user friction",
+      "service impact",
+      "safety consequence",
+      "repeat requirement",
+      "resolution contribution",
+      "failure rate",
+      "inconclusive rate"
+    ],
+
+    "rules": [
+      "Route success and diagnosis correctness are separate learning dimensions.",
+      "An Action that eliminates a hypothesis may be diagnostically successful.",
+      "An Action that produces no useful information may be a poor route step even when easy to perform.",
+      "A slower Action may remain preferable when it provides materially greater discrimination or lower risk.",
+      "Route performance shall preserve Context.",
+      "Failed routes remain valuable learning data.",
+      "Learning Engine shall not directly alter current route costs.",
+      "Routing Engine determines current route behavior using applicable learned information."
+    ]
+  },
+
+  "action_learning": {
+    "enabled": true,
+
+    "principle": "A.R.I.A. may learn the historical technical and operational performance of Actions without confusing Action completion, information value, effectiveness, and causal proof.",
+
+    "dimensions": [
+      "completion reliability",
+      "information return",
+      "information quality",
+      "diagnostic discrimination",
+      "uncertainty reduction",
+      "technical effectiveness",
+      "operational effectiveness",
+      "time cost",
+      "resource cost",
+      "service impact",
+      "risk",
+      "reversibility",
+      "repeatability",
+      "regression incidence",
+      "resolution contribution"
+    ],
+
+    "rules": [
+      "Action completion does not establish effectiveness.",
+      "Action effectiveness does not establish causality.",
+      "An ineffective Action may still have high diagnostic value.",
+      "An Action may have different historical performance in different Context.",
+      "Action learning shall not directly select the next Action.",
+      "Decision Engine owns current Action selection."
     ]
   },
 
   "sequence_learning": {
     "enabled": true,
 
-    "description": "ARIA shall learn not only which actions succeeded, but which diagnostic sequences produced efficient resolution.",
+    "principle": "A.R.I.A. may learn how ordered sequences of diagnostic or corrective Actions perform without converting learned sequences into mandatory static troubleshooting trees.",
 
-    "example": {
-      "sequence_a": [
-        "CHECK_RSL",
-        "VERIFY_CONFIGURATION",
-        "INSPECT_RF_ROUTING"
-      ],
-      "average_resolution_minutes": 18.4,
-
-      "sequence_b": [
-        "COMPARE_MAIN_DIVERSITY_RSL",
-        "INSPECT_RF_ROUTING"
-      ],
-      "average_resolution_minutes": 7.1
-    },
+    "candidate_dimensions": [
+      "time to useful evidence",
+      "time to discrimination",
+      "time to restoration",
+      "time to validated resolution",
+      "total resource demand",
+      "total risk",
+      "service impact",
+      "repeat work",
+      "unnecessary steps",
+      "diagnostic reliability",
+      "resolution reliability"
+    ],
 
     "rules": [
-      "Sequence performance shall preserve context.",
-      "Shorter sequences are not automatically better if they carry greater risk or lower diagnostic reliability.",
-      "Sequence learning shall influence route selection, not create mandatory static troubleshooting trees."
+      "Sequence performance shall preserve applicable Context.",
+      "Shorter sequences are not automatically better.",
+      "Faster sequences are not automatically better.",
+      "A sequence with greater safety or diagnostic reliability may be preferred despite greater duration.",
+      "Sequence learning shall remain advisory learned experience.",
+      "Routing Engine owns route construction and route selection."
     ]
   },
 
   "causal_learning": {
     "enabled": true,
 
-    "description": "ARIA may increase empirical causal confidence when validated interventions repeatedly produce predicted technical outcomes.",
+    "principle": "Causal learning requires evidence that meaningfully discriminates causal mechanisms, not merely temporal association or successful recovery.",
 
-    "strong_causal_patterns": [
-      "CONTROLLED_COMPONENT_SWAP",
-      "CONTROLLED_PATH_SWAP",
-      "SINGLE_VARIABLE_CONFIGURATION_CHANGE",
-      "CORRECTIVE_ACTION_WITH_PREDICTED_BEFORE_AFTER_RESULT",
-      "REPRODUCIBLE_FAILURE_INDUCTION_AND_REMOVAL"
+    "strong_support_concepts": [
+      "controlled intervention",
+      "single-variable change",
+      "predicted before-after response",
+      "safe reversal response",
+      "repeatable causal response",
+      "direct mechanism observation",
+      "independent corroboration",
+      "alternative-cause discrimination"
+    ],
+
+    "weak_support_concepts": [
+      "temporal association",
+      "historical frequency",
+      "symptom disappearance",
+      "recovery after multiple simultaneous changes",
+      "component replacement followed by recovery",
+      "leading hypothesis status",
+      "working assumption"
     ],
 
     "rules": [
-      "Causal learning requires stronger evidence than correlation learning.",
-      "Multiple variables changed simultaneously shall reduce causal attribution confidence.",
-      "Before-and-after improvement alone does not guarantee causation when uncontrolled variables exist.",
-      "Repeated controlled observations may generate candidate canonical causal relationships."
-    ]
-  },
-
-  "canonical_knowledge_promotion": {
-    "automatic_promotion": false,
-
-    "description": "Experience-derived patterns may propose additions or changes to canonical knowledge but shall enter the provenance and review process.",
-
-    "pipeline": [
-      "EXPERIENCE_PATTERN_DETECTED",
-      "CANDIDATE_CLAIM_CREATED",
-      "PROVENANCE_ATTACHED",
-      "SUPPORTING_CASES_ATTACHED",
-      "CONTRADICTIONS_CHECKED",
-      "AUTHORITY_REVIEW",
-      "HUMAN_OR_POLICY_VALIDATION",
-      "CANONICAL_RELATIONSHIP_CREATED_OR_UPDATED"
-    ],
-
-    "rules": [
-      "Repeated field correlation shall not automatically create CAN_CAUSE.",
-      "Experience may establish ASSOCIATED_WITH before sufficient causal evidence exists.",
-      "Manufacturer contradiction shall trigger review rather than silent overwrite.",
-      "Canonical promotion decisions shall remain auditable."
-    ]
-  },
-
-  "anti_poisoning": {
-    "description": "ARIA shall resist accumulation of incorrect learned beliefs from weak, duplicated, manipulated, or misattributed experience.",
-
-    "controls": [
-      "LEARNING_ELIGIBILITY",
-      "LEARNING_CONFIDENCE",
-      "PROVENANCE_REQUIREMENT",
-      "DUPLICATE_CASE_DETECTION",
-      "DEPENDENT_EVIDENCE_DETECTION",
-      "ATTRIBUTION_VALIDATION",
-      "OUTLIER_MONITORING",
-      "RECURRENCE_MONITORING",
-      "CALIBRATION_MONITORING",
-      "HUMAN_REVIEW_FOR_CANONICAL_PROMOTION"
-    ],
-
-    "rules": [
-      "Multiple copies of the same underlying incident shall not inflate learned frequency.",
-      "Cases with uncertain diagnosis shall not receive full causal learning weight.",
-      "Learning derived from invalidated evidence shall be recalculated.",
-      "Deliberately repeated claims shall not create artificial historical confidence.",
-      "Sudden extreme learned shifts shall be detectable and reviewable."
-    ]
-  },
-
-  "duplicate_case_handling": {
-    "enabled": true,
-
-    "candidate_duplicate_signals": [
-      "same_project",
-      "same_path",
-      "same_time_window",
-      "same_symptom_pattern",
-      "same_artifacts",
-      "same_root_cause",
-      "same_corrective_action",
-      "same_participants"
-    ],
-
-    "rules": [
-      "Duplicate detection may flag cases for review.",
-      "Linked duplicate cases shall not be counted as independent learning observations.",
-      "Cases describing genuinely separate recurrences shall remain distinct."
+      "Causal learning shall consume causal validation rather than recreate it.",
+      "Operational recovery alone shall not support strong causal learning.",
+      "Multiple simultaneous interventions shall constrain attribution to any individual change.",
+      "Repeated controlled causal observations may strengthen empirical causal learning.",
+      "A causal pattern learned from one Context shall not automatically generalize to materially different Context.",
+      "Causal learning may support a candidate canonical claim.",
+      "Causal learning shall not directly create a canonical causal Relationship."
     ]
   },
 
   "recurrence_learning": {
     "enabled": true,
 
+    "principle": "Recurrence provides evidence about durability, completeness of correction, hidden contributing mechanisms, and future risk.",
+
     "rules": [
-      "Recurrence after validated resolution shall reduce confidence in the completeness or durability of the previous correction.",
-      "Recurrence may reveal an incomplete root cause.",
-      "Time to recurrence shall be preserved.",
-      "Repeated recurrence may change route and corrective-action effectiveness statistics.",
-      "A recurrence shall not silently erase the original case outcome."
+      "Recurrence after apparent resolution shall remain linked to the prior resolution history when the relationship is supported.",
+      "Recurrence may reduce confidence in the completeness or durability of the previous correction.",
+      "Recurrence does not automatically prove that the prior diagnosis was wrong.",
+      "Recurrence may indicate incomplete correction, multiple causes, environmental dependence, degradation, reintroduction, or a new failure.",
+      "Time to recurrence shall be preserved when available.",
+      "Repeated recurrence patterns may become important learned experience.",
+      "Recurrence shall not automatically be counted as an independent failure when it is merely continued manifestation of the same unresolved event."
     ]
   },
 
-  "negative_learning": {
+  "participant_learning": {
     "enabled": true,
 
-    "description": "ARIA shall learn from paths that were unsuccessful, irrelevant, redundant, or excessively costly.",
+    "principle": "A.R.I.A. may learn contextual patterns associated with participants only when attribution is sufficiently supported and only within the demonstrated scope.",
 
-    "examples": [
-      "Repeated configuration checks produced no useful evidence in this context.",
-      "Radio replacement frequently failed to resolve this symptom pattern.",
-      "Physical inspection was often unnecessary when a configuration export could discriminate the same hypotheses."
+    "candidate_dimensions": [
+      "observation reliability",
+      "measurement reliability",
+      "configuration accuracy",
+      "Action completion reliability",
+      "procedural experience",
+      "technical-context experience",
+      "evidence quality historically produced",
+      "communication-detail preference",
+      "response latency",
+      "escalation effectiveness"
+    ],
+
+    "attribution_roles": [
+      "REPORTER",
+      "OBSERVER",
+      "INSTALLER",
+      "CONFIGURATOR",
+      "TESTER",
+      "TROUBLESHOOTER",
+      "DIAGNOSTICIAN",
+      "CORRECTIVE_ACTION_PERFORMER",
+      "VALIDATOR",
+      "SUPERVISOR",
+      "DECISION_PARTICIPANT"
     ],
 
     "rules": [
-      "Negative learning modifies route utility rather than prohibiting technically valid actions.",
-      "A historically poor action may become useful when new evidence or context changes.",
-      "Negative learning shall preserve context and sample size."
+      "Participant learning shall remain contextual.",
+      "A.R.I.A. shall not create one universal competence score.",
+      "A.R.I.A. shall not create one universal credibility score.",
+      "Reporter identity shall not imply fault.",
+      "Case ownership shall not imply technical responsibility.",
+      "When attribution is unknown, A.R.I.A. shall not invent individual responsibility.",
+      "Shared work may attribute different observations and Actions to different participants.",
+      "Attribution Confidence shall constrain participant-specific learning.",
+      "Improvement over time shall be representable.",
+      "Recent validated performance may reduce applicability of older participant patterns.",
+      "Participant-specific learned experience shall not override stronger direct Evidence.",
+      "Personal judgment labels shall not be stored as technical learning."
     ]
   },
 
-  "learning_decay": {
+  "technical_context_learning": {
     "enabled": true,
 
-    "description": "Predictive influence of some learned experience may decay while the underlying historical record remains unchanged.",
+    "principle": "A.R.I.A. may learn patterns associated with technical Context while avoiding unsupported generalization.",
 
-    "candidate_decay_domains": [
-      "USER_BEHAVIOR",
-      "PROCEDURAL_PERFORMANCE",
-      "SOFTWARE_BEHAVIOR",
-      "FIRMWARE_BEHAVIOR",
-      "PRODUCT_FAILURE_PATTERN",
-      "ROUTE_EFFECTIVENESS"
-    ],
-
-    "non_decay_domains": [
-      "IMMUTABLE_CASE_HISTORY",
-      "VALIDATED_PHYSICAL_CONSTANTS",
-      "HISTORICAL_PROVENANCE"
-    ],
-
-    "rules": [
-      "Decay affects predictive weighting, not deletion.",
-      "Decay behavior may differ by learning domain.",
-      "Revision changes may supersede time-based decay for product or firmware patterns."
-    ]
-  },
-
-  "aggregation": {
-    "description": "ARIA may maintain materialized aggregates for speed while preserving the Experience Ledger as the authoritative source.",
-
-    "aggregate_examples": [
-      "failure frequency by product and symptom",
-      "failure frequency by user and scope",
-      "action effectiveness by failure mode",
-      "average information gain by action",
-      "average resolution time by route sequence",
-      "recurrence rate by corrective action"
+    "candidate_context_dimensions": [
+      "domain",
+      "organization",
+      "manufacturer",
+      "product family",
+      "product",
+      "product variant",
+      "hardware revision",
+      "software or firmware revision",
+      "architecture",
+      "topology",
+      "configuration",
+      "interface",
+      "environment",
+      "operating condition",
+      "project phase",
+      "scope",
+      "geography",
+      "dependency structure"
     ],
 
     "rules": [
-      "Aggregates shall be reproducible from underlying ledger events.",
-      "Aggregates may be rebuilt when models change.",
-      "Aggregates shall preserve effective sample size and confidence.",
-      "Aggregates shall not become the only surviving representation of experience."
+      "The applicable canonical Context architecture determines actual context representation.",
+      "This list does not create a competing Context vocabulary.",
+      "Patterns associated with a manufacturer or product shall remain empirical unless canonically validated.",
+      "A product-specific pattern shall not automatically generalize to a manufacturer.",
+      "A manufacturer-specific pattern shall not automatically generalize to a domain.",
+      "Revision-specific behavior shall remain revision-specific when material.",
+      "Context generalization shall expand only when supporting experience justifies broader scope."
     ]
   },
 
-  "learning_explainability": {
-    "required_capabilities": [
-      "Explain why a case was or was not eligible for learning.",
-      "Show learning confidence and weight.",
-      "Identify which aggregates the case influenced.",
-      "Identify which user-specific experience was updated.",
-      "Identify which route-performance statistics changed.",
-      "Identify any candidate canonical claims generated.",
-      "Recalculate learned statistics if a case is later invalidated."
-    ]
-  },
+  "generalization": {
+    "principle": "Learning shall generalize no more broadly than the supporting experience justifies.",
 
-  "example": {
-    "case": "Nokia UBT-T 18 GHz commissioning RSL discrepancy",
-
-    "validated_findings": {
-      "symptom": "MAIN_DIVERSITY_RSL_IMBALANCE",
-      "root_cause": "MAIN_DIVERSITY_ROUTING_ERROR",
-      "correction": "CORRECT_RF_ROUTING",
-      "validation": "RSL normalized after correction"
-    },
-
-    "participants": [
-      {
-        "user": "Clayton",
-        "role": "CONFIGURATOR"
-      },
-      {
-        "user": "Michael",
-        "role": "TROUBLESHOOTER"
-      }
+    "candidate_scope_levels": [
+      "CASE_SPECIFIC",
+      "PARTICIPANT_SPECIFIC",
+      "TEAM_SPECIFIC",
+      "ORGANIZATION_SPECIFIC",
+      "CONFIGURATION_SPECIFIC",
+      "VARIANT_SPECIFIC",
+      "PRODUCT_SPECIFIC",
+      "PRODUCT_FAMILY_SPECIFIC",
+      "MANUFACTURER_SPECIFIC",
+      "ARCHITECTURE_SPECIFIC",
+      "DOMAIN_SPECIFIC",
+      "CROSS_DOMAIN"
     ],
 
-    "learning_confidence": 0.96,
-    "learning_weight": 0.93,
-
-    "updates": [
-      "Increase weighted occurrence of Main/Diversity routing error for similar UBT-T commissioning cases.",
-      "Increase effectiveness of Compare Main/Diversity RSL for this symptom pattern.",
-      "Increase effectiveness of Verify Main/Diversity Routing after asymmetric Main/Diversity evidence.",
-      "Update applicable user experience only according to actual participant attribution."
+    "rules": [
+      "Scope levels are reasoning concepts unless established by an authoritative schema.",
+      "Broader scope requires evidence spanning the dimensions being generalized across.",
+      "Repeated observations from one product variant do not automatically establish a product-family rule.",
+      "Repeated observations from one organization do not automatically establish a universal rule.",
+      "Context diversity may strengthen justified generalization.",
+      "Material contradictions across Context shall constrain generalization.",
+      "A.R.I.A. shall prefer narrower defensible learning over broader unsupported learning."
     ]
   },
 
-  "semantic_rules": [
-    {
-      "rule_id": "LEARN-RULE-001",
-      "rule": "ARIA shall learn from validated experience, not merely from conversation frequency."
-    },
+  "duplicate_and_dependency_handling": {
+    "enabled": true,
 
-    {
-      "rule_id": "LEARN-RULE-002",
-      "rule": "Case closure does not automatically make a case suitable for causal learning."
-    },
+    "candidate_duplicate_signals": [
+      "same underlying incident",
+      "same time window",
+      "same entities",
+      "same artifacts",
+      "same source Evidence",
+      "same symptom progression",
+      "same corrective work",
+      "same outcome",
+      "explicit duplicate linkage"
+    ],
 
-    {
-      "rule_id": "LEARN-RULE-003",
-      "rule": "Learning weight shall reflect the quality of the case."
-    },
+    "rules": [
+      "Duplicate detection may flag experience for review or reduced independent influence.",
+      "Multiple records describing the same underlying event shall not be treated as independent observations.",
+      "Multiple cases derived from the same source Evidence shall preserve dependency.",
+      "Repeated human reports of one underlying condition shall not automatically create multiple independent failures.",
+      "Genuinely separate recurrences may remain distinct observations.",
+      "Evidence Engine remains authoritative for Evidence independence semantics.",
+      "Learning Engine evaluates independence at the experience/generalization level."
+    ]
+  },
 
-    {
-      "rule_id": "LEARN-RULE-004",
-      "rule": "The Experience Ledger is authoritative for historical learning events; aggregates are derived representations."
-    },
+  "anti_poisoning": {
+    "enabled": true,
 
-    {
-      "rule_id": "LEARN-RULE-005",
-      "rule": "User-specific experience shall remain contextual and attributable."
-    },
+    "principle": "A.R.I.A. shall resist learned-belief corruption caused by weak, duplicated, manipulated, misattributed, invalidated, or systematically biased experience.",
 
-    {
-      "rule_id": "LEARN-RULE-006",
-      "rule": "ARIA shall allow users, products, procedures, and route effectiveness to change over time."
-    },
+    "controls": [
+      "learning eligibility assessment",
+      "canonical confidence architecture",
+      "provenance preservation",
+      "duplicate experience detection",
+      "dependent observation detection",
+      "attribution assessment",
+      "contradiction preservation",
+      "invalidated Evidence propagation",
+      "outlier detection",
+      "recurrence analysis",
+      "effective support assessment",
+      "scope restriction",
+      "canonical promotion governance"
+    ],
 
-    {
-      "rule_id": "LEARN-RULE-007",
-      "rule": "Historical patterns may affect future priors without becoming canonical technical truth."
-    },
+    "rules": [
+      "Repeated copies of the same claim shall not manufacture historical support.",
+      "Cases with unresolved cause shall not receive unrestricted causal-learning influence.",
+      "Learning dependent on invalidated Evidence shall be reassessed.",
+      "Misattributed participant behavior shall not become participant learning.",
+      "Sudden extreme learned-pattern changes should remain detectable.",
+      "Systematic data-source bias shall be considered when detectable.",
+      "High volume from one source shall not automatically outweigh stronger independent contradictory experience.",
+      "Learning shall remain reversible at the derived-pattern level when its support is later invalidated."
+    ]
+  },
 
-    {
-      "rule_id": "LEARN-RULE-008",
-      "rule": "Repeated experience may generate candidate knowledge claims but shall not bypass provenance and validation."
-    },
+  "contradiction_handling": {
+    "principle": "Learned experience may legitimately disagree. Contradiction shall be analyzed rather than erased.",
 
-    {
-      "rule_id": "LEARN-RULE-009",
-      "rule": "Failed diagnostic routes are valid learning data when they reveal what not to prioritize in similar contexts."
-    },
+    "rules": [
+      "Contradictory cases shall remain represented.",
+      "Contradiction may indicate Context differences.",
+      "Contradiction may indicate multiple causal mechanisms.",
+      "Contradiction may indicate measurement or attribution problems.",
+      "Contradiction may indicate temporal change in the underlying population or system.",
+      "A newer case shall not automatically overwrite older experience.",
+      "A more authoritative canonical source shall not erase empirical field experience; the disagreement shall remain distinguishable.",
+      "Material contradiction shall constrain Learning Confidence or generalization when appropriate."
+    ]
+  },
 
-    {
-      "rule_id": "LEARN-RULE-010",
-      "rule": "Duplicate or dependent cases shall not be treated as independent experience."
-    },
+  "probability_boundary": {
+    "principle": "Learning provides empirical historical information and learned patterns; Probability Engine determines how those inputs affect current belief.",
 
-    {
-      "rule_id": "LEARN-RULE-011",
-      "rule": "Learning derived from invalidated evidence shall be recalculated."
-    },
+    "rules": [
+      "Learning Engine shall not directly assign current hypothesis probability.",
+      "Learning Engine shall not directly normalize competing hypotheses.",
+      "Learning Engine shall not define universal prior formulas.",
+      "Learned frequency may be an input to Probability reasoning.",
+      "Learned contextual patterns may be an input to Probability reasoning.",
+      "Probability Engine determines applicability, regularization, calibration, and numerical belief updates.",
+      "Historical frequency shall not override direct current-case Evidence.",
+      "Learning results shall be returned through Orchestration."
+    ]
+  },
 
-    {
-      "rule_id": "LEARN-RULE-012",
-      "rule": "ARIA shall distinguish correlation learning from causal learning."
-    },
+  "evidence_boundary": {
+    "principle": "Learning consumes Evidence and may produce derived experience patterns, but Evidence Engine owns Evidence semantics.",
 
-    {
-      "rule_id": "LEARN-RULE-013",
-      "rule": "A high-frequency field pattern shall not silently override an applicable deterministic technical requirement."
-    },
+    "rules": [
+      "Learning Engine shall not redefine canonical Evidence.",
+      "Learning Engine shall not redefine evidence quality.",
+      "Learning Engine shall not redefine evidence verification.",
+      "Learning Engine shall not redefine evidence independence.",
+      "Learning Engine shall not redefine evidence contradiction or invalidation.",
+      "Learning shall consume Evidence provenance where applicable.",
+      "A learned pattern is not automatically Evidence of a current-case fact.",
+      "A learned pattern may inform reasoning about what Evidence to seek.",
+      "Current direct Evidence may outweigh learned historical patterns."
+    ]
+  },
 
-    {
-      "rule_id": "LEARN-RULE-014",
-      "rule": "Learning shall preserve the exact technical context required to interpret historical relevance."
-    },
+  "context_boundary": {
+    "principle": "Learning preserves and reasons over Context but does not create a competing Context system.",
 
-    {
-      "rule_id": "LEARN-RULE-015",
-      "rule": "ARIA shall prefer recalculable statistical experience over permanently encoded opaque model intuition."
-    },
+    "rules": [
+      "Context Engine owns canonical Context resolution.",
+      "Learning Engine shall not define competing context types.",
+      "Learning Engine shall not define competing context schemas.",
+      "Learning Engine may assess similarity between source Context and target Context.",
+      "Context mismatch shall constrain generalization.",
+      "Unknown material Context shall preserve generalization uncertainty."
+    ]
+  },
 
-    {
-      "rule_id": "LEARN-RULE-016",
-      "rule": "Language-model outputs may identify candidate patterns but shall not independently mutate authoritative learned experience."
-    },
+  "hypothesis_boundary": {
+    "principle": "Learned experience may influence future hypothesis generation and ranking through the appropriate reasoning engines but shall not directly manipulate hypothesis state.",
 
-    {
-      "rule_id": "LEARN-RULE-017",
-      "rule": "The system shall preserve enough history to explain how ARIA's current learned expectation developed."
-    },
+    "rules": [
+      "Learning Engine shall not create canonical hyp_<UUID> records.",
+      "Learning Engine shall not confirm current hypotheses.",
+      "Learning Engine shall not eliminate current hypotheses.",
+      "Learned patterns may inform Hypothesis Engine.",
+      "Historical failure frequency may inform hypothesis generation.",
+      "Historical symptom patterns may inform hypothesis generation.",
+      "Hypothesis Engine owns hypothesis creation and state transitions."
+    ]
+  },
 
-    {
-      "rule_id": "LEARN-RULE-018",
-      "rule": "Learning confidence and diagnostic confidence are separate. A correct diagnosis does not automatically mean the case is a clean learning example."
-    },
+  "uncertainty_boundary": {
+    "principle": "Learned experience may reduce or expose uncertainty, but Uncertainty Engine owns uncertainty reasoning.",
 
-    {
-      "rule_id": "LEARN-RULE-019",
-      "rule": "The goal of learning is improved future reasoning, not merely accumulation of more data."
-    },
+    "rules": [
+      "Learning Engine shall not define a competing uncertainty persistence model.",
+      "Strong historical patterns may reduce uncertainty about where to investigate.",
+      "Conflicting learned patterns may increase Model Uncertainty.",
+      "Sparse experience may preserve uncertainty.",
+      "Context mismatch may preserve applicability uncertainty.",
+      "Learning Engine shall return uncertainty-relevant implications through Orchestration."
+    ]
+  },
 
+  "decision_boundary": {
+    "principle": "Learned Action performance may inform decisions, but Decision Engine owns Action selection.",
+
+    "rules": [
+      "Learning Engine shall not select act_<UUID>.",
+      "Learning Engine may provide historical Action effectiveness or information-value patterns.",
+      "Learning Engine may provide historical risk, effort, or outcome patterns.",
+      "Decision Engine determines whether those learned patterns are applicable to the current case.",
+      "Current safety and case-specific constraints shall not be overridden by historical popularity."
+    ]
+  },
+
+  "routing_boundary": {
+    "principle": "Learned route performance informs Routing; Routing Engine owns current route construction, costing, and progression.",
+
+    "rules": [
+      "Learning Engine shall not directly create route steps.",
+      "Learning Engine shall not directly change route costs.",
+      "Learning Engine shall not directly select next hops.",
+      "Learning Engine shall not directly reroute.",
+      "Learning Engine may report historical route-performance patterns.",
+      "Routing Engine determines current applicability and route behavior."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Learning consumes case outcomes and demonstrated state but does not own lifecycle state.",
+
+    "rules": [
+      "Learning Engine shall not mark a case resolved.",
+      "Learning Engine shall not close a case.",
+      "Learning Engine shall not reopen a case.",
+      "Learning Engine shall not change case reasoning state.",
+      "Case State supplies applicable case outcome and lifecycle information.",
+      "Learning eligibility shall not substitute for case lifecycle state."
+    ]
+  },
+
+  "memory_boundary": {
+    "principle": "Learning determines what experience means and what may be generalized. Memory determines how authorized information is retained and retrieved.",
+
+    "rules": [
+      "Learning Engine shall not independently define memory tiers.",
+      "Learning Engine shall not independently define memory retention periods.",
+      "Learning Engine shall not independently promote information into persistent Memory.",
+      "Learning Engine may identify learning results that are candidates for retention.",
+      "Memory Engine determines persistence and retrieval behavior under its authoritative contract.",
+      "A learned pattern and a remembered case are not the same thing."
+    ]
+  },
+
+  "canonical_knowledge_boundary": {
+    "principle": "Experience-derived learning may propose canonical knowledge but shall not silently promote itself into canonical truth.",
+
+    "candidate_pipeline": [
+      "PATTERN_IDENTIFIED",
+      "GENERALIZATION_SCOPE_ASSESSED",
+      "SUPPORTING_EXPERIENCE_IDENTIFIED",
+      "CONTRADICTIONS_IDENTIFIED",
+      "CANDIDATE_CLAIM_PROPOSED",
+      "PROVENANCE_PRESERVED",
+      "KNOWLEDGE_GOVERNANCE_REVIEW_REQUESTED"
+    ],
+
+    "rules": [
+      "Learning Engine may generate candidate knowledge claims.",
+      "Candidate knowledge shall remain distinguishable from canonical knowledge.",
+      "Repeated association shall not automatically create a causal Relationship.",
+      "Repeated causal validation may strengthen a candidate causal claim.",
+      "Canonical Relationships shall not be created or mutated directly by Learning Engine.",
+      "Canonical knowledge promotion requires the applicable governance authority.",
+      "Conflicts with existing canonical knowledge shall trigger review rather than silent overwrite.",
+      "Supporting and contradicting experience shall remain auditable."
+    ]
+  },
+
+  "orchestration_boundary": {
+    "principle": "Learning Engine produces learning results. Orchestration coordinates their effects on other reasoning components.",
+
+    "rules": [
+      "Learning Engine shall not directly invoke every affected engine.",
+      "New learned patterns shall be returned through Orchestration.",
+      "Material changes to learned frequency shall be returned through Orchestration.",
+      "Material route-performance learning shall be returned through Orchestration.",
+      "Material Action-performance learning shall be returned through Orchestration.",
+      "Candidate knowledge claims shall be returned through the applicable governance path.",
+      "Orchestration determines whether Probability, Hypothesis, Decision, Routing, Memory, or other components require reevaluation."
+    ]
+  },
+
+  "reassessment_triggers": [
+    "SOURCE_EVIDENCE_INVALIDATED",
+    "SOURCE_EVIDENCE_RETRACTED",
+    "VALIDATION_RESULT_CHANGED",
+    "CAUSAL_ASSESSMENT_CHANGED",
+    "RESOLUTION_ASSESSMENT_CHANGED",
+    "RECURRENCE_DETECTED",
+    "DUPLICATE_EXPERIENCE_IDENTIFIED",
+    "ATTRIBUTION_CHANGED",
+    "MATERIAL_CONTEXT_CHANGED",
+    "NEW_CONTRADICTORY_EXPERIENCE",
+    "NEW_SUPPORTING_EXPERIENCE",
+    "CANONICAL_KNOWLEDGE_CHANGED",
+    "DEPENDENCY_DISCOVERED",
+    "SOURCE_CASE_MERGED_OR_LINKED"
+  ],
+
+  "reassessment_rules": [
+    "Derived learning shall be reassessed when material support changes.",
+    "Historical source records shall remain immutable except through their own authoritative correction mechanisms.",
+    "Invalidated support shall no longer contribute as valid current support.",
+    "New contradictions may reduce confidence or narrow generalization.",
+    "New diverse support may justify broader generalization.",
+    "Duplicate discovery may reduce effective support without deleting historical records.",
+    "Recurrence may alter resolution-related learning.",
+    "Changes to derived learning shall remain explainable."
+  ],
+
+  "learning_result": {
+    "recommended_outputs": [
+      "source_ids",
+      "learning_classes_considered",
+      "eligibility_by_learning_class",
+      "applicable_context",
+      "generalization_scope",
+      "supporting_evidence_ids",
+      "supporting_case_ids",
+      "contradicting_case_ids",
+      "validation_basis",
+      "causal_basis",
+      "resolution_basis",
+      "attribution_basis",
+      "independence_assessment",
+      "duplicate_assessment",
+      "learned_pattern",
+      "learning_confidence",
+      "influence_assessment",
+      "restrictions",
+      "exclusion_reasons",
+      "candidate_knowledge_claim",
+      "residual_uncertainty",
+      "downstream_reevaluation_required",
+      "reasoning_summary"
+    ],
+
+    "rules": [
+      "Outputs are reasoning results unless an authoritative schema establishes corresponding persisted fields.",
+      "Learning outputs shall state their applicable scope.",
+      "Learning outputs shall distinguish association from causation.",
+      "Learning outputs shall distinguish case history from learned aggregate.",
+      "Learning outputs shall distinguish empirical learning from canonical knowledge.",
+      "Learning outputs shall preserve material restrictions.",
+      "Learning outputs shall preserve material contradictions.",
+      "Learning outputs shall not invent Evidence IDs or case IDs.",
+      "Learning outputs shall not calculate current hypothesis probability.",
+      "Learning outputs shall not select Actions.",
+      "Learning outputs shall not perform Routing.",
+      "Learning outputs shall not change case lifecycle state.",
+      "Learning outputs shall not directly promote canonical knowledge."
+    ]
+  },
+
+  "explainability": {
+    "required_questions": [
+      "What experience is A.R.I.A. learning from?",
+      "What was actually demonstrated in that experience?",
+      "What type of learning is supported?",
+      "What type of learning is not supported?",
+      "What Context limits the learning?",
+      "Is the experience independent or duplicated?",
+      "How strong is the supporting Evidence?",
+      "Was causality demonstrated or merely associated?",
+      "Was the corrective Action effective?",
+      "Was the resolution stable and durable?",
+      "Is participant attribution sufficiently supported?",
+      "What contradictory experience exists?",
+      "How broadly can the result be generalized?",
+      "How confident is A.R.I.A. in the learned pattern?",
+      "Is this empirical experience or candidate canonical knowledge?"
+    ],
+
+    "rules": [
+      "Learning explanations shall not overstate causal meaning.",
+      "Learning explanations shall identify important scope restrictions.",
+      "Learning explanations shall identify material contradictions.",
+      "Learning explanations shall identify when duplicate or dependent experience reduces effective support.",
+      "Learning explanations shall distinguish validated facts from statistical patterns and candidate knowledge."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "rule_id": "LEARN-RULE-020",
-      "rule": "ARIA shall never intentionally improve apparent accuracy by hiding, deleting, or excluding difficult cases except under explicit data-quality rules."
+      "failure_mode": "SECOND_LEARNING_SCHEMA",
+      "description": "Learning Engine creates a competing universal persistence contract.",
+      "prevention": "Keep persistence schema-authorized and separate from reasoning behavior."
+    },
+    {
+      "failure_mode": "SECOND_CONFIDENCE_SYSTEM",
+      "description": "Learning Engine creates its own confidence range or labels.",
+      "prevention": "Consume Core/Registries/confidence_levels.json."
+    },
+    {
+      "failure_mode": "RESOLUTION_EQUALS_CAUSAL_LEARNING",
+      "description": "A resolved case is treated as a causally validated case.",
+      "prevention": "Consume Validation's separate operational, causal, stability, and resolution assessments."
+    },
+    {
+      "failure_mode": "ACTION_SUCCESS_EQUALS_ROOT_CAUSE",
+      "description": "A successful Action is treated as proof of the suspected root cause.",
+      "prevention": "Require causal discrimination for causal learning."
+    },
+    {
+      "failure_mode": "CORRELATION_EQUALS_CAUSATION",
+      "description": "Repeated association is promoted into causal truth.",
+      "prevention": "Preserve association and causation as separate learning classes."
+    },
+    {
+      "failure_mode": "FREQUENCY_EQUALS_TRUTH",
+      "description": "Historical occurrence frequency is treated as universal technical truth.",
+      "prevention": "Preserve empirical frequency as contextual experience."
+    },
+    {
+      "failure_mode": "RAW_COUNT_INFLATION",
+      "description": "Raw record count is treated as independent statistical support.",
+      "prevention": "Assess duplication, dependence, and effective support."
+    },
+    {
+      "failure_mode": "DUPLICATE_POISONING",
+      "description": "Multiple records of the same incident inflate learned frequency.",
+      "prevention": "Detect and preserve duplicate/dependent relationships."
+    },
+    {
+      "failure_mode": "CONTEXT_COLLAPSE",
+      "description": "Experience from materially different Context is aggregated as though directly comparable.",
+      "prevention": "Preserve Context and restrict generalization."
+    },
+    {
+      "failure_mode": "OVERGENERALIZATION",
+      "description": "Narrow experience is generalized beyond supported scope.",
+      "prevention": "Require support across dimensions being generalized."
+    },
+    {
+      "failure_mode": "PARTICIPANT_CREDIBILITY_SCORE",
+      "description": "Contextual participant learning becomes a universal human credibility or competence judgment.",
+      "prevention": "Keep participant learning contextual, attributable, and multidimensional."
+    },
+    {
+      "failure_mode": "REPORTER_FAULT_ATTRIBUTION",
+      "description": "The person reporting a problem is treated as responsible for causing it.",
+      "prevention": "Preserve action and observation attribution separately."
+    },
+    {
+      "failure_mode": "HISTORICAL_REWRITE",
+      "description": "Past case facts are rewritten when current learned interpretation changes.",
+      "prevention": "Keep source history immutable and derived learning recalculable."
+    },
+    {
+      "failure_mode": "CONTRADICTION_ERASURE",
+      "description": "Contradictory experience is discarded to preserve a preferred learned pattern.",
+      "prevention": "Preserve contradiction and adjust confidence or scope."
+    },
+    {
+      "failure_mode": "INVALIDATED_SUPPORT_RETENTION",
+      "description": "Learning continues to rely on Evidence that has been invalidated or retracted.",
+      "prevention": "Trigger reassessment when source support changes."
+    },
+    {
+      "failure_mode": "PROBABILITY_AUTHORITY_LEAK",
+      "description": "Learning Engine directly calculates current hypothesis probabilities or universal priors.",
+      "prevention": "Return learned empirical inputs to Probability through Orchestration."
+    },
+    {
+      "failure_mode": "HYPOTHESIS_AUTHORITY_LEAK",
+      "description": "Learning Engine directly creates, confirms, or eliminates current-case hypotheses.",
+      "prevention": "Hypothesis Engine owns hypothesis state."
+    },
+    {
+      "failure_mode": "DECISION_AUTHORITY_LEAK",
+      "description": "Learning Engine directly selects the current Action.",
+      "prevention": "Decision Engine owns Action selection."
+    },
+    {
+      "failure_mode": "ROUTING_AUTHORITY_LEAK",
+      "description": "Learning Engine directly changes current route costs, next hops, or progression.",
+      "prevention": "Routing Engine owns current routing behavior."
+    },
+    {
+      "failure_mode": "VALIDATION_AUTHORITY_LEAK",
+      "description": "Learning Engine recreates validation logic to decide what was demonstrated.",
+      "prevention": "Consume Validation Engine outputs."
+    },
+    {
+      "failure_mode": "EVIDENCE_AUTHORITY_LEAK",
+      "description": "Learning Engine recreates Evidence quality, verification, independence, or contradiction semantics.",
+      "prevention": "Consume Evidence Engine assessments."
+    },
+    {
+      "failure_mode": "CONTEXT_AUTHORITY_LEAK",
+      "description": "Learning Engine creates a competing Context vocabulary or schema.",
+      "prevention": "Consume canonical Context."
+    },
+    {
+      "failure_mode": "MEMORY_AUTHORITY_LEAK",
+      "description": "Learning Engine independently decides permanent retention or retrieval behavior.",
+      "prevention": "Memory Engine owns memory behavior."
+    },
+    {
+      "failure_mode": "CANONICAL_PROMOTION_LEAK",
+      "description": "Learning Engine directly promotes empirical patterns into canonical knowledge or Relationships.",
+      "prevention": "Generate candidate claims and use the applicable governance process."
+    },
+    {
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal Learning Engine hardcodes a particular technology, vendor, product, customer, organization, or named user.",
+      "prevention": "Keep universal learning behavior domain-independent."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "LRN-INV-001",
+      "statement": "Completed cases are not automatically eligible for unrestricted learning."
+    },
+    {
+      "invariant_id": "LRN-INV-002",
+      "statement": "Operational resolution remains distinct from causal validation."
+    },
+    {
+      "invariant_id": "LRN-INV-003",
+      "statement": "Action effectiveness remains distinct from causal proof."
+    },
+    {
+      "invariant_id": "LRN-INV-004",
+      "statement": "Association remains distinct from causation."
+    },
+    {
+      "invariant_id": "LRN-INV-005",
+      "statement": "Empirical frequency remains distinct from canonical truth."
+    },
+    {
+      "invariant_id": "LRN-INV-006",
+      "statement": "Learned patterns preserve applicable Context."
+    },
+    {
+      "invariant_id": "LRN-INV-007",
+      "statement": "Duplicate or dependent experience does not create artificial independent support."
+    },
+    {
+      "invariant_id": "LRN-INV-008",
+      "statement": "Historical source records remain distinguishable from derived learned patterns."
+    },
+    {
+      "invariant_id": "LRN-INV-009",
+      "statement": "Material contradictory experience remains represented."
+    },
+    {
+      "invariant_id": "LRN-INV-010",
+      "statement": "Learning generalizes no more broadly than supporting experience justifies."
+    },
+    {
+      "invariant_id": "LRN-INV-011",
+      "statement": "Confidence vocabulary and ranges are owned by Core/Registries/confidence_levels.json."
+    },
+    {
+      "invariant_id": "LRN-INV-012",
+      "statement": "Learning Engine does not create a competing universal learning persistence schema."
+    },
+    {
+      "invariant_id": "LRN-INV-013",
+      "statement": "Learning Engine consumes rather than recreates Validation semantics."
+    },
+    {
+      "invariant_id": "LRN-INV-014",
+      "statement": "Learning Engine consumes rather than recreates Evidence semantics."
+    },
+    {
+      "invariant_id": "LRN-INV-015",
+      "statement": "Learning Engine consumes rather than recreates Context semantics."
+    },
+    {
+      "invariant_id": "LRN-INV-016",
+      "statement": "Learning Engine does not calculate current hypothesis probability."
+    },
+    {
+      "invariant_id": "LRN-INV-017",
+      "statement": "Learning Engine does not directly manipulate current hypothesis state."
+    },
+    {
+      "invariant_id": "LRN-INV-018",
+      "statement": "Learning Engine does not select current Actions."
+    },
+    {
+      "invariant_id": "LRN-INV-019",
+      "statement": "Learning Engine does not perform current Routing."
+    },
+    {
+      "invariant_id": "LRN-INV-020",
+      "statement": "Learning Engine does not directly change case lifecycle or reasoning state."
+    },
+    {
+      "invariant_id": "LRN-INV-021",
+      "statement": "Learning Engine does not independently define Memory persistence or retrieval policy."
+    },
+    {
+      "invariant_id": "LRN-INV-022",
+      "statement": "Learning Engine does not directly promote empirical learning into canonical knowledge."
+    },
+    {
+      "invariant_id": "LRN-INV-023",
+      "statement": "Participant learning remains contextual and does not become a universal credibility score."
+    },
+    {
+      "invariant_id": "LRN-INV-024",
+      "statement": "Material learning results are returned through Orchestration for downstream coordination."
+    },
+    {
+      "invariant_id": "LRN-INV-025",
+      "statement": "Learning Engine remains technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing canonical learning_event or experience_ledger schema without an authoritative schema.",
+    "Defining competing confidence labels.",
+    "Defining competing confidence numeric ranges.",
+    "Treating every completed case as unrestricted learning.",
+    "Treating every resolved case as causally validated.",
+    "Treating Action completion as Action effectiveness.",
+    "Treating Action effectiveness as root-cause proof.",
+    "Treating symptom resolution as root-cause proof.",
+    "Treating correlation as causation.",
+    "Treating historical frequency as universal truth.",
+    "Treating raw record count as independent statistical support.",
+    "Counting duplicate cases as independent learning observations.",
+    "Counting dependent observations as independent support.",
+    "Ignoring material Context differences during aggregation.",
+    "Generalizing beyond supported Context.",
+    "Creating a universal participant competence score.",
+    "Creating a universal participant credibility score.",
+    "Assigning fault based solely on reporter identity.",
+    "Rewriting historical case facts because learned interpretation changed.",
+    "Erasing contradictory experience.",
+    "Continuing to rely on invalidated Evidence without reassessment.",
+    "Directly calculating current hypothesis probability.",
+    "Directly creating universal numerical prior formulas.",
+    "Directly creating, confirming, or eliminating current-case hypotheses.",
+    "Directly selecting act_<UUID>.",
+    "Directly creating route steps.",
+    "Directly changing route costs.",
+    "Directly selecting route next hops.",
+    "Directly rerouting.",
+    "Recreating Validation result semantics.",
+    "Recreating Evidence quality, verification, provenance, contradiction, or independence semantics.",
+    "Creating competing Context types or schemas.",
+    "Directly changing case lifecycle status.",
+    "Directly changing case reasoning state.",
+    "Directly defining permanent Memory retention policy.",
+    "Directly defining Memory retrieval policy.",
+    "Directly creating or mutating canonical Relationships from learned patterns.",
+    "Directly promoting empirical experience into canonical technical truth.",
+    "Silently overwriting canonical knowledge with learned experience.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, electrical-specific, software-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, organization-specific, or named-user logic into the universal Learning Engine."
   ]
 }
