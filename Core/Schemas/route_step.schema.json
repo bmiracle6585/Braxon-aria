@@ -1,15 +1,15 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aria.braxon.ai/schemas/route_step.schema.json",
-  "title": "A.R.I.A. Diagnostic Route Step",
-  "description": "Machine-readable schema for a case-specific diagnostic action considered, selected, executed, skipped, or superseded by the A.R.I.A. routing engine.",
+  "title": "A.R.I.A. Route Step",
+  "description": "Authoritative persistence schema for a case-specific routing step within an A.R.I.A. diagnostic investigation. A route step records diagnostic progression: which runtime action occupied or was considered at a point in the route, how the step relates to predecessor and successor steps, why the path was selected or bypassed, and what routing consequences followed. The route step does not redefine the action, execute the action, own technical evidence, own technical outcome semantics, or independently choose the next action.",
   "type": "object",
   "additionalProperties": false,
 
   "required": [
     "route_step_id",
     "case_id",
-    "action_type",
+    "action_id",
     "status",
     "created_at",
     "updated_at"
@@ -17,57 +17,17 @@
 
   "properties": {
     "route_step_id": {
-      "type": "string",
-      "pattern": "^RTE-[0-9]{6,}$",
-      "description": "Permanent identifier for this case-specific diagnostic route step."
+      "$ref": "#/$defs/route_step_id"
     },
 
     "case_id": {
-      "type": "string",
-      "pattern": "^EXP-[0-9]{6,}$"
+      "$ref": "#/$defs/case_id",
+      "description": "Diagnostic case to which this route step belongs."
     },
 
-    "sequence_number": {
-      "type": ["integer", "null"],
-      "minimum": 1,
-      "description": "Execution order when the step becomes part of the active route."
-    },
-
-    "action_type": {
-      "type": "string",
-      "enum": [
-        "ASK_QUESTION",
-        "REQUEST_OBSERVATION",
-        "REQUEST_MEASUREMENT",
-        "REQUEST_ARTIFACT",
-        "PERFORM_TEST",
-        "VERIFY_CONFIGURATION",
-        "PHYSICAL_INSPECTION",
-        "COMPARE_VALUES",
-        "REVIEW_LOG",
-        "REVIEW_ALARM",
-        "REVIEW_DOCUMENT",
-        "CORRECTIVE_ACTION",
-        "ESCALATE",
-        "WAIT",
-        "OTHER"
-      ]
-    },
-
-    "action_entity_id": {
-      "type": ["string", "null"],
-      "pattern": "^ENT-[0-9]{6,}$",
-      "description": "Canonical test, procedure, corrective action, or other reusable action represented by this route step."
-    },
-
-    "instruction": {
-      "type": ["string", "null"],
-      "description": "Human-readable instruction for performing the route step."
-    },
-
-    "reason": {
-      "type": ["string", "null"],
-      "description": "Explanation of why this step is relevant to the current diagnostic state."
+    "action_id": {
+      "$ref": "#/$defs/action_id",
+      "description": "Canonical runtime action represented by this route step. Action structure and execution are owned by Core/Schemas/action.schema.json."
     },
 
     "status": {
@@ -75,377 +35,274 @@
       "enum": [
         "CANDIDATE",
         "SELECTED",
-        "IN_PROGRESS",
+        "QUEUED",
+        "ACTIVE",
         "COMPLETED",
-        "SKIPPED",
+        "BYPASSED",
         "BLOCKED",
-        "FAILED",
-        "SUPERSEDED",
-        "CANCELLED"
-      ]
+        "CANCELLED",
+        "SUPERSEDED"
+      ],
+      "description": "Routing status of this step. This is distinct from action execution status and case lifecycle status."
     },
 
-    "target_hypothesis_ids": {
-      "type": "array",
-      "description": "Hypotheses this route step is expected to help distinguish, support, contradict, eliminate, or confirm.",
-      "items": {
-        "type": "string",
-        "pattern": "^HYP-[0-9]{6,}$"
-      },
-      "uniqueItems": true,
-      "default": []
+    "sequence": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "description": "Optional presentation or chronological sequence within the case route. Sequence does not define dependency semantics."
     },
 
-    "supporting_relationship_ids": {
-      "type": "array",
-      "description": "Canonical graph relationships establishing why this action is technically relevant.",
-      "items": {
-        "type": "string",
-        "pattern": "^REL-[0-9]{6,}$"
-      },
-      "uniqueItems": true,
-      "default": []
+    "branch_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional identifier grouping route steps belonging to the same diagnostic branch. Branch identity is routing-local and is not a canonical technical entity."
     },
 
-    "input_evidence_ids": {
-      "type": "array",
-      "description": "Existing evidence materially contributing to selection of this route step.",
-      "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
-
-    "expected_evidence": {
-      "type": "array",
-      "description": "Types of evidence expected to result from completing this step.",
-      "items": {
-        "$ref": "#/$defs/expected_evidence"
-      },
-      "default": []
-    },
-
-    "resulting_evidence_ids": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
-      },
-      "uniqueItems": true,
-      "default": []
-    },
-
-    "routing_metrics": {
-      "type": "object",
-      "description": "Metrics used to compare this candidate action against alternative next steps.",
-      "additionalProperties": false,
-
-      "properties": {
-        "information_gain": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Estimated ability of the step to reduce diagnostic uncertainty."
+    "decision_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decision_id"
         },
-
-        "discrimination_power": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Estimated ability to distinguish among currently plausible hypotheses."
-        },
-
-        "success_likelihood": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Estimated probability that the step can be successfully completed and produce usable evidence."
-        },
-
-        "execution_cost": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Normalized expected resource cost of performing the step."
-        },
-
-        "time_cost": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Normalized expected time cost."
-        },
-
-        "operational_disruption": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Normalized expected operational impact."
-        },
-
-        "risk": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Normalized technical, operational, or safety risk used by the routing model."
-        },
-
-        "historical_effectiveness": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Observed effectiveness of this action in sufficiently comparable validated historical cases."
-        },
-
-        "user_friction": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1,
-          "description": "Estimated burden or resistance associated with requesting this action from the current user."
-        },
-
-        "route_value": {
-          "type": ["number", "null"],
-          "description": "Calculated comparative value of this candidate next step. This is not a diagnostic probability."
-        },
-
-        "calculation_method": {
-          "type": ["string", "null"]
+        {
+          "type": "null"
         }
-      }
+      ],
+      "description": "Decision record responsible for selecting, preferring, bypassing, or otherwise materially affecting this route step when such a persisted decision exists."
     },
 
-    "historical_support": {
-      "type": "object",
-      "additionalProperties": false,
-
-      "properties": {
-        "similar_case_ids": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^EXP-[0-9]{6,}$"
-          },
-          "uniqueItems": true,
-          "default": []
+    "selection_event_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/event_id"
         },
-
-        "sample_size": {
-          "type": ["integer", "null"],
-          "minimum": 0
-        },
-
-        "successful_cases": {
-          "type": ["integer", "null"],
-          "minimum": 0
-        },
-
-        "unsuccessful_cases": {
-          "type": ["integer", "null"],
-          "minimum": 0
-        },
-
-        "average_steps_saved": {
-          "type": ["number", "null"]
-        },
-
-        "average_time_saved_seconds": {
-          "type": ["number", "null"]
+        {
+          "type": "null"
         }
-      }
+      ],
+      "description": "Event associated with selection or material route transition when applicable."
     },
 
-    "prerequisite_route_step_ids": {
+    "selection_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable explanation of why this route step was selected. Candidate scoring and action selection logic remain owned by Decision behavior."
+    },
+
+    "bypass_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Reason this route step was intentionally bypassed."
+    },
+
+    "block_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Routing-level reason this step cannot currently advance. Technical action blocking conditions remain authoritative on the referenced action."
+    },
+
+    "cancel_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Reason this route step was cancelled."
+    },
+
+    "predecessor_route_step_ids": {
       "type": "array",
+      "description": "Route steps that directly precede this step in diagnostic progression.",
       "items": {
-        "type": "string",
-        "pattern": "^RTE-[0-9]{6,}$"
+        "$ref": "#/$defs/route_step_id"
       },
       "uniqueItems": true,
       "default": []
     },
 
-    "prerequisite_evidence_ids": {
+    "successor_route_step_ids": {
       "type": "array",
+      "description": "Route steps that directly follow this step in diagnostic progression.",
       "items": {
-        "type": "string",
-        "pattern": "^EVD-[0-9]{6,}$"
+        "$ref": "#/$defs/route_step_id"
       },
       "uniqueItems": true,
       "default": []
     },
 
-    "blocked_by": {
+    "dependency_route_step_ids": {
       "type": "array",
+      "description": "Route steps that must reach an applicable state before this step can advance. Dependency is distinct from simple chronological predecessor relationships.",
       "items": {
-        "$ref": "#/$defs/blocker"
+        "$ref": "#/$defs/route_step_id"
       },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "parallel_route_step_ids": {
+      "type": "array",
+      "description": "Route steps intentionally permitted or requested to progress in parallel with this step.",
+      "items": {
+        "$ref": "#/$defs/route_step_id"
+      },
+      "uniqueItems": true,
       "default": []
     },
 
     "alternative_route_step_ids": {
       "type": "array",
-      "description": "Other candidate next steps evaluated at the same decision point.",
+      "description": "Other persisted route-step candidates materially considered at the same routing decision point.",
       "items": {
-        "type": "string",
-        "pattern": "^RTE-[0-9]{6,}$"
+        "$ref": "#/$defs/route_step_id"
       },
       "uniqueItems": true,
       "default": []
     },
 
-    "selection": {
-      "type": "object",
-      "description": "Record of the routing decision that selected or rejected this step.",
-      "additionalProperties": false,
-
-      "properties": {
-        "selected": {
-          "type": "boolean",
-          "default": false
-        },
-
-        "decision_event_id": {
-          "type": ["string", "null"],
-          "pattern": "^EVT-[0-9]{6,}$"
-        },
-
-        "selected_over_route_step_ids": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^RTE-[0-9]{6,}$"
-          },
-          "uniqueItems": true,
-          "default": []
-        },
-
-        "selection_reason": {
-          "type": ["string", "null"]
-        },
-
-        "selected_at": {
-          "type": ["string", "null"],
-          "format": "date-time"
-        }
-      }
+    "target_hypothesis_ids": {
+      "type": "array",
+      "description": "Hypotheses whose evaluation materially motivated this route step. This association does not itself change hypothesis probability or status.",
+      "items": {
+        "$ref": "#/$defs/hypothesis_id"
+      },
+      "uniqueItems": true,
+      "default": []
     },
 
-    "execution": {
-      "type": ["object", "null"],
-      "additionalProperties": false,
-
-      "properties": {
-        "performed_by": {
-          "type": ["string", "null"]
-        },
-
-        "started_at": {
-          "type": ["string", "null"],
-          "format": "date-time"
-        },
-
-        "completed_at": {
-          "type": ["string", "null"],
-          "format": "date-time"
-        },
-
-        "duration_seconds": {
-          "type": ["integer", "null"],
-          "minimum": 0
-        },
-
-        "successful": {
-          "type": ["boolean", "null"]
-        },
-
-        "execution_notes": {
-          "type": ["string", "null"]
-        }
-      }
+    "target_uncertainties": {
+      "type": "array",
+      "description": "Human-readable or machine-readable uncertainties this route step was intended to reduce.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
     },
 
-    "outcome": {
-      "type": ["object", "null"],
-      "description": "Diagnostic effect produced by this route step.",
-      "additionalProperties": false,
+    "expected_route_effect": {
+      "$ref": "#/$defs/expected_route_effect"
+    },
 
-      "properties": {
-        "produced_useful_evidence": {
-          "type": ["boolean", "null"]
+    "routing_consequence": {
+      "$ref": "#/$defs/routing_consequence"
+    },
+
+    "realized_information_gain": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Normalized post-step assessment of diagnostic uncertainty reduction attributable to progression through this route step. This is a routing evaluation, not evidence confidence or hypothesis probability."
+    },
+
+    "realized_discrimination": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Normalized post-step assessment of how effectively this route step distinguished materially competing hypotheses."
+    },
+
+    "route_value_summary": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Post-step explanation of the routing value realized. This does not replace evidence, technical outcome, or probability history."
+    },
+
+    "repeat": {
+      "$ref": "#/$defs/repeat"
+    },
+
+    "route_state_before_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/state_version_id"
         },
-
-        "changed_route": {
-          "type": ["boolean", "null"]
-        },
-
-        "hypotheses_eliminated": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^HYP-[0-9]{6,}$"
-          },
-          "uniqueItems": true,
-          "default": []
-        },
-
-        "hypotheses_strengthened": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^HYP-[0-9]{6,}$"
-          },
-          "uniqueItems": true,
-          "default": []
-        },
-
-        "hypotheses_weakened": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^HYP-[0-9]{6,}$"
-          },
-          "uniqueItems": true,
-          "default": []
-        },
-
-        "hypotheses_confirmed": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^HYP-[0-9]{6,}$"
-          },
-          "uniqueItems": true,
-          "default": []
-        },
-
-        "information_gain_observed": {
-          "type": ["number", "null"],
-          "minimum": 0,
-          "maximum": 1
-        },
-
-        "outcome_notes": {
-          "type": ["string", "null"]
+        {
+          "type": "null"
         }
-      }
+      ],
+      "description": "Persisted case/reasoning state version immediately before this route step when state-version persistence is available."
+    },
+
+    "route_state_after_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/state_version_id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Persisted case/reasoning state version resulting after this route step when state-version persistence is available."
+    },
+
+    "reroute": {
+      "$ref": "#/$defs/reroute"
+    },
+
+    "branch_effects": {
+      "$ref": "#/$defs/branch_effects"
+    },
+
+    "entered_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Time the route step became active in diagnostic progression."
+    },
+
+    "exited_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "description": "Time routing progression exited this step."
     },
 
     "supersedes_route_step_ids": {
       "type": "array",
+      "description": "Earlier route steps superseded by this routing step.",
       "items": {
-        "type": "string",
-        "pattern": "^RTE-[0-9]{6,}$"
+        "$ref": "#/$defs/route_step_id"
       },
       "uniqueItems": true,
       "default": []
     },
 
     "superseded_by_route_step_id": {
-      "type": ["string", "null"],
-      "pattern": "^RTE-[0-9]{6,}$"
+      "anyOf": [
+        {
+          "$ref": "#/$defs/route_step_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+
+    "provenance": {
+      "$ref": "#/$defs/provenance"
     },
 
     "created_at": {
@@ -459,64 +316,779 @@
     },
 
     "created_by": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
 
     "updated_by": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Human-readable routing notes that do not replace structured Decision, Action, Evidence, Outcome, or reasoning records."
     },
 
     "metadata": {
       "type": "object",
-      "additionalProperties": true
+      "description": "Non-authoritative extensibility metadata. Canonical routing meaning shall not depend on metadata fields.",
+      "additionalProperties": true,
+      "default": {}
     }
   },
 
   "$defs": {
-    "expected_evidence": {
-      "type": "object",
+    "runtime_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "route_step_id": {
+      "type": "string",
+      "pattern": "^rstep_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "case_id": {
+      "type": "string",
+      "pattern": "^case_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "action_id": {
+      "type": "string",
+      "pattern": "^act_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^hyp_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "decision_id": {
+      "type": "string",
+      "pattern": "^dec_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "event_id": {
+      "type": "string",
+      "pattern": "^evt_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "state_version_id": {
+      "type": "string",
+      "pattern": "^state_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "source_id": {
+      "type": "string",
+      "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^art_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "expected_route_effect": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Routing expectations recorded at selection time. These expectations are not technical evidence and do not independently alter hypothesis probability.",
       "additionalProperties": false,
 
       "properties": {
-        "evidence_type": {
-          "type": ["string", "null"]
+        "expected_information_gain": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
         },
 
-        "measurement_entity_id": {
-          "type": ["string", "null"],
-          "pattern": "^ENT-[0-9]{6,}$"
+        "expected_discrimination": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
         },
 
-        "description": {
-          "type": ["string", "null"]
+        "expected_to_open_branch": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "expected_to_close_branch": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "expected_to_trigger_reroute": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "expected_successor_action_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
 
-    "blocker": {
-      "type": "object",
+    "routing_consequence": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Observed consequence of the step to diagnostic progression. This is deliberately distinct from the referenced action's technical outcome.",
       "additionalProperties": false,
 
       "properties": {
-        "blocker_type": {
-          "type": "string",
-          "enum": [
-            "MISSING_EVIDENCE",
-            "MISSING_TOOL",
-            "MISSING_ACCESS",
-            "MISSING_PERMISSION",
-            "SAFETY_CONSTRAINT",
-            "OPERATIONAL_CONSTRAINT",
-            "USER_UNAVAILABLE",
-            "SYSTEM_UNAVAILABLE",
-            "OTHER"
+        "route_changed": {
+          "type": [
+            "boolean",
+            "null"
           ]
         },
 
+        "progressed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "new_uncertainty_identified": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "new_hypothesis_generated": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "hypothesis_space_reduced": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "additional_action_required": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "route_exhausted": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "repeat": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Routing record for intentional repetition of an equivalent or materially similar prior action.",
+      "additionalProperties": false,
+
+      "properties": {
+        "is_repeat": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "prior_action_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "prior_route_step_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/route_step_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "PREVIOUS_EVIDENCE_LOW_CONFIDENCE",
+            "TECHNICAL_STATE_CHANGED",
+            "CONFIGURATION_CHANGED",
+            "COMPONENT_CHANGED",
+            "TIME_DEPENDENT_CONDITION",
+            "RECURRENCE",
+            "INDEPENDENT_VERIFICATION_REQUIRED",
+            "PREVIOUS_ACTION_INCOMPLETE",
+            "PREVIOUS_ACTION_FAILED",
+            "CONTEXT_CHANGED",
+            "OTHER",
+            null
+          ]
+        },
+
+        "justification": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "reroute": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Routing transition caused by a material change in diagnostic state.",
+      "additionalProperties": false,
+
+      "properties": {
+        "triggered": {
+          "type": "boolean",
+          "default": false
+        },
+
+        "trigger": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "NEW_EVIDENCE",
+            "ACTION_COMPLETED",
+            "ACTION_FAILED",
+            "ACTION_BLOCKED",
+            "UNEXPECTED_RESULT",
+            "HYPOTHESIS_DEPRIORITIZED",
+            "HYPOTHESIS_ELIMINATED",
+            "HYPOTHESIS_CONFIRMED",
+            "NEW_HYPOTHESIS",
+            "CONTEXT_CHANGED",
+            "CONSTRAINT_CHANGED",
+            "RESOURCE_AVAILABILITY_CHANGED",
+            "AUTHORIZATION_CHANGED",
+            "USER_CAPABILITY_CHANGED",
+            "VALIDATION_RESULT",
+            "ROUTE_EXHAUSTED",
+            "OTHER",
+            null
+          ]
+        },
+
+        "trigger_event_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/event_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+
+        "next_route_step_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/route_step_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+
+        "rerouted_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "branch_effects": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Effects of this route step on diagnostic branches.",
+      "additionalProperties": false,
+
+      "properties": {
+        "opened_branch_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "closed_branch_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "deferred_branch_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "reopened_branch_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+
+    "provenance": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Lineage describing how the route step was created or introduced into diagnostic progression.",
+      "additionalProperties": false,
+
+      "properties": {
+        "origin_class": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "DECISION_SELECTED",
+            "ARIA_GENERATED",
+            "USER_DIRECTED",
+            "TECHNICIAN_DIRECTED",
+            "ENGINEER_DIRECTED",
+            "PROCEDURE_DERIVED",
+            "REROUTE_GENERATED",
+            "DEPENDENCY_GENERATED",
+            "VALIDATION_GENERATED",
+            "ESCALATION_GENERATED",
+            "OTHER",
+            null
+          ]
+        },
+
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "artifact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "origin_route_step_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/route_step_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
         "description": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     }
-  }
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SELECTED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "anyOf": [
+          {
+            "required": [
+              "decision_id"
+            ],
+            "properties": {
+              "decision_id": {
+                "$ref": "#/$defs/decision_id"
+              }
+            }
+          },
+          {
+            "required": [
+              "selection_reason"
+            ],
+            "properties": {
+              "selection_reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "required": [
+              "provenance"
+            ],
+            "properties": {
+              "provenance": {
+                "type": "object",
+                "properties": {
+                  "origin_class": {
+                    "enum": [
+                      "USER_DIRECTED",
+                      "TECHNICIAN_DIRECTED",
+                      "ENGINEER_DIRECTED",
+                      "PROCEDURE_DERIVED",
+                      "REROUTE_GENERATED",
+                      "DEPENDENCY_GENERATED",
+                      "VALIDATION_GENERATED",
+                      "ESCALATION_GENERATED",
+                      "OTHER"
+                    ]
+                  }
+                },
+                "required": [
+                  "origin_class"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "ACTIVE"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "entered_at"
+        ],
+        "properties": {
+          "entered_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "COMPLETED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "exited_at"
+        ],
+        "properties": {
+          "exited_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "BYPASSED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "bypass_reason"
+        ],
+        "properties": {
+          "bypass_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "BLOCKED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "block_reason"
+        ],
+        "properties": {
+          "block_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "CANCELLED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "cancel_reason"
+        ],
+        "properties": {
+          "cancel_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUPERSEDED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "superseded_by_route_step_id"
+        ],
+        "properties": {
+          "superseded_by_route_step_id": {
+            "$ref": "#/$defs/route_step_id"
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "repeat": {
+            "type": "object",
+            "properties": {
+              "is_repeat": {
+                "const": true
+              }
+            },
+            "required": [
+              "is_repeat"
+            ]
+          }
+        },
+        "required": [
+          "repeat"
+        ]
+      },
+      "then": {
+        "properties": {
+          "repeat": {
+            "type": "object",
+            "required": [
+              "reason",
+              "justification"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "justification": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+
+    {
+      "if": {
+        "properties": {
+          "reroute": {
+            "type": "object",
+            "properties": {
+              "triggered": {
+                "const": true
+              }
+            },
+            "required": [
+              "triggered"
+            ]
+          }
+        },
+        "required": [
+          "reroute"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reroute": {
+            "type": "object",
+            "required": [
+              "trigger",
+              "reason",
+              "rerouted_at"
+            ],
+            "properties": {
+              "trigger": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rerouted_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
