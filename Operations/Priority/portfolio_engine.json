@@ -1,0 +1,490 @@
+{
+  "engine": {
+    "id": "aria.operations.portfolio_engine",
+    "name": "A.R.I.A. Operational Portfolio Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_portfolio_management",
+    "status": "active",
+    "purpose": "Evaluate the active body of operational work as a portfolio rather than as isolated work items. The engine compares valid obligations, commitments, risks, issues, opportunities, decisions, capacity demand, scheduling constraints, and strategic importance to determine portfolio-level execution posture without overwriting canonical work-item priority or silently discarding lower-ranked obligations.",
+    "principles": [
+      "The portfolio is not merely a sorted task list.",
+      "Individual work-item priority remains owned by Priority Engine.",
+      "Portfolio reasoning determines how valid work competes for finite execution capacity.",
+      "The highest-priority item is not automatically the only work that should receive capacity.",
+      "A healthy portfolio protects critical work while still advancing important non-urgent work.",
+      "Repeated displacement must remain visible.",
+      "Committed work and speculative opportunity must remain distinguishable.",
+      "Portfolio feasibility must reflect practical capacity rather than theoretical availability.",
+      "A.R.I.A. should recognize when the total plan cannot be achieved as represented.",
+      "Portfolio optimization must not silently cancel, defer, renegotiate, or delegate obligations.",
+      "Portfolio recommendations should expose consequential tradeoffs rather than pretend everything can fit.",
+      "Portfolio reasoning must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_portfolio",
+    "sources": [
+      "active work_items",
+      "priority evaluations",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "issues",
+      "risks",
+      "opportunities",
+      "decisions",
+      "capacity evaluations",
+      "schedules",
+      "conflicts",
+      "aging evaluations",
+      "escalations",
+      "context",
+      "resolution states",
+      "organizational objectives",
+      "authorized planning constraints"
+    ]
+  },
+
+  "portfolio_scope": {
+    "supported_scopes": [
+      "user",
+      "person",
+      "team",
+      "crew",
+      "project",
+      "customer",
+      "region",
+      "department",
+      "organization",
+      "custom_operational_scope"
+    ],
+    "rules": [
+      "Portfolio scope must be explicitly known or reasonably supported.",
+      "A.R.I.A. must not compare unrelated work merely because it exists in the same database.",
+      "The same work item may participate in multiple legitimate portfolio views.",
+      "Portfolio membership does not change ownership of the underlying work item."
+    ]
+  },
+
+  "portfolio_states": {
+    "healthy": {
+      "description": "Current valid obligations have a plausible execution path within available capacity and supported constraints."
+    },
+    "pressured": {
+      "description": "The portfolio remains feasible, but limited capacity, timing, or competing obligations leave reduced flexibility."
+    },
+    "constrained": {
+      "description": "Material tradeoffs or adjustments are required to preserve consequential outcomes."
+    },
+    "overcommitted": {
+      "description": "Current valid obligations cannot all be satisfied as represented within supported capacity and timing."
+    },
+    "unstable": {
+      "description": "Frequent priority, conflict, capacity, issue, or schedule changes prevent a reliable execution posture."
+    },
+    "recovery": {
+      "description": "The portfolio is operating under an explicit plan intended to recover from overload, disruption, or accumulated backlog."
+    },
+    "unknown": {
+      "description": "Available information is insufficient to determine portfolio health."
+    }
+  },
+
+  "portfolio_record": {
+    "fields": [
+      "portfolio_id",
+      "scope_type",
+      "scope_reference",
+      "portfolio_state",
+      "active_work_count",
+      "committed_work_count",
+      "delegated_work_count",
+      "blocked_work_count",
+      "decision_count",
+      "issue_count",
+      "risk_count",
+      "opportunity_count",
+      "starved_work_count",
+      "capacity_posture",
+      "schedule_posture",
+      "material_conflicts",
+      "execution_focus",
+      "protected_work",
+      "deferred_work",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Portfolio records must preserve the underlying work-item identities.",
+      "Portfolio classifications must not replace canonical work-item states.",
+      "Unknown portfolio values must remain unknown rather than inferred from missing records.",
+      "Material portfolio history should remain recoverable."
+    ]
+  },
+
+  "work_classification": {
+    "classes": {
+      "critical_execution": "Consequential actionable work requiring immediate or near-term execution capacity.",
+      "committed_execution": "Work required to protect supported commitments.",
+      "decision_required": "Work whose meaningful progression depends on an authorized decision.",
+      "issue_recovery": "Corrective work associated with active consequential problems.",
+      "dependency_wait": "Valid work currently awaiting a prerequisite.",
+      "delegated_execution": "Work actively governed through delegated execution.",
+      "protected_progress": "Important non-urgent work intentionally protected from starvation.",
+      "routine_execution": "Valid operational work appropriate for normal execution capacity.",
+      "opportunity_consideration": "Qualified beneficial potential not yet equivalent to mandatory committed work.",
+      "monitoring": "Work or conditions requiring observation rather than current execution.",
+      "terminal": "Resolved work excluded from active execution allocation."
+    },
+    "rules": [
+      "Classification is a portfolio planning view and must not rewrite work_item.type or work_item.status.",
+      "One work item may legitimately contribute to more than one portfolio consideration.",
+      "Portfolio presentation should avoid unnecessary duplication of the same underlying obligation."
+    ]
+  },
+
+  "execution_focus": {
+    "purpose": "Determine the limited set of work that should receive active execution capacity during the current planning window.",
+    "rules": [
+      "Execution focus should reflect priority, commitments, timing, dependencies, capacity, context, issues, risks, and strategic importance.",
+      "Execution focus must remain smaller than the complete active portfolio when practical.",
+      "Not every Priority 1 item necessarily requires simultaneous execution.",
+      "Work requiring the user's unique authority should remain distinguishable from work executable by others.",
+      "Blocked or legitimately waiting work should not occupy active execution capacity unless useful blocker-removal work exists.",
+      "Execution focus should preserve enough capacity for unavoidable operational variation when supported."
+    ]
+  },
+
+  "priority_distribution": {
+    "rules": [
+      "Portfolio Engine consumes canonical priority rather than recalculating it.",
+      "A portfolio containing many high-priority items may indicate overcommitment, weak priority differentiation, or genuinely exceptional conditions.",
+      "Portfolio Engine should not downgrade individual priorities merely to make the distribution appear balanced.",
+      "When too many items compete at the same priority level, the engine should evaluate execution sequencing and consequence rather than inventing new priority scores.",
+      "Persistent inability to distinguish execution order may require Decision or Conflict evaluation."
+    ]
+  },
+
+  "anti_starvation": {
+    "purpose": "Ensure legitimate lower-urgency work receives execution opportunity before endless reactive work makes it permanently invisible.",
+    "signals": [
+      "repeated displacement",
+      "high aging pressure",
+      "strategic work receives no execution windows",
+      "routine work repeatedly loses capacity",
+      "protected schedule repeatedly displaced",
+      "follow-up repeatedly deferred"
+    ],
+    "rules": [
+      "Starvation does not make low-value work more consequential than critical work.",
+      "A.R.I.A. should protect execution opportunities for valid chronically displaced work when feasible.",
+      "Protected progress should be intentionally scheduled rather than treated as leftover capacity only.",
+      "Repeated displacement of protected work should trigger explicit portfolio reassessment.",
+      "Obsolete work should be resolved rather than protected merely because it is old."
+    ]
+  },
+
+  "reactive_load": {
+    "purpose": "Measure how much portfolio capacity is being consumed by unplanned urgent work, active issues, interruptions, and recovery activity.",
+    "signals": [
+      "new urgent work repeatedly displaces planned work",
+      "issue correction consumes substantial capacity",
+      "frequent emergency scheduling changes",
+      "repeated escalation",
+      "high interruption volume",
+      "protected work repeatedly lost to reactive conditions"
+    ],
+    "rules": [
+      "Reactive work may be entirely legitimate.",
+      "High reactive load should not be interpreted as poor performance without supporting evidence.",
+      "Persistent reactive load may indicate structural capacity, planning, customer, process, or risk conditions.",
+      "Portfolio Engine should expose the cost of reactive load on planned work."
+    ]
+  },
+
+  "commitment_load": {
+    "rules": [
+      "Supported commitments should be evaluated against available capacity and execution timing.",
+      "Commitment volume should include the work required to fulfill commitments, not merely the number of promises.",
+      "A portfolio may be overcommitted even when each individual commitment appeared reasonable when made.",
+      "Overcommitment must not silently release or renegotiate any commitment.",
+      "Material overcommitment should trigger Capacity, Conflict, Decision, Scheduling, Commitment, and possibly Escalation reevaluation."
+    ]
+  },
+
+  "capacity_allocation": {
+    "rules": [
+      "Portfolio Engine allocates planning attention to available capacity findings; Capacity Engine owns actual capacity evaluation.",
+      "Scarce capacity should preferentially protect higher-consequence obligations while preserving intentional progress on valid non-urgent work where feasible.",
+      "Specialized capacity must not be treated as universally interchangeable.",
+      "Unused capacity in one dimension does not offset shortage in another unrelated dimension.",
+      "A.R.I.A. should expose capacity that is unavailable because of skill, travel, equipment, authority, context, or other supported constraints."
+    ]
+  },
+
+  "portfolio_feasibility": {
+    "questions": [
+      "Can all current supported commitments plausibly be satisfied?",
+      "Can critical issues receive sufficient corrective capacity?",
+      "Can required decisions occur before their useful decision windows close?",
+      "Can blocked work be appropriately handled without consuming unusable capacity?",
+      "Can strategically important work receive meaningful progress?",
+      "Is protected capacity repeatedly being consumed?",
+      "Are multiple obligations depending on the same constrained resource?",
+      "Does the plan rely on persistent exceptional effort?",
+      "Does the schedule have enough practical room for known uncertainty?"
+    ],
+    "rules": [
+      "A portfolio is not feasible merely because every work item has a due date.",
+      "A portfolio is not feasible merely because every work item has been assigned.",
+      "A portfolio is not feasible if execution requires impossible sequencing or unsupported capacity.",
+      "When the portfolio is infeasible, A.R.I.A. should identify the dominant constraints and required tradeoffs."
+    ]
+  },
+
+  "planning_horizons": {
+    "current": {
+      "description": "What should receive execution capacity now."
+    },
+    "near_term": {
+      "description": "What must be prepared, started, decided, or protected soon."
+    },
+    "upcoming": {
+      "description": "Work whose future execution path needs deliberate preparation."
+    },
+    "strategic": {
+      "description": "Important work requiring continued progress despite limited immediate urgency."
+    },
+    "rules": [
+      "Planning horizons should remain distinct from canonical priority.",
+      "High-priority work may appear in a later horizon when prerequisites legitimately prevent immediate execution.",
+      "Strategic work should not disappear merely because it lacks immediate urgency."
+    ]
+  },
+
+  "portfolio_tradeoffs": {
+    "supported_actions": [
+      "sequence_work",
+      "protect_execution_time",
+      "reschedule",
+      "reassign",
+      "delegate",
+      "add_capacity",
+      "reduce_scope",
+      "split_work",
+      "renegotiate_commitment",
+      "resolve_obsolete_work",
+      "decline_opportunity",
+      "defer_opportunity",
+      "accept_documented_consequence",
+      "escalate",
+      "request_decision"
+    ],
+    "rules": [
+      "Portfolio Engine may recommend tradeoffs but cannot silently execute them.",
+      "Consequential tradeoffs requiring authority must be routed through Decision Engine.",
+      "Commitment changes must remain governed by Commitment Engine.",
+      "Delegation changes must remain governed by Delegation Engine.",
+      "Schedule changes must remain governed by Scheduling Engine.",
+      "Terminal disposition must remain governed by Resolution Engine."
+    ]
+  },
+
+  "user_load": {
+    "purpose": "Separate the organization's active portfolio from work that actually requires the user's personal involvement.",
+    "categories": {
+      "user_execution": "Work the user must personally execute.",
+      "user_decision": "Work requiring the user's supported decision authority.",
+      "user_review": "Work requiring meaningful user review or approval.",
+      "user_awareness": "Work the user should know about but need not presently act on.",
+      "delegated": "Work being executed elsewhere under appropriate governance.",
+      "quiet": "Valid work currently requiring no useful user involvement."
+    },
+    "rules": [
+      "The active organizational portfolio must not be presented as the user's personal task list.",
+      "Delegated work should remain governed without consuming unnecessary direct user attention.",
+      "A.R.I.A. should aggressively distinguish work requiring the user's unique authority from work that others can handle.",
+      "Attention Engine retains authority over actual user-facing presentation."
+    ]
+  },
+
+  "daily_posture": {
+    "purpose": "Provide a concise operational picture suitable for executive-assistant synthesis.",
+    "preferred_outputs": [
+      "must_move_today",
+      "decisions_needed",
+      "commitments_at_risk",
+      "active_issues",
+      "blocked_work",
+      "delegated_work_to_watch",
+      "protected_progress",
+      "new_opportunities",
+      "capacity_concerns",
+      "items_that_can_wait"
+    ],
+    "rules": [
+      "Daily posture should not dump the complete work inventory on the user.",
+      "A.R.I.A. should surface exceptions, consequential changes, and required actions.",
+      "Routine healthy work should remain available but quiet.",
+      "The portfolio view should answer what the user needs to do, what others are doing, and what is at risk."
+    ]
+  },
+
+  "relationship_to_orchestration": {
+    "rules": [
+      "Orchestration Engine coordinates individual engine evaluation.",
+      "Portfolio Engine evaluates the resulting body of work across multiple work items.",
+      "Orchestration may invoke Portfolio Engine after material changes affecting cross-item execution posture.",
+      "Portfolio findings may trigger reevaluation of individual work items through their owning engines.",
+      "Portfolio Engine must not directly overwrite individual canonical engine states."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine owns canonical work-item priority.",
+      "Portfolio Engine consumes priority as one input to execution allocation.",
+      "Portfolio Engine must not manufacture lower priority merely because capacity is insufficient.",
+      "Portfolio sequence and canonical priority must remain distinguishable."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Portfolio Engine determines portfolio-level significance and recommended user load.",
+      "Attention Engine determines what actually reaches the user.",
+      "Portfolio conditions should normally be consolidated rather than surfaced as dozens of independent notifications.",
+      "Portfolio Engine must not independently interrupt the user."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine owns practical capacity evaluation.",
+      "Portfolio Engine evaluates how available capacity is allocated across valid work.",
+      "Portfolio Engine must not assume missing capacity can be created."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine owns practical execution timing for work items.",
+      "Portfolio Engine evaluates whether schedules collectively form a plausible plan.",
+      "Individual feasible schedules may still create an infeasible portfolio when combined.",
+      "Portfolio Engine must not independently modify authoritative calendars."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine owns materially incompatible obligations or constraints.",
+      "Portfolio Engine may expose cross-item contention requiring Conflict Engine evaluation.",
+      "Portfolio infeasibility should not be silently solved by dropping lower-ranked work."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine owns aging pressure and starvation detection.",
+      "Portfolio Engine uses those findings to protect meaningful progress across the body of work.",
+      "Portfolio Engine must not convert age directly into priority."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine owns opportunity qualification.",
+      "Portfolio Engine determines how pursuing qualified opportunities would interact with existing obligations.",
+      "Speculative opportunity must not displace committed execution without appropriate authorization."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal disposition.",
+      "Resolved work should leave active portfolio execution views.",
+      "Portfolio pressure is not a legitimate reason to resolve work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "work item created",
+      "work item resolved",
+      "priority materially changes",
+      "commitment materially changes",
+      "capacity materially changes",
+      "schedule materially changes",
+      "new conflict appears",
+      "conflict resolves",
+      "issue materially changes",
+      "risk materially changes",
+      "opportunity becomes qualified or approved",
+      "decision materially changes",
+      "aging starvation detected",
+      "delegation materially changes",
+      "context materially changes",
+      "scheduled portfolio review",
+      "user requests portfolio review"
+    ],
+    "rules": [
+      "Portfolio reevaluation should use current canonical outputs from owning engines.",
+      "The engine should avoid recalculating the entire portfolio for immaterial work-item changes.",
+      "Material portfolio changes may trigger Orchestration, Attention, Capacity, Conflict, Decision, Scheduling, Commitment, Delegation, Aging, Escalation, Opportunity, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_portfolio",
+    "portfolio_evaluation": [
+      "portfolio_id",
+      "scope",
+      "portfolio_state",
+      "execution_focus",
+      "user_action_required",
+      "user_decisions_required",
+      "protected_work",
+      "starved_work",
+      "blocked_work",
+      "delegated_work",
+      "commitments_at_risk",
+      "active_issues",
+      "qualified_opportunities",
+      "capacity_constraints",
+      "material_conflicts",
+      "portfolio_tradeoffs",
+      "recommended_next_actions",
+      "confidence",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Portfolio output must preserve underlying work-item identities.",
+      "Portfolio execution sequence must remain distinguishable from canonical priority.",
+      "Portfolio recommendations must remain distinguishable from authorized actions.",
+      "Unknown capacity or feasibility must not be fabricated.",
+      "Material portfolio findings must be available to Orchestration and Attention Engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat the portfolio as merely a priority-sorted list.",
+    "Do not overwrite canonical work-item priority.",
+    "Do not silently cancel lower-ranked work.",
+    "Do not silently renegotiate commitments.",
+    "Do not silently delegate work.",
+    "Do not silently alter schedules.",
+    "Do not assume all high-priority work can execute simultaneously.",
+    "Do not assume all available personnel or calendar time is interchangeable capacity.",
+    "Do not allow urgent incoming work to permanently starve valid important work.",
+    "Do not protect obsolete work merely because it is old.",
+    "Do not allow speculative opportunity to silently displace committed obligations.",
+    "Do not present the entire organizational workload as the user's personal workload.",
+    "Do not pretend an infeasible portfolio is feasible.",
+    "Do not manufacture capacity to make the plan fit.",
+    "Do not bypass Decision Engine for consequential tradeoffs.",
+    "Do not bypass Attention Engine for user-facing presentation.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of portfolio management."
+  ]
+}
