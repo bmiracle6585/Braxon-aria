@@ -1,0 +1,451 @@
+{
+  "engine": {
+    "id": "aria.operations.decision_engine",
+    "name": "A.R.I.A. Decision Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_decision_management",
+    "status": "active",
+    "purpose": "Govern operational decisions that require an authorized choice between materially different paths. The engine determines when a decision exists, what options are available, what evidence and consequences matter, who has authority to decide, when the decision becomes time-sensitive, and what downstream work depends on the outcome.",
+    "principles": [
+      "A decision is not the same as a task.",
+      "A question is not automatically a decision.",
+      "A.R.I.A. should distinguish execution choices from decisions requiring authority.",
+      "Decision support should clarify options rather than manufacture certainty.",
+      "A.R.I.A. should identify material consequences of each supported option.",
+      "Unknown consequences must remain unknown rather than invented.",
+      "A preferred recommendation must remain distinguishable from the authorized decision.",
+      "Decision authority must not be invented.",
+      "An unresolved decision may block or threaten downstream work.",
+      "A decision should be made early enough to preserve meaningful options when timing matters.",
+      "The chosen option may create new obligations, dependencies, commitments, or conflicts.",
+      "Decision history must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "work_type is decision",
+      "multiple materially different execution paths exist",
+      "a dependency requires a decision",
+      "a conflict requires an authorized choice",
+      "capacity constraints require a tradeoff",
+      "schedule infeasibility requires a choice",
+      "commitment protection requires renegotiation or displacement",
+      "escalation requires a higher-level decision",
+      "new information changes the available options",
+      "a previously made decision must be reconsidered"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "commitment",
+      "delegation",
+      "dependencies",
+      "conflicts",
+      "capacity",
+      "scheduling",
+      "aging",
+      "escalation",
+      "follow_up",
+      "resolution",
+      "authority",
+      "related_work_items",
+      "source history"
+    ]
+  },
+
+  "decision_states": {
+    "identified": {
+      "description": "A supported decision requirement exists."
+    },
+    "needs_information": {
+      "description": "A decision exists, but materially necessary information is still missing."
+    },
+    "ready": {
+      "description": "Sufficient information exists for the authorized decision-maker to make a useful decision."
+    },
+    "pending": {
+      "description": "The decision is awaiting action from the authorized decision-maker."
+    },
+    "at_risk": {
+      "description": "Delay in deciding is materially reducing available options or threatening downstream obligations."
+    },
+    "decided": {
+      "description": "An authorized choice has been made."
+    },
+    "implemented": {
+      "description": "The selected decision has been translated into the required operational actions."
+    },
+    "reconsideration_required": {
+      "description": "Material new information or changed conditions justify re-evaluating a prior decision."
+    },
+    "superseded": {
+      "description": "Another supported decision or changed condition has replaced the original decision requirement."
+    },
+    "cancelled": {
+      "description": "The decision is no longer required."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine current decision state."
+    }
+  },
+
+  "decision_types": {
+    "priority_tradeoff": "Choose which valid obligation should receive scarce execution opportunity.",
+    "resource_allocation": "Choose how constrained people, crews, equipment, funding, or other resources should be allocated.",
+    "schedule": "Choose between materially different execution timing options.",
+    "scope": "Choose what work, deliverable, or outcome should be included or excluded.",
+    "technical": "Choose between materially different technical approaches requiring operational authority.",
+    "commercial": "Choose a business, pricing, purchasing, vendor, or commercial path.",
+    "customer": "Choose a customer-facing response, concession, commitment, or action.",
+    "personnel": "Choose an assignment, staffing, responsibility, or personnel-related operational path.",
+    "risk": "Choose whether and how to accept, reduce, transfer, or avoid a supported operational risk.",
+    "commitment": "Choose how to handle an existing or proposed commitment.",
+    "conflict_resolution": "Choose a path for resolving incompatible valid obligations or constraints.",
+    "escalation": "Choose whether or how to increase handling authority or intervention.",
+    "other": "A supported operational decision not represented by another canonical type."
+  },
+
+  "establishment": {
+    "questions": [
+      "Is there more than one materially different legitimate path?",
+      "Does choosing among those paths require authority rather than ordinary execution judgment?",
+      "Will the choice materially affect outcome, timing, cost, risk, commitment, scope, customer, or downstream work?",
+      "Who has authority to make the choice?",
+      "When must the decision be made to preserve useful options?"
+    ],
+    "rules": [
+      "Routine execution judgment should not be unnecessarily promoted into a formal decision.",
+      "A preference does not become a decision requirement unless a choice must actually be made.",
+      "A.R.I.A. should identify the specific question that needs resolution.",
+      "Decision scope should be narrow enough to support a clear choice.",
+      "Unknown decision authority must remain unknown rather than invented."
+    ]
+  },
+
+  "decision_record": {
+    "fields": [
+      "decision_id",
+      "work_item_id",
+      "decision_type",
+      "decision_state",
+      "decision_question",
+      "decision_authority",
+      "options",
+      "recommended_option",
+      "selected_option",
+      "decision_required_by",
+      "decided_at",
+      "decided_by",
+      "rationale",
+      "source_references"
+    ],
+    "requirements": [
+      "Each materially independent decision should have a persistent identity.",
+      "The decision question must be explicit enough to evaluate options.",
+      "Recommendation and selected decision must remain distinguishable.",
+      "Decision authority must reference supported authority information when available.",
+      "Decision history must remain recoverable after implementation."
+    ]
+  },
+
+  "option_model": {
+    "fields": [
+      "option_id",
+      "description",
+      "feasible",
+      "benefits",
+      "costs",
+      "risks",
+      "dependencies",
+      "capacity_effect",
+      "schedule_effect",
+      "commitment_effect",
+      "customer_effect",
+      "financial_effect",
+      "operational_effect",
+      "reversibility",
+      "evidence",
+      "confidence"
+    ],
+    "rules": [
+      "Options should represent materially different choices rather than cosmetic variations.",
+      "Infeasible options should remain identifiable when useful but must not be presented as equally viable.",
+      "Unknown effects should remain unknown.",
+      "A.R.I.A. should avoid false precision when comparing options.",
+      "Evidence supporting option effects should remain traceable when materially relevant."
+    ]
+  },
+
+  "information_requirements": {
+    "rules": [
+      "A.R.I.A. should identify information that would materially improve the decision.",
+      "Missing information should only delay the decision when its value is material.",
+      "The system should not chase perfect information when delay creates greater consequence.",
+      "Information requirements may become dependencies.",
+      "Follow-Up Engine may govern pursuit of missing decision information.",
+      "A.R.I.A. should identify when a decision can reasonably proceed despite uncertainty."
+    ]
+  },
+
+  "recommendation": {
+    "purpose": "Allow A.R.I.A. to recommend a decision without confusing recommendation with authority.",
+    "rules": [
+      "A.R.I.A. may recommend an option when available evidence supports a preference.",
+      "The recommendation should identify the material reasons for the preference.",
+      "Recommendation confidence should reflect evidence quality and uncertainty.",
+      "A.R.I.A. must not represent its recommendation as the user's decision.",
+      "A.R.I.A. must not manufacture a recommendation when options are materially indistinguishable or evidence is insufficient.",
+      "Where useful, A.R.I.A. should identify what would change the recommendation."
+    ]
+  },
+
+  "decision_timing": {
+    "rules": [
+      "Decision timing should reflect when the choice must be made, not merely the final work deadline.",
+      "A decision may become urgent before execution becomes urgent.",
+      "A.R.I.A. should identify the latest useful decision point when reasonably determinable.",
+      "Passing the useful decision point may reduce available options or increase consequence.",
+      "A closing decision window may trigger Priority, Attention, Conflict, Scheduling, Capacity, Commitment, or Escalation reevaluation.",
+      "Unknown timing must not be fabricated."
+    ]
+  },
+
+  "authority": {
+    "rules": [
+      "Decision authority should be based on supported organizational, contractual, workflow, ownership, or explicit authority information.",
+      "A.R.I.A. must not infer authority solely from seniority, job title, email presence, or prior participation.",
+      "A.R.I.A. should distinguish recommendation authority from final decision authority.",
+      "Where multiple authorities are required, all required approvals should remain visible.",
+      "Unresolved authority may itself become a dependency or escalation condition."
+    ]
+  },
+
+  "decision_execution": {
+    "rules": [
+      "A decision is not implemented merely because it was made.",
+      "The selected option should create or update the operational work required for execution.",
+      "Implementation tasks should be routed through Capture Engine when new obligations exist.",
+      "Commitment changes resulting from the decision must be governed by Commitment Engine.",
+      "Delegation changes must be governed by Delegation Engine.",
+      "Schedule changes must be governed by Scheduling Engine.",
+      "Resolution of the decision work item must not silently resolve unrelated implementation work."
+    ]
+  },
+
+  "reconsideration": {
+    "triggers": [
+      "material new evidence appears",
+      "a selected option becomes infeasible",
+      "cost or consequence changes materially",
+      "capacity changes materially",
+      "dependency changes materially",
+      "commitment changes materially",
+      "customer conditions change materially",
+      "authority reverses the decision",
+      "implementation fails",
+      "underlying assumptions are disproven"
+    ],
+    "rules": [
+      "Reconsideration should preserve the original decision and rationale.",
+      "A prior decision should not be reopened merely because another option later appears preferable in hindsight.",
+      "Material changed conditions may justify a new decision record or linked decision revision.",
+      "Reconsideration must remain distinguishable from ordinary execution adjustment."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines the operational importance of the decision and affected work.",
+      "Decision Engine determines what choice must be made.",
+      "High priority does not automatically determine which option should be selected.",
+      "Decision consequences may provide new factors for Priority reevaluation.",
+      "Decision Engine must not independently overwrite canonical priority."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Decision Engine determines whether a decision is identified, ready, pending, or at risk.",
+      "Attention Engine determines when and how the decision should be presented to the user.",
+      "A decision requiring the user's unique authority may deserve direct attention.",
+      "A decision should not repeatedly consume attention while materially necessary information is still being gathered unless intervention is useful."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisite conditions.",
+      "A decision may itself be a dependency for downstream work.",
+      "Missing decision information may become dependencies.",
+      "Making the decision may satisfy a decision dependency but does not complete downstream work."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine identifies materially incompatible obligations or constraints.",
+      "Decision Engine governs the authorized choice required to resolve conflicts when a choice is necessary.",
+      "Not every conflict requires a formal decision.",
+      "A decision resolving one conflict may create another and should trigger reevaluation when appropriate."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine determines practical execution capacity.",
+      "Decision Engine may use capacity findings when evaluating resource-allocation or tradeoff options.",
+      "A decision must not assume unavailable capacity.",
+      "Adding capacity as a selected option must remain operationally plausible."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine determines practical execution timing.",
+      "Decision Engine may govern choices between materially different schedule paths.",
+      "A scheduling recommendation is not automatically a decision.",
+      "A selected schedule option must be implemented through Scheduling Engine."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises and commitment state.",
+      "Decision Engine may evaluate choices that affect commitments.",
+      "Selecting an option does not silently modify an existing commitment.",
+      "Any renegotiation or new promise must remain governed by Commitment Engine."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Decision Engine may govern who should receive execution responsibility when the assignment itself requires an authorized choice.",
+      "A selected assignee is not automatically delegated until delegation is legitimately established."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit of missing information, approvals, or responses.",
+      "Decision Engine identifies what information or decision response is required.",
+      "A pending decision may require follow-up with the authorized decision-maker.",
+      "Decision Engine must not independently send follow-up communication."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, repeated deferral, and starvation.",
+      "Repeatedly deferred decisions may accumulate aging pressure.",
+      "Age alone does not determine the correct decision.",
+      "Chronic unresolved decisions may justify escalation or explicit disposition."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines when the decision requires higher or different authority.",
+      "Decision Engine determines the choice that requires resolution.",
+      "Not every important decision requires escalation.",
+      "Unknown or unavailable decision authority may justify escalation."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition.",
+      "A decision work item may resolve when an authorized decision is made and any required decision-specific closure criteria are satisfied.",
+      "Decision completion does not automatically resolve implementation work.",
+      "A cancelled decision must still satisfy Resolution Engine requirements."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may identify decision requirements from incoming information.",
+      "Decision Engine governs sufficiently supported operational decisions.",
+      "A selected decision may create new obligations requiring Capture Engine evaluation.",
+      "Decision Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new decision identified",
+      "material information arrives",
+      "an option becomes infeasible",
+      "priority changes",
+      "dependency changes",
+      "conflict changes",
+      "capacity changes",
+      "schedule changes",
+      "commitment changes",
+      "authority information changes",
+      "decision window narrows",
+      "decision is made",
+      "implementation begins",
+      "implementation fails",
+      "material assumptions change",
+      "user requests decision review"
+    ],
+    "rules": [
+      "Reevaluation must preserve decision history.",
+      "Reevaluation should determine whether the decision remains required.",
+      "Reevaluation should refresh options and consequences from current supported information.",
+      "Material decision changes may trigger Priority, Attention, Dependency, Conflict, Capacity, Scheduling, Commitment, Delegation, Follow-Up, Aging, Escalation, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.decision",
+    "decision_evaluation": [
+      "work_item_id",
+      "decision_id",
+      "decision_state",
+      "decision_question",
+      "decision_authority",
+      "options",
+      "recommended_option",
+      "recommendation_reason",
+      "recommendation_confidence",
+      "decision_required_by",
+      "missing_information",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Decision output must reference the applicable work_item_id.",
+      "Recommendation and authorized decision must remain distinguishable.",
+      "Unknown decision authority must remain unknown.",
+      "Option consequences must remain traceable and explainable where materially relevant.",
+      "Decision Engine must not directly overwrite canonical priority.",
+      "Material decision changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not convert every question into a decision.",
+    "Do not convert ordinary execution judgment into unnecessary approval bureaucracy.",
+    "Do not invent decision authority.",
+    "Do not invent options merely to create the appearance of choice.",
+    "Do not present infeasible options as equally viable.",
+    "Do not hide material uncertainty.",
+    "Do not represent a recommendation as the user's decision.",
+    "Do not silently modify commitments through a decision.",
+    "Do not silently delegate work through a decision.",
+    "Do not silently alter calendars through a decision.",
+    "Do not treat a made decision as implemented work.",
+    "Do not resolve downstream obligations merely because a decision was made.",
+    "Do not reopen decisions solely because hindsight makes another option look preferable.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not bypass the Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of decision management."
+  ]
+}
