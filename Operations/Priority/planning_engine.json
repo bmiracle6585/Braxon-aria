@@ -1,0 +1,537 @@
+{
+  "engine": {
+    "id": "aria.operations.planning_engine",
+    "name": "A.R.I.A. Operational Planning Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_execution_planning",
+    "status": "active",
+    "purpose": "Construct and maintain practical execution plans from supported operational state. The engine determines useful sequencing, execution horizons, preparation actions, protected progress, contingency paths, and plan dependencies while preserving the authority of Priority, Commitment, Capacity, Scheduling, Decision, Delegation, and Resolution engines.",
+    "principles": [
+      "A plan is an intended execution path, not proof that execution will occur.",
+      "A plan is not automatically a commitment.",
+      "A plan is not automatically a calendar reservation.",
+      "Planning must reflect practical capacity and supported constraints.",
+      "Planning should begin before urgency when lead time, preparation, or dependencies require it.",
+      "A.R.I.A. should plan prerequisite work early enough to protect downstream outcomes.",
+      "Plans should preserve meaningful progress on important non-urgent work.",
+      "Plans should adapt when material operational conditions change.",
+      "Planning should expose infeasibility rather than manufacture a path that cannot work.",
+      "Contingency planning should be proportionate to consequence and uncertainty.",
+      "Planning must distinguish required work from optional optimization.",
+      "Planning decisions must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "execution_plan",
+    "sources": [
+      "work_items",
+      "portfolio evaluations",
+      "priority evaluations",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "capacity evaluations",
+      "scheduling evaluations",
+      "conflicts",
+      "decisions",
+      "risks",
+      "issues",
+      "opportunities",
+      "aging evaluations",
+      "follow_up evaluations",
+      "context",
+      "resolution states",
+      "orchestration summaries",
+      "authorized objectives"
+    ]
+  },
+
+  "plan_states": {
+    "draft": {
+      "description": "A candidate execution path exists but has not yet been sufficiently validated."
+    },
+    "validated": {
+      "description": "The plan has a supported practical execution path under current known conditions."
+    },
+    "active": {
+      "description": "The plan is currently governing intended execution."
+    },
+    "constrained": {
+      "description": "The plan remains useful but one or more material constraints threaten or limit execution."
+    },
+    "blocked": {
+      "description": "A material prerequisite currently prevents meaningful progression of the plan."
+    },
+    "at_risk": {
+      "description": "Supported conditions indicate the plan may fail to achieve a consequential intended outcome."
+    },
+    "replanning": {
+      "description": "Material change requires construction or validation of a revised execution path."
+    },
+    "completed": {
+      "description": "The plan-specific intended execution path has reached its supported end state."
+    },
+    "cancelled": {
+      "description": "The plan is no longer intended to govern execution."
+    },
+    "superseded": {
+      "description": "A newer supported plan has replaced this plan."
+    },
+    "unknown": {
+      "description": "Available information is insufficient to establish current plan state."
+    }
+  },
+
+  "planning_horizons": {
+    "now": {
+      "description": "Execution or preparation that should occur in the current useful execution window."
+    },
+    "today": {
+      "description": "Work that should materially advance during the current operational day."
+    },
+    "near_term": {
+      "description": "Work requiring deliberate preparation or execution soon."
+    },
+    "upcoming": {
+      "description": "Future work whose execution path should be prepared before it becomes urgent."
+    },
+    "strategic": {
+      "description": "Important longer-horizon work requiring intentional continued progress."
+    },
+    "watch": {
+      "description": "Conditions requiring observation but not current execution allocation."
+    }
+  },
+
+  "plan_record": {
+    "fields": [
+      "plan_id",
+      "scope",
+      "plan_state",
+      "objective",
+      "planning_horizon",
+      "work_items",
+      "execution_sequence",
+      "preparation_actions",
+      "dependencies",
+      "capacity_requirements",
+      "schedule_requirements",
+      "protected_work",
+      "decision_points",
+      "contingencies",
+      "material_risks",
+      "constraints",
+      "assumptions",
+      "valid_from",
+      "valid_until",
+      "created_at",
+      "updated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Plans must preserve underlying work-item identities.",
+      "Assumptions must remain distinguishable from supported facts.",
+      "Unknown timing, capacity, or dependencies must remain unknown rather than invented.",
+      "Superseded plans should remain historically recoverable when operationally useful.",
+      "Material plan changes must be traceable."
+    ]
+  },
+
+  "plan_construction": {
+    "questions": [
+      "What outcome is the plan intended to protect or achieve?",
+      "What work must occur?",
+      "What must occur first?",
+      "What can occur in parallel?",
+      "What requires unique people, authority, equipment, information, or access?",
+      "What preparation must begin before execution?",
+      "What work should receive protected progress?",
+      "Where are the decision points?",
+      "What conditions could invalidate the plan?",
+      "What useful contingency paths exist?"
+    ],
+    "rules": [
+      "Plan construction should consume canonical operational state rather than reinterpret source information independently.",
+      "Required prerequisites should appear before dependent execution.",
+      "Parallel execution should only be recommended when capacity and dependencies permit it.",
+      "Planning should not assume unavailable resources.",
+      "Planning should not assume pending decisions will resolve favorably.",
+      "Planning should not assume dependencies will be satisfied on time without supporting evidence."
+    ]
+  },
+
+  "execution_sequence": {
+    "rules": [
+      "Execution sequence should reflect operational consequence, dependencies, commitments, capacity, timing, context, and efficiency.",
+      "Sequence is not the same as canonical priority.",
+      "A lower-priority prerequisite may legitimately execute before a higher-priority dependent item.",
+      "Blocked work should not occupy active execution sequence when no useful blocker-removal action exists.",
+      "Execution sequence should identify parallelizable work when supported.",
+      "Sequence should be revised when material assumptions become invalid."
+    ]
+  },
+
+  "preparation": {
+    "purpose": "Identify actions that should occur before primary execution becomes urgent or possible.",
+    "examples": [
+      "obtain information",
+      "confirm access",
+      "secure equipment",
+      "prepare documentation",
+      "request approval",
+      "coordinate personnel",
+      "validate technical prerequisites",
+      "reserve capacity",
+      "prepare communication",
+      "confirm customer conditions"
+    ],
+    "rules": [
+      "Preparation should begin when lead time materially affects the outcome.",
+      "Preparation work should not be confused with completion of the primary obligation.",
+      "A.R.I.A. should identify low-cost preparation that materially preserves future options.",
+      "Preparation should not create unauthorized commitments."
+    ]
+  },
+
+  "protected_progress": {
+    "purpose": "Ensure important non-urgent work receives intentional execution rather than depending entirely on leftover capacity.",
+    "rules": [
+      "Protected progress should be supported by portfolio significance, aging, strategic value, commitment, or other material operational reason.",
+      "Protected work should receive deliberate execution opportunities when feasible.",
+      "Protected progress must not override genuinely critical obligations.",
+      "Repeated loss of protected progress should trigger portfolio and planning reevaluation.",
+      "Protection should be removed when work becomes obsolete, resolved, or no longer materially important."
+    ]
+  },
+
+  "contingency_planning": {
+    "levels": {
+      "none": "No material contingency path is currently warranted.",
+      "basic": "A simple alternate path is useful if a known condition fails.",
+      "material": "One or more consequential uncertainties justify explicit alternate execution paths.",
+      "critical": "Failure of the primary plan would create severe consequence and supported contingency preparation is necessary."
+    },
+    "rules": [
+      "Contingency effort should be proportionate to consequence and likelihood.",
+      "A contingency is not proof the primary plan will fail.",
+      "A.R.I.A. should not create elaborate contingency work for immaterial uncertainty.",
+      "Contingencies should identify the triggering condition when known.",
+      "A contingency requiring additional capacity, spending, authority, or commitment must not be assumed available."
+    ]
+  },
+
+  "plan_validation": {
+    "dimensions": [
+      "dependency_feasibility",
+      "capacity_feasibility",
+      "schedule_feasibility",
+      "authority_feasibility",
+      "resource_feasibility",
+      "commitment_alignment",
+      "risk_acceptability",
+      "conflict_state",
+      "context_feasibility"
+    ],
+    "rules": [
+      "A plan should not become validated while a known fatal constraint remains unresolved.",
+      "Validation does not guarantee successful execution.",
+      "Unknown material feasibility should remain visible.",
+      "A plan depending on unsupported exceptional effort should be identified as fragile rather than fully feasible.",
+      "Validation should be repeated after material operational change."
+    ]
+  },
+
+  "plan_fragility": {
+    "signals": [
+      "little or no schedule margin",
+      "single constrained resource",
+      "multiple unresolved dependencies",
+      "unconfirmed access",
+      "pending consequential decision",
+      "persistent overtime assumption",
+      "high reactive load",
+      "critical external dependency",
+      "material unresolved risk",
+      "no viable contingency"
+    ],
+    "levels": {
+      "robust": "The plan has reasonable tolerance for normal operational variation.",
+      "sensitive": "The plan is feasible but has limited tolerance for disruption.",
+      "fragile": "Relatively small adverse changes could invalidate the plan.",
+      "critical": "The plan depends on conditions with little practical recovery capability.",
+      "unknown": "Available information is insufficient to classify fragility."
+    },
+    "rules": [
+      "Fragility must remain distinguishable from current failure.",
+      "A fragile plan may still be the best available plan.",
+      "A.R.I.A. should expose fragility when it materially affects executive handling."
+    ]
+  },
+
+  "replanning": {
+    "triggers": [
+      "priority materially changes",
+      "commitment materially changes",
+      "dependency changes",
+      "capacity changes",
+      "schedule changes",
+      "issue changes",
+      "risk changes",
+      "conflict changes",
+      "decision changes",
+      "delegation changes",
+      "context changes",
+      "opportunity pursuit changes",
+      "work resolves",
+      "material assumption becomes invalid",
+      "user changes objective"
+    ],
+    "rules": [
+      "Replanning should preserve the prior plan and reason for change when materially useful.",
+      "A.R.I.A. should revise only the portions materially affected when practical.",
+      "Minor changes should not cause unnecessary full-plan reconstruction.",
+      "A superseded plan must not remain represented as the active plan.",
+      "Replanning should propagate consequential effects through Orchestration Engine."
+    ]
+  },
+
+  "plan_vs_reality": {
+    "rules": [
+      "Planned execution and actual execution must remain distinguishable.",
+      "Starting later than planned does not automatically mean failure.",
+      "Material deviation should trigger reevaluation when it threatens an outcome or invalidates assumptions.",
+      "A.R.I.A. should compare actual state against plan sufficiently to detect consequential drift.",
+      "Historical deviation may inform future planning but must not be treated as guaranteed future behavior."
+    ]
+  },
+
+  "relationship_to_portfolio": {
+    "rules": [
+      "Portfolio Engine determines cross-item operational posture and competing demand.",
+      "Planning Engine constructs a practical execution approach from that posture.",
+      "Portfolio Engine identifies what requires allocation; Planning Engine determines how the selected work can progress.",
+      "Planning Engine must not alter portfolio state merely to make a plan appear feasible."
+    ]
+  },
+
+  "relationship_to_orchestration": {
+    "rules": [
+      "Orchestration Engine coordinates operational reasoning and reevaluation.",
+      "Planning Engine consumes sufficiently stable canonical outputs.",
+      "Material planning changes should be routed through Orchestration Engine to affected engines.",
+      "Planning Engine must not create uncontrolled engine-to-engine reevaluation loops."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine owns canonical operational importance.",
+      "Planning Engine uses priority as an input to sequencing and allocation.",
+      "Execution sequence must remain distinguishable from canonical priority.",
+      "Planning Engine must not overwrite priority to make sequencing easier."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine owns practical execution capacity.",
+      "Planning Engine consumes supported capacity to build feasible plans.",
+      "Planning Engine must not manufacture capacity.",
+      "A plan requiring unavailable capacity should be constrained, revised, or presented as infeasible."
+    ]
+  },
+
+  "relationship_to_scheduling": {
+    "rules": [
+      "Scheduling Engine owns practical execution timing and authoritative schedule recommendations.",
+      "Planning Engine identifies sequence, horizon, preparation, and timing requirements.",
+      "A plan does not independently create calendar reservations.",
+      "Specific execution timing should be validated through Scheduling Engine."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine owns promises and commitment terms.",
+      "Planning Engine should construct execution paths that protect supported commitments.",
+      "A plan must not silently create, modify, or release commitments.",
+      "When a commitment cannot be supported by a feasible plan, the conflict must remain visible."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine owns prerequisite existence and state.",
+      "Planning Engine uses dependencies to establish sequence and preparation.",
+      "Planning Engine must not represent an expected dependency as satisfied.",
+      "Useful dependency-pursuit actions may be incorporated into the plan."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine owns execution responsibility.",
+      "Planning Engine may recommend allocation of work to supported roles or resources.",
+      "A planning recommendation does not establish delegation.",
+      "Plan feasibility must not depend on unauthorized reassignment."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine owns authorized choices.",
+      "Planning Engine should identify decision points and consequences of delayed decisions.",
+      "Planning Engine must not assume an undecided option has been selected.",
+      "Alternative plans may be prepared for materially different supported decision outcomes."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine owns future adverse exposure.",
+      "Planning Engine should account for material risks affecting execution feasibility.",
+      "Planning may reduce risk when it materially changes causal conditions or response capability.",
+      "Planning activity alone must not be represented as risk mitigation."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine owns active operational problem state.",
+      "Planning Engine may incorporate containment, correction, recovery, or workaround actions.",
+      "A workaround path must remain distinguishable from permanent resolution.",
+      "Issue correction should not automatically displace all other valid work without portfolio evaluation."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine owns materially incompatible obligations and constraints.",
+      "Planning Engine may propose execution alternatives that avoid or reduce conflict.",
+      "Planning Engine must not silently choose which valid obligation loses.",
+      "Consequential unresolved tradeoffs require Conflict or Decision governance."
+    ]
+  },
+
+  "relationship_to_context": {
+    "rules": [
+      "Context Engine owns supported operational circumstances.",
+      "Planning Engine may adapt execution approach to current or expected context.",
+      "Expected future context must not be treated as guaranteed.",
+      "Temporary contextual convenience must not rewrite canonical priority."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine owns aging pressure and starvation detection.",
+      "Planning Engine should create intentional execution opportunities for valid chronically displaced work when feasible.",
+      "Planning Engine must not convert age directly into priority."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine owns qualification and opportunity state.",
+      "Planning Engine may construct candidate pursuit plans for approved or legitimately considered opportunities.",
+      "Opportunity planning must not silently displace mandatory obligations.",
+      "A pursuit plan does not authorize pursuit."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine owns follow-up need and timing.",
+      "Planning Engine should account for required follow-up actions in the execution path.",
+      "Planning Engine must not invent follow-up deadlines.",
+      "Outstanding follow-up may affect plan feasibility."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Planning Engine may identify plan conditions requiring user action or awareness.",
+      "Planning Engine must not independently interrupt the user.",
+      "Material plan failure or required user decisions should be available to Attention and Briefing Engines."
+    ]
+  },
+
+  "relationship_to_briefing": {
+    "rules": [
+      "Briefing Engine presents useful executive operational posture.",
+      "Planning Engine provides the intended execution path and material plan constraints.",
+      "Briefing should normally surface plan exceptions, required user actions, and consequential changes rather than full plan detail.",
+      "Planning Engine does not determine final briefing presentation."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal work disposition.",
+      "Plan completion does not automatically mean all underlying work is resolved.",
+      "Underlying work resolution may cause a plan to complete, cancel, or supersede.",
+      "Planning Engine must not resolve work merely because it leaves the active plan."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_plan",
+    "planning_evaluation": [
+      "plan_id",
+      "scope",
+      "plan_state",
+      "objective",
+      "planning_horizon",
+      "execution_sequence",
+      "preparation_actions",
+      "parallel_work",
+      "protected_work",
+      "dependencies",
+      "capacity_requirements",
+      "schedule_requirements",
+      "decision_points",
+      "contingencies",
+      "plan_fragility",
+      "material_constraints",
+      "recommended_adjustments",
+      "confidence",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Planning output must preserve underlying work-item identities.",
+      "Plan sequence must remain distinguishable from canonical priority.",
+      "Plan timing must remain distinguishable from authoritative scheduling.",
+      "Planning recommendations must remain distinguishable from authorized actions.",
+      "Unknown capacity, timing, dependencies, or authority must not be fabricated.",
+      "Material plan changes must be available to Orchestration, Portfolio, Attention, Scheduling, and Briefing Engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not represent a plan as a commitment.",
+    "Do not represent a plan as a calendar reservation.",
+    "Do not represent planned execution as completed execution.",
+    "Do not manufacture capacity.",
+    "Do not manufacture dependency satisfaction.",
+    "Do not manufacture decision outcomes.",
+    "Do not manufacture authority.",
+    "Do not silently create or modify commitments.",
+    "Do not silently delegate work.",
+    "Do not silently cancel lower-ranked work.",
+    "Do not overwrite canonical priority.",
+    "Do not make an infeasible plan appear feasible.",
+    "Do not rely on persistent exceptional effort without exposing plan fragility.",
+    "Do not allow urgent work to permanently eliminate protected important work.",
+    "Do not overbuild contingencies for immaterial uncertainty.",
+    "Do not treat contingency preparation as evidence the primary plan will fail.",
+    "Do not bypass Capacity Engine for capacity feasibility.",
+    "Do not bypass Scheduling Engine for authoritative timing.",
+    "Do not bypass Decision Engine for consequential choices.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not independently execute external actions.",
+    "Do not modify Core reasoning architecture as part of operational planning."
+  ]
+}
