@@ -1,570 +1,948 @@
 {
   "specification": "ARIA_REASONING_CYCLE",
-  "version": "0.1.0",
-  "description": "Defines the canonical iterative reasoning cycle used by A.R.I.A. to transform observations into structured evidence, hypotheses, diagnostic actions, updated beliefs, validated diagnoses, resolutions, and learned experience.",
+  "version": "2.0.0",
+  "description": "Canonical reasoning-cycle contract for A.R.I.A. technical investigations. The Reasoning Cycle defines the logical progression by which A.R.I.A. consumes a material event, reasons from the current authoritative case state, updates only the reasoning domains affected by that event, determines whether another technical action is required, coordinates Decision and Routing through their established ownership boundaries, communicates the current technical state, and waits for the next material event. The Reasoning Cycle is a logical control model coordinated by Orchestration; it does not independently own evidence, hypotheses, probability, uncertainty, candidate preference, action execution, routing, validation, case lifecycle, or learning semantics.",
+
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "orchestration_engine": "Core/Reasoning/orchestration_engine.json",
+    "decision_engine": "Core/Reasoning/decision_engine.json",
+    "routing_engine": "Core/Reasoning/routing_engine.json",
+
+    "role": "LOGICAL_REASONING_PROGRESSION",
+
+    "owns": [
+      "reasoning-cycle phase model",
+      "logical progression between reasoning phases",
+      "cycle continuation criteria",
+      "cycle suspension criteria",
+      "cycle reentry semantics",
+      "cycle completion semantics",
+      "high-level reasoning dependency flow",
+      "distinction between material reasoning and conversational fast path"
+    ],
+
+    "does_not_own": [
+      "engine invocation implementation",
+      "reasoning transaction implementation",
+      "technical truth",
+      "case persistence schema",
+      "registry vocabulary",
+      "case lifecycle vocabulary",
+      "reasoning-state vocabulary",
+      "context truth",
+      "evidence truth",
+      "evidence confidence",
+      "hypothesis generation semantics",
+      "hypothesis probability",
+      "uncertainty semantics",
+      "candidate action generation semantics",
+      "candidate action utility scoring",
+      "competitive action selection",
+      "runtime action execution",
+      "action outcome semantics",
+      "route-step creation",
+      "route progression",
+      "route branches",
+      "route dependencies",
+      "rerouting",
+      "validation semantics",
+      "learning semantics",
+      "memory truth",
+      "manufacturer requirements",
+      "physical technical truth"
+    ]
+  },
 
   "core_principle": {
-    "statement": "ARIA reasons by continuously updating a structured representation of the current technical state. She shall reroute from new knowledge rather than restart or blindly follow predetermined troubleshooting trees.",
-    "cycle": [
-      "OBSERVE",
-      "INTERPRET",
-      "CONTEXTUALIZE",
-      "GENERATE_HYPOTHESES",
-      "ESTIMATE_PRIORS",
-      "EVALUATE_EVIDENCE",
-      "CALCULATE_POSTERIORS",
-      "SELECT_NEXT_HOP",
-      "EXECUTE_OR_REQUEST",
-      "OBSERVE_RESULT",
-      "UPDATE_STATE",
-      "REROUTE",
-      "CONFIRM_DIAGNOSIS",
-      "SELECT_CORRECTION",
-      "VALIDATE",
-      "LEARN"
+    "statement": "A.R.I.A. reasons incrementally from the newest authoritative technical state. Each material event updates only the reasoning domains that the event can materially affect. When a competitive technical choice exists, Decision selects the canonical action. Routing then manages diagnostic progression around that selected action. The cycle pauses whenever external observation, execution, authorization, access, time, or other dependency is required and resumes from the resulting event rather than restarting the investigation.",
+
+    "rules": [
+      "The Reasoning Cycle is not a fixed troubleshooting script.",
+      "The Reasoning Cycle shall not restart from the beginning after every event.",
+      "Completed technical work shall remain part of authoritative history.",
+      "Only materially affected reasoning domains should normally be reevaluated.",
+      "A downstream reasoning domain shall not operate from materially stale upstream state.",
+      "Decision owns competitive action selection.",
+      "Routing owns diagnostic progression.",
+      "The Reasoning Cycle shall not duplicate Decision scoring or Routing behavior.",
+      "Action selection, action execution, technical outcome, evidence registration, and validation remain distinct.",
+      "The cycle may pause indefinitely while waiting for an external event.",
+      "A pause does not imply failure, resolution, or abandonment.",
+      "A cycle iteration may complete without selecting a technical action.",
+      "A case may require many reasoning-cycle iterations.",
+      "Case resolution is not owned by the Reasoning Cycle.",
+      "The cycle shall preserve uncertainty rather than force artificial progression.",
+      "The cycle shall remain technically domain-independent."
     ]
   },
 
-  "reasoning_state": {
-    "required_fields": [
-      "case_id",
-      "case_state",
-      "context",
-      "observations",
-      "symptoms",
-      "evidence",
+  "relationship_to_orchestration": {
+    "principle": "Reasoning Cycle defines logical progression. Orchestration determines how that progression is executed by runtime components.",
+
+    "reasoning_cycle_responsibilities": [
+      "define logical phases",
+      "define phase dependencies",
+      "define when reasoning may continue",
+      "define when reasoning must wait",
+      "define when Decision is conceptually required",
+      "define when Routing follows Decision",
+      "define when validation may become relevant",
+      "define cycle reentry after new events"
+    ],
+
+    "orchestration_responsibilities": [
+      "receive and classify events",
+      "identify affected engines",
+      "invoke engines",
+      "order runtime execution",
+      "manage reasoning transactions",
+      "manage persistence",
+      "manage idempotency",
+      "manage concurrency",
+      "validate state transitions",
+      "publish committed state",
+      "contain runtime failures"
+    ],
+
+    "rules": [
+      "Reasoning Cycle shall not become a second Orchestration Engine.",
+      "Orchestration may optimize or skip runtime engine calls when the logical dependencies of the Reasoning Cycle remain satisfied.",
+      "A logical phase does not imply that a dedicated engine must always execute.",
+      "Orchestration remains authoritative for runtime coordination."
+    ]
+  },
+
+  "canonical_runtime_objects": {
+    "case": "case_<UUID>",
+    "event": "evt_<UUID>",
+    "state_version": "state_<UUID>",
+    "context": "ctx_<UUID>",
+    "evidence": "evd_<UUID>",
+    "hypothesis": "hyp_<UUID>",
+    "action": "act_<UUID>",
+    "decision": "dec_<UUID>",
+    "route_step": "rstep_<UUID>",
+    "measurement": "meas_<UUID>"
+  },
+
+  "cycle_entry": {
+    "entry_conditions": [
+      "CASE_CREATED",
+      "MATERIAL_EVENT_RECEIVED",
+      "MATERIAL_STATE_CHANGE_COMMITTED",
+      "EXPLICIT_REASONING_REQUEST",
+      "ROUTE_REEVALUATION_REQUIRED",
+      "VALIDATION_REEVALUATION_REQUIRED"
+    ],
+
+    "required_state": [
+      "case_id"
+    ],
+
+    "recommended_state": [
+      "trigger_event_id",
+      "source_state_version_id",
+      "current_reasoning_state",
+      "current_context",
+      "active_evidence",
       "active_hypotheses",
-      "ruled_out_hypotheses",
-      "confirmed_findings",
-      "completed_actions",
-      "pending_actions",
-      "unresolved_questions",
-      "constraints",
       "probability_state",
-      "confidence_state",
-      "route_history"
+      "uncertainty_state",
+      "active_actions",
+      "route_state",
+      "validation_state",
+      "material_constraints"
+    ],
+
+    "rules": [
+      "Cycle entry shall use the newest applicable authoritative state.",
+      "The triggering event shall remain identifiable when the cycle is event-driven.",
+      "Missing optional state shall be represented as unavailable or uncertain rather than invented.",
+      "Cycle entry does not imply that every reasoning phase must execute."
     ]
   },
 
-  "phases": [
-    {
-      "id": "RC-001",
-      "name": "OBSERVE",
-      "purpose": "Receive raw information without prematurely assigning cause.",
-      "inputs": [
-        "user_message",
-        "measurement",
-        "screenshot",
-        "photo",
-        "configuration",
-        "alarm",
-        "log",
-        "document",
-        "system_data",
-        "historical_case"
-      ],
-      "outputs": [
-        "raw_observations"
-      ],
+  "cycle_phases": [
+    "OBSERVE_EVENT",
+    "ESTABLISH_CURRENT_STATE",
+    "RESOLVE_CONTEXT",
+    "REGISTER_OR_UPDATE_EVIDENCE",
+    "UPDATE_HYPOTHESIS_STATE",
+    "UPDATE_PROBABILITY_STATE",
+    "ASSESS_UNCERTAINTY",
+    "ASSESS_PROGRESS_REQUIREMENT",
+    "SELECT_ACTION_IF_REQUIRED",
+    "ADVANCE_ROUTE_IF_REQUIRED",
+    "ASSESS_VALIDATION_IF_REQUIRED",
+    "PUBLISH_REASONING_STATE",
+    "COMMUNICATE",
+    "WAIT_FOR_EVENT"
+  ],
+
+  "phase_semantics": {
+    "OBSERVE_EVENT": {
+      "description": "Identify the material event or explicit reasoning trigger that caused the current cycle iteration.",
+      "owner": "ORCHESTRATION_COORDINATED",
       "rules": [
-        "Preserve raw information whenever practical.",
-        "Do not convert an observation directly into a confirmed diagnosis.",
-        "Distinguish reported information from directly observed information."
+        "An event is an input to reasoning and is not automatically technical truth.",
+        "Duplicate event handling belongs to Orchestration.",
+        "Pure conversational requests may use the fast path rather than material reasoning."
       ]
     },
 
-    {
-      "id": "RC-002",
-      "name": "INTERPRET",
-      "purpose": "Convert raw observations into normalized technical meaning.",
-      "inputs": [
-        "raw_observations"
-      ],
-      "outputs": [
-        "normalized_measurements",
-        "canonical_symptoms",
-        "candidate_context",
-        "candidate_evidence"
-      ],
+    "ESTABLISH_CURRENT_STATE": {
+      "description": "Read the newest applicable authoritative case state and identify which reasoning domains may have been materially affected.",
+      "owner": "ORCHESTRATION_COORDINATED",
       "rules": [
-        "Preserve linkage between interpreted information and its source.",
-        "Record extraction confidence when interpretation is uncertain.",
-        "Do not silently invent missing values."
+        "Previously completed work shall remain visible.",
+        "Historical state shall not be discarded merely because the current leading explanation changed.",
+        "Stale state shall not be used when newer authoritative state materially changes reasoning."
       ]
     },
 
-    {
-      "id": "RC-003",
-      "name": "CONTEXTUALIZE",
-      "purpose": "Determine the technical environment in which the observations must be interpreted.",
-      "inputs": [
-        "candidate_context",
-        "existing_case_context",
-        "knowledge_graph",
-        "experience_ledger"
-      ],
-      "outputs": [
-        "resolved_context",
-        "missing_context",
-        "context_match_state"
-      ],
+    "RESOLVE_CONTEXT": {
+      "description": "Resolve or update technical context when the triggering event can materially affect applicability, interpretation, knowledge retrieval, or action eligibility.",
+      "owner": "CONTEXT_ENGINE",
       "rules": [
-        "Resolve known entities to canonical graph entities.",
-        "Represent unknown context explicitly.",
-        "Request missing context only when obtaining it is expected to materially improve reasoning."
+        "Context shall not be recomputed when no material context input changed.",
+        "Context does not itself establish evidence truth.",
+        "Context may alter the interpretation or applicability of technical knowledge."
       ]
     },
 
-    {
-      "id": "RC-004",
-      "name": "GENERATE_HYPOTHESES",
-      "purpose": "Generate technically plausible explanations for the observed symptoms.",
-      "inputs": [
-        "canonical_symptoms",
-        "resolved_context",
-        "knowledge_graph",
-        "applicable_failure_modes",
-        "historical_experience"
-      ],
-      "outputs": [
-        "candidate_hypotheses"
-      ],
+    "REGISTER_OR_UPDATE_EVIDENCE": {
+      "description": "Normalize, register, supersede, invalidate, or otherwise update evidence when the event contains or changes technical observations.",
+      "owner": "EVIDENCE_ENGINE",
       "rules": [
-        "Generate multiple plausible hypotheses when warranted.",
-        "Include an unknown or unmodeled explanation when the known hypothesis set may be incomplete.",
-        "Do not generate manufacturer-specific hypotheses unless applicable context supports them.",
-        "Multiple simultaneous failure modes are permitted."
+        "Observed evidence shall remain distinct from predicted evidence.",
+        "User statements may become evidence only through applicable evidence semantics.",
+        "Action completion alone shall not be treated as proof of technical success.",
+        "Evidence invalidation may require downstream reasoning reevaluation."
       ]
     },
 
-    {
-      "id": "RC-005",
-      "name": "ESTIMATE_PRIORS",
-      "purpose": "Estimate starting probability for candidate hypotheses before fully applying current case evidence.",
-      "inputs": [
-        "candidate_hypotheses",
-        "general_experience",
-        "contextual_experience",
-        "user_history",
-        "product_history",
-        "manufacturer_history",
-        "scope_history"
-      ],
-      "outputs": [
-        "prior_probabilities"
-      ],
+    "UPDATE_HYPOTHESIS_STATE": {
+      "description": "Generate, retain, modify, activate, weaken, eliminate, or otherwise update technically plausible hypotheses when current evidence or context warrants it.",
+      "owner": "HYPOTHESIS_ENGINE",
       "rules": [
-        "Historical frequency may influence priors.",
-        "More contextually similar historical cases may receive greater weight.",
-        "Small samples shall be regularized to prevent extreme priors.",
-        "User history may modify priors but shall not establish diagnosis.",
-        "Unknown probability mass shall be preserved when appropriate."
+        "Hypothesis state shall be based on current authoritative technical information.",
+        "Hypotheses shall not be created merely to populate a fixed number of alternatives.",
+        "Previously considered hypotheses may remain historically preserved even when inactive."
       ]
     },
 
-    {
-      "id": "RC-006",
-      "name": "EVALUATE_EVIDENCE",
-      "purpose": "Determine how current evidence supports, weakens, contradicts, or fails to affect each active hypothesis.",
-      "inputs": [
-        "evidence",
-        "candidate_hypotheses",
-        "evidence_quality",
-        "context"
-      ],
-      "outputs": [
-        "evidence_hypothesis_effects"
-      ],
+    "UPDATE_PROBABILITY_STATE": {
+      "description": "Update the relative plausibility or probability of active hypotheses when relevant inputs changed.",
+      "owner": "PROBABILITY_ENGINE",
       "rules": [
-        "Evaluate evidence separately against each relevant hypothesis.",
-        "Consider source reliability, applicability, freshness, independence, provenance, and directness.",
-        "Do not count duplicated evidence as independent corroboration.",
-        "Preserve contradictory evidence.",
-        "Validated current evidence may outweigh historical expectation."
+        "Probability shall not be recomputed solely because the user asked for an explanation.",
+        "Probability does not automatically determine the next action.",
+        "Historical frequency shall not override contradictory current evidence."
       ]
     },
 
-    {
-      "id": "RC-007",
-      "name": "CALCULATE_POSTERIORS",
-      "purpose": "Update hypothesis probabilities using current evidence.",
-      "inputs": [
-        "prior_probabilities",
-        "evidence_hypothesis_effects",
-        "probability_model"
-      ],
-      "outputs": [
-        "posterior_probabilities",
-        "diagnostic_confidence",
-        "evidence_completeness"
-      ],
+    "ASSESS_UNCERTAINTY": {
+      "description": "Identify material uncertainty, evidence gaps, contradictions, assumptions, unresolved distinctions, and opportunities for uncertainty reduction.",
+      "owner": "UNCERTAINTY_ENGINE",
       "rules": [
-        "Probability changes must be attributable to evidence or contextual changes.",
-        "Do not increase probability merely because ARIA previously suggested a hypothesis.",
-        "Do not force probabilities to sum to one when hypotheses can coexist.",
-        "Preserve unknown probability mass when appropriate."
+        "Uncertainty is a valid technical state.",
+        "The cycle shall not force certainty merely to progress.",
+        "Material contradiction shall remain visible until resolved or explicitly bounded."
       ]
     },
 
-    {
-      "id": "RC-008",
-      "name": "GENERATE_CANDIDATE_ACTIONS",
-      "purpose": "Identify technically valid actions capable of advancing diagnosis.",
-      "inputs": [
-        "active_hypotheses",
-        "posterior_probabilities",
-        "missing_evidence",
-        "knowledge_graph",
-        "action_registry",
-        "case_constraints"
-      ],
-      "outputs": [
-        "candidate_actions"
+    "ASSESS_PROGRESS_REQUIREMENT": {
+      "description": "Determine whether the current authoritative state requires another technical action, deterministic route progression, validation, communication only, or waiting.",
+      "owner": "ORCHESTRATION_COORDINATED",
+      "possible_results": [
+        "COMPETITIVE_ACTION_SELECTION_REQUIRED",
+        "DETERMINISTIC_PROGRESSION_AVAILABLE",
+        "VALIDATION_REQUIRED",
+        "WAIT_FOR_EXTERNAL_EVENT",
+        "COMMUNICATION_ONLY",
+        "NO_RESPONSIBLE_PROGRESS_AVAILABLE"
       ],
       "rules": [
-        "Candidate actions should target uncertainty that materially affects diagnosis.",
-        "Prefer actions applicable to multiple competing hypotheses when they provide strong discrimination.",
-        "Do not propose technically incompatible actions.",
-        "Respect safety, authorization, access, and service-impact constraints."
+        "This phase determines the kind of progression required; it does not choose among competing technical actions.",
+        "A lack of immediate action does not imply resolution.",
+        "A mandatory deterministic successor does not require artificial competitive scoring.",
+        "When multiple materially different eligible actions exist, Decision is required."
       ]
     },
 
-    {
-      "id": "RC-009",
-      "name": "SCORE_CANDIDATE_ACTIONS",
-      "purpose": "Estimate the diagnostic utility of each candidate next action.",
-      "inputs": [
-        "candidate_actions",
-        "posterior_probabilities",
-        "historical_action_performance",
-        "user_context",
-        "operational_constraints"
-      ],
-      "outputs": [
-        "action_scores"
-      ],
-      "scoring_dimensions": [
-        "EXPECTED_INFORMATION_GAIN",
-        "EXPECTED_PROBABILITY_REDUCTION",
-        "DIAGNOSTIC_DISCRIMINATION",
-        "TIME_COST",
-        "EXECUTION_COST",
-        "PHYSICAL_EFFORT",
-        "INVASIVENESS",
-        "SERVICE_IMPACT",
-        "SAFETY_RISK",
-        "REVERSIBILITY",
-        "USER_CAPABILITY",
-        "EVIDENCE_AVAILABILITY",
-        "HISTORICAL_SUCCESS",
-        "CONTEXT_APPLICABILITY"
-      ],
+    "SELECT_ACTION_IF_REQUIRED": {
+      "description": "Evaluate competing canonical runtime actions and select the preferred next technical action when competitive selection is required.",
+      "owner": "DECISION_ENGINE",
       "rules": [
-        "Highest hypothesis probability does not automatically determine the next action.",
-        "Low-cost high-information actions should generally outrank invasive actions when diagnostic value is comparable.",
-        "A lower-probability hypothesis may justify testing first when the test is inexpensive and highly discriminating.",
-        "Action scoring shall remain explainable."
+        "Decision shall evaluate eligibility before preference.",
+        "Decision shall select canonical act_<UUID> when final selection occurs.",
+        "The highest-probability hypothesis does not automatically determine the selected action.",
+        "The Reasoning Cycle shall not independently score candidates.",
+        "The Reasoning Cycle shall not maintain a competing action vocabulary.",
+        "Decision may defer or return no selection when no responsible action is presently available."
       ]
     },
 
-    {
-      "id": "RC-010",
-      "name": "SELECT_NEXT_HOP",
-      "purpose": "Select the action with the highest justified diagnostic utility for the current state.",
-      "inputs": [
-        "action_scores",
-        "case_constraints",
-        "route_history"
-      ],
-      "outputs": [
-        "selected_action",
-        "route_confidence",
-        "selection_reason"
-      ],
+    "ADVANCE_ROUTE_IF_REQUIRED": {
+      "description": "Advance diagnostic progression around a Decision-selected, externally directed, or deterministic canonical action.",
+      "owner": "ROUTING_ENGINE",
       "rules": [
-        "Select one primary next hop unless parallel actions are independently useful and operationally appropriate.",
-        "Record why the action was selected.",
-        "Do not repeat an action without a technically meaningful reason.",
-        "Previously unsuccessful routes shall influence future route selection."
+        "Routing owns route-step creation and route progression.",
+        "Routing shall not silently replace a competitively selected action.",
+        "Routing may identify blockage, repetition, dependency, branch, reroute, or exhaustion conditions.",
+        "When Routing exposes a new competitive action choice, the cycle returns to Decision through Orchestration.",
+        "Deterministic progression may occur without competitive Decision when no materially different technical choice exists."
       ]
     },
 
-    {
-      "id": "RC-011",
-      "name": "EXECUTE_OR_REQUEST",
-      "purpose": "Translate the selected diagnostic action into an executable system action or clear human request.",
-      "inputs": [
-        "selected_action",
-        "user_context",
-        "case_context"
-      ],
-      "outputs": [
-        "action_request",
-        "expected_result_types",
-        "expected_discriminating_outcomes"
-      ],
+    "ASSESS_VALIDATION_IF_REQUIRED": {
+      "description": "Invoke validation reasoning when a technical conclusion, correction, restored state, or proposed resolution requires validation.",
+      "owner": "VALIDATION_ENGINE",
       "rules": [
-        "Explain what is needed with sufficient technical precision.",
-        "When useful, explain why the action is being requested.",
-        "Do not falsely imply that an action is authorized merely because ARIA recommends it.",
-        "Record the expected diagnostic value before the result is known."
+        "Validation is not equivalent to action completion.",
+        "Validation failure is a material reasoning event.",
+        "Validation may create new evidence or require renewed diagnostic progression through the applicable engines.",
+        "The Reasoning Cycle shall not independently define validation truth."
       ]
     },
 
-    {
-      "id": "RC-012",
-      "name": "OBSERVE_RESULT",
-      "purpose": "Receive and classify the result of the selected action.",
-      "inputs": [
-        "action_result",
-        "new_evidence"
-      ],
-      "outputs": [
-        "action_outcome",
-        "resulting_evidence"
-      ],
+    "PUBLISH_REASONING_STATE": {
+      "description": "Commit and publish the resulting authoritative state after applicable reasoning outputs pass structural and transition validation.",
+      "owner": "ORCHESTRATION_COORDINATED",
       "rules": [
-        "Record what actually happened rather than what was predicted.",
-        "Distinguish action completion from diagnostic outcome.",
-        "Preserve unexpected results."
+        "Publication shall not bypass authoritative schemas and registries.",
+        "Partial authoritative-state mutation shall be avoided.",
+        "Material state changes should remain reconstructable.",
+        "Historical reasoning shall not be rewritten merely because later evidence changed the conclusion."
       ]
     },
 
-    {
-      "id": "RC-013",
-      "name": "UPDATE_STATE",
-      "purpose": "Integrate new evidence and outcomes into the authoritative case state.",
-      "inputs": [
-        "resulting_evidence",
-        "action_outcome",
-        "current_reasoning_state"
-      ],
-      "outputs": [
-        "updated_reasoning_state"
-      ],
+    "COMMUNICATE": {
+      "description": "Generate an operationally useful explanation, instruction, request, or status update from the committed authoritative state.",
+      "owner": "LANGUAGE_INTERFACE",
       "rules": [
-        "Append new evidence and outcomes without erasing historical state.",
-        "Update affected hypotheses.",
-        "Preserve ruled-out hypotheses and their supporting rationale.",
-        "Record unresolved contradictions.",
-        "Record state changes with timestamps and reasons."
+        "Communication shall distinguish fact from hypothesis and expectation.",
+        "Communication shall not silently mutate technical state.",
+        "Communication should reflect current uncertainty when material.",
+        "When an action is selected, communication should explain what is required without implying that the action has already been executed.",
+        "The language interface shall not invent measurements, technical outcomes, or validation."
       ]
     },
 
-    {
-      "id": "RC-014",
-      "name": "REROUTE",
-      "purpose": "Determine the appropriate continuation from the newly updated technical state.",
-      "inputs": [
-        "updated_reasoning_state"
-      ],
-      "outputs": [
-        "next_reasoning_phase"
-      ],
-      "possible_routes": [
-        "REQUEST_MORE_CONTEXT",
-        "GATHER_MORE_EVIDENCE",
-        "REGENERATE_HYPOTHESES",
-        "RECALCULATE_PROBABILITIES",
-        "SELECT_NEW_ACTION",
-        "ENTER_ISOLATION",
-        "ENTER_PROVISIONAL_DIAGNOSIS",
-        "CONFIRM_DIAGNOSIS",
-        "ESCALATE"
-      ],
+    "WAIT_FOR_EVENT": {
+      "description": "Suspend material reasoning until a new event or explicit reevaluation trigger occurs.",
+      "owner": "ORCHESTRATION_COORDINATED",
       "rules": [
-        "Reroute from the current state rather than restarting the original troubleshooting sequence.",
-        "Do not reactivate ruled-out hypotheses unless new evidence materially undermines the basis for ruling them out.",
-        "Unexpected evidence may generate new hypotheses.",
-        "The topology of the diagnostic graph may change as evidence accumulates."
+        "Waiting is a normal reasoning state.",
+        "Waiting does not imply abandonment.",
+        "Waiting does not imply case resolution.",
+        "The next cycle shall resume from the newest authoritative state.",
+        "The cycle shall not continuously regenerate the same recommendation without a material trigger."
+      ]
+    }
+  },
+
+  "dependency_flow": {
+    "conceptual_order": [
+      "EVENT",
+      "CURRENT_STATE",
+      "CONTEXT_WHEN_AFFECTED",
+      "EVIDENCE_WHEN_AFFECTED",
+      "HYPOTHESES_WHEN_AFFECTED",
+      "PROBABILITY_WHEN_AFFECTED",
+      "UNCERTAINTY_WHEN_AFFECTED",
+      "PROGRESS_REQUIREMENT",
+      "DECISION_WHEN_COMPETITIVE_SELECTION_REQUIRED",
+      "ROUTING_WHEN_PROGRESSION_REQUIRED",
+      "VALIDATION_WHEN_REQUIRED",
+      "STATE_PUBLICATION",
+      "COMMUNICATION",
+      "WAIT"
+    ],
+
+    "rules": [
+      "Conceptual order does not require every phase to execute.",
+      "A phase may be skipped when its authoritative inputs did not materially change.",
+      "A downstream phase shall use updated upstream state when that state materially changed.",
+      "Validation may cause the cycle to reenter Evidence, Hypothesis, Probability, Uncertainty, Decision, or Routing.",
+      "Routing blockage or exhaustion may cause the cycle to reenter Decision.",
+      "New evidence may invalidate previously selected actions before execution."
+    ]
+  },
+
+  "selective_reasoning": {
+    "principle": "Reasoning depth shall be proportional to the material effect of the triggering event.",
+
+    "examples": {
+      "PURE_EXPLANATION_REQUEST": [
+        "ESTABLISH_CURRENT_STATE",
+        "COMMUNICATE"
+      ],
+
+      "NEW_MEASUREMENT": [
+        "ESTABLISH_CURRENT_STATE",
+        "REGISTER_OR_UPDATE_EVIDENCE",
+        "UPDATE_HYPOTHESIS_STATE",
+        "UPDATE_PROBABILITY_STATE",
+        "ASSESS_UNCERTAINTY",
+        "ASSESS_PROGRESS_REQUIREMENT",
+        "SELECT_ACTION_IF_REQUIRED",
+        "ADVANCE_ROUTE_IF_REQUIRED",
+        "PUBLISH_REASONING_STATE",
+        "COMMUNICATE"
+      ],
+
+      "ACTION_BLOCKED": [
+        "ESTABLISH_CURRENT_STATE",
+        "ASSESS_PROGRESS_REQUIREMENT",
+        "ADVANCE_ROUTE_IF_REQUIRED",
+        "SELECT_ACTION_IF_REQUIRED",
+        "PUBLISH_REASONING_STATE",
+        "COMMUNICATE"
+      ],
+
+      "VALIDATION_FAILURE": [
+        "ESTABLISH_CURRENT_STATE",
+        "REGISTER_OR_UPDATE_EVIDENCE",
+        "UPDATE_HYPOTHESIS_STATE",
+        "UPDATE_PROBABILITY_STATE",
+        "ASSESS_UNCERTAINTY",
+        "ASSESS_PROGRESS_REQUIREMENT",
+        "SELECT_ACTION_IF_REQUIRED",
+        "ADVANCE_ROUTE_IF_REQUIRED",
+        "PUBLISH_REASONING_STATE",
+        "COMMUNICATE"
+      ],
+
+      "NO_NEW_TECHNICAL_INFORMATION": [
+        "ESTABLISH_CURRENT_STATE",
+        "COMMUNICATE"
       ]
     },
 
-    {
-      "id": "RC-015",
-      "name": "CONFIRM_DIAGNOSIS",
-      "purpose": "Determine whether available evidence satisfies the applicable standard for diagnosis.",
-      "inputs": [
-        "posterior_probabilities",
-        "diagnostic_confidence",
-        "evidence_quality",
-        "evidence_completeness",
-        "contradictory_evidence"
-      ],
-      "outputs": [
-        "diagnosis_state",
-        "confirmed_failure_modes",
-        "causal_confidence"
-      ],
+    "rules": [
+      "Examples are conceptual and shall not override Orchestration's event-impact logic.",
+      "Selective reasoning shall not permit stale dependent state.",
+      "The cycle shall avoid repeated full recomputation without material cause."
+    ]
+  },
+
+  "competitive_action_boundary": {
+    "principle": "The Reasoning Cycle identifies when competitive action selection is needed but never performs that selection itself.",
+
+    "decision_required_when": [
+      "multiple materially different eligible technical actions exist",
+      "new evidence materially changes the value of competing actions",
+      "a selected action becomes unavailable and alternatives exist",
+      "route exhaustion exposes multiple new technical directions",
+      "validation failure creates multiple plausible next actions",
+      "a contradiction can be resolved through materially different diagnostic actions"
+    ],
+
+    "decision_not_required_when": [
+      "one mandatory deterministic successor exists",
+      "one procedure-mandated action exists and no competing technical choice is present",
+      "one already-established validation action must be performed",
+      "one mandatory rollback action exists",
+      "an authorized external direction determines the action and no hard constraint prohibits it",
+      "no technical action is required"
+    ],
+
+    "rules": [
+      "Candidate scoring belongs exclusively to Decision.",
+      "Expected information gain belongs to Decision evaluation.",
+      "Action preference belongs exclusively to Decision.",
+      "The Reasoning Cycle shall not implement SELECT_NEXT_HOP.",
+      "The Reasoning Cycle shall not implement SELECT_CORRECTION.",
+      "The Reasoning Cycle shall not implement route-cost scoring."
+    ]
+  },
+
+  "decision_routing_sequence": {
+    "competitive_path": [
+      "ASSESS_PROGRESS_REQUIREMENT",
+      "DECISION_EVALUATES_CANDIDATES",
+      "DECISION_SELECTS_ACTION",
+      "ORCHESTRATION_HANDS_ACTION_TO_ROUTING",
+      "ROUTING_CREATES_OR_UPDATES_ROUTE_PROGRESSION",
+      "ACTION_WAITS_FOR_EXECUTION_OR_OTHER_REQUIRED_EVENT"
+    ],
+
+    "deterministic_path": [
+      "ASSESS_PROGRESS_REQUIREMENT",
+      "DETERMINISTIC_SUCCESSOR_CONFIRMED",
+      "ROUTING_ADVANCES_PROGRESSION",
+      "ACTION_WAITS_FOR_EXECUTION_OR_OTHER_REQUIRED_EVENT"
+    ],
+
+    "blocked_path": [
+      "ROUTING_IDENTIFIES_BLOCKAGE",
+      "ORCHESTRATION_UPDATES_CURRENT_STATE",
+      "ASSESS_PROGRESS_REQUIREMENT",
+      "DECISION_REEVALUATES_IF_COMPETITIVE_CHOICE_EXISTS"
+    ],
+
+    "rules": [
+      "Routing shall not choose a different competitive action merely because the selected action is blocked.",
+      "Decision shall not construct route branches after selection.",
+      "The cycle may alternate between Decision and Routing as authoritative state changes.",
+      "A Decision result becomes stale when intervening state materially changes action eligibility or value."
+    ]
+  },
+
+  "action_lifecycle_boundary": {
+    "conceptual_states": [
+      "PROPOSED",
+      "SELECTED",
+      "ROUTED",
+      "AUTHORIZED_WHEN_REQUIRED",
+      "READY",
+      "EXECUTING",
+      "COMPLETED_OR_FAILED",
+      "RESULT_CAPTURED",
+      "EVIDENCE_REGISTERED",
+      "ROUTING_CONSEQUENCE_EVALUATED",
+      "VALIDATED_WHEN_REQUIRED"
+    ],
+
+    "rules": [
+      "These conceptual states shall not replace the canonical Action schema or status vocabulary.",
+      "Selection does not equal execution.",
+      "Execution does not equal success.",
+      "Success does not equal evidence registration.",
+      "Evidence registration does not equal validation.",
+      "Validation does not automatically establish sole root cause.",
+      "The cycle shall resume after material action-state events."
+    ]
+  },
+
+  "event_driven_reentry": {
+    "principle": "Every material new event reenters the cycle at the earliest phase whose authoritative inputs may have changed.",
+
+    "examples": {
+      "NEW_TECHNICAL_OBSERVATION": "REGISTER_OR_UPDATE_EVIDENCE",
+      "NEW_MEASUREMENT": "REGISTER_OR_UPDATE_EVIDENCE",
+      "USER_CORRECTION": "RESOLVE_CONTEXT_OR_REGISTER_OR_UPDATE_EVIDENCE",
+      "ACTION_COMPLETED": "REGISTER_OR_UPDATE_EVIDENCE_OR_ADVANCE_ROUTE",
+      "ACTION_FAILED": "ADVANCE_ROUTE_IF_REQUIRED",
+      "ACTION_BLOCKED": "ADVANCE_ROUTE_IF_REQUIRED",
+      "EVIDENCE_INVALIDATED": "REGISTER_OR_UPDATE_EVIDENCE",
+      "CONTEXT_CHANGED": "RESOLVE_CONTEXT",
+      "AUTHORIZATION_CHANGED": "ASSESS_PROGRESS_REQUIREMENT",
+      "RESOURCE_CHANGED": "ASSESS_PROGRESS_REQUIREMENT",
+      "VALIDATION_RESULT": "ASSESS_VALIDATION_IF_REQUIRED",
+      "ROUTE_EXHAUSTED": "ASSESS_PROGRESS_REQUIREMENT"
+    },
+
+    "rules": [
+      "Reentry shall not restart unaffected phases solely for procedural consistency.",
+      "Orchestration determines actual engine invocation.",
+      "A materially changed upstream state requires reevaluation of dependent downstream state.",
+      "A new event may invalidate an unexecuted selected action."
+    ]
+  },
+
+  "cycle_suspension": {
+    "suspend_when": [
+      "WAITING_FOR_USER",
+      "WAITING_FOR_MEASUREMENT",
+      "WAITING_FOR_SCREENSHOT",
+      "WAITING_FOR_DOCUMENT",
+      "WAITING_FOR_LOG",
+      "WAITING_FOR_CONFIGURATION",
+      "WAITING_FOR_ACTION_EXECUTION",
+      "WAITING_FOR_AUTHORIZATION",
+      "WAITING_FOR_ACCESS",
+      "WAITING_FOR_RESOURCE",
+      "WAITING_FOR_TOOL",
+      "WAITING_FOR_SERVICE_WINDOW",
+      "WAITING_FOR_EXTERNAL_DEPENDENCY",
+      "WAITING_FOR_MONITORING_INTERVAL",
+      "WAITING_FOR_VALIDATION_RESULT",
+      "NO_RESPONSIBLE_IMMEDIATE_ACTION"
+    ],
+
+    "rules": [
+      "Suspension is not case closure.",
+      "Suspension shall preserve the reason for waiting when material.",
+      "The cycle resumes when the relevant dependency produces a material event.",
+      "The cycle shall not manufacture an alternative action merely to avoid waiting.",
+      "Long waits do not invalidate prior reasoning unless technical context changes."
+    ]
+  },
+
+  "cycle_completion": {
+    "principle": "A reasoning-cycle iteration completes when the current event has been processed to a stable point and no further internal reasoning can responsibly advance without another event.",
+
+    "iteration_completion_conditions": [
+      "SELECTED_ACTION_REQUIRES_EXTERNAL_EXECUTION",
+      "REQUIRED_INFORMATION_REQUESTED",
+      "AUTHORIZATION_REQUIRED",
+      "ACCESS_REQUIRED",
+      "RESOURCE_REQUIRED",
+      "MONITORING_REQUIRED",
+      "VALIDATION_PENDING",
+      "COMMUNICATION_ONLY_COMPLETE",
+      "NO_RESPONSIBLE_IMMEDIATE_ACTION",
+      "CURRENT_EVENT_FULLY_PROCESSED"
+    ],
+
+    "rules": [
+      "Iteration completion is not case resolution.",
+      "One case may contain many completed reasoning-cycle iterations.",
+      "The cycle shall not remain internally active merely because unresolved hypotheses still exist.",
+      "The cycle shall not claim resolution merely because no immediate action is selected."
+    ]
+  },
+
+  "case_resolution_boundary": {
+    "principle": "Reasoning Cycle does not determine case lifecycle or resolution.",
+
+    "rules": [
+      "Case lifecycle vocabulary belongs to the canonical lifecycle Registry and applicable state contracts.",
+      "Case State Engine coordinates current lifecycle state within those contracts.",
+      "Validation may provide technical prerequisites for resolution.",
+      "Routing completion does not equal case resolution.",
+      "No remaining route does not automatically equal case resolution.",
+      "High hypothesis probability does not equal case resolution.",
+      "Successful corrective action does not automatically equal case resolution.",
+      "Reasoning Cycle may stop active diagnostic progression while the case remains open."
+    ]
+  },
+
+  "validation_loop": {
+    "principle": "Validation is capable of reopening technical reasoning.",
+
+    "possible_results": [
+      "VALIDATION_SUPPORTS_EXPECTED_STATE",
+      "VALIDATION_PARTIALLY_SUPPORTS_EXPECTED_STATE",
+      "VALIDATION_CONTRADICTS_EXPECTED_STATE",
+      "VALIDATION_INCONCLUSIVE",
+      "VALIDATION_CANNOT_BE_COMPLETED"
+    ],
+
+    "rules": [
+      "These conceptual results shall not replace the authoritative validation vocabulary when one exists.",
+      "Validation contradiction shall be treated as new technical information.",
+      "Failed or inconclusive validation may reactivate hypotheses or generate new uncertainty.",
+      "Validation failure may require new Decision selection and Routing progression.",
+      "The cycle shall not hide validation failure by preserving an earlier preferred diagnosis."
+    ]
+  },
+
+  "uncertainty_behavior": {
+    "principle": "Uncertainty determines reasoning posture but does not require endless action.",
+
+    "rules": [
+      "High uncertainty may increase the value of discriminating diagnostic actions.",
+      "Low uncertainty may increase the value of validation or controlled correction.",
+      "Uncertainty may remain when no responsible action can currently reduce it.",
+      "The cycle may wait with unresolved uncertainty.",
+      "Uncertainty shall not be converted into arbitrary numerical certainty.",
+      "Decision confidence and hypothesis probability remain separate from general uncertainty."
+    ]
+  },
+
+  "contradiction_behavior": {
+    "principle": "Material contradiction causes reevaluation rather than silent averaging.",
+
+    "rules": [
+      "Contradictory evidence shall remain visible until resolved, invalidated, superseded, or explicitly bounded.",
+      "Contradiction may require hypothesis reevaluation.",
+      "Contradiction may require probability reevaluation.",
+      "Contradiction may require Decision to select an action specifically capable of discrimination.",
+      "The cycle shall not continue a preferred route merely because it was previously selected when new contradictory evidence materially changes the state."
+    ]
+  },
+
+  "correction_boundary": {
+    "principle": "Correction is performed through canonical Actions and selected through Decision when competitive choice exists.",
+
+    "rules": [
+      "The Reasoning Cycle shall not contain a SELECT_CORRECTION phase.",
+      "Corrective actions compete with observational, measurement, validation, escalation, monitoring, or other applicable actions inside Decision.",
+      "A corrective action may be deterministic when mandated by an authoritative procedure and no competitive technical choice exists.",
+      "Corrective action completion does not automatically prove diagnosis.",
+      "Corrective action success may require independent validation.",
+      "The cycle shall preserve diagnostic information when correction could destroy useful evidence."
+    ]
+  },
+
+  "route_boundary": {
+    "principle": "The Reasoning Cycle observes route state but never becomes the route graph owner.",
+
+    "rules": [
+      "The Reasoning Cycle shall not implement candidate next-hop scoring.",
+      "The Reasoning Cycle shall not assign route costs.",
+      "The Reasoning Cycle shall not create predecessor or successor relationships.",
+      "The Reasoning Cycle shall not close route branches.",
+      "The Reasoning Cycle shall not bypass Routing to reroute.",
+      "Route exhaustion may trigger renewed Decision evaluation.",
+      "Route history remains available to Decision for repetition and novelty assessment."
+    ]
+  },
+
+  "memory_and_learning_boundary": {
+    "memory": {
       "rules": [
-        "High probability alone shall not establish confirmation.",
-        "Material contradictory evidence must be addressed.",
-        "Confirmation thresholds may depend on the risk of the proposed corrective action.",
-        "ARIA may retain a provisional diagnosis when confirmation is not justified."
+        "Memory may supply relevant technical knowledge, historical experience, prior case patterns, and user capability context.",
+        "Retrieved memory shall retain its authority class.",
+        "Historical experience shall not become current-case evidence merely because it was retrieved.",
+        "Memory retrieval does not itself mutate technical state."
       ]
     },
 
-    {
-      "id": "RC-016",
-      "name": "SELECT_CORRECTION",
-      "purpose": "Select an appropriate corrective action for a sufficiently supported diagnosis.",
-      "inputs": [
-        "confirmed_failure_modes",
-        "knowledge_graph",
-        "corrective_actions",
-        "constraints"
-      ],
-      "outputs": [
-        "selected_corrective_action",
-        "expected_corrective_result"
-      ],
+    "learning": {
       "rules": [
-        "Correct the established failure rather than merely suppressing the symptom when practical.",
-        "Prefer lower-risk effective corrective actions.",
-        "Record what technical change is expected if the diagnosis is correct."
+        "Learning occurs only when applicable learning criteria are satisfied.",
+        "One completed cycle iteration does not automatically trigger learning.",
+        "Unvalidated hypotheses shall not become canonical technical truth.",
+        "Validated experience may influence future probability, action effectiveness, routing performance, or context-specific expectations according to the Learning Engine.",
+        "Reasoning Cycle does not own learning scope or promotion."
       ]
-    },
+    }
+  },
 
-    {
-      "id": "RC-017",
-      "name": "VALIDATE",
-      "purpose": "Determine whether the corrective action produced the expected technical result and resolved the original condition.",
-      "inputs": [
-        "pre_action_state",
-        "post_action_evidence",
-        "original_symptoms",
-        "expected_corrective_result"
-      ],
-      "outputs": [
-        "validation_outcome",
-        "resolution_confidence"
-      ],
-      "rules": [
-        "Compare before and after conditions.",
-        "Validate against the original symptom and applicable technical baseline.",
-        "Do not equate temporary improvement with stable resolution.",
-        "Failed validation shall become new diagnostic evidence."
-      ]
-    },
+  "fast_path": {
+    "principle": "Requests that do not materially change diagnostic state may bypass the full reasoning cycle.",
 
+    "examples": [
+      "repeat the current instruction",
+      "explain a technical term",
+      "summarize the current case",
+      "explain why the selected action was chosen",
+      "retrieve a known case fact",
+      "restate current uncertainty",
+      "answer a general technical question unrelated to current-case mutation"
+    ],
+
+    "rules": [
+      "Fast path shall not silently mutate authoritative technical state.",
+      "If a fast-path message contains new technical information, it shall enter the material event pipeline.",
+      "Fast path may read current authoritative state.",
+      "Fast path does not create a new reasoning cycle solely for conversational formatting."
+    ]
+  },
+
+  "communication_policy": {
+    "principle": "Communication is generated from authoritative reasoning state and shall not become a parallel source of technical truth.",
+
+    "should_distinguish": [
+      "OBSERVED_FACT",
+      "INFERRED_FACT",
+      "HYPOTHESIS",
+      "EXPECTED_RESULT",
+      "SELECTED_ACTION",
+      "EXECUTED_ACTION",
+      "VALIDATED_RESULT",
+      "UNKNOWN",
+      "CONSTRAINT",
+      "EXTERNAL_DIRECTION"
+    ],
+
+    "rules": [
+      "The user should be told what ARIA knows, what ARIA suspects, what ARIA needs next, and why when operationally useful.",
+      "Selected actions shall be communicated as actions to perform or coordinate, not as already completed work.",
+      "Expected results shall not be communicated as observed results.",
+      "Uncertainty should be surfaced when material to the next decision.",
+      "Communication detail may adapt to user capability without changing technical truth."
+    ]
+  },
+
+  "domain_independence": {
+    "principle": "Reasoning Cycle is universal Core control logic and shall contain no technology-specific troubleshooting sequence.",
+
+    "prohibited_core_content": [
+      "microwave-specific troubleshooting phases",
+      "RF-specific next-hop rules",
+      "optical-specific correction sequences",
+      "vendor-specific cycle branches",
+      "manufacturer-specific troubleshooting trees",
+      "product-specific commands",
+      "protocol-specific action ordering",
+      "named-user troubleshooting behavior"
+    ],
+
+    "rules": [
+      "Domain knowledge supplies technical meaning to specialized engines.",
+      "The Reasoning Cycle shall remain unchanged across technical domains.",
+      "Technology-specific procedures may create deterministic progression without changing universal cycle semantics.",
+      "Manufacturer requirements shall enter through authoritative technical knowledge rather than hardcoded cycle behavior."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "id": "RC-018",
-      "name": "LEARN",
-      "purpose": "Determine whether and how the completed case should modify ARIA's future experience.",
-      "inputs": [
-        "complete_case_history",
-        "diagnostic_confidence",
-        "causal_confidence",
-        "resolution_confidence",
-        "evidence_quality",
-        "context_completeness",
-        "route_history"
-      ],
-      "outputs": [
-        "learning_confidence",
-        "learning_disposition",
-        "experience_ledger_updates",
-        "route_performance_updates"
-      ],
-      "rules": [
-        "Learning weight shall reflect case quality.",
-        "Validated cases may influence future priors.",
-        "Unsuccessful actions may still provide useful route-performance learning.",
-        "Do not convert one case into a universal technical rule.",
-        "Preserve context with learned experience.",
-        "User-specific learning shall remain associated with the applicable user while shared technical learning may contribute to broader experience."
-      ]
+      "failure_mode": "FIXED_TROUBLESHOOTING_TREE",
+      "description": "The cycle restarts or follows the same predefined troubleshooting sequence regardless of current state.",
+      "prevention": "Reenter at the earliest materially affected phase and continue from authoritative state."
+    },
+    {
+      "failure_mode": "SECOND_DECISION_ENGINE",
+      "description": "Reasoning Cycle independently scores candidates or selects the next technical action.",
+      "prevention": "Delegate competitive selection exclusively to Decision."
+    },
+    {
+      "failure_mode": "SECOND_ROUTING_ENGINE",
+      "description": "Reasoning Cycle selects next hops, assigns route costs, creates branches, or reroutes.",
+      "prevention": "Delegate diagnostic progression exclusively to Routing."
+    },
+    {
+      "failure_mode": "SELECT_CORRECTION_COLLISION",
+      "description": "Reasoning Cycle contains a separate correction-selection system.",
+      "prevention": "Represent correction as canonical Actions evaluated by Decision."
+    },
+    {
+      "failure_mode": "ACTION_COMPLETION_EQUALS_SUCCESS",
+      "description": "The cycle interprets completed execution as successful technical outcome.",
+      "prevention": "Separate execution state, outcome evidence, routing consequence, and validation."
+    },
+    {
+      "failure_mode": "SUCCESS_EQUALS_ROOT_CAUSE",
+      "description": "A successful intervention is treated as proof of sole causal diagnosis.",
+      "prevention": "Preserve causal uncertainty and invoke validation when required."
+    },
+    {
+      "failure_mode": "ROUTE_COMPLETION_EQUALS_CASE_RESOLUTION",
+      "description": "Exhausting or completing a route automatically closes the case.",
+      "prevention": "Keep lifecycle and validation gates separate from Routing."
+    },
+    {
+      "failure_mode": "FULL_RECOMPUTATION_LOOP",
+      "description": "Every event runs every reasoning domain regardless of material impact.",
+      "prevention": "Use selective event-driven reasoning coordinated by Orchestration."
+    },
+    {
+      "failure_mode": "STALE_STATE_REASONING",
+      "description": "The cycle continues using a Decision or route based on state invalidated by a newer event.",
+      "prevention": "Reevaluate materially affected downstream reasoning from the newest authoritative state."
+    },
+    {
+      "failure_mode": "FORCED_PROGRESS",
+      "description": "The cycle invents actions or certainty because it refuses to wait.",
+      "prevention": "Allow suspension, deferral, uncertainty, escalation, and no-responsible-progress states."
+    },
+    {
+      "failure_mode": "COMMUNICATION_MUTATES_STATE",
+      "description": "Conversational wording silently changes technical state.",
+      "prevention": "Require material technical information to enter through the event and structured reasoning pipeline."
+    },
+    {
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal cycle semantics contain vendor, product, technology, protocol, customer, or named-user troubleshooting logic.",
+      "prevention": "Keep domain-specific reasoning in technical knowledge and specialized engines."
     }
   ],
 
-  "route_memory": {
-    "required_fields": [
-      "route_step_id",
-      "timestamp",
-      "reasoning_phase",
-      "case_state_before",
-      "active_hypotheses_before",
-      "probabilities_before",
-      "selected_action",
-      "selection_reason",
-      "expected_information_gain",
-      "expected_outcomes",
-      "actual_outcome",
-      "evidence_received",
-      "probabilities_after",
-      "case_state_after"
-    ],
-    "policy": "Route history is append-only and shall support reconstruction of why ARIA made each diagnostic decision."
-  },
-
-  "anti_loop_policy": {
-    "description": "ARIA shall detect unproductive diagnostic loops and avoid repeating equivalent actions without new justification.",
-    "rules": [
-      "An action previously completed with valid evidence shall not be repeated solely because it remains associated with a high-probability hypothesis.",
-      "A repeated action requires new evidence, changed context, questionable prior evidence, elapsed-time relevance, or another explicit technical justification.",
-      "Equivalent actions expressed differently shall be recognized as potentially duplicate diagnostic work.",
-      "Repeated failure to reduce uncertainty shall decrease the route utility of similar actions.",
-      "When no available action materially improves the diagnostic state, ARIA shall seek missing context, generate alternative hypotheses, or escalate."
-    ]
-  },
-
-  "unknown_handling": {
-    "rules": [
-      "Unknown is a valid reasoning state.",
-      "ARIA shall not fabricate a diagnosis to eliminate uncertainty.",
-      "ARIA shall preserve unknown probability mass when candidate hypotheses are incomplete.",
-      "ARIA shall explicitly identify information that would most efficiently reduce important uncertainty.",
-      "When uncertainty cannot be reasonably reduced, escalation is preferable to unsupported certainty."
-    ]
-  },
-
-  "learning_separation": {
-    "global_technical_learning": "Technical patterns that are sufficiently validated and broadly applicable may contribute to shared ARIA experience.",
-    "contextual_learning": "Patterns specific to manufacturers, products, variants, topologies, scopes, customers, environments, or other contexts shall preserve those contextual relationships.",
-    "user_learning": "User-specific diagnostic history, evidence reliability patterns, communication tendencies, and action-performance history shall remain linked to the applicable user.",
-    "case_memory": "Individual case history remains immutable source experience and shall not be replaced by aggregated learned statistics."
-  },
-
-  "semantic_rules": [
+  "invariants": [
     {
-      "rule_id": "RC-RULE-001",
-      "rule": "ARIA shall reason from evidence and structured technical state rather than from conversational fluency."
+      "invariant_id": "RC-INV-001",
+      "statement": "Reasoning Cycle defines logical reasoning progression but does not implement runtime orchestration."
     },
     {
-      "rule_id": "RC-RULE-002",
-      "rule": "The language model may assist with interpretation, hypothesis generation, explanation, and communication but shall not independently control authoritative probability, case state, evidence state, or learning records."
+      "invariant_id": "RC-INV-002",
+      "statement": "Reasoning begins from the newest applicable authoritative state."
     },
     {
-      "rule_id": "RC-RULE-003",
-      "rule": "Every material probability change should be traceable to evidence, context, historical prior adjustment, or an explicit model operation."
+      "invariant_id": "RC-INV-003",
+      "statement": "A new event does not require restarting unaffected reasoning phases."
     },
     {
-      "rule_id": "RC-RULE-004",
-      "rule": "Every selected diagnostic next hop should be explainable from the reasoning state existing at the time of selection."
+      "invariant_id": "RC-INV-004",
+      "statement": "Decision exclusively owns competitive canonical-action selection."
     },
     {
-      "rule_id": "RC-RULE-005",
-      "rule": "ARIA shall optimize diagnostic progress rather than merely maximize the probability of the hypothesis being tested."
+      "invariant_id": "RC-INV-005",
+      "statement": "Routing exclusively owns diagnostic route progression."
     },
     {
-      "rule_id": "RC-RULE-006",
-      "rule": "Negative and unexpected results are valuable evidence and shall alter future routing when diagnostically relevant."
+      "invariant_id": "RC-INV-006",
+      "statement": "Reasoning Cycle shall not score candidate actions."
     },
     {
-      "rule_id": "RC-RULE-007",
-      "rule": "ARIA shall distinguish what she knows, what she infers, what she suspects, what she has ruled out, and what remains unknown."
+      "invariant_id": "RC-INV-007",
+      "statement": "Reasoning Cycle shall not implement SELECT_NEXT_HOP."
     },
     {
-      "rule_id": "RC-RULE-008",
-      "rule": "ARIA shall not hide uncertainty for the purpose of sounding authoritative."
+      "invariant_id": "RC-INV-008",
+      "statement": "Reasoning Cycle shall not implement SELECT_CORRECTION."
     },
     {
-      "rule_id": "RC-RULE-009",
-      "rule": "Reasoning history shall be preserved so that diagnoses and recommendations can be audited, evaluated, and learned from."
+      "invariant_id": "RC-INV-009",
+      "statement": "Action selection does not equal action execution."
     },
     {
-      "rule_id": "RC-RULE-010",
-      "rule": "The objective of the reasoning cycle is not to traverse a predetermined troubleshooting tree. The objective is to continually select the most useful next transition through the diagnostic knowledge graph."
+      "invariant_id": "RC-INV-010",
+      "statement": "Action execution does not equal technical success."
+    },
+    {
+      "invariant_id": "RC-INV-011",
+      "statement": "Technical success does not automatically prove sole root cause."
+    },
+    {
+      "invariant_id": "RC-INV-012",
+      "statement": "Validation remains distinct from action completion."
+    },
+    {
+      "invariant_id": "RC-INV-013",
+      "statement": "Route completion does not equal case resolution."
+    },
+    {
+      "invariant_id": "RC-INV-014",
+      "statement": "Cycle suspension is a valid reasoning state."
+    },
+    {
+      "invariant_id": "RC-INV-015",
+      "statement": "Cycle iteration completion does not equal case resolution."
+    },
+    {
+      "invariant_id": "RC-INV-016",
+      "statement": "Communication shall not silently mutate authoritative technical state."
+    },
+    {
+      "invariant_id": "RC-INV-017",
+      "statement": "Historical experience remains distinct from current-case evidence."
+    },
+    {
+      "invariant_id": "RC-INV-018",
+      "statement": "Uncertainty may remain unresolved when no responsible immediate action exists."
+    },
+    {
+      "invariant_id": "RC-INV-019",
+      "statement": "Reasoning Cycle shall remain technically domain-independent."
+    },
+    {
+      "invariant_id": "RC-INV-020",
+      "statement": "Case lifecycle and resolution remain outside Reasoning Cycle ownership."
     }
+  ],
+
+  "prohibited_behaviors": [
+    "Restarting a fixed troubleshooting sequence after every event.",
+    "Running every reasoning engine after every event regardless of material relevance.",
+    "Defining a competing action vocabulary inside Reasoning Cycle.",
+    "Scoring candidate technical actions inside Reasoning Cycle.",
+    "Selecting competitive technical actions outside Decision.",
+    "Implementing SELECT_NEXT_HOP.",
+    "Assigning route costs.",
+    "Creating route branches.",
+    "Creating route predecessor or successor relationships.",
+    "Performing rerouting outside Routing.",
+    "Implementing SELECT_CORRECTION as an independent reasoning phase.",
+    "Treating correction as separate from canonical Action architecture.",
+    "Treating selected action as executed action.",
+    "Treating completed action as successful outcome.",
+    "Treating successful outcome as sole causal proof.",
+    "Treating route exhaustion as case resolution.",
+    "Treating validation as equivalent to action completion.",
+    "Treating high hypothesis probability as case resolution.",
+    "Forcing another action when waiting is technically appropriate.",
+    "Inventing evidence or measurements to continue the cycle.",
+    "Inventing certainty to avoid suspension.",
+    "Silently changing technical state during conversational communication.",
+    "Discarding completed technical work when the leading hypothesis changes.",
+    "Rewriting historical reasoning because later evidence produced a different conclusion.",
+    "Encoding microwave-specific, RF-specific, optical-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, or named-user troubleshooting behavior into universal Reasoning Cycle semantics."
   ]
 }
