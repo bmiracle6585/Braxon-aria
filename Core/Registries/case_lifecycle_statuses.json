@@ -1,0 +1,428 @@
+{
+  "registry": "ARIA_CASE_LIFECYCLE_STATUSES",
+  "version": "1.0.0",
+  "description": "Canonical controlled vocabulary for the broad lifecycle status of an A.R.I.A. diagnostic case. Lifecycle status describes the operational existence and disposition of a case. It is explicitly separate from reasoning_state, which describes A.R.I.A.'s current diagnostic or cognitive phase.",
+
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "role": "CONTROLLED_CASE_LIFECYCLE_VOCABULARY",
+    "owns": [
+      "case lifecycle status vocabulary",
+      "case lifecycle status semantics",
+      "allowed broad lifecycle transitions"
+    ],
+    "does_not_own": [
+      "reasoning state",
+      "diagnostic phase",
+      "hypothesis status",
+      "evidence status",
+      "action status",
+      "validation state",
+      "learning eligibility",
+      "case outcome vocabulary",
+      "probability",
+      "confidence"
+    ]
+  },
+
+  "lifecycle_contract": {
+    "field": "status",
+    "applies_to": "case_<UUID>",
+    "reasoning_state_field": "reasoning_state",
+
+    "separation_rule": "case.status represents broad case lifecycle. case.reasoning_state represents the current diagnostic or reasoning phase. The two fields shall not be used interchangeably.",
+
+    "examples": [
+      {
+        "status": "ACTIVE",
+        "reasoning_state": "DIAGNOSTIC_DISCRIMINATION",
+        "meaning": "The case is operationally active and A.R.I.A. is discriminating between candidate explanations."
+      },
+      {
+        "status": "WAITING",
+        "reasoning_state": "EVIDENCE_INGESTION",
+        "meaning": "The case remains open but progress is waiting for requested evidence."
+      },
+      {
+        "status": "BLOCKED",
+        "reasoning_state": "VALIDATION",
+        "meaning": "The case cannot currently progress because required validation cannot be performed."
+      },
+      {
+        "status": "RESOLVED",
+        "reasoning_state": "LEARNING_ASSESSMENT",
+        "meaning": "The technical condition has met the applicable resolution criteria and A.R.I.A. is assessing whether the case can safely contribute learning."
+      },
+      {
+        "status": "CLOSED",
+        "reasoning_state": "LEARNING_ASSESSMENT",
+        "meaning": "The case lifecycle is complete. Historical reasoning state remains preserved for auditability."
+      }
+    ]
+  },
+
+  "statuses": [
+    {
+      "status": "ACTIVE",
+      "canonical_name": "Active",
+      "terminal": false,
+      "description": "The case is open and capable of progressing through technical reasoning, evidence collection, action, or validation.",
+      "entry_conditions": [
+        "A new case has been accepted for technical investigation.",
+        "A previously waiting, blocked, or suspended case has resumed.",
+        "A previously resolved or closed case has been legitimately reopened."
+      ],
+      "allowed_next_statuses": [
+        "WAITING",
+        "BLOCKED",
+        "SUSPENDED",
+        "RESOLVED",
+        "ESCALATED",
+        "UNRESOLVED",
+        "CANCELLED"
+      ]
+    },
+
+    {
+      "status": "WAITING",
+      "canonical_name": "Waiting",
+      "terminal": false,
+      "description": "The case remains open, but meaningful progress is waiting for an expected external input, evidence item, action, access condition, response, observation interval, or other dependency.",
+      "entry_conditions": [
+        "Required information has been requested but not yet received.",
+        "A required action has been assigned or requested and is pending.",
+        "A technically meaningful observation or stability interval must elapse.",
+        "A required external dependency is expected to become available."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE",
+        "BLOCKED",
+        "SUSPENDED",
+        "ESCALATED",
+        "UNRESOLVED",
+        "CANCELLED"
+      ],
+      "rules": [
+        "WAITING does not describe a reasoning phase.",
+        "The reason for waiting should remain explicitly recorded.",
+        "A case should not remain WAITING merely because no new event has occurred if no actual dependency is outstanding."
+      ]
+    },
+
+    {
+      "status": "BLOCKED",
+      "canonical_name": "Blocked",
+      "terminal": false,
+      "description": "The case remains open but cannot currently progress because a required technical, operational, safety, authorization, access, tooling, dependency, or data condition prevents meaningful continuation.",
+      "entry_conditions": [
+        "A required action cannot be performed.",
+        "Required access is unavailable.",
+        "Required evidence cannot currently be obtained.",
+        "Safety or authorization prevents the necessary technical operation.",
+        "A dependency prevents continuation and no immediate alternative route is adequate."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE",
+        "WAITING",
+        "SUSPENDED",
+        "ESCALATED",
+        "UNRESOLVED",
+        "CANCELLED"
+      ],
+      "rules": [
+        "BLOCKED shall identify the blocking condition.",
+        "BLOCKED is distinct from WAITING. Waiting means an expected dependency is pending; blocked means progress is presently prevented.",
+        "ARIA should evaluate alternative diagnostic routes before declaring a case blocked when technically reasonable alternatives exist."
+      ]
+    },
+
+    {
+      "status": "SUSPENDED",
+      "canonical_name": "Suspended",
+      "terminal": false,
+      "description": "The case has been intentionally paused without being resolved, closed, cancelled, or declared unresolved.",
+      "entry_conditions": [
+        "An authorized technical or operational decision intentionally pauses the investigation.",
+        "The investigation is deferred to a later time without abandoning it."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE",
+        "WAITING",
+        "BLOCKED",
+        "ESCALATED",
+        "UNRESOLVED",
+        "CANCELLED"
+      ],
+      "rules": [
+        "Suspension requires an explicit reason.",
+        "Suspension shall not be used to hide unresolved technical uncertainty.",
+        "Historical case state remains preserved while suspended."
+      ]
+    },
+
+    {
+      "status": "RESOLVED",
+      "canonical_name": "Resolved",
+      "terminal": false,
+      "description": "The technical condition under investigation has met the applicable resolution criteria, but final lifecycle completion, post-resolution processing, or learning assessment may remain.",
+      "entry_conditions": [
+        "Applicable validation criteria support technical resolution.",
+        "The required technical outcome has been established with sufficient resolution confidence."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE",
+        "CLOSED"
+      ],
+      "rules": [
+        "RESOLVED is not automatically equivalent to causal proof.",
+        "Resolution confidence and causal confidence remain separate.",
+        "A case may return to ACTIVE if resolution validation fails, the symptom recurs, or material contradictory evidence appears.",
+        "RESOLVED does not automatically create an Experience Ledger record."
+      ]
+    },
+
+    {
+      "status": "CLOSED",
+      "canonical_name": "Closed",
+      "terminal": true,
+      "description": "The case lifecycle has been formally completed and no further active investigation is expected unless the case is explicitly reopened.",
+      "entry_conditions": [
+        "The case has completed the applicable technical and administrative closure requirements.",
+        "Required resolution, unresolved disposition, cancellation, or other authorized closure basis has been recorded."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE"
+      ],
+      "rules": [
+        "Closure shall preserve the final technical disposition.",
+        "Closure shall not erase unresolved uncertainty.",
+        "A closed case may be reopened through an explicit lifecycle event.",
+        "Reopening creates a lifecycle transition; REOPENED is not a separate persistent lifecycle status.",
+        "Closed case history remains immutable and auditable."
+      ]
+    },
+
+    {
+      "status": "ESCALATED",
+      "canonical_name": "Escalated",
+      "terminal": false,
+      "description": "The case remains open but has been escalated because the current technical path, authority level, expertise, access, safety boundary, or diagnostic capability is insufficient.",
+      "entry_conditions": [
+        "Required expertise exceeds the current diagnostic capability.",
+        "Required authority or access exceeds the current participant's authorization.",
+        "Technical risk requires higher-level review.",
+        "Available evidence cannot adequately discriminate the remaining explanations.",
+        "The case requires manufacturer, engineering, specialist, or other higher-tier technical involvement."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE",
+        "WAITING",
+        "BLOCKED",
+        "SUSPENDED",
+        "RESOLVED",
+        "UNRESOLVED",
+        "CANCELLED"
+      ],
+      "rules": [
+        "Escalation shall record why escalation was required.",
+        "Escalation does not itself imply failure of prior reasoning.",
+        "The case may resume ACTIVE status when the escalation produces a viable technical path."
+      ]
+    },
+
+    {
+      "status": "UNRESOLVED",
+      "canonical_name": "Unresolved",
+      "terminal": false,
+      "description": "The investigation has reached a disposition where the technical condition has not been sufficiently resolved or explained with available evidence, access, resources, or permissible actions.",
+      "entry_conditions": [
+        "Reasonable diagnostic paths have been exhausted or cannot be completed.",
+        "Required evidence is permanently unavailable or impractical to obtain.",
+        "Remaining hypotheses cannot be adequately discriminated.",
+        "The technical condition remains unresolved at the time a disposition must be recorded."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE",
+        "CLOSED"
+      ],
+      "rules": [
+        "UNRESOLVED is an explicit technical disposition, not a substitute for missing documentation.",
+        "The remaining uncertainty, candidate explanations, and unavailable evidence should be preserved.",
+        "An unresolved case may be closed while retaining its unresolved disposition.",
+        "An unresolved case may return to ACTIVE if materially new evidence or capability becomes available.",
+        "UNRESOLVED does not imply zero learning value, but any learning must preserve attribution limitations."
+      ]
+    },
+
+    {
+      "status": "CANCELLED",
+      "canonical_name": "Cancelled",
+      "terminal": false,
+      "description": "The investigation has been intentionally discontinued for a reason other than technical resolution.",
+      "entry_conditions": [
+        "The case was created in error.",
+        "The investigation is no longer required.",
+        "The underlying work or technical need was withdrawn.",
+        "An authorized decision terminates the investigation without claiming technical resolution."
+      ],
+      "allowed_next_statuses": [
+        "ACTIVE",
+        "CLOSED"
+      ],
+      "rules": [
+        "Cancellation shall preserve its reason.",
+        "Cancellation shall never be represented as technical resolution.",
+        "Any valid evidence collected before cancellation remains historically traceable.",
+        "A cancelled case may be reopened only through an explicit lifecycle event."
+      ]
+    }
+  ],
+
+  "transition_rules": [
+    {
+      "rule_id": "CASE-LIFE-001",
+      "rule": "Every persisted case shall have exactly one current lifecycle status."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-002",
+      "rule": "Lifecycle status changes shall be represented by material case events and remain auditable."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-003",
+      "rule": "A lifecycle transition shall not silently overwrite the reasoning_state that existed when the transition occurred."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-004",
+      "rule": "Reasoning state changes do not automatically require lifecycle status changes."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-005",
+      "rule": "WAITING, BLOCKED, SUSPENDED, and ESCALATED preserve the case as open."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-006",
+      "rule": "RESOLVED indicates supported technical resolution but remains distinct from formal CLOSED lifecycle completion."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-007",
+      "rule": "UNRESOLVED preserves the fact that technical resolution was not established."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-008",
+      "rule": "CANCELLED preserves intentional discontinuation without implying technical resolution."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-009",
+      "rule": "CLOSED is the normal terminal lifecycle status. A closed case may only return to ACTIVE through an explicit reopen event."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-010",
+      "rule": "REOPENED is an event or transition semantic, not a persistent lifecycle status."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-011",
+      "rule": "A case shall not be marked RESOLVED solely because a corrective action was completed."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-012",
+      "rule": "A case shall not be marked CLOSED merely because no further evidence is currently available. The appropriate unresolved, waiting, blocked, suspended, escalated, or cancelled disposition must remain explicit."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-013",
+      "rule": "Case lifecycle status shall not encode hypothesis probability, diagnostic confidence, causal confidence, resolution confidence, or learning confidence."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-014",
+      "rule": "Case lifecycle status shall not determine Experience Ledger eligibility by itself."
+    },
+
+    {
+      "rule_id": "CASE-LIFE-015",
+      "rule": "Historical lifecycle transitions shall remain available after closure for audit, reconstruction, and learning assessment."
+    }
+  ],
+
+  "closure_contract": {
+    "principle": "Closure records completion of the case lifecycle. It does not rewrite the technical history of the investigation.",
+
+    "required_preservation": [
+      "final lifecycle disposition",
+      "final reasoning state",
+      "material evidence",
+      "material hypotheses",
+      "probability history",
+      "actions",
+      "route history",
+      "validation outcomes",
+      "resolution confidence where applicable",
+      "causal confidence where applicable",
+      "remaining uncertainty",
+      "learning eligibility decision",
+      "material provenance"
+    ],
+
+    "rules": [
+      "A resolved case may be closed after applicable closure processing.",
+      "An unresolved case may be closed with an explicit unresolved disposition.",
+      "A cancelled case may be closed with its cancellation reason preserved.",
+      "Closing a case shall not automatically promote case information into canonical knowledge."
+    ]
+  },
+
+  "reopen_contract": {
+    "principle": "Reopening resumes an existing historical investigation while preserving all prior state and lifecycle history.",
+
+    "transition": {
+      "from": [
+        "RESOLVED",
+        "CLOSED",
+        "UNRESOLVED",
+        "CANCELLED"
+      ],
+      "to": "ACTIVE"
+    },
+
+    "required": [
+      "reopen reason",
+      "reopen event",
+      "reopened_at",
+      "triggering information or condition when known"
+    ],
+
+    "rules": [
+      "REOPENED is not stored as the current lifecycle status.",
+      "Prior resolution or closure history remains intact.",
+      "New evidence is added to the existing historical record rather than erasing earlier evidence.",
+      "Prior probabilities may be recalculated prospectively but historical probability records remain unchanged.",
+      "Prior learning derived from the case may require reassessment if reopening materially changes the validated interpretation."
+    ]
+  },
+
+  "prohibited_uses": [
+    "Using lifecycle status as reasoning_state.",
+    "Using reasoning_state as lifecycle status.",
+    "Creating REOPENED as a persistent lifecycle status.",
+    "Treating WAITING as a diagnostic reasoning phase.",
+    "Treating BLOCKED as a hypothesis outcome.",
+    "Treating ESCALATED as a technical diagnosis.",
+    "Treating RESOLVED as proof of exact root cause.",
+    "Treating CLOSED as proof of technical resolution.",
+    "Treating CANCELLED as technical resolution.",
+    "Treating UNRESOLVED as zero diagnostic value.",
+    "Using lifecycle status to represent probability or confidence.",
+    "Using lifecycle status alone to determine learning eligibility."
+  ]
+}
