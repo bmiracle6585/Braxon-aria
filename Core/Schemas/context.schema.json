@@ -1,0 +1,594 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aria.braxon.ai/schemas/context.schema.json",
+  "title": "A.R.I.A. Technical Context",
+  "description": "Authoritative machine-readable schema for persisted A.R.I.A. technical context. A context record describes the technical circumstances under which a case, source, claim, relationship, evidence item, hypothesis, action, experience, knowledge object, or reasoning operation is applicable. Context references canonical technical objects where they exist and shall not create a parallel technical ontology.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "context_id",
+    "subject",
+    "dimensions",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "context_id": {
+      "type": "string",
+      "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+      "description": "Permanent runtime identifier for this persisted context record."
+    },
+
+    "subject": {
+      "$ref": "#/$defs/subject_reference"
+    },
+
+    "dimensions": {
+      "type": "array",
+      "description": "Technical context dimensions applicable to the subject. Dimension vocabulary is governed by Core/Registries/context_types.json.",
+      "items": {
+        "$ref": "#/$defs/context_dimension"
+      },
+      "default": []
+    },
+
+    "completeness": {
+      "$ref": "#/$defs/completeness_assessment"
+    },
+
+    "context_match_confidence": {
+      "$ref": "#/$defs/confidence_reference"
+    },
+
+    "effective_from": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Beginning of the period during which this context is known or asserted to apply when temporally bounded."
+    },
+
+    "effective_to": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "End of the period during which this context is known or asserted to apply when temporally bounded."
+    },
+
+    "observed_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Time at which the represented technical context was observed, when distinct from record creation time."
+    },
+
+    "source_ids": {
+      "type": "array",
+      "description": "Source records materially supporting this context.",
+      "items": {
+        "type": "string",
+        "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "evidence_ids": {
+      "type": "array",
+      "description": "Evidence records materially supporting this context.",
+      "items": {
+        "type": "string",
+        "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "parent_context_ids": {
+      "type": "array",
+      "description": "Earlier or parent context records from which this context was derived, specialized, or superseded.",
+      "items": {
+        "type": "string",
+        "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "supersedes_context_ids": {
+      "type": "array",
+      "description": "Earlier context records superseded by this context without deleting their historical state.",
+      "items": {
+        "type": "string",
+        "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Human-readable technical notes that do not replace structured context dimensions."
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "created_by": {
+      "type": ["string", "null"],
+      "description": "Actor responsible for creation when known."
+    },
+
+    "updated_by": {
+      "type": ["string", "null"],
+      "description": "Actor responsible for the most recent update when known."
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Non-authoritative extensibility metadata. Canonical technical meaning shall not depend on metadata fields.",
+      "additionalProperties": true,
+      "default": {}
+    }
+  },
+
+  "$defs": {
+    "uuid_runtime_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+
+    "subject_reference": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "subject_type",
+        "subject_id"
+      ],
+
+      "properties": {
+        "subject_type": {
+          "type": "string",
+          "enum": [
+            "CASE",
+            "SOURCE",
+            "CLAIM",
+            "RELATIONSHIP",
+            "EVIDENCE",
+            "HYPOTHESIS",
+            "ACTION",
+            "EXPERIENCE",
+            "KNOWLEDGE",
+            "REASONING_OPERATION"
+          ]
+        },
+
+        "subject_id": {
+          "$ref": "#/$defs/uuid_runtime_id"
+        }
+      }
+    },
+
+    "context_dimension": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "dimension",
+        "value_kind",
+        "origin_type"
+      ],
+
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "description": "Controlled context dimension defined by Core/Registries/context_types.json."
+        },
+
+        "value_kind": {
+          "type": "string",
+          "enum": [
+            "CANONICAL_REFERENCE",
+            "STRUCTURED_VALUE",
+            "MEASUREMENT_REFERENCE",
+            "CONTROLLED_VALUE",
+            "TECHNICAL_VALUE",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+
+        "canonical_reference_ids": {
+          "type": "array",
+          "description": "Canonical runtime object references when value_kind is CANONICAL_REFERENCE. Multiple values are permitted when the technical situation legitimately contains multiple applicable objects.",
+          "items": {
+            "$ref": "#/$defs/uuid_runtime_id"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "measurement_ids": {
+          "type": "array",
+          "description": "Measurement references when measured technical conditions supply contextual information.",
+          "items": {
+            "type": "string",
+            "pattern": "^meas_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "structured_value": {
+          "type": ["object", "null"],
+          "description": "Structured contextual value that does not justify creation of a separate canonical entity.",
+          "additionalProperties": true
+        },
+
+        "controlled_value": {
+          "type": ["string", "number", "boolean", "null"],
+          "description": "Controlled scalar value governed by another applicable authoritative Registry or schema."
+        },
+
+        "technical_value": {
+          "description": "Bounded technical value for context that does not warrant canonical entity identity.",
+          "type": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "null"
+          ]
+        },
+
+        "origin_type": {
+          "type": "string",
+          "enum": [
+            "USER_SUPPLIED",
+            "SYSTEM_OBSERVED",
+            "MEASURED",
+            "SOURCE_DERIVED",
+            "CANONICAL_RETRIEVAL",
+            "EXPERIENCE_DERIVED",
+            "MODEL_INFERRED",
+            "SYSTEM_DERIVED"
+          ]
+        },
+
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^src_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^evd_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "derived_from_context_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^ctx_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "observed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "effective_from": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "effective_to": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "accepted": {
+          "type": ["boolean", "null"],
+          "description": "Structured acceptance state where acceptance is required, particularly for model-inferred context."
+        },
+
+        "accepted_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+
+        "accepted_by": {
+          "type": ["string", "null"]
+        },
+
+        "notes": {
+          "type": ["string", "null"]
+        }
+      },
+
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "value_kind": {
+                "const": "CANONICAL_REFERENCE"
+              }
+            },
+            "required": [
+              "value_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "canonical_reference_ids"
+            ],
+            "properties": {
+              "canonical_reference_ids": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+
+        {
+          "if": {
+            "properties": {
+              "value_kind": {
+                "const": "MEASUREMENT_REFERENCE"
+              }
+            },
+            "required": [
+              "value_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "measurement_ids"
+            ],
+            "properties": {
+              "measurement_ids": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+
+        {
+          "if": {
+            "properties": {
+              "value_kind": {
+                "const": "STRUCTURED_VALUE"
+              }
+            },
+            "required": [
+              "value_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "structured_value"
+            ],
+            "properties": {
+              "structured_value": {
+                "type": "object"
+              }
+            }
+          }
+        },
+
+        {
+          "if": {
+            "properties": {
+              "value_kind": {
+                "const": "CONTROLLED_VALUE"
+              }
+            },
+            "required": [
+              "value_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "controlled_value"
+            ],
+            "properties": {
+              "controlled_value": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        },
+
+        {
+          "if": {
+            "properties": {
+              "value_kind": {
+                "const": "TECHNICAL_VALUE"
+              }
+            },
+            "required": [
+              "value_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "technical_value"
+            ],
+            "properties": {
+              "technical_value": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        },
+
+        {
+          "if": {
+            "properties": {
+              "value_kind": {
+                "enum": [
+                  "UNKNOWN",
+                  "NOT_APPLICABLE"
+                ]
+              }
+            },
+            "required": [
+              "value_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "canonical_reference_ids": {
+                "maxItems": 0
+              },
+              "measurement_ids": {
+                "maxItems": 0
+              },
+              "structured_value": {
+                "type": "null"
+              },
+              "controlled_value": {
+                "type": "null"
+              },
+              "technical_value": {
+                "type": "null"
+              }
+            }
+          }
+        },
+
+        {
+          "if": {
+            "properties": {
+              "origin_type": {
+                "const": "MODEL_INFERRED"
+              }
+            },
+            "required": [
+              "origin_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "accepted"
+            ]
+          }
+        }
+      ]
+    },
+
+    "completeness_assessment": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "SUFFICIENT",
+            "PARTIAL",
+            "INSUFFICIENT",
+            "UNKNOWN"
+          ]
+        },
+
+        "missing_dimensions": {
+          "type": "array",
+          "description": "Context dimensions materially missing for the technical question.",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+
+        "materiality_reason": {
+          "type": ["string", "null"]
+        },
+
+        "assessed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "confidence_reference": {
+      "type": ["object", "null"],
+      "description": "Context-match confidence represented separately from hypothesis probability, source authority, and other confidence dimensions.",
+      "additionalProperties": false,
+
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "const": "CONTEXT_MATCH_CONFIDENCE"
+        },
+
+        "level": {
+          "type": ["string", "null"],
+          "description": "Controlled confidence level governed by Core/Registries/confidence_levels.json."
+        },
+
+        "score": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "reason": {
+          "type": ["string", "null"]
+        },
+
+        "assessed_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    }
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "effective_from": {
+            "type": "string"
+          },
+          "effective_to": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "effective_from",
+          "effective_to"
+        ]
+      },
+      "then": {
+        "description": "Implementations shall additionally enforce that effective_to is not earlier than effective_from."
+      }
+    }
+  ]
+}
