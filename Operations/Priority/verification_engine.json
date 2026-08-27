@@ -1,0 +1,616 @@
+{
+  "engine": {
+    "id": "aria.operations.verification_engine",
+    "name": "A.R.I.A. Operational Verification Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_verification",
+    "status": "active",
+    "purpose": "Determine whether material operational claims, outcomes, conditions, deliverables, completion states, corrective actions, dependency satisfaction, commitment fulfillment, and other verifiable assertions are sufficiently supported by appropriate evidence. The engine preserves the distinction between claim, evidence, validation, acceptance, verification, and terminal resolution while preventing unsupported certainty from propagating through A.R.I.A.'s operational reasoning.",
+    "principles": [
+      "A claim is not proof.",
+      "Activity is not proof of outcome.",
+      "Execution is not automatically proof of intended effect.",
+      "Evidence quality matters as well as evidence quantity.",
+      "Verification requirements should come from supported operational requirements rather than being invented.",
+      "Verification depth should be proportionate to consequence.",
+      "Direct evidence should generally outweigh unsupported inference.",
+      "Conflicting evidence must remain visible.",
+      "Absence of evidence is not automatically evidence of failure.",
+      "Verification should test the required assertion rather than merely confirm adjacent activity.",
+      "Unknown must remain unknown when evidence is insufficient.",
+      "Verification should be repeatable or explainable when materially consequential.",
+      "Verified state may become invalid when the underlying condition is materially time-sensitive.",
+      "Verification does not independently create authorization, priority, commitment, delegation, or terminal resolution.",
+      "Verification must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "verification_record",
+    "sources": [
+      "work_items",
+      "execution records",
+      "action outcomes",
+      "operational plans",
+      "commitments",
+      "dependencies",
+      "delegations",
+      "issues",
+      "risks",
+      "decisions",
+      "resolution candidates",
+      "communication outcomes",
+      "customer responses",
+      "vendor responses",
+      "documentation",
+      "photos",
+      "videos",
+      "test results",
+      "system state",
+      "workflow state",
+      "completion claims",
+      "acceptance records",
+      "inspection results",
+      "user confirmations",
+      "authorized organizational systems",
+      "supported external evidence"
+    ]
+  },
+
+  "verification_types": {
+    "execution": {
+      "description": "Verify that required execution materially occurred."
+    },
+    "outcome": {
+      "description": "Verify that execution produced the intended operational effect."
+    },
+    "completion": {
+      "description": "Verify that defined completion criteria are satisfied."
+    },
+    "deliverable": {
+      "description": "Verify that a required deliverable exists and materially satisfies applicable requirements."
+    },
+    "documentation": {
+      "description": "Verify required documentation presence, completeness, or supported content."
+    },
+    "quality": {
+      "description": "Verify that applicable quality criteria are satisfied."
+    },
+    "technical": {
+      "description": "Verify a technical state, measurement, configuration, test result, or operational condition."
+    },
+    "dependency": {
+      "description": "Verify that a dependency's required satisfaction condition is actually met."
+    },
+    "commitment": {
+      "description": "Verify evidence relevant to fulfillment of an established commitment."
+    },
+    "acceptance": {
+      "description": "Verify that the appropriate accepting party or process accepted the applicable outcome."
+    },
+    "corrective_action": {
+      "description": "Verify that corrective execution occurred and produced the required corrective result."
+    },
+    "communication": {
+      "description": "Verify communication side effects such as sent, delivered, acknowledged, or responded where materially required."
+    },
+    "financial": {
+      "description": "Verify a supported financial operational state or transaction outcome."
+    },
+    "authorization_condition": {
+      "description": "Verify a condition on which authorization validity materially depends."
+    },
+    "other": {
+      "description": "Verify another operational assertion not represented by a more specific type."
+    }
+  },
+
+  "verification_states": {
+    "not_required": {
+      "description": "No separate verification is required under applicable supported requirements."
+    },
+    "required": {
+      "description": "Verification is required but has not materially begun."
+    },
+    "pending_evidence": {
+      "description": "Verification cannot complete until required or materially useful evidence becomes available."
+    },
+    "evaluating": {
+      "description": "Available evidence is currently being evaluated."
+    },
+    "verified": {
+      "description": "Available appropriate evidence sufficiently supports the assertion under applicable requirements."
+    },
+    "partially_verified": {
+      "description": "Evidence supports only part of the required assertion."
+    },
+    "failed": {
+      "description": "Available evidence materially establishes that the required assertion is not satisfied."
+    },
+    "inconclusive": {
+      "description": "Evidence exists but does not support a reliable verified or failed conclusion."
+    },
+    "conflicted": {
+      "description": "Material evidence sources conflict and the contradiction remains unresolved."
+    },
+    "expired": {
+      "description": "A previously verified time-sensitive condition can no longer be relied upon without renewed verification."
+    },
+    "superseded": {
+      "description": "A newer verification evaluation replaces the prior evaluation."
+    },
+    "cancelled": {
+      "description": "Verification is no longer operationally required."
+    },
+    "unknown": {
+      "description": "Available information is insufficient to determine verification posture."
+    }
+  },
+
+  "verification_record": {
+    "fields": [
+      "verification_id",
+      "verification_type",
+      "subject_type",
+      "subject_reference",
+      "assertion",
+      "verification_requirement",
+      "verification_state",
+      "criteria",
+      "evidence_required",
+      "evidence_received",
+      "evidence_quality",
+      "supporting_evidence",
+      "contradictory_evidence",
+      "missing_evidence",
+      "verification_method",
+      "verifier",
+      "confidence",
+      "verified_at",
+      "valid_until",
+      "failure_reason",
+      "source_references",
+      "created_at",
+      "updated_at"
+    ],
+    "requirements": [
+      "The assertion being verified must be explicit enough to evaluate.",
+      "Applicable criteria must be identifiable when criteria govern the conclusion.",
+      "Supporting and contradictory evidence must remain distinguishable.",
+      "Missing evidence must not be silently fabricated.",
+      "Verification conclusion must remain traceable to evidence.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "verification_requirement": {
+    "sources": [
+      "operational plan",
+      "commitment terms",
+      "customer requirement",
+      "contractual requirement",
+      "technical standard",
+      "quality standard",
+      "approved workflow",
+      "organizational policy",
+      "authorized user instruction",
+      "action safeguard",
+      "resolution requirement"
+    ],
+    "rules": [
+      "Verification Engine should not invent mandatory verification merely because verification is technically possible.",
+      "Where no separate verification is required, not_required is a valid state.",
+      "Higher-consequence outcomes may legitimately require stronger verification under applicable policy.",
+      "Requirement source should remain traceable when materially consequential.",
+      "A.R.I.A. may recommend additional verification when uncertainty is operationally important, but recommendation must remain distinguishable from an existing mandatory requirement."
+    ]
+  },
+
+  "assertion_model": {
+    "examples": [
+      "the work was performed",
+      "the required deliverable exists",
+      "the link is operational",
+      "the customer accepted the deliverable",
+      "the required documentation was submitted",
+      "the dependency is satisfied",
+      "the payment was processed",
+      "the corrective action resolved the defect",
+      "the message was delivered",
+      "the commitment was fulfilled"
+    ],
+    "rules": [
+      "Verification should test the actual assertion required by the workflow.",
+      "Evidence of effort should not substitute for evidence of outcome.",
+      "Evidence of sending should not substitute for evidence of delivery when delivery is the required assertion.",
+      "Evidence of delivery should not substitute for acknowledgement when acknowledgement is required.",
+      "Evidence of installation should not substitute for operational testing when operational state is required.",
+      "Evidence of completion should not substitute for acceptance when acceptance is independently required."
+    ]
+  },
+
+  "evidence_classes": {
+    "direct_observation": {
+      "description": "Evidence directly showing the relevant operational condition."
+    },
+    "authoritative_system_state": {
+      "description": "State from a system authorized and sufficiently reliable for the applicable assertion."
+    },
+    "test_or_measurement": {
+      "description": "A supported test, measurement, inspection, or diagnostic result."
+    },
+    "artifact": {
+      "description": "A document, image, video, file, record, or other artifact supporting the assertion."
+    },
+    "authorized_confirmation": {
+      "description": "Confirmation from a person or party whose confirmation is applicable to the assertion."
+    },
+    "workflow_evidence": {
+      "description": "Supported state transition or workflow result relevant to the assertion."
+    },
+    "indirect_evidence": {
+      "description": "Evidence that supports an inference about the assertion without directly establishing it."
+    },
+    "self_report": {
+      "description": "A report from the actor or system responsible for the underlying activity."
+    },
+    "inference": {
+      "description": "Reasoned interpretation based on available evidence but not direct proof."
+    }
+  },
+
+  "evidence_quality": {
+    "levels": {
+      "weak": "Evidence provides limited support or depends materially on inference.",
+      "moderate": "Evidence meaningfully supports the assertion but material uncertainty remains.",
+      "strong": "Evidence directly or authoritatively supports the assertion with limited material uncertainty.",
+      "conclusive": "Applicable governing criteria treat the evidence as sufficient to establish the assertion.",
+      "unknown": "Evidence quality cannot be reliably classified."
+    },
+    "factors": [
+      "directness",
+      "authority",
+      "reliability",
+      "recency",
+      "completeness",
+      "independence",
+      "specificity",
+      "tamper_resistance",
+      "context_fit",
+      "contradictory_evidence"
+    ],
+    "rules": [
+      "Automated evidence is not automatically stronger than human evidence.",
+      "Human evidence is not automatically weaker than automated evidence.",
+      "Evidence quality must be evaluated relative to the assertion.",
+      "Several weak evidence items do not automatically equal conclusive proof.",
+      "A single authoritative evidence item may be sufficient when governing criteria support it.",
+      "False precision in evidence scoring should be avoided."
+    ]
+  },
+
+  "evidence_freshness": {
+    "rules": [
+      "Evidence should be current enough for the condition being verified.",
+      "Static historical facts may remain valid indefinitely when the underlying fact cannot change.",
+      "Volatile operational conditions may require recent evidence.",
+      "Old evidence must not establish a current condition when the condition may materially have changed.",
+      "Required freshness should be derived from the nature of the assertion or applicable requirement rather than arbitrary generic timers."
+    ]
+  },
+
+  "contradictory_evidence": {
+    "rules": [
+      "Material contradictory evidence must be retained and evaluated.",
+      "Verification must not cherry-pick supporting evidence while suppressing contradiction.",
+      "Contradiction may result in conflicted, inconclusive, partial, failed, or renewed verification state.",
+      "Higher-quality contradictory evidence may outweigh larger quantities of weaker supporting evidence.",
+      "Unresolved material contradiction prevents false certainty."
+    ]
+  },
+
+  "missing_evidence": {
+    "rules": [
+      "Missing required evidence should normally produce pending_evidence or inconclusive rather than fabricated failure.",
+      "If governing criteria explicitly require evidence and the evidence cannot be produced by the required deadline, applicable failure may be established.",
+      "Absence of an optional artifact must not automatically invalidate otherwise sufficient evidence.",
+      "A.R.I.A. should identify the specific missing evidence when practical."
+    ]
+  },
+
+  "verification_methods": {
+    "supported": [
+      "system_query",
+      "artifact_review",
+      "document_review",
+      "photo_review",
+      "video_review",
+      "technical_test",
+      "measurement_review",
+      "workflow_validation",
+      "cross_source_comparison",
+      "authorized_confirmation",
+      "customer_acceptance",
+      "inspection",
+      "manual_review",
+      "other_supported_method"
+    ],
+    "rules": [
+      "Verification method should fit the assertion and applicable criteria.",
+      "A convenient verification method should not replace a required stronger method.",
+      "Multiple methods may be required for consequential assertions.",
+      "Method limitations should remain visible when they materially affect confidence."
+    ]
+  },
+
+  "verification_confidence": {
+    "levels": {
+      "low": "Available evidence provides limited confidence in the verification conclusion.",
+      "moderate": "The conclusion is reasonably supported but material uncertainty remains.",
+      "high": "The conclusion is strongly supported by appropriate evidence.",
+      "authoritative": "Applicable governing evidence establishes the conclusion under the relevant process or authority.",
+      "unknown": "Confidence cannot be reliably determined."
+    },
+    "rules": [
+      "Confidence must not replace verification state.",
+      "High confidence inference must not automatically become authoritative verification.",
+      "Authoritative confidence requires an applicable authoritative basis.",
+      "Contradictory evidence should reduce confidence unless appropriately resolved."
+    ]
+  },
+
+  "partial_verification": {
+    "rules": [
+      "Partial verification should identify which portions are supported and which remain unsupported.",
+      "A partially verified multi-part deliverable must not be represented as wholly verified.",
+      "Remaining verification requirements should remain actionable when appropriate.",
+      "Partial verification may still support progress without supporting completion."
+    ]
+  },
+
+  "verification_failure": {
+    "rules": [
+      "Failed verification should identify the failed criterion or assertion when practical.",
+      "Verification failure does not automatically establish misconduct, negligence, or cause.",
+      "Failure may trigger Execution, Issue, Risk, Recommendation, Planning, Follow-Up, Communication, or Attention evaluation.",
+      "Corrective action must not automatically change failed verification to verified without new evidence.",
+      "Historical failed verification should remain traceable after later correction."
+    ]
+  },
+
+  "reverification": {
+    "triggers": [
+      "corrective action completed",
+      "underlying state materially changes",
+      "new evidence arrives",
+      "contradictory evidence arrives",
+      "previous evidence becomes stale",
+      "verification validity expires",
+      "customer acceptance changes",
+      "technical condition changes",
+      "review identifies stale verification"
+    ],
+    "rules": [
+      "Reverification should create or supersede evaluation without erasing useful history.",
+      "A previously failed assertion may later become verified after supported correction.",
+      "A previously verified volatile condition may later fail.",
+      "Historical verification should not be rewritten to pretend the earlier state never existed."
+    ]
+  },
+
+  "verification_vs_action": {
+    "rules": [
+      "Action Engine governs discrete authorized execution and may perform action-level verification.",
+      "Verification Engine owns broader canonical verification of operational assertions when independent verification state is materially useful.",
+      "A successful action response may be evidence but is not automatically sufficient verification.",
+      "Action Engine should route consequential uncertain outcomes to Verification when appropriate."
+    ]
+  },
+
+  "verification_vs_execution": {
+    "rules": [
+      "Execution Engine owns actual operational progression and completion posture.",
+      "Verification Engine determines whether applicable assertions about execution or outcome are sufficiently supported.",
+      "Execution completed may remain distinct from verified_complete.",
+      "Verification failure may cause Execution reevaluation without rewriting historical execution activity."
+    ]
+  },
+
+  "verification_vs_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal operational disposition.",
+      "Verification Engine provides evidence relevant to whether resolution conditions are satisfied.",
+      "Verified completion does not independently resolve a work item.",
+      "Resolution may require conditions beyond verification."
+    ]
+  },
+
+  "verification_vs_commitment": {
+    "rules": [
+      "Commitment Engine owns actual promises and commitment terms.",
+      "Verification Engine may verify evidence relevant to commitment fulfillment.",
+      "Execution completion does not automatically prove commitment fulfillment.",
+      "Verified fulfillment evidence does not modify the original commitment terms."
+    ]
+  },
+
+  "verification_vs_dependency": {
+    "rules": [
+      "Dependency Engine owns dependency existence and canonical satisfaction state.",
+      "Verification Engine may determine whether evidence supports the dependency's required satisfaction condition.",
+      "Activity toward satisfying a dependency does not prove satisfaction.",
+      "Verified evidence should be returned to Dependency Engine for canonical state update."
+    ]
+  },
+
+  "verification_vs_issue": {
+    "rules": [
+      "Issue Engine owns active operational problem state.",
+      "Verification Engine may verify whether corrective action produced the required result.",
+      "Corrective action performed does not automatically mean the issue is resolved.",
+      "Failed corrective verification may keep or return the issue to active handling."
+    ]
+  },
+
+  "verification_vs_risk": {
+    "rules": [
+      "Risk Engine owns future adverse exposure.",
+      "Verification Engine may verify mitigation implementation or current conditions relevant to exposure.",
+      "Verified mitigation does not automatically eliminate residual risk.",
+      "Risk Engine must reevaluate remaining exposure."
+    ]
+  },
+
+  "verification_vs_communication": {
+    "rules": [
+      "Communication Engine owns communication handling.",
+      "Verification Engine may distinguish prepared, sent, delivered, acknowledged, and responded states when operationally required.",
+      "A send action must not be represented as delivery without evidence.",
+      "Delivery must not be represented as acknowledgement without evidence."
+    ]
+  },
+
+  "verification_vs_authorization": {
+    "rules": [
+      "Authorization Engine owns canonical permission state.",
+      "Verification Engine may verify conditions on which authorization depends.",
+      "Verification does not create authority.",
+      "Evidence that an unauthorized action occurred must not retroactively authorize it."
+    ]
+  },
+
+  "verification_vs_learning": {
+    "rules": [
+      "Learning Engine owns reusable operational knowledge.",
+      "Verified outcomes provide higher-quality learning evidence than unsupported claims.",
+      "Verification failures and contradictions provide useful learning evidence.",
+      "Learning must preserve the context and scope of verified outcomes."
+    ]
+  },
+
+  "verification_vs_prediction": {
+    "rules": [
+      "Prediction Engine forecasts future conditions.",
+      "Verification Engine evaluates supported assertions about observed or resulting conditions.",
+      "Prediction must not be verified merely because it was strongly expected.",
+      "Observed verified outcomes should be returned for prediction calibration."
+    ]
+  },
+
+  "verification_vs_recommendation": {
+    "rules": [
+      "Recommendation Engine determines what handling appears useful.",
+      "Verification Engine may provide evidence that strengthens, weakens, or invalidates a recommendation.",
+      "A recommendation should not be represented as verified simply because it was accepted."
+    ]
+  },
+
+  "verification_vs_review": {
+    "rules": [
+      "Review Engine determines when operational understanding requires reassessment.",
+      "Review may identify stale, incomplete, contradictory, or missing verification.",
+      "Verification Engine performs the applicable evidence evaluation.",
+      "Review does not independently manufacture verification."
+    ]
+  },
+
+  "verification_vs_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Verification Engine may expose consequential failed, conflicted, overdue, or missing verification.",
+      "Verification Engine must not independently interrupt the user.",
+      "Routine successful verification should normally remain low-noise."
+    ]
+  },
+
+  "verification_vs_briefing": {
+    "rules": [
+      "Briefing Engine owns executive presentation.",
+      "Material verification status should be presented when it changes confidence in completion, commitments, issues, risks, or decisions.",
+      "Briefing should distinguish verified facts from claims and pending verification.",
+      "Routine verification detail should normally remain compressed."
+    ]
+  },
+
+  "verification_refresh": {
+    "triggers": [
+      "new evidence arrives",
+      "completion is claimed",
+      "execution completes",
+      "action outcome is ambiguous",
+      "corrective action completes",
+      "dependency evidence changes",
+      "commitment fulfillment evidence changes",
+      "customer acceptance arrives",
+      "technical test result arrives",
+      "contradictory evidence appears",
+      "evidence becomes stale",
+      "verification validity expires",
+      "review requests reassessment"
+    ],
+    "rules": [
+      "Verification should refresh when evidence materially changes the supported conclusion.",
+      "Minor irrelevant evidence should not create verification churn.",
+      "Superseded verification should remain historically recoverable when useful.",
+      "Refresh must not create uncontrolled engine-to-engine loops."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_verification",
+    "verification_evaluation": [
+      "verification_id",
+      "verification_type",
+      "subject",
+      "assertion",
+      "verification_requirement",
+      "verification_state",
+      "criteria",
+      "evidence_quality",
+      "supporting_evidence",
+      "contradictory_evidence",
+      "missing_evidence",
+      "verification_method",
+      "confidence",
+      "verified_at",
+      "valid_until",
+      "failure_reason",
+      "recommended_consumers",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Verification output must distinguish claim from verified assertion.",
+      "Verification output must distinguish execution from intended outcome.",
+      "Verification output must distinguish missing evidence from evidence of failure.",
+      "Supporting and contradictory evidence must remain visible.",
+      "Unknown and inconclusive states must not be converted into false certainty.",
+      "Verification conclusion must remain traceable to applicable evidence.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat a claim as proof.",
+    "Do not treat activity as proof of outcome.",
+    "Do not treat execution as automatic proof of intended effect.",
+    "Do not fabricate missing evidence.",
+    "Do not suppress contradictory evidence.",
+    "Do not represent missing evidence as failure unless applicable criteria support that conclusion.",
+    "Do not represent inference as authoritative verification.",
+    "Do not represent sent communication as delivered without evidence.",
+    "Do not represent delivery as acknowledgement without evidence.",
+    "Do not represent installation as operational success without required evidence.",
+    "Do not represent completion as acceptance when acceptance is independently required.",
+    "Do not invent verification requirements.",
+    "Do not allow stale evidence to establish volatile current conditions.",
+    "Do not retroactively create authorization.",
+    "Do not change canonical priority.",
+    "Do not modify commitments.",
+    "Do not modify delegation.",
+    "Do not execute external actions.",
+    "Do not mark work resolved.",
+    "Do not modify Core reasoning architecture as part of operational verification."
+  ]
+}
