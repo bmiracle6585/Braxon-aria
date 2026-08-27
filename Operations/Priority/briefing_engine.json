@@ -1,0 +1,520 @@
+{
+  "engine": {
+    "id": "aria.operations.briefing_engine",
+    "name": "A.R.I.A. Executive Briefing Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "executive_operational_briefing",
+    "status": "active",
+    "purpose": "Transform supported operational state into concise, prioritized, decision-oriented briefings that tell the user what matters, what changed, what requires personal action, what is being handled by others, what is at risk, and what can remain quiet. The engine synthesizes existing canonical state without independently changing priority, commitments, ownership, schedules, decisions, or resolution.",
+    "principles": [
+      "A briefing is a decision and awareness product, not a database dump.",
+      "The user should see operational consequence before internal system detail.",
+      "What requires user action must remain distinguishable from what requires only awareness.",
+      "Delegated and healthy work should remain visible when useful without consuming unnecessary attention.",
+      "Material change matters more than repeated unchanged status.",
+      "A.R.I.A. should explain why an item matters when that is not obvious.",
+      "Briefings should preserve uncertainty rather than manufacture confidence.",
+      "The briefing should become shorter as A.R.I.A. becomes more certain about what does not require the user.",
+      "Critical information must not be hidden merely to keep the briefing concise.",
+      "The engine should consolidate related conditions into coherent operational narratives.",
+      "Briefing language should be direct, useful, and proportionate to consequence.",
+      "Briefing output must remain explainable and provenance-preserving."
+    ]
+  },
+
+  "input": {
+    "primary_object": "operational_brief",
+    "sources": [
+      "portfolio evaluations",
+      "work_items",
+      "priority evaluations",
+      "attention evaluations",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "issues",
+      "risks",
+      "opportunities",
+      "decisions",
+      "capacity evaluations",
+      "schedules",
+      "conflicts",
+      "follow_up evaluations",
+      "aging evaluations",
+      "escalations",
+      "context",
+      "communication evaluations",
+      "resolution states",
+      "orchestration summaries",
+      "material source activity"
+    ]
+  },
+
+  "briefing_types": {
+    "daily": {
+      "purpose": "Provide the user's primary operational posture for the day."
+    },
+    "start_of_day": {
+      "purpose": "Establish what matters before normal execution begins."
+    },
+    "midday": {
+      "purpose": "Reassess the day's execution posture after material operational change."
+    },
+    "end_of_day": {
+      "purpose": "Summarize disposition, unresolved obligations, overnight exposure, and preparation for the next execution period."
+    },
+    "exception": {
+      "purpose": "Present a material condition that should not wait for the next routine briefing."
+    },
+    "decision": {
+      "purpose": "Present one or more decisions requiring user authority."
+    },
+    "project": {
+      "purpose": "Summarize the operational posture of a specific project."
+    },
+    "customer": {
+      "purpose": "Summarize material operational conditions associated with a specific customer."
+    },
+    "portfolio": {
+      "purpose": "Summarize a selected operational portfolio."
+    },
+    "on_demand": {
+      "purpose": "Answer a user request for current operational posture."
+    }
+  },
+
+  "briefing_states": {
+    "assembling": {
+      "description": "Relevant supported operational state is being collected and synthesized."
+    },
+    "ready": {
+      "description": "The briefing is sufficiently supported for presentation."
+    },
+    "presented": {
+      "description": "The briefing has been presented to the intended user."
+    },
+    "superseded": {
+      "description": "Material new information makes the prior briefing no longer representative of current posture."
+    },
+    "stale": {
+      "description": "The briefing is too old to be relied upon as current operational posture."
+    },
+    "cancelled": {
+      "description": "The briefing is no longer useful or required."
+    }
+  },
+
+  "briefing_record": {
+    "fields": [
+      "briefing_id",
+      "briefing_type",
+      "scope",
+      "briefing_state",
+      "effective_at",
+      "generated_at",
+      "supersedes",
+      "executive_summary",
+      "user_actions",
+      "decisions_required",
+      "commitments_at_risk",
+      "active_issues",
+      "blocked_work",
+      "delegated_work",
+      "follow_ups",
+      "protected_progress",
+      "opportunities",
+      "capacity_concerns",
+      "material_changes",
+      "quiet_items_count",
+      "source_references"
+    ],
+    "requirements": [
+      "Every material briefing statement should be traceable to supported operational state.",
+      "Briefing records must distinguish current posture from historical posture.",
+      "A superseded briefing should remain historically recoverable when operationally useful.",
+      "Unknown information must remain unknown rather than completed through narrative assumption."
+    ]
+  },
+
+  "section_model": {
+    "required_when_applicable": [
+      "executive_summary",
+      "requires_you",
+      "decisions",
+      "commitments_at_risk",
+      "active_issues",
+      "blocked",
+      "delegated_and_watching",
+      "follow_up",
+      "protected_progress",
+      "opportunities",
+      "capacity_and_schedule",
+      "material_changes"
+    ],
+    "rules": [
+      "Empty sections should normally be omitted.",
+      "Sections should be ordered by operational usefulness rather than fixed visual convention.",
+      "Items should not be repeated across sections unless the repetition adds materially different meaning.",
+      "The same underlying condition should preferably be synthesized once with its relevant consequences."
+    ]
+  },
+
+  "executive_summary": {
+    "purpose": "Give the user an immediate understanding of overall operational posture.",
+    "questions": [
+      "Is the portfolio healthy, pressured, constrained, overcommitted, unstable, or recovering?",
+      "What materially changed?",
+      "What requires the user's personal involvement?",
+      "What is the largest current threat to execution?",
+      "Is there anything consequential the user can safely ignore for now?"
+    ],
+    "rules": [
+      "The executive summary should normally be brief.",
+      "The summary should not enumerate every active work item.",
+      "The summary should state material operational posture rather than generic encouragement.",
+      "When operations are healthy, A.R.I.A. should be willing to say that plainly."
+    ]
+  },
+
+  "requires_you": {
+    "categories": {
+      "execute": "The user personally needs to perform an operational action.",
+      "decide": "The user must make an authorized decision.",
+      "approve": "The user must review or approve something before progression.",
+      "communicate": "The user personally needs to communicate or authorize communication.",
+      "intervene": "The user must materially intervene in execution.",
+      "provide_information": "Progression requires information uniquely or appropriately supplied by the user."
+    },
+    "rules": [
+      "Only work genuinely requiring the user's involvement should appear here.",
+      "A.R.I.A. should not place delegated work in requires_you merely because the user owns the organization or project.",
+      "The required action should be explicit.",
+      "Where useful, the consequence of not acting should be stated.",
+      "A supported useful action window should be included when known."
+    ]
+  },
+
+  "decision_briefing": {
+    "fields": [
+      "decision_required",
+      "decision_authority",
+      "decision_window",
+      "supported_options",
+      "recommended_option",
+      "recommendation_reason",
+      "material_tradeoffs",
+      "consequence_of_delay",
+      "confidence"
+    ],
+    "rules": [
+      "Decision Engine remains authoritative for decision state.",
+      "A briefing may recommend an option but must not represent recommendation as decision.",
+      "Options should be concise enough for practical executive review.",
+      "Material tradeoffs should not be hidden to make a recommendation appear simpler.",
+      "If A.R.I.A. cannot support a recommendation, the briefing should say so."
+    ]
+  },
+
+  "change_detection": {
+    "material_changes": [
+      "new consequential work",
+      "priority materially changed",
+      "commitment created or threatened",
+      "dependency blocked or cleared",
+      "issue opened, worsened, contained, or resolved",
+      "risk materially changed",
+      "decision became required or was made",
+      "capacity materially changed",
+      "schedule materially changed",
+      "conflict appeared or resolved",
+      "delegation materially changed",
+      "follow-up became overdue or was satisfied",
+      "escalation became required",
+      "opportunity materially changed",
+      "work resolved"
+    ],
+    "rules": [
+      "Routine timestamp updates are not briefing-worthy changes.",
+      "Repeated unchanged conditions should not be presented as new developments.",
+      "Material deterioration should be clearly distinguishable from unchanged existing concern.",
+      "Material improvement should also be surfaced when it changes required handling."
+    ]
+  },
+
+  "compression": {
+    "purpose": "Reduce operational volume without losing consequential meaning.",
+    "rules": [
+      "Related work should be grouped when a shared operational narrative is more useful than item-by-item reporting.",
+      "Grouping must preserve individually consequential exceptions.",
+      "A.R.I.A. may summarize healthy delegated work by count or category when item detail provides little value.",
+      "Critical items must not disappear inside aggregate counts.",
+      "Repeated work from the same project, customer, issue, or dependency may be consolidated when useful.",
+      "Compression must not erase ownership, deadlines, or consequences when those distinctions matter."
+    ]
+  },
+
+  "quiet_work": {
+    "purpose": "Prevent healthy operational work from consuming executive attention unnecessarily.",
+    "qualifying_conditions": [
+      "appropriately delegated",
+      "on schedule",
+      "no material blocker",
+      "no threatened commitment",
+      "no material risk requiring user action",
+      "no overdue follow-up requiring intervention",
+      "no decision requiring user authority",
+      "no material exception"
+    ],
+    "rules": [
+      "Quiet does not mean forgotten.",
+      "Quiet work remains governed by its owning engines.",
+      "A.R.I.A. should surface quiet work when its condition materially changes.",
+      "The user may request detail on quiet work at any time.",
+      "Routine healthy work may be represented as aggregate status rather than individual briefing items."
+    ]
+  },
+
+  "delegated_work": {
+    "rules": [
+      "Delegated work should normally be presented by exception.",
+      "Healthy delegated execution should not become the user's personal task.",
+      "The briefing should identify delegated work when the user needs awareness, intervention, decision, or when execution materially deviates.",
+      "Delegation ownership and execution responsibility must remain distinguishable."
+    ]
+  },
+
+  "blocked_work": {
+    "rules": [
+      "Blocked work should identify the material blocker when known.",
+      "A blocked item requiring no current user action should remain distinguishable from a blocker the user can remove.",
+      "The briefing should emphasize blocker-removal actions over merely reporting blocked status.",
+      "Long-running blocked work may require Aging, Risk, Conflict, Decision, or Escalation context."
+    ]
+  },
+
+  "commitments_at_risk": {
+    "rules": [
+      "Only supported commitments should be represented as commitments.",
+      "The briefing should identify the commitment, current threat, useful response, and timing when known.",
+      "Threatened commitments should not automatically be described as breached.",
+      "A.R.I.A. should distinguish internal execution concern from communication already owed externally."
+    ]
+  },
+
+  "issue_reporting": {
+    "rules": [
+      "Issue reporting should emphasize impact, containment, current corrective posture, and required intervention.",
+      "Suspected cause must not be represented as confirmed cause.",
+      "A workaround must not be represented as resolution.",
+      "Routine corrective detail should be compressed unless it changes executive handling."
+    ]
+  },
+
+  "opportunity_reporting": {
+    "rules": [
+      "Opportunities should be surfaced when value, timing, or required authority makes them operationally relevant.",
+      "Potential benefit must not be represented as guaranteed.",
+      "Opportunities should not crowd out mandatory work merely because they are attractive.",
+      "A closing opportunity window should be visible when delay materially reduces value."
+    ]
+  },
+
+  "protected_progress": {
+    "purpose": "Keep important non-urgent work from disappearing beneath continuous reactive work.",
+    "rules": [
+      "Protected work should appear when the user needs to preserve or restore its execution window.",
+      "The briefing should not list every strategic item every day.",
+      "Repeated loss of protected execution should be surfaced as a portfolio concern.",
+      "Protected progress should remain distinguishable from urgent work."
+    ]
+  },
+
+  "time_orientation": {
+    "categories": [
+      "now",
+      "today",
+      "next_execution_window",
+      "near_term",
+      "upcoming",
+      "watch",
+      "no_current_action"
+    ],
+    "rules": [
+      "Briefing time orientation should reflect supported operational timing.",
+      "A.R.I.A. must not manufacture deadlines to make recommendations appear concrete.",
+      "Due date and useful action time must remain distinguishable.",
+      "A future deadline may justify action now when lead time, dependencies, or risk require it."
+    ]
+  },
+
+  "briefing_length": {
+    "modes": {
+      "compact": "Only consequential posture, user actions, decisions, and exceptions.",
+      "standard": "Operational posture plus material delegated, blocked, risk, opportunity, and progress information.",
+      "expanded": "Detailed operational briefing suitable for deliberate review."
+    },
+    "rules": [
+      "Compact should be preferred when the user is constrained or when little has changed.",
+      "Standard should be the normal executive-assistant mode.",
+      "Expanded should be used when requested or when operational complexity requires additional detail.",
+      "Length should not be increased merely because more data is available."
+    ]
+  },
+
+  "relationship_to_portfolio": {
+    "rules": [
+      "Portfolio Engine determines cross-item operational posture.",
+      "Briefing Engine converts that posture into a useful executive presentation.",
+      "Briefing Engine must not alter portfolio state to simplify presentation.",
+      "Portfolio tradeoffs should be surfaced when they require user awareness or action."
+    ]
+  },
+
+  "relationship_to_orchestration": {
+    "rules": [
+      "Orchestration Engine coordinates operational reasoning.",
+      "Briefing Engine consumes stable or sufficiently mature operational outputs.",
+      "A briefing should not expose intermediate engine churn as final operational state.",
+      "Material post-briefing changes may cause the briefing to become superseded."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine owns canonical priority.",
+      "Briefing Engine uses priority to help determine presentation order and consequence.",
+      "Presentation order must not overwrite canonical priority.",
+      "A lower-priority item may appear first when it uniquely requires an immediate user decision."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine determines whether information deserves user awareness and interruption.",
+      "Briefing Engine determines how multiple attention-worthy and portfolio-relevant conditions are synthesized.",
+      "Briefing Engine must not independently manufacture interruption urgency.",
+      "Routine briefing and exception interruption must remain distinguishable."
+    ]
+  },
+
+  "relationship_to_context": {
+    "rules": [
+      "Context Engine provides circumstances relevant to briefing timing, length, and interaction mode.",
+      "A constrained context may justify a compact briefing.",
+      "Context must not cause consequential information to disappear.",
+      "Deferred detail should remain available when context improves."
+    ]
+  },
+
+  "relationship_to_communication": {
+    "rules": [
+      "Communication Engine governs external or interpersonal communication need.",
+      "Briefing Engine may tell the user that communication is required, drafted, awaiting approval, or completed.",
+      "Briefing Engine does not independently send communication.",
+      "Communication content should not be duplicated in full unless useful to the briefing."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine owns decision state and supported options.",
+      "Briefing Engine presents decisions for efficient user review.",
+      "Briefing Engine may include a supported recommendation.",
+      "User selection or authorized external action must return to Decision Engine or the applicable execution capability."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal disposition.",
+      "Briefing Engine may report supported completion or resolution.",
+      "Briefing Engine must not mark work resolved merely to remove it from the briefing.",
+      "Resolved work should normally disappear from routine active briefing after any useful closure communication."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine owns aging pressure and starvation state.",
+      "Briefing Engine surfaces aging when it changes required handling or exposes neglected valid work.",
+      "Age alone should not dominate briefing order."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine owns escalation need and level.",
+      "Briefing Engine should clearly identify escalation requiring user involvement.",
+      "Escalation should be presented in terms of the authority or intervention required."
+    ]
+  },
+
+  "freshness": {
+    "rules": [
+      "Every briefing should have an effective time.",
+      "A briefing should become stale when material operational conditions may have changed beyond its supported freshness window.",
+      "Material new information may supersede a briefing immediately.",
+      "A.R.I.A. should not present an old briefing as current merely because no newer briefing exists.",
+      "On-demand briefing should use current available canonical state."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_briefing",
+    "briefing_output": [
+      "briefing_id",
+      "briefing_type",
+      "scope",
+      "effective_at",
+      "portfolio_posture",
+      "executive_summary",
+      "requires_you",
+      "decisions",
+      "commitments_at_risk",
+      "active_issues",
+      "blocked",
+      "delegated_and_watching",
+      "follow_up",
+      "protected_progress",
+      "opportunities",
+      "capacity_and_schedule",
+      "material_changes",
+      "quiet_summary",
+      "confidence",
+      "source_references"
+    ],
+    "requirements": [
+      "Briefing statements must be supported by canonical operational state.",
+      "User actions must remain distinguishable from awareness items.",
+      "Recommendations must remain distinguishable from authorized decisions or actions.",
+      "Unknown information must not be fabricated for narrative completeness.",
+      "The briefing must not overwrite canonical engine state.",
+      "Material source provenance must remain recoverable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not turn the briefing into a complete task inventory.",
+    "Do not present organizational work as requiring the user's personal action unless it actually does.",
+    "Do not repeat unchanged conditions as new developments.",
+    "Do not hide critical information for brevity.",
+    "Do not manufacture urgency.",
+    "Do not manufacture deadlines.",
+    "Do not manufacture certainty.",
+    "Do not represent threatened commitments as already breached.",
+    "Do not represent suspected issue cause as confirmed.",
+    "Do not represent workaround as resolution.",
+    "Do not represent opportunity value as guaranteed.",
+    "Do not convert briefing order into canonical priority.",
+    "Do not silently change commitments, ownership, delegation, schedules, decisions, or resolution.",
+    "Do not expose unnecessary internal engine terminology to the user.",
+    "Do not make healthy delegated work consume unnecessary executive attention.",
+    "Do not allow important non-urgent work to disappear indefinitely.",
+    "Do not bypass Attention Engine for interruption decisions.",
+    "Do not bypass Decision Engine for authorized choices.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not independently execute external actions.",
+    "Do not modify Core reasoning architecture as part of briefing generation."
+  ]
+}
