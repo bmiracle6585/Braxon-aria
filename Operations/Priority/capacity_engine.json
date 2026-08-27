@@ -1,0 +1,446 @@
+{
+  "engine": {
+    "id": "aria.operations.capacity_engine",
+    "name": "A.R.I.A. Capacity Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_capacity_management",
+    "status": "active",
+    "purpose": "Evaluate practical execution capacity for operational work. The engine determines whether people, crews, resources, and organizational units have sufficient usable capacity to satisfy existing and proposed obligations within relevant execution windows without assuming theoretical availability, unsafe utilization, or impossible productivity.",
+    "principles": [
+      "Availability is not the same as usable capacity.",
+      "Headcount is not the same as execution capacity.",
+      "Calendar space is not proof that meaningful work can fit.",
+      "Capacity must reflect practical execution constraints.",
+      "Different work consumes different kinds and amounts of capacity.",
+      "Skills, location, travel, equipment, access, sequencing, and authority may constrain capacity.",
+      "Existing commitments consume capacity before speculative work.",
+      "Delegation transfers execution demand; it does not create capacity.",
+      "Overtime and exceptional effort must not be treated as ordinary baseline capacity.",
+      "A.R.I.A. should detect capacity pressure before overload becomes failure when reasonably possible.",
+      "Capacity shortage may require reprioritization, reassignment, rescheduling, added resources, or renegotiation.",
+      "Capacity evaluation must remain explainable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "new work is captured",
+      "work is assigned or delegated",
+      "execution timing changes",
+      "resource availability changes",
+      "existing work duration changes materially",
+      "a conflict indicates possible capacity contention",
+      "a commitment requires execution capacity",
+      "work is displaced",
+      "capacity is explicitly reviewed"
+    ],
+    "context": [
+      "current_time",
+      "work_items",
+      "owners",
+      "delegations",
+      "priority",
+      "timing",
+      "commitments",
+      "dependencies",
+      "conflicts",
+      "aging",
+      "escalation",
+      "resources",
+      "skills",
+      "locations",
+      "schedules",
+      "activity",
+      "resolution",
+      "source history"
+    ]
+  },
+
+  "capacity_scopes": {
+    "person": "Execution capacity of an individual.",
+    "crew": "Execution capacity of an operational crew or team.",
+    "role": "Capacity available from people qualified to perform a particular role.",
+    "resource": "Capacity of equipment, systems, vehicles, facilities, funding, or another constrained resource.",
+    "project": "Execution capacity available to a project or project grouping.",
+    "organization": "Aggregate practical capacity of the organization or operational unit.",
+    "other": "A supported capacity scope not represented by another canonical type."
+  },
+
+  "capacity_states": {
+    "available": {
+      "description": "Sufficient practical capacity exists for the evaluated workload and window."
+    },
+    "constrained": {
+      "description": "Capacity remains available, but limited flexibility exists for additional work or disruption."
+    },
+    "saturated": {
+      "description": "Practical capacity is substantially committed and additional consequential work will likely require adjustment."
+    },
+    "overloaded": {
+      "description": "Supported workload exceeds practical capacity within the evaluated execution window."
+    },
+    "unavailable": {
+      "description": "Required capacity is not available for the applicable work or execution window."
+    },
+    "unknown": {
+      "description": "Available information is insufficient to determine practical capacity."
+    }
+  },
+
+  "capacity_dimensions": {
+    "time": "Usable execution time within the relevant window.",
+    "skill": "Availability of required knowledge, certification, qualification, or capability.",
+    "location": "Ability to physically or operationally reach the required work location.",
+    "travel": "Capacity consumed by required travel or mobilization.",
+    "equipment": "Availability and suitability of required equipment or tools.",
+    "vehicle": "Availability and suitability of required vehicles.",
+    "access": "Availability of site, system, customer, credential, or other required access.",
+    "staffing": "Sufficient number and composition of personnel.",
+    "financial": "Available authorized financial capacity when funding constrains execution.",
+    "system": "Available system or technical processing capacity.",
+    "authority": "Availability of a person or role authorized to perform or approve required actions.",
+    "attention": "Finite human decision or management bandwidth required for work that cannot proceed autonomously.",
+    "other": "Another supported practical capacity dimension."
+  },
+
+  "capacity_record": {
+    "fields": [
+      "capacity_id",
+      "scope_type",
+      "scope_reference",
+      "execution_window",
+      "capacity_state",
+      "capacity_dimensions",
+      "committed_load",
+      "available_capacity",
+      "reserved_capacity",
+      "constraints",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Capacity records should identify the evaluated scope and execution window.",
+      "Known constraints should remain distinguishable by dimension.",
+      "Unknown capacity must not be represented as available.",
+      "Estimated capacity must remain distinguishable from authoritative capacity.",
+      "Capacity history should remain recoverable when materially relevant."
+    ]
+  },
+
+  "workload_evaluation": {
+    "factors": [
+      "estimated duration",
+      "required skills",
+      "required crew composition",
+      "required location",
+      "travel time",
+      "mobilization time",
+      "required equipment",
+      "required vehicles",
+      "required access",
+      "required approvals",
+      "execution window",
+      "sequencing requirements",
+      "dependency conditions",
+      "management attention required",
+      "expected interruption risk",
+      "existing commitments"
+    ],
+    "rules": [
+      "A.R.I.A. should use authoritative workload estimates when available.",
+      "Historical execution patterns may inform estimates when appropriately comparable.",
+      "Unknown duration must not be represented as zero effort.",
+      "Workload should include material travel, mobilization, coordination, and required administrative effort.",
+      "Work that cannot be parallelized must not be modeled as parallel merely because multiple people are involved.",
+      "Capacity estimates should avoid false precision when evidence is weak."
+    ]
+  },
+
+  "usable_capacity": {
+    "rules": [
+      "Practical capacity should account for already committed work.",
+      "Practical capacity should account for known non-working periods and unavailable resources.",
+      "Travel and mobilization may materially reduce usable capacity.",
+      "Required skill composition may constrain usable capacity even when total headcount appears sufficient.",
+      "A crew missing a required qualified role may have no usable capacity for that specific work.",
+      "Nominally available equipment that is unsuitable, inaccessible, or committed elsewhere is not usable capacity.",
+      "Management and decision bandwidth may constrain execution even when field resources remain available.",
+      "Reasonable operational buffer should be preserved where uncertainty or disruption risk materially exists."
+    ]
+  },
+
+  "utilization": {
+    "rules": [
+      "Utilization should reflect practical committed load relative to practical usable capacity.",
+      "One hundred percent theoretical utilization should not automatically be considered healthy sustainable capacity.",
+      "Expected interruptions, travel, coordination, and variability should be considered when materially relevant.",
+      "A.R.I.A. must not assume persistent overtime as normal capacity.",
+      "Short-duration exceptional effort may be represented separately when explicitly supported.",
+      "High utilization may justify capacity warnings before actual overload occurs."
+    ]
+  },
+
+  "reserved_capacity": {
+    "purpose": "Preserve intentionally uncommitted capacity when operational uncertainty or strategic need justifies doing so.",
+    "rules": [
+      "Reserved capacity should only exist when supported by policy, operational practice, explicit instruction, or a defensible planning requirement.",
+      "A.R.I.A. must not invent arbitrary capacity reserves.",
+      "Reserved capacity may protect emergency response, critical customers, maintenance, management decisions, or other supported needs.",
+      "Using reserved capacity should trigger reevaluation of what protection is being consumed."
+    ]
+  },
+
+  "overload_detection": {
+    "signals": [
+      "required workload exceeds usable time",
+      "required skill unavailable",
+      "required crew composition unavailable",
+      "required resource committed elsewhere",
+      "travel makes execution window infeasible",
+      "multiple commitments exceed available execution opportunity",
+      "repeated displacement caused by insufficient capacity",
+      "work repeatedly requires exceptional overtime",
+      "management attention becomes a persistent bottleneck",
+      "new work cannot fit without affecting existing obligations"
+    ],
+    "rules": [
+      "Overload should identify the constrained capacity dimension when reasonably possible.",
+      "Difficulty alone does not establish overload.",
+      "Overload may exist even when calendar hours appear available.",
+      "A.R.I.A. should distinguish temporary overload from structural capacity shortage.",
+      "Persistent overload should trigger broader operational reassessment."
+    ]
+  },
+
+  "capacity_options": {
+    "supported_options": [
+      "reprioritize",
+      "reschedule",
+      "reassign",
+      "delegate",
+      "add_staff",
+      "add_crew",
+      "add_resource",
+      "substitute_resource",
+      "reduce_scope",
+      "split_work",
+      "change_execution_path",
+      "use_authorized_exceptional_capacity",
+      "renegotiate_commitment",
+      "decline_new_work",
+      "escalate"
+    ],
+    "rules": [
+      "Capacity recommendations should address the actual constrained dimension.",
+      "Adding generic headcount is not a valid solution when the constraint is skill, location, equipment, authority, or another specific dimension.",
+      "A.R.I.A. must not assume additional resources can be obtained immediately.",
+      "A.R.I.A. must not silently renegotiate commitments.",
+      "A.R.I.A. must not recommend unsafe staffing or execution practices.",
+      "A.R.I.A. must preserve displaced obligations for reevaluation."
+    ]
+  },
+
+  "proposed_work": {
+    "rules": [
+      "New work should be evaluated against existing valid obligations when capacity consequences are material.",
+      "Accepting new work does not create the capacity required to execute it.",
+      "A.R.I.A. should identify material consequences to existing work before recommending acceptance when possible.",
+      "Potential future work should remain distinguishable from committed workload.",
+      "Speculative opportunities should not consume committed capacity unless an authorized reservation exists."
+    ]
+  },
+
+  "personal_capacity": {
+    "purpose": "Represent finite user and management bandwidth without reducing human capacity to raw calendar hours.",
+    "rules": [
+      "Decision-making, review, communication, travel, interruption, and context switching consume practical personal capacity.",
+      "A calendar gap does not necessarily mean the user can absorb another consequential obligation.",
+      "A.R.I.A. should distinguish work requiring the user's unique authority from work that can be delegated.",
+      "Delegatable work may be a candidate for Delegation Engine evaluation when personal capacity is constrained.",
+      "A.R.I.A. should reduce unnecessary attention consumption rather than treating all open work as direct user workload.",
+      "Personal capacity should not be inferred from private health or other unsupported personal assumptions."
+    ]
+  },
+
+  "structural_capacity": {
+    "rules": [
+      "Repeated overload across multiple execution windows may indicate structural capacity shortage.",
+      "Structural shortage should remain distinguishable from a temporary surge.",
+      "Persistent dependence on overtime, repeated missed commitments, chronic displacement, or recurring resource conflicts may support structural-capacity findings.",
+      "Structural capacity findings may justify staffing, equipment, process, delegation, or business-policy review.",
+      "A.R.I.A. should not infer a hiring requirement from a single overloaded period."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines relative operational importance.",
+      "Capacity Engine determines what workload can practically be executed.",
+      "Insufficient capacity does not independently change canonical priority.",
+      "Priority may determine which work receives scarce capacity.",
+      "Work displaced because of capacity remains active and requires reevaluation."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Capacity Engine evaluates practical availability and load.",
+      "Conflict Engine determines when competing valid requirements become materially incompatible.",
+      "Capacity shortage may create or strengthen a capacity conflict.",
+      "Not every constrained capacity state constitutes a conflict."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Capacity Engine may identify overload or meaningful constraint.",
+      "Attention Engine determines whether and how capacity conditions should be presented to the user.",
+      "Routine constrained capacity should not automatically interrupt the user.",
+      "Capacity conditions requiring consequential tradeoffs or user authority may justify direct attention."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs transfer of execution responsibility.",
+      "Capacity Engine should evaluate the receiving party's practical capacity when evidence is available.",
+      "Delegation must not be treated as creation of new capacity.",
+      "Delegating work to an overloaded party may create or worsen operational risk."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promises.",
+      "Capacity Engine may identify that available execution capacity threatens a commitment.",
+      "Capacity shortage does not release or modify a commitment.",
+      "Commitment renegotiation must remain governed by Commitment Engine."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisite conditions.",
+      "Unavailable required resources may be represented as dependencies where appropriate.",
+      "Capacity Engine determines whether sufficient quantities or execution opportunity exist.",
+      "A dependency becoming satisfied may materially change usable capacity."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, deferral, and starvation.",
+      "Repeated displacement due to insufficient capacity may contribute to aging pressure.",
+      "Capacity Engine should expose persistent capacity causes rather than allowing starvation to appear unexplained."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines when capacity shortage requires higher authority or intervention.",
+      "Not every overload condition requires escalation.",
+      "Structural or consequential capacity shortages may justify escalation when current authority cannot resolve them."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition.",
+      "Lack of capacity does not resolve work.",
+      "Work declined, cancelled, reduced, or superseded because of capacity must still satisfy applicable Resolution Engine rules."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit and verification timing.",
+      "Capacity constraints may affect realistic follow-up expectations.",
+      "Capacity Engine must not independently suppress required follow-up."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may create new work that changes capacity demand.",
+      "Capacity Engine evaluates material capacity consequences of captured work.",
+      "Capacity findings may create new planning or resource obligations requiring Capture Engine evaluation.",
+      "Capacity Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new work captured",
+      "work assigned",
+      "work delegated",
+      "work resolved",
+      "priority changes",
+      "timing changes",
+      "commitment changes",
+      "dependency changes",
+      "resource availability changes",
+      "staffing changes",
+      "skill availability changes",
+      "location or travel requirements change",
+      "duration estimate changes",
+      "work is displaced",
+      "conflict changes",
+      "escalation occurs",
+      "user requests capacity review"
+    ],
+    "rules": [
+      "Reevaluation must preserve material historical capacity findings.",
+      "Reevaluation should use the latest supported workload and availability information.",
+      "Reevaluation should distinguish changed facts from changed estimates.",
+      "Material capacity changes may trigger Priority, Attention, Conflict, Delegation, Commitment, Dependency, Aging, Escalation, Follow-Up, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.capacity",
+    "capacity_evaluation": [
+      "work_item_id",
+      "capacity_state",
+      "constrained_dimensions",
+      "required_capacity",
+      "available_capacity",
+      "capacity_gap",
+      "affected_scope",
+      "recommended_options",
+      "confidence",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Capacity evaluation must identify the applicable work item or evaluated scope.",
+      "Capacity constraints must remain distinguishable by dimension.",
+      "Unknown values must not be represented as zero or available.",
+      "Estimates must remain distinguishable from authoritative facts.",
+      "Capacity Engine must not directly overwrite canonical priority.",
+      "Material capacity changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not equate availability with usable capacity.",
+    "Do not equate headcount with execution capacity.",
+    "Do not assume calendar gaps equal usable capacity.",
+    "Do not assume unlimited management attention.",
+    "Do not assume persistent overtime is normal capacity.",
+    "Do not assume additional staff or resources are immediately obtainable.",
+    "Do not represent unknown workload as zero effort.",
+    "Do not ignore travel, mobilization, skills, equipment, access, or sequencing when materially relevant.",
+    "Do not delegate work merely to make capacity appear available.",
+    "Do not silently discard displaced work.",
+    "Do not silently renegotiate commitments.",
+    "Do not recommend unsafe utilization.",
+    "Do not infer structural shortage from one temporary surge.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass the Conflict Engine when requirements become materially incompatible.",
+    "Do not bypass the Attention Engine for user-facing presentation.",
+    "Do not bypass the Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of capacity management."
+  ]
+}
