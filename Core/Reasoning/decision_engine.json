@@ -1,297 +1,589 @@
 {
   "specification": "ARIA_DECISION_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. selects the most rational next diagnostic action from competing technically valid options using probability, uncertainty reduction, information gain, evidence value, cost, time, disruption, risk, reversibility, user context, route history, and expected diagnostic utility.",
+  "version": "2.0.0",
+  "description": "Canonical decision behavior for A.R.I.A. technical investigations. The Decision Engine evaluates competing canonical runtime actions against the current authoritative case state and selects the most rational eligible next technical action. It reasons about expected diagnostic value, information gain, discrimination, evidence value, completion likelihood, cost, time, effort, service impact, safety, reversibility, historical effectiveness, user capability, validation value, and uncertainty. It does not execute actions, manage route progression, redefine action classes, establish technical truth, directly mutate hypothesis probability, or determine case lifecycle.",
 
-  "core_principle": {
-    "statement": "ARIA shall not simply pursue the highest-probability hypothesis. ARIA shall select the next action expected to produce the greatest diagnostic value at acceptable cost and risk from the current authoritative case state.",
-    "rules": [
-      "The highest-probability hypothesis does not automatically determine the next action.",
-      "Actions shall be evaluated by expected diagnostic value.",
-      "Information gain may outweigh direct pursuit of the leading hypothesis.",
-      "Low-cost actions capable of discriminating multiple hypotheses should generally be preferred.",
-      "High-impact actions require stronger justification.",
-      "Completed diagnostic work shall influence future action selection.",
-      "Current evidence shall override historical preference when sufficiently strong.",
-      "User-specific history may affect expected action value but shall not determine technical truth.",
-      "Decision logic shall remain explainable.",
-      "ARIA shall reroute from the current state rather than restart diagnostic sequences."
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "action_schema": "Core/Schemas/action.schema.json",
+    "action_registry": "Core/Registries/action_types.json",
+    "route_step_schema": "Core/Schemas/route_step.schema.json",
+    "routing_engine": "Core/Reasoning/routing_engine.json",
+
+    "role": "CANDIDATE_ACTION_EVALUATION_AND_SELECTION",
+
+    "owns": [
+      "candidate action evaluation",
+      "candidate eligibility evaluation",
+      "expected diagnostic value assessment",
+      "expected information gain assessment",
+      "expected discrimination assessment",
+      "expected evidence value assessment",
+      "expected completion likelihood assessment",
+      "expected time assessment",
+      "expected user effort assessment",
+      "expected financial cost assessment",
+      "expected service impact assessment",
+      "expected safety impact assessment",
+      "expected reversibility value assessment",
+      "historical effectiveness consideration",
+      "user capability consideration",
+      "repetition consideration",
+      "validation value assessment",
+      "candidate comparison",
+      "candidate preference",
+      "next technical action selection",
+      "decision explanation",
+      "decision uncertainty"
+    ],
+
+    "does_not_own": [
+      "universal action class vocabulary",
+      "runtime action execution",
+      "technical procedure definitions",
+      "route-step creation",
+      "route progression",
+      "route branches",
+      "route dependencies",
+      "route rerouting",
+      "evidence truth",
+      "evidence confidence",
+      "measurement semantics",
+      "technical outcome semantics",
+      "hypothesis probability",
+      "hypothesis confirmation",
+      "hypothesis elimination",
+      "source authority",
+      "case lifecycle status",
+      "case reasoning-state vocabulary",
+      "knowledge graph truth",
+      "manufacturer requirements",
+      "physical technical truth"
     ]
   },
 
-  "decision_types": [
-    "REQUEST_INFORMATION",
-    "REQUEST_EVIDENCE",
-    "REQUEST_MEASUREMENT",
-    "REQUEST_SCREENSHOT",
-    "REQUEST_CONFIGURATION",
-    "REQUEST_PHYSICAL_INSPECTION",
-    "REQUEST_REMOTE_INSPECTION",
-    "REQUEST_COMPARISON",
-    "REQUEST_TEST",
-    "REQUEST_CONTROLLED_CHANGE",
-    "REQUEST_COMPONENT_SWAP",
-    "REQUEST_CONFIGURATION_CHANGE",
-    "REQUEST_CORRECTIVE_ACTION",
-    "REQUEST_VALIDATION",
-    "WAIT",
-    "MONITOR",
-    "ESCALATE",
-    "RESOLVE",
-    "CLOSE"
-  ],
+  "core_principle": {
+    "statement": "ARIA shall select the eligible canonical runtime action expected to provide the greatest rational technical value from the current authoritative case state. The highest-probability hypothesis does not automatically determine the next action.",
 
-  "decision_record": {
-    "required_fields": [
-      "decision_id",
+    "rules": [
+      "Decision shall evaluate canonical runtime actions rather than maintain a competing action vocabulary.",
+      "The highest-probability hypothesis does not automatically determine the next action.",
+      "An action capable of efficiently discriminating several plausible hypotheses may outrank an action aimed only at the leading hypothesis.",
+      "Information gain may outweigh direct pursuit of the currently leading explanation.",
+      "Low-cost and low-impact actions with strong discrimination value should generally be preferred over higher-impact alternatives with comparable diagnostic value.",
+      "High-impact actions require stronger technical justification.",
+      "Completed diagnostic work shall influence future candidate value.",
+      "Current authoritative evidence shall override historical preference when sufficiently strong.",
+      "Historical patterns may influence expected action value but shall not determine technical truth.",
+      "User capability may influence expected execution quality, effort, time, and communication requirements but shall not alter physical technical reality.",
+      "Hard eligibility constraints shall override numerical or qualitative preference.",
+      "Decision logic shall remain explainable.",
+      "Decision shall reason from the current authoritative case state rather than restart a troubleshooting sequence.",
+      "Decision shall represent uncertainty rather than fabricate precision."
+    ]
+  },
+
+  "canonical_objects": {
+    "action": {
+      "identity": "act_<UUID>",
+      "schema": "Core/Schemas/action.schema.json",
+      "description": "Canonical runtime technical action evaluated and selected by Decision."
+    },
+
+    "case": {
+      "identity": "case_<UUID>",
+      "description": "Diagnostic case whose current authoritative state provides the decision context."
+    },
+
+    "hypothesis": {
+      "identity": "hyp_<UUID>",
+      "description": "Canonical case hypothesis whose plausibility and unresolved uncertainty may affect candidate value."
+    },
+
+    "evidence": {
+      "identity": "evd_<UUID>",
+      "description": "Canonical evidence available to Decision through the authoritative evidence layer."
+    },
+
+    "route_step": {
+      "identity": "rstep_<UUID>",
+      "schema": "Core/Schemas/route_step.schema.json",
+      "description": "Persisted routing history or current routing state that may affect repetition, accessibility, and progression context."
+    },
+
+    "decision": {
+      "identity": "dec_<UUID>",
+      "description": "Persisted record of a material candidate-action evaluation and selection when Decision persistence is available."
+    },
+
+    "state_version": {
+      "identity": "state_<UUID>",
+      "description": "Authoritative version of case or reasoning state against which the decision was made when state-version persistence is available."
+    }
+  },
+
+  "decision_inputs": {
+    "required": [
       "case_id",
-      "state_version_id",
-      "decision_type",
-      "selected_action_id",
-      "candidate_action_ids",
-      "decision_score",
-      "decision_confidence",
-      "reason",
-      "created_at"
+      "current_reasoning_state",
+      "candidate_actions"
     ],
 
-    "optional_fields": [
+    "optional": [
+      "state_version_id",
+      "active_hypotheses",
+      "hypothesis_probabilities",
+      "current_evidence",
+      "evidence_gaps",
+      "known_uncertainties",
+      "route_history",
+      "route_exhaustion_state",
+      "repetition_analysis",
+      "current_context",
+      "technical_constraints",
+      "authorization_state",
+      "resource_availability",
+      "tool_availability",
+      "access_state",
+      "service_constraints",
+      "safety_constraints",
+      "user_capability_context",
+      "historical_action_effectiveness",
+      "similar_case_patterns",
+      "validation_requirements",
+      "procedure_requirements",
+      "external_direction"
+    ],
+
+    "rules": [
+      "Decision shall consume authoritative current state rather than reconstruct competing technical truth.",
+      "Candidate actions shall be canonical act_<UUID> runtime actions before final selection.",
+      "Decision may consume provisional candidate descriptions during generation, but a selected technical action shall resolve to a canonical runtime action.",
+      "Decision shall use canonical object references whenever the referenced objects are persisted.",
+      "Missing optional inputs shall reduce certainty where relevant rather than be silently replaced with invented facts.",
+      "Historical information shall be treated as contextual evidence about expected action value, not as proof of current technical state."
+    ]
+  },
+
+  "decision_outputs": {
+    "primary": [
+      "selected_action_id",
+      "candidate_evaluations",
+      "selection_reason",
+      "decision_confidence",
+      "decision_uncertainty",
+      "material_constraints",
+      "material_alternatives"
+    ],
+
+    "optional": [
+      "decision_id",
+      "state_version_id",
       "target_hypothesis_ids",
-      "expected_evidence",
+      "target_uncertainties",
       "expected_information_gain",
+      "expected_discrimination",
+      "expected_evidence_value",
+      "expected_completion_likelihood",
       "expected_time_cost",
       "expected_user_effort",
-      "expected_service_impact",
       "expected_financial_cost",
-      "reversibility",
-      "safety_risk",
+      "expected_service_impact",
+      "expected_safety_impact",
+      "expected_reversibility_value",
+      "historical_effect",
       "user_context_effect",
-      "historical_route_effect",
-      "constraints",
-      "alternative_action_ids"
+      "repetition_effect",
+      "validation_value",
+      "defer_reason",
+      "no_selection_reason"
+    ],
+
+    "rules": [
+      "Decision output shall identify the selected canonical action when an eligible action is selected.",
+      "Decision shall preserve materially relevant alternatives when explanation or auditability requires them.",
+      "Decision output shall distinguish hard eligibility failures from preference disadvantages.",
+      "Decision output shall not create route-step relationships.",
+      "Decision output shall not claim that selecting an action executes it.",
+      "Decision output shall not claim that expected evidence already exists.",
+      "Decision output shall not directly change hypothesis probability."
     ]
+  },
+
+  "decision_process": {
+    "stages": [
+      "ASSEMBLE_CURRENT_STATE",
+      "GENERATE_OR_RECEIVE_CANDIDATES",
+      "NORMALIZE_CANDIDATES",
+      "EVALUATE_ELIGIBILITY",
+      "EVALUATE_EXPECTED_VALUE",
+      "COMPARE_ELIGIBLE_CANDIDATES",
+      "SELECT_OR_DEFER",
+      "EXPLAIN_SELECTION",
+      "HAND_OFF_TO_ROUTING"
+    ],
+
+    "stage_semantics": {
+      "ASSEMBLE_CURRENT_STATE": "Use the current authoritative case, hypothesis, evidence, context, constraint, and route state relevant to the decision.",
+
+      "GENERATE_OR_RECEIVE_CANDIDATES": "Collect technically plausible candidate operations from authoritative technical knowledge, active hypotheses, evidence gaps, validation requirements, external direction, and other applicable reasoning components.",
+
+      "NORMALIZE_CANDIDATES": "Resolve candidate operations into canonical runtime actions or canonicalizable action proposals and identify materially equivalent candidates.",
+
+      "EVALUATE_ELIGIBILITY": "Determine whether each candidate may rationally and safely be selected under current hard constraints.",
+
+      "EVALUATE_EXPECTED_VALUE": "Estimate the diagnostic and operational value of each eligible candidate using the applicable decision dimensions.",
+
+      "COMPARE_ELIGIBLE_CANDIDATES": "Compare candidates using defensible quantitative, ordinal, qualitative, or hybrid reasoning.",
+
+      "SELECT_OR_DEFER": "Select the best-supported eligible action, defer when required information or conditions are missing, or return no selection when no rational candidate is presently available.",
+
+      "EXPLAIN_SELECTION": "Preserve why the selected action outranked materially relevant alternatives and identify important uncertainty.",
+
+      "HAND_OFF_TO_ROUTING": "Provide the selected canonical action and decision context to Routing for diagnostic progression."
+    }
   },
 
   "candidate_generation": {
-    "sources": [
-      "KNOWLEDGE_GRAPH",
+    "principle": "Decision requires a sufficiently broad set of technically plausible actions before preference can be rational.",
+
+    "candidate_sources": [
       "ACTIVE_HYPOTHESES",
       "EVIDENCE_GAPS",
-      "UNCERTAINTY_ENGINE",
-      "ROUTING_ENGINE",
-      "PROCEDURAL_MEMORY",
-      "SIMILAR_CASES",
-      "USER_OVERLAY",
-      "VALIDATION_REQUIREMENTS"
+      "KNOWN_UNCERTAINTIES",
+      "TECHNICAL_KNOWLEDGE",
+      "PROCEDURE_REQUIREMENTS",
+      "VALIDATION_REQUIREMENTS",
+      "CONTRADICTIONS",
+      "CURRENT_CONTEXT",
+      "ROUTE_STATE",
+      "ROUTE_EXHAUSTION",
+      "HISTORICAL_EFFECTIVENESS",
+      "SIMILAR_CASE_PATTERNS",
+      "USER_OR_TECHNICIAN_DIRECTION",
+      "ENGINEER_DIRECTION",
+      "EXTERNAL_REQUIREMENT"
     ],
 
     "rules": [
-      "Candidate actions must be technically applicable to the current context.",
-      "Candidate generation should include actions capable of disproving the leading hypothesis.",
-      "ARIA shall consider actions that discriminate multiple hypotheses.",
-      "Previously completed equivalent actions shall normally be excluded unless material state change justifies repetition.",
-      "Unavailable or blocked actions may remain represented but shall not be selected unless the blocking condition changes."
+      "Candidate generation shall include actions capable of disproving or materially weakening the leading hypothesis when technically appropriate.",
+      "Candidate generation should include actions capable of discriminating multiple important hypotheses.",
+      "Candidate generation should consider actions that resolve important evidence gaps or contradictions.",
+      "Previously completed equivalent work shall normally be deprioritized or excluded unless material state change or evidence-quality concerns justify repetition.",
+      "Candidate generation shall not fabricate procedures unsupported by technical knowledge.",
+      "Routing state may reveal blocked, exhausted, repeated, or previously attempted paths but Routing shall not become the owner of competitive candidate selection.",
+      "Candidate breadth shall be sufficient to avoid tunnel vision while remaining technically relevant to the current case."
     ]
   },
 
-  "decision_dimensions": [
-    {
-      "name": "HYPOTHESIS_RELEVANCE",
-      "description": "How directly the action evaluates important active hypotheses."
-    },
-    {
-      "name": "EXPECTED_INFORMATION_GAIN",
-      "description": "Expected reduction in uncertainty produced by the action."
-    },
-    {
-      "name": "DISCRIMINATION_POWER",
-      "description": "Ability of the action to distinguish competing hypotheses."
-    },
-    {
-      "name": "EVIDENCE_QUALITY",
-      "description": "Expected reliability and technical usefulness of resulting evidence."
-    },
-    {
-      "name": "ACTION_SUCCESS_PROBABILITY",
-      "description": "Likelihood the requested action can actually be completed and produce usable evidence."
-    },
-    {
-      "name": "TIME_COST",
-      "description": "Expected time required to obtain useful results."
-    },
-    {
-      "name": "USER_EFFORT",
-      "description": "Expected burden placed on the user or technician."
-    },
-    {
-      "name": "FINANCIAL_COST",
-      "description": "Expected direct financial cost."
-    },
-    {
-      "name": "SERVICE_IMPACT",
-      "description": "Expected operational impact to the affected system."
-    },
-    {
-      "name": "SAFETY_RISK",
-      "description": "Potential safety consequence."
-    },
-    {
-      "name": "REVERSIBILITY",
-      "description": "Ease with which the action can be undone."
-    },
-    {
-      "name": "ROUTE_NOVELTY",
-      "description": "Whether the action advances diagnosis rather than repeating completed reasoning."
-    },
-    {
-      "name": "USER_CONTEXT",
-      "description": "Historical likelihood that the specific user can execute the action accurately and efficiently."
-    },
-    {
-      "name": "HISTORICAL_ROUTE_EFFECTIVENESS",
-      "description": "Historical performance of the action in comparable contexts."
-    },
-    {
-      "name": "VALIDATION_VALUE",
-      "description": "Ability of the action to validate or invalidate an existing conclusion."
-    }
-  ],
+  "candidate_normalization": {
+    "principle": "Different wording shall not cause materially equivalent technical operations to be treated as independent choices.",
 
-  "decision_utility": {
-    "description": "Candidate actions shall receive a configurable utility score.",
-
-    "conceptual_formula": "utility = diagnostic_value + information_gain + discrimination_power + evidence_quality + completion_probability + historical_effectiveness - time_cost - user_effort - financial_cost - service_impact - safety_risk - repetition_penalty",
-
-    "rules": [
-      "The formula is conceptual and shall remain configurable.",
-      "Weights may differ by diagnostic context.",
-      "Safety constraints may override numerical utility.",
-      "Service-impact constraints may override numerical utility.",
-      "Deterministic prerequisites may eliminate otherwise high-scoring actions.",
-      "User history may modify expected completion quality or cost but shall not modify physical technical truth."
-    ]
-  },
-
-  "information_gain": {
-    "description": "Measures how much an action is expected to reduce uncertainty across the active hypothesis space.",
-
-    "preferred_characteristics": [
-      "Separates multiple leading hypotheses",
-      "Produces objective evidence",
-      "Produces independent evidence",
-      "Has predictable outcomes under competing hypotheses",
-      "Can materially alter probability distribution",
-      "Can rule out entire branches of the diagnostic graph"
+    "compare": [
+      "action_type",
+      "procedure identity",
+      "target entities",
+      "requested technical operation",
+      "expected evidence",
+      "relevant configuration state",
+      "relevant physical state",
+      "technical context",
+      "execution conditions"
     ],
 
     "rules": [
-      "An action targeted at a lower-probability hypothesis may be preferred if it efficiently separates several leading possibilities.",
-      "Repeated confirmation of already strong evidence generally has low information gain.",
-      "Information gain shall be evaluated before the action and realized information gain after completion."
+      "Semantically equivalent candidate descriptions should be normalized before comparison.",
+      "The same universal action class does not by itself make two actions equivalent.",
+      "Different targets may make otherwise similar operations materially distinct.",
+      "Different evidence-quality requirements may make an apparent repeat technically distinct.",
+      "A material state change may make a previously performed operation newly informative.",
+      "Selected candidates shall resolve to canonical runtime actions."
     ]
   },
 
-  "discrimination_matrix": {
-    "description": "ARIA may model expected outcomes of candidate actions under competing hypotheses.",
+  "eligibility": {
+    "principle": "Eligibility is evaluated before preference. A high-value action that violates a hard technical constraint is not made eligible by a high utility score.",
 
-    "example": {
-      "hypotheses": [
-        "RF_ROUTING_ERROR",
-        "CONFIGURATION_ERROR",
-        "RADIO_FAILURE"
-      ],
+    "eligibility_states": [
+      "ELIGIBLE",
+      "CONDITIONALLY_ELIGIBLE",
+      "TEMPORARILY_INELIGIBLE",
+      "INELIGIBLE",
+      "UNKNOWN"
+    ],
 
-      "action": "COMPARE_MAIN_DIVERSITY_RSL_AND_VERIFY_ROUTING",
+    "hard_constraints": [
+      "TECHNICALLY_INAPPLICABLE",
+      "MANDATORY_PREREQUISITE_UNSATISFIED",
+      "UNACCEPTABLE_SAFETY_CONDITION",
+      "REQUIRED_AUTHORIZATION_UNAVAILABLE",
+      "REQUIRED_ACCESS_UNAVAILABLE",
+      "REQUIRED_TOOL_UNAVAILABLE",
+      "REQUIRED_RESOURCE_UNAVAILABLE",
+      "PROHIBITED_SERVICE_IMPACT",
+      "PROCEDURE_PROHIBITION",
+      "CONTEXT_INCOMPATIBLE",
+      "IRREVERSIBLE_WITHOUT_REQUIRED_JUSTIFICATION",
+      "EXTERNAL_DEPENDENCY_UNAVAILABLE"
+    ],
 
-      "expected_outcomes": {
-        "RF_ROUTING_ERROR": "Physical routing mismatch or path-specific abnormality likely detected.",
-        "CONFIGURATION_ERROR": "Physical routing likely correct; configuration remains plausible.",
-        "RADIO_FAILURE": "Physical routing likely correct and abnormality remains after routing verification."
+    "conditional_constraints": [
+      "AUTHORIZATION_PENDING",
+      "ACCESS_PENDING",
+      "RESOURCE_PENDING",
+      "TOOL_PENDING",
+      "SERVICE_WINDOW_PENDING",
+      "DEPENDENCY_PENDING",
+      "ADDITIONAL_CONTEXT_REQUIRED",
+      "ADDITIONAL_EVIDENCE_REQUIRED",
+      "USER_CAPABILITY_LIMITATION",
+      "ROLLBACK_PREPARATION_REQUIRED"
+    ],
+
+    "rules": [
+      "Hard constraints shall not be overcome solely by expected diagnostic value.",
+      "Safety requirements override convenience, speed, and numerical preference.",
+      "Authorization requirements shall be respected independently of technical desirability.",
+      "A temporarily unavailable action may remain represented for later reevaluation.",
+      "An action with unknown eligibility shall not be treated as eligible without sufficient justification.",
+      "Conditionally eligible actions shall identify the conditions required for progression.",
+      "Eligibility shall use authoritative action prerequisites and constraints where available.",
+      "Decision shall not silently convert an ineligible candidate into a different technical action."
+    ]
+  },
+
+  "decision_dimensions": {
+    "principle": "Decision compares eligible candidates across the dimensions materially relevant to the current technical state.",
+
+    "dimensions": {
+      "HYPOTHESIS_RELEVANCE": {
+        "description": "How materially the action evaluates important active hypotheses."
+      },
+
+      "EXPECTED_INFORMATION_GAIN": {
+        "description": "Expected reduction in important uncertainty produced by the action."
+      },
+
+      "EXPECTED_DISCRIMINATION": {
+        "description": "Expected ability to distinguish materially competing hypotheses or explanations."
+      },
+
+      "EXPECTED_EVIDENCE_VALUE": {
+        "description": "Expected technical usefulness, independence, objectivity, and interpretability of the evidence likely to result."
+      },
+
+      "EXPECTED_COMPLETION_LIKELIHOOD": {
+        "description": "Expected likelihood that the action can be completed correctly enough to provide useful diagnostic value."
+      },
+
+      "EXPECTED_TIME_COST": {
+        "description": "Expected time before useful diagnostic information becomes available."
+      },
+
+      "EXPECTED_USER_EFFORT": {
+        "description": "Expected burden placed on the user, technician, engineer, or other executing party."
+      },
+
+      "EXPECTED_FINANCIAL_COST": {
+        "description": "Expected direct financial cost attributable to performing the action."
+      },
+
+      "EXPECTED_SERVICE_IMPACT": {
+        "description": "Expected effect on operational service or system availability."
+      },
+
+      "EXPECTED_SAFETY_IMPACT": {
+        "description": "Expected safety exposure associated with performing the action."
+      },
+
+      "EXPECTED_REVERSIBILITY_VALUE": {
+        "description": "Decision value associated with the ability to restore prior state if the action changes technical state."
+      },
+
+      "ROUTE_NOVELTY": {
+        "description": "Degree to which the action advances the investigation rather than unnecessarily repeating prior diagnostic work."
+      },
+
+      "HISTORICAL_EFFECTIVENESS": {
+        "description": "Observed usefulness of equivalent or similar actions in genuinely comparable prior contexts."
+      },
+
+      "USER_CAPABILITY_EFFECT": {
+        "description": "Effect of known execution capability on expected completion time, accuracy, evidence quality, and required instruction detail."
+      },
+
+      "VALIDATION_VALUE": {
+        "description": "Expected value of the action in testing whether a proposed conclusion, correction, or restored state actually holds."
+      },
+
+      "CONTRADICTION_VALUE": {
+        "description": "Expected ability of the action to resolve a material contradiction in current evidence or reasoning."
+      },
+
+      "DEPENDENCY_VALUE": {
+        "description": "Value of satisfying a prerequisite that unlocks otherwise useful diagnostic progression."
+      },
+
+      "ESCALATION_VALUE": {
+        "description": "Expected value of transferring the case or technical task when current capability, authority, knowledge, or access is insufficient."
       }
     },
 
-    "rule": "Actions with materially different expected outcomes under competing hypotheses have high discrimination value."
-  },
-
-  "risk_classes": [
-    {
-      "name": "PASSIVE",
-      "examples": [
-        "Read screenshot",
-        "Review configuration export",
-        "Inspect alarm history"
-      ]
-    },
-    {
-      "name": "LOW_RISK",
-      "examples": [
-        "Visual inspection",
-        "Non-disruptive measurement",
-        "Compare endpoint values"
-      ]
-    },
-    {
-      "name": "MODERATE_RISK",
-      "examples": [
-        "Reseat connection",
-        "Controlled configuration change",
-        "Reboot redundant equipment"
-      ]
-    },
-    {
-      "name": "HIGH_RISK",
-      "examples": [
-        "Service-affecting configuration change",
-        "Remove active RF connection",
-        "Replace active equipment"
-      ]
-    },
-    {
-      "name": "CRITICAL",
-      "examples": [
-        "Action with material safety risk",
-        "Irreversible destructive action",
-        "Action capable of broad network impact"
-      ]
-    }
-  ],
-
-  "risk_policy": {
     "rules": [
-      "Higher-risk actions require greater expected benefit and stronger justification.",
-      "A lower-risk action with comparable diagnostic value shall normally be preferred.",
-      "Safety constraints override speed.",
-      "ARIA shall identify service-affecting actions before recommending execution.",
-      "Critical actions may require explicit authorization or escalation."
+      "Not every dimension is relevant to every decision.",
+      "Dimensions shall not be forced into numeric form when credible quantification is unavailable.",
+      "A dimension derived from uncertain inputs shall preserve that uncertainty.",
+      "Expected values are predictions and shall not be represented as observed outcomes.",
+      "Decision dimensions shall not redefine authoritative Action, Evidence, Hypothesis, Context, or Routing fields."
     ]
   },
 
-  "reversibility_model": {
-    "levels": [
-      "FULLY_REVERSIBLE",
-      "EASILY_REVERSIBLE",
-      "REVERSIBLE_WITH_EFFORT",
-      "DIFFICULT_TO_REVERSE",
-      "IRREVERSIBLE"
+  "expected_information_gain": {
+    "description": "Expected information gain estimates how much a candidate action may reduce important uncertainty across the current hypothesis or explanation space.",
+
+    "preferred_characteristics": [
+      "distinguishes multiple plausible explanations",
+      "tests a high-materiality uncertainty",
+      "produces objective evidence",
+      "produces independent evidence",
+      "has meaningfully different expected observations under competing explanations",
+      "can eliminate or materially weaken multiple possibilities",
+      "can expose a previously hidden contradiction",
+      "can determine which diagnostic branch remains useful"
     ],
 
     "rules": [
-      "Reversible diagnostic experiments may be preferred when they provide strong causal evidence.",
-      "Irreversible actions require stronger evidence.",
-      "ARIA shall preserve the original state required for rollback whenever practical."
+      "An action aimed at a lower-probability hypothesis may be preferred when it efficiently discriminates several important possibilities.",
+      "Repeated confirmation of already strong evidence generally has lower expected information gain.",
+      "Expected information gain is evaluated before action execution.",
+      "Realized information gain is evaluated after progression by the appropriate routing or reasoning process.",
+      "Expected information gain is not evidence confidence.",
+      "Expected information gain is not hypothesis probability.",
+      "ARIA shall not fabricate precise information-gain values when only ordinal comparison is defensible."
     ]
   },
 
-  "user_context_effect": {
-    "description": "User-specific experience may alter the expected cost, reliability, and communication method of an action.",
+  "discrimination": {
+    "description": "Discrimination evaluates whether different plausible explanations predict materially different observations from the candidate action.",
+
+    "method": [
+      "identify materially competing hypotheses or explanations",
+      "identify the candidate action",
+      "estimate expected observations under each competing explanation when technically supported",
+      "compare whether those expected observations are meaningfully distinguishable",
+      "increase discrimination value when the action can separate important competing explanations",
+      "reduce discrimination value when substantially the same result is expected regardless of explanation"
+    ],
+
+    "rules": [
+      "Expected-outcome modeling shall be grounded in technical knowledge rather than invented solely to create a score.",
+      "High discrimination does not require that an action directly repair anything.",
+      "A passive observation may have greater discrimination value than an invasive corrective action.",
+      "An action that produces the same expected observation under all plausible hypotheses has low discrimination value.",
+      "Discrimination assessment shall remain domain-independent at the Core reasoning level."
+    ]
+  },
+
+  "evidence_value": {
+    "consider": [
+      "objectivity",
+      "independence",
+      "directness",
+      "specificity",
+      "repeatability",
+      "measurement quality",
+      "source reliability",
+      "interpretability",
+      "temporal relevance",
+      "ability to resolve contradiction"
+    ],
+
+    "rules": [
+      "Decision may estimate expected evidence value but shall not assign authoritative confidence to evidence that does not yet exist.",
+      "Expected evidence value shall account for whether the executing party can realistically obtain the requested evidence correctly.",
+      "Independent evidence may be more valuable than repeated evidence from the same mechanism.",
+      "Evidence likely to be ambiguous may reduce candidate value even when inexpensive to obtain."
+    ]
+  },
+
+  "completion_likelihood": {
+    "consider": [
+      "technical feasibility",
+      "required tools",
+      "required access",
+      "required authorization",
+      "executor capability",
+      "instruction complexity",
+      "environmental constraints",
+      "expected evidence-capture difficulty",
+      "known procedure difficulty"
+    ],
+
+    "rules": [
+      "Completion likelihood affects expected action value but does not change physical technical truth.",
+      "Low completion likelihood may favor an alternative action when diagnostic value is otherwise comparable.",
+      "A technically critical action may still be selected despite execution difficulty when no adequate alternative exists.",
+      "Unknown capability shall not automatically be interpreted as inability."
+    ]
+  },
+
+  "cost_and_impact": {
+    "dimensions": [
+      "TIME",
+      "USER_EFFORT",
+      "FINANCIAL_COST",
+      "SERVICE_IMPACT",
+      "SAFETY_IMPACT",
+      "STATE_CHANGE_MAGNITUDE",
+      "ROLLBACK_COMPLEXITY"
+    ],
+
+    "rules": [
+      "Cost and impact are decision factors rather than technical truth.",
+      "A lower-cost action with comparable diagnostic value should generally be preferred.",
+      "Low cost does not justify low-value busywork.",
+      "High diagnostic value does not override prohibited safety or authorization constraints.",
+      "Service-affecting actions require explicit consideration before selection.",
+      "State-changing actions require stronger justification when passive alternatives can answer the same question."
+    ]
+  },
+
+  "reversibility": {
+    "principle": "The ability to restore prior technical state increases the attractiveness of controlled diagnostic changes when other factors are comparable.",
+
+    "rules": [
+      "Decision shall consume authoritative action reversibility and rollback information where available.",
+      "Decision shall not establish a competing universal reversibility vocabulary.",
+      "A reversible controlled change may provide strong causal discrimination.",
+      "An irreversible action requires stronger justification and applicable authorization.",
+      "Rollback preparation may be an eligibility condition for a state-changing action.",
+      "Reversibility does not make an otherwise unsafe action acceptable."
+    ]
+  },
+
+  "safety_and_service_policy": {
+    "rules": [
+      "Safety constraints override speed, convenience, and numerical utility.",
+      "Decision shall identify materially service-affecting actions before selection.",
+      "Decision shall prefer non-invasive or lower-impact evidence collection when it provides comparable diagnostic value.",
+      "A high-impact action may be rational when lower-impact alternatives cannot resolve a material uncertainty.",
+      "Actions requiring authorization shall remain subject to the authoritative authorization model.",
+      "Decision shall not invent permission merely because an action has high expected value."
+    ]
+  },
+
+  "user_capability_effect": {
+    "description": "Known user, technician, engineer, or executor capability may change the expected practical value of an action without changing technical reality.",
 
     "allowed_effects": [
       "EXPECTED_COMPLETION_TIME",
       "EXPECTED_EVIDENCE_QUALITY",
-      "EXPECTED_ACTION_ACCURACY",
+      "EXPECTED_EXECUTION_ACCURACY",
+      "EXPECTED_USER_EFFORT",
       "NEED_FOR_INSTRUCTION_DETAIL",
       "LIKELIHOOD_OF_REQUIRED_REPEAT",
-      "PREFERRED_EVIDENCE_FORMAT"
+      "PREFERRED_EVIDENCE_FORMAT",
+      "LIKELIHOOD_OF_SUCCESSFUL_TOOL_USE"
     ],
 
     "prohibited_effects": [
@@ -299,98 +591,346 @@
       "MANUFACTURER_REQUIREMENT",
       "CURRENT_MEASURED_VALUE",
       "VALIDATED_CONFIGURATION_STATE",
-      "DETERMINISTIC_TECHNICAL_RELATIONSHIP"
+      "DETERMINISTIC_TECHNICAL_RELATIONSHIP",
+      "EVIDENCE_TRUTH",
+      "HYPOTHESIS_TRUTH"
     ],
 
     "rules": [
-      "User history affects how ARIA requests work, not what technical reality is.",
-      "User-specific historical error patterns may increase the value of verifying a related condition.",
-      "Current validated evidence shall override user history."
+      "User history affects expected execution characteristics, not technical reality.",
+      "Known capability may reduce instruction burden or expected completion time.",
+      "Known difficulty with a procedure may increase expected effort or reduce expected evidence quality.",
+      "Current validated evidence shall override user-history assumptions.",
+      "Decision shall not stereotype capability from irrelevant personal characteristics.",
+      "Lack of history shall be represented as uncertainty rather than negative capability."
     ]
   },
 
-  "example_user_effect": {
-    "case_context": "RSL discrepancy during Nokia commissioning",
+  "historical_effectiveness": {
+    "description": "Historical performance may inform expected value when prior cases are genuinely comparable.",
 
-    "user_history": {
-      "user": "Clayton",
-      "similar_cases": 13,
-      "validated_configuration_errors": 9
+    "comparability_factors": [
+      "technical domain",
+      "technology",
+      "manufacturer",
+      "product family",
+      "failure context",
+      "configuration context",
+      "environment",
+      "symptom pattern",
+      "hypothesis structure",
+      "action equivalence",
+      "evidence conditions"
+    ],
+
+    "rules": [
+      "Historical frequency is not current-case proof.",
+      "Historical effectiveness shall be discounted when contextual similarity is weak.",
+      "A historically common cause shall not override contradictory current evidence.",
+      "A historically useful action may receive higher expected value when current context is genuinely comparable.",
+      "Historical data shall not create false certainty."
+    ]
+  },
+
+  "repetition": {
+    "principle": "Decision shall avoid repeated diagnostic work that is unlikely to produce new information while permitting technically justified repetition.",
+
+    "repetition_indicators": [
+      "EQUIVALENT_ACTION_PREVIOUSLY_COMPLETED",
+      "SAME_TARGET",
+      "SAME_RELEVANT_STATE",
+      "SAME_EXPECTED_EVIDENCE",
+      "PREVIOUS_RESULT_HIGH_QUALITY",
+      "NO_MATERIAL_CONTEXT_CHANGE"
+    ],
+
+    "valid_repeat_reasons": [
+      "PREVIOUS_EVIDENCE_LOW_CONFIDENCE",
+      "TECHNICAL_STATE_CHANGED",
+      "CONFIGURATION_CHANGED",
+      "COMPONENT_CHANGED",
+      "TIME_DEPENDENT_CONDITION",
+      "RECURRENCE",
+      "INDEPENDENT_VERIFICATION_REQUIRED",
+      "PREVIOUS_ACTION_INCOMPLETE",
+      "PREVIOUS_ACTION_FAILED",
+      "CONTEXT_CHANGED",
+      "OTHER"
+    ],
+
+    "rules": [
+      "Equivalent completed actions should normally receive a substantial preference penalty when no material state change occurred.",
+      "Decision shall consume Routing repetition analysis when available.",
+      "Different wording shall not defeat repetition detection.",
+      "A repeated action may become highly valuable after a material technical state change.",
+      "Poor-quality prior evidence may justify repeating an otherwise equivalent action.",
+      "Repetition penalty shall not become a prohibition when repetition is technically necessary.",
+      "Decision shall preserve why a repeat remains rational when selecting it."
+    ]
+  },
+
+  "validation_value": {
+    "description": "Validation actions test whether a proposed technical conclusion, correction, restoration, or expected state actually holds.",
+
+    "rules": [
+      "A corrective action and a validation action are not interchangeable merely because the correction appeared successful.",
+      "Validation value increases when an earlier action materially changed technical state.",
+      "Validation should test the condition that matters, not merely repeat the command that caused the change.",
+      "Decision shall consider whether independent validation is warranted.",
+      "Validation requirements may make an otherwise low-information action mandatory or deterministically necessary."
+    ]
+  },
+
+  "contradiction_handling": {
+    "principle": "Material contradictions should increase the value of actions capable of resolving them.",
+
+    "rules": [
+      "Decision shall not average away contradictory evidence solely to preserve a preferred hypothesis.",
+      "Actions capable of distinguishing which conflicting evidence is authoritative may receive high value.",
+      "A contradiction involving high-materiality evidence may justify delaying corrective action.",
+      "Unresolved contradiction shall be reflected in decision uncertainty.",
+      "Contradiction resolution does not belong to Routing merely because it changes the route afterward."
+    ]
+  },
+
+  "decision_utility": {
+    "principle": "Utility is a structured comparison of expected benefits, costs, constraints, and uncertainty. It is not technical truth.",
+
+    "conceptual_model": {
+      "benefit_factors": [
+        "hypothesis relevance",
+        "expected information gain",
+        "expected discrimination",
+        "expected evidence value",
+        "expected completion likelihood",
+        "historical effectiveness",
+        "validation value",
+        "contradiction value",
+        "dependency value"
+      ],
+
+      "cost_or_impact_factors": [
+        "expected time",
+        "expected user effort",
+        "expected financial cost",
+        "expected service impact",
+        "expected safety impact",
+        "state-change magnitude",
+        "rollback complexity",
+        "unjustified repetition"
+      ],
+
+      "context_modifiers": [
+        "user capability",
+        "technical context",
+        "resource availability",
+        "route history",
+        "state uncertainty",
+        "historical comparability"
+      ]
     },
 
-    "effect": "Increase expected diagnostic value of early configuration verification.",
-
-    "preferred_interaction": "Clayton, before we climb into the RF chain, send me Radio A and Radio B configuration. Nine of our last thirteen similar RSL cases together involved a configuration issue, so this is the cheapest thing for us to eliminate first.",
-
-    "rule": "The historical pattern changes action priority, not the conclusion."
-  },
-
-  "action_equivalence": {
-    "description": "Prevents repeated actions expressed with different wording.",
-
-    "examples": [
-      [
-        "Check Radio B configuration",
-        "Send me Radio B config",
-        "Verify Radio B settings"
-      ],
-      [
-        "Inspect Main/Diversity routing",
-        "Trace the RF routing",
-        "Verify which flex goes to Main and Diversity"
-      ]
+    "supported_comparison_modes": [
+      "QUANTITATIVE",
+      "ORDINAL",
+      "QUALITATIVE",
+      "HYBRID"
     ],
 
     "rules": [
-      "Semantically equivalent completed actions shall receive repetition penalties.",
-      "Equivalent actions may become valid again after material state changes.",
-      "Different evidence quality requirements may justify repeating an otherwise equivalent action."
+      "A configurable weighted model may be used when the underlying quantities and calibration justify it.",
+      "A numeric score shall not be fabricated merely because the system supports numeric scoring.",
+      "Ordinal comparison is preferred over false numerical precision.",
+      "Qualitative reasoning is acceptable when the technical basis is explicit and explainable.",
+      "Hard eligibility constraints are evaluated outside and before preference utility.",
+      "Utility shall not be interpreted as probability that an action is technically correct.",
+      "Utility shall not be interpreted as probability that a hypothesis is true.",
+      "Small score differences shall not be treated as meaningful when uncertainty exceeds the difference."
     ]
   },
 
-  "repetition_penalty": {
+  "quantitative_scoring": {
     "enabled": true,
 
-    "candidate_factors": [
-      "ACTION_ALREADY_COMPLETED",
-      "EQUIVALENT_ACTION_COMPLETED",
-      "NO_MATERIAL_STATE_CHANGE",
-      "SAME_EXPECTED_EVIDENCE",
-      "PREVIOUS_RESULT_HIGH_QUALITY"
+    "requirements": [
+      "dimension values have defensible meaning",
+      "normalization is documented",
+      "weights are documented or traceable",
+      "uncertainty is represented",
+      "hard constraints have already been evaluated",
+      "score differences are interpreted relative to uncertainty"
     ],
 
     "rules": [
-      "Repeated actions shall receive strong penalties when they are unlikely to produce new information.",
-      "The penalty shall decrease when the technical state has materially changed.",
-      "Poor-quality previous execution may justify repetition."
+      "Quantitative scoring is optional rather than mandatory.",
+      "Weights may vary by legitimate technical context when traceable.",
+      "Safety or authorization constraints shall not be represented merely as negative weights.",
+      "Unknown values shall not silently default to favorable values.",
+      "A quantitative score shall remain explainable in terms of its material contributors."
     ]
   },
 
-  "rerouting": {
-    "description": "ARIA shall compute the next route from the current state after every material event.",
+  "qualitative_comparison": {
+    "use_when": [
+      "reliable numeric calibration is unavailable",
+      "candidate differences are obvious from hard technical considerations",
+      "evidence is too sparse for meaningful numerical estimation",
+      "the number of candidates is small",
+      "ordinal relationships are defensible but precise magnitudes are not"
+    ],
 
-    "triggers": [
-      "NEW_EVIDENCE",
-      "EVIDENCE_INVALIDATION",
-      "CONTEXT_CHANGE",
-      "ACTION_RESULT",
-      "HYPOTHESIS_CHANGE",
-      "PROBABILITY_CHANGE",
-      "VALIDATION_RESULT",
-      "CONTRADICTION",
-      "USER_CONSTRAINT_CHANGE"
+    "example_relationships": [
+      "STRONGLY_PREFERRED",
+      "PREFERRED",
+      "ROUGHLY_EQUIVALENT",
+      "DISFAVORED",
+      "STRONGLY_DISFAVORED"
     ],
 
     "rules": [
-      "Rerouting shall preserve completed work.",
-      "Rerouting shall not require returning to the original diagnostic starting point.",
-      "Previously poor routes may become useful after state changes.",
-      "The selected route shall be based on current expected utility."
+      "Qualitative comparison shall still identify the material reasons for preference.",
+      "Rough equivalence shall preserve uncertainty rather than force an arbitrary winner.",
+      "When candidates are effectively equivalent, Decision may use a transparent tie-break policy."
     ]
   },
 
-  "route_horizon": {
-    "description": "ARIA may consider more than one future action while committing only to the most appropriate next hop.",
+  "tie_breaking": {
+    "ordered_considerations": [
+      "lower safety impact",
+      "lower service impact",
+      "greater reversibility",
+      "higher expected evidence quality",
+      "higher expected discrimination",
+      "lower user effort",
+      "lower time cost",
+      "lower financial cost",
+      "less unjustified repetition"
+    ],
+
+    "rules": [
+      "Tie breaking applies only when candidates are otherwise materially comparable.",
+      "Tie-break rules shall not override a significant difference in diagnostic value.",
+      "External authorized direction may resolve a genuine tie when technically permissible."
+    ]
+  },
+
+  "decision_confidence": {
+    "principle": "Decision confidence expresses confidence in the action-selection judgment, not confidence that the selected hypothesis is true.",
+
+    "consider": [
+      "quality of current authoritative state",
+      "candidate completeness",
+      "technical knowledge coverage",
+      "eligibility certainty",
+      "expected-outcome certainty",
+      "difference between leading candidates",
+      "historical calibration",
+      "unresolved contradictions",
+      "missing context",
+      "unknown constraints"
+    ],
+
+    "rules": [
+      "Decision confidence shall remain distinct from evidence confidence.",
+      "Decision confidence shall remain distinct from hypothesis probability.",
+      "A clear low-risk action may have high decision confidence even when diagnosis remains highly uncertain.",
+      "A leading candidate may have low decision confidence when several alternatives are nearly equivalent.",
+      "Missing knowledge or context shall reduce confidence when materially relevant."
+    ]
+  },
+
+  "decision_uncertainty": {
+    "uncertainty_sources": [
+      "INCOMPLETE_CANDIDATE_SET",
+      "UNKNOWN_ELIGIBILITY",
+      "MISSING_CONTEXT",
+      "MISSING_EVIDENCE",
+      "CONTRADICTORY_EVIDENCE",
+      "UNCERTAIN_EXPECTED_OUTCOMES",
+      "UNCERTAIN_COST",
+      "UNCERTAIN_SERVICE_IMPACT",
+      "UNCERTAIN_SAFETY_IMPACT",
+      "UNCERTAIN_EXECUTOR_CAPABILITY",
+      "WEAK_HISTORICAL_COMPARABILITY",
+      "CLOSE_CANDIDATE_VALUES",
+      "KNOWLEDGE_GAP",
+      "OTHER"
+    ],
+
+    "rules": [
+      "Material uncertainty shall be surfaced in the decision explanation.",
+      "Decision may select an action despite uncertainty when the action remains rational and eligible.",
+      "Decision may defer when uncertainty prevents responsible selection.",
+      "Decision shall not manufacture precision to conceal uncertainty."
+    ]
+  },
+
+  "selection_policy": {
+    "rules": [
+      "Only eligible or appropriately conditionally eligible actions may be selected.",
+      "The selected action should provide the strongest defensible expected value under current constraints.",
+      "A lower-probability hypothesis may motivate the selected action when the action provides greater discrimination or information gain.",
+      "A passive or observational action may outrank a corrective action when causal uncertainty remains material.",
+      "A corrective action may be selected when evidence and expected benefit justify changing state.",
+      "An escalation action may be selected when required knowledge, authority, capability, access, or support is unavailable.",
+      "A monitoring or waiting action may be selected when technical value depends on observing a time-dependent condition.",
+      "No action shall be selected merely to maintain conversational momentum.",
+      "Decision may return no selection when no responsible action is presently available."
+    ]
+  },
+
+  "external_direction": {
+    "principle": "Authorized external direction may constrain or determine the next action without being misrepresented as an autonomous Decision preference.",
+
+    "sources": [
+      "USER",
+      "TECHNICIAN",
+      "ENGINEER",
+      "AUTHORIZED_OPERATOR",
+      "CUSTOMER_REQUIREMENT",
+      "MANUFACTURER_REQUIREMENT",
+      "PROCEDURE_REQUIREMENT",
+      "SAFETY_REQUIREMENT"
+    ],
+
+    "rules": [
+      "Externally directed actions remain subject to applicable safety, authorization, and technical constraints.",
+      "When external direction determines the action, Decision shall preserve that fact.",
+      "Decision shall not fabricate a utility-based rationale to imply autonomous selection when the action was externally mandated.",
+      "Decision may still explain the technical implications of the directed action.",
+      "A manufacturer or procedure requirement shall be grounded in authoritative technical knowledge."
+    ]
+  },
+
+  "defer_and_no_selection": {
+    "defer_conditions": [
+      "REQUIRED_CONTEXT_MISSING",
+      "REQUIRED_EVIDENCE_MISSING",
+      "ELIGIBILITY_UNRESOLVED",
+      "AUTHORIZATION_PENDING",
+      "ACCESS_PENDING",
+      "RESOURCE_PENDING",
+      "SERVICE_WINDOW_PENDING",
+      "EXTERNAL_DEPENDENCY_PENDING",
+      "MATERIAL_CONTRADICTION_REQUIRES_RESOLUTION",
+      "NO_SAFE_ACTION_AVAILABLE",
+      "NO_TECHNICALLY_SUPPORTED_ACTION_AVAILABLE",
+      "KNOWLEDGE_GAP",
+      "USER_REQUESTED_PAUSE",
+      "OTHER"
+    ],
+
+    "rules": [
+      "Deferral is a valid Decision result and shall not be disguised as a low-value action.",
+      "Decision shall identify what condition would permit reevaluation when known.",
+      "No-selection state shall not imply case resolution.",
+      "No-selection state shall not imply that no technical cause exists.",
+      "When escalation is the rational action, Decision should select a canonical escalation action rather than merely declaring failure."
+    ]
+  },
+
+  "short_horizon_reasoning": {
+    "principle": "Decision may anticipate likely future choices while committing only to the currently justified action.",
 
     "modes": [
       "ONE_STEP",
@@ -399,46 +939,54 @@
     ],
 
     "rules": [
-      "ARIA may anticipate likely subsequent actions when useful.",
-      "ARIA shall avoid rigidly committing to long troubleshooting trees before receiving intermediate evidence.",
-      "Future actions should normally remain conditional on observed results."
+      "ARIA may consider how a candidate's possible results affect likely future diagnostic choices.",
+      "Future actions shall normally remain conditional on observations not yet obtained.",
+      "Decision shall not create a rigid long troubleshooting sequence before intermediate evidence exists.",
+      "Anticipated future actions are not selected actions.",
+      "Routing remains responsible for actual route progression after each material state change."
     ]
   },
 
-  "conditional_routes": {
-    "example": {
-      "next_action": "Verify Main/Diversity routing",
+  "counterfactual_reasoning": {
+    "principle": "Decision may compare how candidate results would alter future reasoning under competing technical explanations.",
 
-      "branches": [
-        {
-          "if": "Routing incorrect",
-          "then": "Correct routing and validate RSL."
-        },
-        {
-          "if": "Routing correct",
-          "then": "Evaluate configuration and RF-chain component hypotheses using updated probabilities."
-        }
-      ]
-    },
-
-    "rule": "Conditional route planning may anticipate possibilities without forcing ARIA to follow a predetermined branch."
-  },
-
-  "stop_conditions": {
-    "conditions": [
-      "SUFFICIENT_VALIDATION",
-      "NO_SAFE_ACTION_AVAILABLE",
-      "REQUIRED_ACCESS_UNAVAILABLE",
-      "REQUIRED_EVIDENCE_UNAVAILABLE",
-      "EXTERNAL_DEPENDENCY",
-      "ESCALATION_REQUIRED",
-      "USER_REQUESTED_PAUSE"
+    "questions": [
+      "What would this action likely show if the leading hypothesis were true?",
+      "What would it likely show if a competing hypothesis were true?",
+      "Would those outcomes be meaningfully different?",
+      "Would either result materially change the next rational action?",
+      "Could the action expose a contradiction or eliminate a branch of uncertainty?",
+      "Would a negative result be informative?"
     ],
 
     "rules": [
-      "ARIA shall know when continuing action would add little diagnostic value.",
-      "Stopping temporarily shall preserve exact case state.",
-      "ARIA shall identify what condition would allow diagnosis to continue."
+      "Counterfactual expectations shall be grounded in technical knowledge.",
+      "A candidate whose positive and negative results are both informative may have high diagnostic value.",
+      "Decision shall not treat hypothetical expected outcomes as observed evidence."
+    ]
+  },
+
+  "negative_result_value": {
+    "principle": "An action may be highly valuable even when the expected result is negative or fails to confirm the leading hypothesis.",
+
+    "rules": [
+      "Actions capable of ruling out important possibilities may have high value.",
+      "A negative result that substantially reduces uncertainty may be more valuable than another confirmation of already strong evidence.",
+      "Decision shall not prefer actions solely because they are likely to confirm the current leading hypothesis.",
+      "Disconfirming evidence is diagnostically valuable when technically reliable."
+    ]
+  },
+
+  "corrective_action_policy": {
+    "principle": "Decision shall distinguish diagnosis from correction and shall not use repair success as a substitute for causal reasoning.",
+
+    "rules": [
+      "Corrective actions may be selected when technically justified by current evidence and constraints.",
+      "A corrective action may also function as a controlled experiment when expected outcomes are interpretable and rollback is appropriate.",
+      "State-changing corrective actions generally require stronger justification than passive observations with comparable diagnostic value.",
+      "Successful correction does not by itself prove that the changed condition was the sole root cause.",
+      "Validation should follow correction when required to establish restored technical state.",
+      "Decision shall consider whether the correction destroys information that would have been useful for diagnosis before recommending it."
     ]
   },
 
@@ -448,225 +996,348 @@
       "HIGH_SERVICE_IMPACT",
       "INSUFFICIENT_AUTHORITY",
       "INSUFFICIENT_TECHNICAL_KNOWLEDGE",
-      "REPEATED_FAILED_ROUTE",
+      "INSUFFICIENT_TOOLING",
+      "INSUFFICIENT_ACCESS",
+      "REPEATED_FAILED_DIAGNOSTIC_PROGRESS",
       "UNRESOLVED_HIGH_MATERIALITY_CONTRADICTION",
       "MANUFACTURER_SUPPORT_REQUIRED",
-      "ENGINEERING_REVIEW_REQUIRED"
+      "ENGINEERING_REVIEW_REQUIRED",
+      "KNOWLEDGE_GAP",
+      "EXTERNAL_DEPENDENCY"
     ],
 
     "rules": [
-      "Escalation is a valid decision rather than diagnostic failure.",
-      "ARIA shall provide the receiving party with the current case state and completed diagnostic work.",
-      "Escalation shall not cause previous work to be repeated unnecessarily."
+      "Escalation is a valid technical action choice rather than diagnostic failure.",
+      "Escalation shall use the canonical Action architecture.",
+      "Decision shall consider escalation when continuing locally would create unacceptable risk or low-value repetition.",
+      "The receiving party should receive current authoritative case state and completed diagnostic work through the appropriate orchestration and persistence layers.",
+      "Escalation shall not erase or restart prior reasoning."
     ]
   },
 
   "decision_explanation": {
     "required_capabilities": [
-      "Explain why the selected action outranked alternatives.",
-      "Explain which hypotheses the action evaluates.",
-      "Explain what evidence is expected.",
-      "Explain what result would change the route.",
-      "Explain relevant risk or service impact.",
-      "Explain when user-specific history affected action priority."
+      "explain why the selected action is technically applicable",
+      "explain why the selected action outranked materially relevant alternatives",
+      "identify important hypotheses or uncertainties the action evaluates",
+      "explain what evidence or technical distinction is expected",
+      "identify important cost, risk, effort, service, or reversibility considerations",
+      "identify material eligibility constraints",
+      "identify material uncertainty in the selection",
+      "explain why a repeated action is justified when applicable",
+      "identify when external direction materially determined the selection",
+      "explain why no action was selected when selection is deferred"
     ],
 
-    "preferred_style": "Concise, technically grounded, and proportional to the user's needs."
-  },
-
-  "decision_confidence": {
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "description": "Represents confidence that the selected action is currently the best available next hop.",
-
     "rules": [
-      "Decision confidence is distinct from hypothesis probability.",
-      "ARIA may have low diagnostic confidence but high confidence in the best next information-gathering action.",
-      "Several nearly equivalent candidate actions may reduce decision confidence."
+      "Decision explanation shall not expose fabricated precision.",
+      "Decision explanation shall distinguish facts from expectations.",
+      "Decision explanation shall distinguish technical truth from historical tendency.",
+      "Decision explanation shall distinguish selection confidence from hypothesis probability.",
+      "Decision explanation should be concise enough to be operationally useful while preserving material reasoning."
     ]
   },
 
-  "example": {
-    "case": "Nokia UBT-T Main/Diversity RSL discrepancy",
+  "routing_handoff": {
+    "description": "After selection, Decision hands the selected canonical action and relevant decision context to Routing.",
 
-    "hypotheses": [
-      {
-        "name": "RF_ROUTING_ERROR",
-        "probability": 0.48
-      },
-      {
-        "name": "CONFIGURATION_ERROR",
-        "probability": 0.31
-      },
-      {
-        "name": "RADIO_FAILURE",
-        "probability": 0.14
-      },
-      {
-        "name": "OTHER",
-        "probability": 0.07
-      }
+    "provide": [
+      "selected_action_id",
+      "decision_id_when_available",
+      "selection_reason",
+      "target_hypothesis_ids_when_material",
+      "target_uncertainties_when_material",
+      "expected_information_gain_when_defensible",
+      "expected_discrimination_when_defensible",
+      "material_alternative_action_ids",
+      "material_constraints",
+      "decision_confidence",
+      "decision_uncertainty"
     ],
 
-    "candidate_actions": [
-      {
-        "action": "Replace Radio B",
-        "hypothesis_relevance": 0.14,
-        "information_gain": 0.71,
-        "time_cost": "HIGH",
-        "financial_cost": "HIGH",
-        "service_impact": "MODERATE",
-        "reversibility": "REVERSIBLE_WITH_EFFORT"
-      },
-      {
-        "action": "Verify Main/Diversity RF routing",
-        "hypothesis_relevance": 0.48,
-        "information_gain": 0.86,
-        "time_cost": "LOW",
-        "financial_cost": "NEGLIGIBLE",
-        "service_impact": "LOW",
-        "reversibility": "FULLY_REVERSIBLE"
-      },
-      {
-        "action": "Review Radio A and Radio B configuration",
-        "hypothesis_relevance": 0.31,
-        "information_gain": 0.79,
-        "time_cost": "VERY_LOW",
-        "financial_cost": "NONE",
-        "service_impact": "NONE",
-        "reversibility": "NOT_APPLICABLE"
-      }
+    "rules": [
+      "Decision shall not create route-step predecessor or successor relationships.",
+      "Decision shall not assign route-step status.",
+      "Decision shall not determine branch closure.",
+      "Decision shall not perform rerouting.",
+      "Routing may return changed eligibility, blockage, repetition, or exhaustion state for a new Decision evaluation.",
+      "Routing shall not silently substitute another competitive action for the selected action."
+    ]
+  },
+
+  "post_action_boundary": {
+    "description": "Decision may be invoked again after material state changes but does not itself own post-action evidence ingestion, hypothesis updating, or route progression.",
+
+    "material_reinvocation_triggers": [
+      "NEW_EVIDENCE",
+      "EVIDENCE_INVALIDATION",
+      "ACTION_COMPLETED",
+      "ACTION_FAILED",
+      "ACTION_BLOCKED",
+      "UNEXPECTED_RESULT",
+      "HYPOTHESIS_STATE_CHANGED",
+      "PROBABILITY_STATE_CHANGED",
+      "CONTRADICTION_CHANGED",
+      "CONTEXT_CHANGED",
+      "CONSTRAINT_CHANGED",
+      "AUTHORIZATION_CHANGED",
+      "RESOURCE_CHANGED",
+      "VALIDATION_RESULT",
+      "ROUTE_EXHAUSTED"
     ],
 
-    "selected_action": "Review Radio A and Radio B configuration",
-
-    "reason": "Although RF routing has the highest current probability, configuration review provides nearly comparable information gain at effectively zero service risk, minimal time cost, and no physical intervention.",
-
-    "decision_confidence": 0.91
+    "rules": [
+      "A new Decision shall use the updated authoritative state.",
+      "Prior Decision history may inform explanation and repetition analysis.",
+      "Decision shall not directly mutate evidence or hypothesis records merely because an action completed.",
+      "A changed route may require a new Decision, but route mutation remains owned by Routing."
+    ]
   },
 
-  "second_example": {
-    "case_state": "Configuration has now been validated correct.",
+  "domain_independence": {
+    "principle": "The Decision Engine is universal Core reasoning infrastructure and shall not encode technology-specific troubleshooting knowledge.",
 
-    "updated_hypotheses": [
-      {
-        "name": "RF_ROUTING_ERROR",
-        "probability": 0.69
-      },
-      {
-        "name": "RADIO_FAILURE",
-        "probability": 0.19
-      },
-      {
-        "name": "OTHER",
-        "probability": 0.12
-      }
+    "prohibited_core_content": [
+      "microwave-specific hypothesis names",
+      "RF-specific decision types",
+      "optical-specific candidate classes",
+      "vendor-specific preference rules",
+      "product-specific commands",
+      "protocol-specific diagnostic sequences",
+      "manufacturer-specific failure assumptions",
+      "named-user troubleshooting examples"
     ],
 
-    "selected_action": "Verify Main/Diversity RF routing",
+    "appropriate_domain_sources": [
+      "technical procedures",
+      "manufacturer knowledge",
+      "technology-specific expected outcomes",
+      "known failure signatures",
+      "measurement interpretation",
+      "product-specific prerequisites",
+      "technical safety constraints",
+      "product-specific validation requirements"
+    ],
 
-    "reason": "Configuration verification removed the previous cheapest high-value branch. Physical routing inspection now has the highest expected diagnostic utility.",
-
-    "interpretation": "ARIA advances from the new state. She does not repeat the configuration check."
+    "rules": [
+      "Domain knowledge supplies technical meaning to candidate actions and expected outcomes.",
+      "Domain knowledge shall not redefine universal Decision semantics.",
+      "The same Decision Engine shall be capable of selecting actions across different technical domains.",
+      "Core examples shall remain domain-neutral when examples are necessary."
+    ]
   },
 
-  "engine_interfaces": {
-    "case_state_engine": "Provides authoritative current diagnostic state.",
-    "context_engine": "Determines technical applicability and constraints.",
-    "knowledge_graph": "Provides valid actions, relationships, requirements, and procedures.",
-    "hypothesis_engine": "Provides active candidate causes.",
-    "probability_engine": "Provides current hypothesis probabilities.",
-    "uncertainty_engine": "Provides material uncertainty and expected uncertainty-reduction targets.",
-    "evidence_engine": "Provides existing evidence quality and evidence gaps.",
-    "routing_engine": "Provides route history and candidate route structures.",
-    "memory_engine": "Provides relevant historical action performance and user overlays.",
-    "validation_engine": "Provides validation requirements and failed-validation evidence.",
-    "learning_engine": "Receives realized decision and route performance."
+  "auditability": {
+    "must_preserve_when_material": [
+      "decision identity",
+      "case identity",
+      "state version",
+      "candidate action identities",
+      "candidate eligibility",
+      "selected action identity",
+      "material alternatives",
+      "material decision dimensions",
+      "selection reason",
+      "hard constraints",
+      "conditional constraints",
+      "decision confidence",
+      "decision uncertainty",
+      "external direction",
+      "repetition justification",
+      "historical influence",
+      "user capability influence"
+    ],
+
+    "rules": [
+      "ARIA should be able to explain why one materially relevant action was selected over another.",
+      "Auditability shall not require copying authoritative technical objects into the Decision record.",
+      "Decision history shall preserve material changes in selection reasoning rather than overwrite prior decisions.",
+      "Historical decision records shall not be rewritten merely because later evidence proved a different hypothesis."
+    ]
   },
 
-  "semantic_rules": [
+  "failure_modes": [
     {
-      "rule_id": "DEC-RULE-001",
-      "rule": "ARIA shall select the next action based on expected diagnostic utility rather than hypothesis probability alone."
+      "failure_mode": "HIGHEST_PROBABILITY_TUNNEL_VISION",
+      "description": "Decision always pursues the currently highest-probability hypothesis.",
+      "prevention": "Evaluate information gain and discrimination across the important hypothesis space."
     },
     {
-      "rule_id": "DEC-RULE-002",
-      "rule": "The highest-probability hypothesis does not automatically receive the next diagnostic action."
+      "failure_mode": "SECOND_ACTION_VOCABULARY",
+      "description": "Decision defines REQUEST_MEASUREMENT, REQUEST_TEST, REQUEST_SCREENSHOT, or other competing universal action classes.",
+      "prevention": "Evaluate canonical act_<UUID> actions governed by the Action Registry."
     },
     {
-      "rule_id": "DEC-RULE-003",
-      "rule": "Actions capable of discriminating multiple important hypotheses shall receive increased value."
+      "failure_mode": "ROUTING_OWNERSHIP_COLLISION",
+      "description": "Decision creates branches, route relationships, reroutes, or route-step statuses.",
+      "prevention": "Hand selected actions to Routing and preserve Routing as progression owner."
     },
     {
-      "rule_id": "DEC-RULE-004",
-      "rule": "Low-cost, low-risk information gathering shall generally precede high-cost intervention when diagnostic value is comparable."
+      "failure_mode": "UTILITY_OVERRIDES_SAFETY",
+      "description": "A numerically attractive candidate is selected despite a hard safety, authorization, or technical constraint.",
+      "prevention": "Evaluate eligibility before preference."
     },
     {
-      "rule_id": "DEC-RULE-005",
-      "rule": "Safety constraints may override all other decision scores."
+      "failure_mode": "FALSE_PRECISION",
+      "description": "Decision invents precise numeric values unsupported by evidence or calibration.",
+      "prevention": "Use ordinal, qualitative, or uncertainty-aware comparison when precise quantification is not defensible."
     },
     {
-      "rule_id": "DEC-RULE-006",
-      "rule": "Service impact shall be explicitly considered before disruptive actions."
+      "failure_mode": "CONFIRMATION_BIAS",
+      "description": "Decision prefers actions likely to confirm the leading hypothesis rather than actions that best discriminate alternatives.",
+      "prevention": "Reward disconfirming and multi-hypothesis information value."
     },
     {
-      "rule_id": "DEC-RULE-007",
-      "rule": "Reversibility shall influence the required justification for an action."
+      "failure_mode": "REPETITION_LOOP",
+      "description": "Equivalent actions are repeatedly selected without material state change or evidence-quality justification.",
+      "prevention": "Normalize candidate equivalence and apply repetition consideration."
     },
     {
-      "rule_id": "DEC-RULE-008",
-      "rule": "Completed equivalent actions shall normally receive repetition penalties."
+      "failure_mode": "HISTORY_BECOMES_TRUTH",
+      "description": "Historical patterns or user history are treated as proof of the current technical cause.",
+      "prevention": "Use history only as a modifier of expected action value and preserve current evidence authority."
     },
     {
-      "rule_id": "DEC-RULE-009",
-      "rule": "A material state change may justify repeating a previously completed action."
+      "failure_mode": "USER_CAPABILITY_BECOMES_PHYSICS",
+      "description": "Executor history changes technical facts, manufacturer requirements, or measured state.",
+      "prevention": "Restrict user capability effects to execution characteristics."
     },
     {
-      "rule_id": "DEC-RULE-010",
-      "rule": "User-specific experience may affect expected action cost, quality, and priority but shall not alter technical truth."
+      "failure_mode": "CORRECTION_BEFORE_DIAGNOSIS",
+      "description": "Decision jumps to invasive corrective work when lower-impact actions can still resolve material causal uncertainty.",
+      "prevention": "Compare diagnostic value, information destruction, risk, and reversibility before selecting state-changing actions."
     },
     {
-      "rule_id": "DEC-RULE-011",
-      "rule": "Current validated evidence shall override historical user patterns."
+      "failure_mode": "BUSYWORK_SELECTION",
+      "description": "Decision selects a low-value action merely to keep the investigation moving.",
+      "prevention": "Allow defer, escalation, waiting, or no-selection results when no rational immediate action exists."
     },
     {
-      "rule_id": "DEC-RULE-012",
-      "rule": "ARIA shall reroute from the current authoritative state rather than restart troubleshooting."
+      "failure_mode": "EXPECTED_EQUALS_OBSERVED",
+      "description": "Expected evidence or predicted outcomes are treated as though they have already been observed.",
+      "prevention": "Keep predictions explicitly separate from Evidence and Outcome."
     },
     {
-      "rule_id": "DEC-RULE-013",
-      "rule": "Future diagnostic actions should remain conditional until intermediate evidence is received."
+      "failure_mode": "DECISION_EQUALS_DIAGNOSIS",
+      "description": "Selection of an action is interpreted as confirmation of a hypothesis.",
+      "prevention": "Keep Decision preference separate from hypothesis probability and technical truth."
     },
     {
-      "rule_id": "DEC-RULE-014",
-      "rule": "ARIA shall distinguish confidence in the next action from confidence in the diagnosis."
-    },
-    {
-      "rule_id": "DEC-RULE-015",
-      "rule": "ARIA may be uncertain about the cause while highly confident about what should be checked next."
-    },
-    {
-      "rule_id": "DEC-RULE-016",
-      "rule": "An unsuccessful diagnostic action remains valuable when its outcome changes the reasoning state."
-    },
-    {
-      "rule_id": "DEC-RULE-017",
-      "rule": "ARIA shall be able to explain why the selected action outranked reasonable alternatives."
-    },
-    {
-      "rule_id": "DEC-RULE-018",
-      "rule": "Escalation is a valid decision when available actions cannot safely or effectively advance diagnosis."
-    },
-    {
-      "rule_id": "DEC-RULE-019",
-      "rule": "The language model may assist with candidate generation and explanation, but deterministic ARIA services shall control authoritative action selection constraints."
-    },
-    {
-      "rule_id": "DEC-RULE-020",
-      "rule": "The objective of decision making is not to follow a troubleshooting tree; it is to continuously select the most valuable next hop toward validated resolution."
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Core Decision semantics contain microwave, RF, optical, manufacturer, product, protocol, or named-user troubleshooting assumptions.",
+      "prevention": "Keep technical specifics in domain knowledge and preserve universal Decision semantics."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "DEC-INV-001",
+      "statement": "Decision evaluates and selects canonical runtime actions; it does not define a competing universal action vocabulary."
+    },
+    {
+      "invariant_id": "DEC-INV-002",
+      "statement": "Eligibility is evaluated before candidate preference."
+    },
+    {
+      "invariant_id": "DEC-INV-003",
+      "statement": "Hard safety, authorization, and technical constraints cannot be overcome solely by numerical utility."
+    },
+    {
+      "invariant_id": "DEC-INV-004",
+      "statement": "The highest-probability hypothesis does not automatically determine the selected action."
+    },
+    {
+      "invariant_id": "DEC-INV-005",
+      "statement": "Decision may prefer actions that maximize discrimination across multiple important hypotheses."
+    },
+    {
+      "invariant_id": "DEC-INV-006",
+      "statement": "Decision selection does not execute the selected action."
+    },
+    {
+      "invariant_id": "DEC-INV-007",
+      "statement": "Decision selection does not create evidence."
+    },
+    {
+      "invariant_id": "DEC-INV-008",
+      "statement": "Decision selection does not directly mutate hypothesis probability."
+    },
+    {
+      "invariant_id": "DEC-INV-009",
+      "statement": "Decision does not own route progression, branching, rerouting, or route-step status."
+    },
+    {
+      "invariant_id": "DEC-INV-010",
+      "statement": "Expected information gain is not evidence confidence."
+    },
+    {
+      "invariant_id": "DEC-INV-011",
+      "statement": "Decision confidence is not hypothesis probability."
+    },
+    {
+      "invariant_id": "DEC-INV-012",
+      "statement": "Historical frequency and user history do not establish current technical truth."
+    },
+    {
+      "invariant_id": "DEC-INV-013",
+      "statement": "Decision shall not fabricate numerical precision when only qualitative or ordinal comparison is defensible."
+    },
+    {
+      "invariant_id": "DEC-INV-014",
+      "statement": "Materially equivalent prior work shall influence candidate value unless repetition is technically justified."
+    },
+    {
+      "invariant_id": "DEC-INV-015",
+      "statement": "Successful correction does not automatically prove sole root cause."
+    },
+    {
+      "invariant_id": "DEC-INV-016",
+      "statement": "Decision may return defer or no-selection when no responsible immediate action is available."
+    },
+    {
+      "invariant_id": "DEC-INV-017",
+      "statement": "Externally mandated action selection shall be represented as external direction rather than fabricated autonomous preference."
+    },
+    {
+      "invariant_id": "DEC-INV-018",
+      "statement": "Decision shall remain technically domain-independent."
+    },
+    {
+      "invariant_id": "DEC-INV-019",
+      "statement": "Predicted evidence and expected outcomes remain distinct from observed Evidence and technical Outcome."
+    },
+    {
+      "invariant_id": "DEC-INV-020",
+      "statement": "Decision shall reason from the current authoritative case state rather than restart a fixed troubleshooting sequence."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a competing Decision-specific universal action vocabulary.",
+    "Using REQUEST_MEASUREMENT, REQUEST_SCREENSHOT, REQUEST_TEST, or similar Decision types as substitutes for canonical Action classes.",
+    "Selecting an action that violates a hard safety constraint solely because its utility score is high.",
+    "Selecting an unauthorized action solely because its diagnostic value is high.",
+    "Treating unknown eligibility as automatically eligible.",
+    "Treating the highest-probability hypothesis as an automatic next-action command.",
+    "Treating historical frequency as proof of current cause.",
+    "Treating user history as physical technical truth.",
+    "Treating expected evidence as observed evidence.",
+    "Treating expected outcome as actual outcome.",
+    "Treating decision confidence as hypothesis probability.",
+    "Treating information gain as evidence confidence.",
+    "Creating route-step relationships inside Decision.",
+    "Assigning route-step status inside Decision.",
+    "Performing rerouting inside Decision.",
+    "Executing the selected action inside Decision.",
+    "Directly changing evidence confidence inside Decision.",
+    "Directly changing hypothesis probability inside Decision.",
+    "Fabricating precise candidate scores without defensible calibration.",
+    "Repeating equivalent diagnostic work without material justification.",
+    "Choosing invasive corrective action merely because it may solve the symptom when lower-impact diagnostic actions remain materially informative.",
+    "Selecting low-value busywork merely to maintain conversational progression.",
+    "Encoding microwave-specific, RF-specific, optical-specific, vendor-specific, product-specific, protocol-specific, or named-user troubleshooting assumptions in Core Decision semantics.",
+    "Inventing technical procedures unsupported by authoritative technical knowledge.",
+    "Inventing authorization or access because an action is preferred.",
+    "Using later evidence to rewrite historical Decision records as though the earlier uncertainty never existed."
   ]
 }
