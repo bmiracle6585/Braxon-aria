@@ -1,0 +1,561 @@
+{
+  "engine": {
+    "id": "aria.operations.prediction_engine",
+    "name": "A.R.I.A. Operational Prediction Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_prediction",
+    "status": "active",
+    "purpose": "Generate bounded, evidence-based forecasts about future operational conditions from current canonical state, historical learning, observed trends, known constraints, and supported uncertainty. The engine helps A.R.I.A. anticipate likely outcomes early enough for useful action while preserving the distinction between prediction, risk, fact, commitment, decision, and authorized action.",
+    "principles": [
+      "Prediction is a forecast, not a fact.",
+      "Prediction should improve preparation rather than manufacture certainty.",
+      "Current evidence should outweigh weak historical pattern matching.",
+      "Predictions must preserve uncertainty and alternative outcomes.",
+      "Prediction confidence should reflect evidence quality, not narrative confidence.",
+      "A likely outcome is not automatically an acceptable outcome.",
+      "A predicted failure is not an existing issue.",
+      "A predicted delay is not a breached commitment.",
+      "A predicted response is not a received response.",
+      "Prediction should occur early enough to preserve useful options.",
+      "Predictions should be revised when material evidence changes.",
+      "Operational prediction must remain explainable and provenance-preserving.",
+      "Prediction must not modify Core reasoning architecture."
+    ]
+  },
+
+  "input": {
+    "primary_object": "prediction_record",
+    "sources": [
+      "work_items",
+      "portfolio evaluations",
+      "priority evaluations",
+      "operational plans",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "capacity evaluations",
+      "scheduling evaluations",
+      "issues",
+      "risks",
+      "opportunities",
+      "decisions",
+      "conflicts",
+      "follow_up evaluations",
+      "aging evaluations",
+      "review findings",
+      "operational learning",
+      "context",
+      "communication history",
+      "resolution history",
+      "source activity",
+      "supported external conditions"
+    ]
+  },
+
+  "prediction_types": {
+    "execution_outcome": {
+      "description": "Forecast the likely execution outcome of active or planned work."
+    },
+    "completion_timing": {
+      "description": "Forecast a probable completion range without replacing authoritative scheduling."
+    },
+    "delay": {
+      "description": "Forecast whether work is likely to experience material delay."
+    },
+    "commitment_pressure": {
+      "description": "Forecast whether conditions are likely to threaten a supported commitment."
+    },
+    "capacity_pressure": {
+      "description": "Forecast likely future execution-capacity constraint."
+    },
+    "schedule_pressure": {
+      "description": "Forecast likely future schedule congestion or infeasibility."
+    },
+    "dependency_outcome": {
+      "description": "Forecast likely dependency progression while preserving actual dependency state."
+    },
+    "response_behavior": {
+      "description": "Forecast likely response timing or behavior from supported historical evidence."
+    },
+    "delegation_outcome": {
+      "description": "Forecast likely delegated execution posture."
+    },
+    "issue_development": {
+      "description": "Forecast likely development of an existing issue."
+    },
+    "risk_materialization": {
+      "description": "Forecast the likelihood or timing of an identified adverse condition."
+    },
+    "opportunity_outcome": {
+      "description": "Forecast a plausible opportunity outcome without representing value as guaranteed."
+    },
+    "portfolio_pressure": {
+      "description": "Forecast likely changes in aggregate operational demand or feasibility."
+    },
+    "attention_need": {
+      "description": "Forecast when an operational condition may require increased user awareness or intervention."
+    }
+  },
+
+  "prediction_states": {
+    "candidate": {
+      "description": "A potentially useful forecast has been identified but support is insufficient for normal operational reliance."
+    },
+    "active": {
+      "description": "The forecast is sufficiently supported to inform current operational reasoning."
+    },
+    "strengthening": {
+      "description": "New evidence materially increases support for the forecast."
+    },
+    "weakening": {
+      "description": "New evidence materially reduces support for the forecast."
+    },
+    "realized": {
+      "description": "The predicted condition materially occurred."
+    },
+    "not_realized": {
+      "description": "The prediction window passed and the predicted condition did not materially occur."
+    },
+    "superseded": {
+      "description": "A newer forecast or changed operational condition replaces the prior prediction."
+    },
+    "expired": {
+      "description": "The prediction is no longer useful because its relevant forecast window passed."
+    },
+    "cancelled": {
+      "description": "The prediction is no longer operationally relevant."
+    }
+  },
+
+  "prediction_record": {
+    "fields": [
+      "prediction_id",
+      "prediction_type",
+      "subject_type",
+      "subject_reference",
+      "forecast",
+      "prediction_state",
+      "forecast_window",
+      "confidence",
+      "supporting_factors",
+      "contradictory_factors",
+      "assumptions",
+      "alternative_outcomes",
+      "consequence_if_realized",
+      "recommended_preparation",
+      "created_at",
+      "updated_at",
+      "expires_at",
+      "source_references"
+    ],
+    "requirements": [
+      "The predicted condition must be explicit enough to evaluate later.",
+      "Prediction and observed current state must remain distinguishable.",
+      "Material assumptions must remain visible.",
+      "Contradictory evidence must not be discarded.",
+      "Forecast windows should be bounded when support permits.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "forecast_horizons": {
+    "immediate": {
+      "description": "A condition likely to become relevant in the current execution window."
+    },
+    "near_term": {
+      "description": "A condition likely to become relevant soon enough to justify current preparation."
+    },
+    "upcoming": {
+      "description": "A future condition worth anticipating before it becomes operationally urgent."
+    },
+    "longer_horizon": {
+      "description": "A condition with potential future significance but substantial uncertainty."
+    },
+    "unknown": {
+      "description": "Available evidence does not support a useful forecast horizon."
+    }
+  },
+
+  "forecast_construction": {
+    "questions": [
+      "What future condition is being forecast?",
+      "What current evidence supports it?",
+      "What historical learning is applicable?",
+      "What current evidence contradicts it?",
+      "What assumptions does the forecast depend on?",
+      "What alternative outcomes remain plausible?",
+      "When would the forecast become operationally relevant?",
+      "Would acting before certainty materially improve the outcome?"
+    ],
+    "rules": [
+      "Prediction should begin with current canonical operational state.",
+      "Historical learning should supplement rather than replace current evidence.",
+      "Predictions should be scoped narrowly enough to remain testable.",
+      "A.R.I.A. should avoid forecasting conditions that provide no useful operational value.",
+      "A forecast should not be created merely because something is theoretically possible."
+    ]
+  },
+
+  "confidence_model": {
+    "factors": [
+      "current_evidence_quality",
+      "historical_pattern_strength",
+      "context_similarity",
+      "evidence_consistency",
+      "sample_size",
+      "recency",
+      "known_constraints",
+      "contradictory_evidence",
+      "forecast_horizon",
+      "environmental_volatility",
+      "assumption_count"
+    ],
+    "levels": {
+      "low": "The forecast is plausible but materially uncertain.",
+      "moderate": "The forecast has meaningful support but material alternative outcomes remain.",
+      "high": "The forecast is strongly supported under current known conditions.",
+      "unknown": "Available evidence is insufficient to classify confidence."
+    },
+    "rules": [
+      "Confidence must not imply certainty.",
+      "Longer forecast horizons should generally tolerate greater uncertainty.",
+      "Material contradictory evidence should reduce confidence.",
+      "A large number of weak observations must not automatically create high confidence.",
+      "Explicit current evidence may outweigh historical pattern.",
+      "False precision should be avoided."
+    ]
+  },
+
+  "alternative_outcomes": {
+    "rules": [
+      "Material plausible alternatives should be retained.",
+      "A.R.I.A. should not collapse uncertainty into one narrative merely for simplicity.",
+      "Alternative outcomes should be included when they materially change preparation or decisions.",
+      "Low-value theoretical alternatives may be omitted.",
+      "A forecast with several similarly plausible outcomes should reflect lower confidence."
+    ]
+  },
+
+  "prediction_vs_risk": {
+    "rules": [
+      "Prediction Engine forecasts what may occur.",
+      "Risk Engine owns future adverse exposure and its operational significance.",
+      "A prediction may create or materially change a Risk evaluation.",
+      "Not every prediction is adverse and therefore not every prediction is a risk.",
+      "A predicted adverse event must not be represented as already occurring."
+    ]
+  },
+
+  "prediction_vs_issue": {
+    "rules": [
+      "Issue Engine owns problems that are already occurring or have occurred.",
+      "Prediction Engine may forecast development, recurrence, worsening, or likely consequences.",
+      "Prediction of an issue does not create an active issue unless supported evidence shows the problem already exists.",
+      "When a predicted condition actually occurs, Issue Engine should evaluate the observed state."
+    ]
+  },
+
+  "prediction_vs_commitment": {
+    "rules": [
+      "Commitment Engine owns actual promises and commitment terms.",
+      "Prediction Engine may forecast ability or inability to satisfy a commitment.",
+      "Predicted breach must remain distinguishable from actual breach.",
+      "A forecast must not create, modify, extend, or release a commitment."
+    ]
+  },
+
+  "prediction_vs_schedule": {
+    "rules": [
+      "Scheduling Engine owns authoritative execution timing and schedule recommendations.",
+      "Prediction Engine may forecast probable timing or delay ranges.",
+      "Predicted completion time must not silently become the authoritative schedule.",
+      "Scheduling may consume predictions as evidence when determining practical timing."
+    ]
+  },
+
+  "prediction_vs_learning": {
+    "rules": [
+      "Learning Engine owns reusable supported operational knowledge derived from history.",
+      "Prediction Engine applies current state and applicable learning to forecast future conditions.",
+      "Historical pattern must not be represented as a future fact.",
+      "Prediction outcomes should return to Learning Engine when they provide useful evidence about forecast accuracy or operational behavior."
+    ]
+  },
+
+  "early_warning": {
+    "purpose": "Identify supported developing conditions before they become urgent or irreversible.",
+    "signals": [
+      "execution progress consistently below required trajectory",
+      "dependency timing deteriorating",
+      "capacity margin shrinking",
+      "schedule margin shrinking",
+      "reactive workload increasing",
+      "commitment lead time becoming insufficient",
+      "delegated execution evidence weakening",
+      "follow-up response probability declining",
+      "issue indicators worsening",
+      "risk indicators strengthening",
+      "protected work repeatedly displaced",
+      "decision window narrowing",
+      "opportunity window narrowing"
+    ],
+    "rules": [
+      "Early warning should occur only when useful action or preparation remains possible.",
+      "Weak signals should not automatically generate user interruption.",
+      "Multiple weak signals may collectively support a stronger forecast.",
+      "Early warning must remain distinguishable from confirmed failure."
+    ]
+  },
+
+  "preparation_recommendation": {
+    "categories": [
+      "observe",
+      "gather_information",
+      "prepare_contingency",
+      "advance_prerequisite",
+      "protect_capacity",
+      "protect_schedule",
+      "initiate_follow_up",
+      "seek_decision",
+      "prepare_communication",
+      "review_delegation",
+      "reduce_exposure",
+      "no_current_action"
+    ],
+    "rules": [
+      "Recommended preparation should be proportionate to confidence and consequence.",
+      "Low-cost reversible preparation may be justified before high confidence when consequence is material.",
+      "High-cost or irreversible action requires stronger support and appropriate authority.",
+      "Preparation recommendations do not authorize execution.",
+      "No current action is a valid prediction outcome."
+    ]
+  },
+
+  "prediction_calibration": {
+    "purpose": "Measure whether A.R.I.A.'s operational forecasts are useful and appropriately confident.",
+    "evaluation": [
+      "prediction_realized",
+      "prediction_not_realized",
+      "partially_realized",
+      "prediction_superseded_before_evaluation",
+      "insufficient_evidence_to_score"
+    ],
+    "rules": [
+      "Predictions should be evaluated against what actually occurred when practical.",
+      "Calibration should consider the original confidence and forecast window.",
+      "A correct outcome does not prove the reasoning was sound.",
+      "An incorrect outcome does not automatically invalidate all contributing learning.",
+      "Repeated overconfidence should reduce future confidence under similar conditions.",
+      "Repeated underconfidence may justify confidence-model refinement.",
+      "Calibration evidence should be available to Learning Engine."
+    ]
+  },
+
+  "prediction_refresh": {
+    "triggers": [
+      "material source activity",
+      "priority materially changes",
+      "plan materially changes",
+      "capacity materially changes",
+      "schedule materially changes",
+      "dependency materially changes",
+      "commitment materially changes",
+      "delegation materially changes",
+      "issue materially changes",
+      "risk materially changes",
+      "decision materially changes",
+      "context materially changes",
+      "new learning becomes applicable",
+      "contradictory evidence appears",
+      "forecast window materially advances"
+    ],
+    "rules": [
+      "Predictions should be refreshed when new evidence materially affects the forecast.",
+      "Minor irrelevant updates should not cause unnecessary prediction churn.",
+      "Superseded forecasts should remain historically recoverable when useful.",
+      "Prediction confidence should be revised rather than defended when evidence changes."
+    ]
+  },
+
+  "relationship_to_orchestration": {
+    "rules": [
+      "Orchestration Engine coordinates operational reevaluation.",
+      "Prediction Engine consumes sufficiently stable canonical state.",
+      "Material predictions should be routed only to engines whose handling may change.",
+      "Prediction refresh must not create uncontrolled engine-to-engine loops."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine owns canonical priority.",
+      "Prediction Engine may forecast future conditions relevant to priority reasoning.",
+      "Predicted consequence may cause Priority reevaluation.",
+      "Prediction Engine must not directly reprioritize work."
+    ]
+  },
+
+  "relationship_to_portfolio": {
+    "rules": [
+      "Portfolio Engine owns cross-item operational posture.",
+      "Prediction Engine may forecast future portfolio pressure, congestion, or feasibility.",
+      "Portfolio Engine determines whether a forecast materially changes current portfolio handling.",
+      "Prediction must not rebalance the portfolio directly."
+    ]
+  },
+
+  "relationship_to_planning": {
+    "rules": [
+      "Planning Engine owns execution-plan construction.",
+      "Prediction Engine may forecast likely execution conditions affecting plan feasibility.",
+      "Planning may use forecasts to prepare alternate paths.",
+      "Prediction Engine must not silently rewrite the active plan."
+    ]
+  },
+
+  "relationship_to_review": {
+    "rules": [
+      "Review Engine determines when operational understanding requires deliberate reassessment.",
+      "Material prediction uncertainty or stale forecast evidence may justify review.",
+      "Review findings may strengthen, weaken, supersede, or invalidate a prediction."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine owns practical capacity state.",
+      "Prediction Engine may forecast future capacity pressure.",
+      "Predicted future availability must not be represented as current available capacity.",
+      "Capacity Engine determines current feasibility."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine owns actual dependency state.",
+      "Prediction Engine may forecast likely dependency satisfaction, delay, or failure.",
+      "Expected satisfaction must never be represented as satisfied.",
+      "Predicted dependency deterioration may justify preparation or follow-up."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine owns execution responsibility.",
+      "Prediction Engine may forecast delegated execution posture from supported current and historical evidence.",
+      "Predicted performance must not automatically cause reassignment.",
+      "Delegation Engine determines whether handling should change."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine owns current follow-up need and timing.",
+      "Prediction Engine may forecast likely response timing or non-response.",
+      "Predicted non-response may inform earlier preparation but does not prove follow-up failure.",
+      "Follow-Up Engine determines actual pursuit timing."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine owns authorized choices.",
+      "Prediction Engine may forecast likely consequences of supported options.",
+      "Predicted outcomes must preserve uncertainty and tradeoffs.",
+      "Prediction Engine must not choose the decision."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine owns current opportunity qualification.",
+      "Prediction Engine may forecast plausible pursuit outcomes, timing, cost, or value.",
+      "Predicted opportunity value must not be represented as guaranteed value.",
+      "Prediction does not authorize opportunity pursuit."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine owns user awareness and interruption.",
+      "Prediction Engine may provide early-warning evidence.",
+      "Prediction Engine must not independently interrupt the user.",
+      "Attention should consider confidence, consequence, useful action window, and existing user context."
+    ]
+  },
+
+  "relationship_to_briefing": {
+    "rules": [
+      "Briefing Engine owns executive presentation.",
+      "Material predictions may be included when they change preparation, decisions, or operational posture.",
+      "Routine low-value predictions should normally remain invisible.",
+      "Forecasts presented to the user must remain clearly distinguishable from known facts."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal disposition.",
+      "Prediction Engine must not resolve work based on expected outcome.",
+      "Actual outcomes should be evaluated through canonical state and Resolution Engine."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_prediction",
+    "prediction_evaluation": [
+      "prediction_id",
+      "prediction_type",
+      "subject",
+      "forecast",
+      "prediction_state",
+      "forecast_horizon",
+      "forecast_window",
+      "confidence",
+      "supporting_factors",
+      "contradictory_factors",
+      "assumptions",
+      "alternative_outcomes",
+      "consequence_if_realized",
+      "recommended_preparation",
+      "recommended_consumers",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Prediction output must remain distinguishable from fact.",
+      "Prediction output must remain distinguishable from risk state.",
+      "Prediction output must remain distinguishable from issue state.",
+      "Prediction output must remain distinguishable from commitment state.",
+      "Predicted timing must remain distinguishable from authoritative scheduling.",
+      "Predictions must preserve uncertainty, assumptions, and material alternatives.",
+      "Predictions must remain revisable as evidence changes.",
+      "Material provenance must remain recoverable."
+    ]
+  },
+
+  "guardrails": [
+    "Do not represent prediction as fact.",
+    "Do not manufacture certainty.",
+    "Do not manufacture precise probabilities unsupported by evidence.",
+    "Do not represent predicted delay as actual delay.",
+    "Do not represent predicted breach as actual breach.",
+    "Do not represent predicted response as received response.",
+    "Do not represent predicted dependency satisfaction as actual satisfaction.",
+    "Do not create an issue merely because an issue is predicted.",
+    "Do not create or modify commitments.",
+    "Do not overwrite canonical priority.",
+    "Do not overwrite authoritative scheduling.",
+    "Do not silently revise plans.",
+    "Do not silently reassign delegated work.",
+    "Do not choose decisions.",
+    "Do not authorize opportunity pursuit.",
+    "Do not ignore contradictory evidence.",
+    "Do not allow historical patterns to override stronger current evidence.",
+    "Do not take irreversible action solely from low-confidence prediction.",
+    "Do not create unnecessary user attention for low-value forecasts.",
+    "Do not independently communicate or execute external actions.",
+    "Do not modify Core reasoning architecture as part of operational prediction."
+  ]
+}
