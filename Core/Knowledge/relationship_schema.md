@@ -1,1548 +1,2168 @@
 # A.R.I.A. Relationship Architecture
 
 **Document Type:** Canonical Knowledge and Reasoning Specification  
-**Authority:** Subordinate to `Core/Schemas/entity_contracts.json`, `Core/Registries/relationship_types.json`, `Core/Schemas/relationships.schema.json`, and `Core/Persona/ARIA_CONSTITUTION.md`  
-**Version:** 1.0
+**Authority:** Subordinate to `Core/Schemas/entity_contracts.json`, `Core/Registries/relationship_types.json`, `Core/Schemas/relationships.schema.json`, applicable canonical schemas and registries, and `Core/Persona/ARIA_CONSTITUTION.md`  
+**Version:** 2.0.0
 
 ---
 
 ## 1. Purpose
 
-This document defines how A.R.I.A. represents, interprets, validates, traverses, and learns relationships between canonical entities.
+This document defines the architectural principles governing how A.R.I.A. represents, identifies, interprets, traverses, preserves, and evolves Relationships between canonical semantic objects.
 
-Entities establish what concepts exist.
+Entities establish:
 
-Relationships establish how those concepts interact.
+> **What concepts exist?**
 
-A.R.I.A.'s technical reasoning depends upon the precision, context, provenance, validation, and temporal applicability of those relationships.
+Relationships establish:
 
-Relationships are therefore first-class semantic objects.
+> **How do those concepts relate?**
 
-A.R.I.A. distinguishes two related but separate structures:
+Relationships allow A.R.I.A. to move beyond isolated facts and understand technical structure such as:
 
-1. **Semantic Relationships** — identified by `rel_<UUID>`.
-2. **Knowledge Graph Edges** — identified by `ke_<UUID>`.
+- causality;
+- dependency;
+- hierarchy;
+- compatibility;
+- incompatibility;
+- requirements;
+- applicability;
+- procedural relationships;
+- support;
+- contradiction;
+- measurement relationships;
+- configuration relationships;
+- and other canonical semantics defined by the authoritative Relationship registry.
 
-These objects may correspond to one another, but they are not interchangeable.
+Relationships are first-class semantic objects.
+
+They shall remain distinct from:
+
+- Entities;
+- Evidence;
+- hypotheses;
+- Probability;
+- Uncertainty;
+- Validation;
+- Decisions;
+- Actions;
+- Routing state;
+- Learning;
+- Memory;
+- provenance;
+- Source Authority;
+- and Context.
 
 ---
 
 ## 2. Canonical Authority
 
-Relationship architecture is governed by the following hierarchy:
+Relationship architecture is governed by the applicable machine-readable contracts and registries.
+
+Current primary authorities include:
 
 1. `Core/Schemas/entity_contracts.json`
 2. `Core/Registries/relationship_types.json`
 3. `Core/Schemas/relationships.schema.json`
-4. This document
+4. applicable canonical schemas and registries
+5. `Core/Knowledge/entity_schema.md`
+6. `Core/Knowledge/knowledge_graph.md`
+7. this document
+8. `Core/Persona/ARIA_CONSTITUTION.md` as constitutional authority
 
-`Core/Registries/relationship_types.json` is the authoritative vocabulary for relationship semantics.
+`Core/Registries/relationship_types.json` owns canonical Relationship vocabulary and semantic definitions.
 
-This document shall not independently establish competing relationship-type names.
+`Core/Schemas/relationships.schema.json` owns machine-readable validation of persisted Relationship records.
 
-If A.R.I.A. requires a relationship type that does not exist in the Registry, the Registry must be deliberately extended rather than allowing another file to invent a parallel vocabulary.
+`Core/Schemas/entity_contracts.json` owns applicable identity and interoperability contracts.
+
+This document explains architectural principles.
+
+It shall not independently create competing:
+
+- Relationship types;
+- Relationship identifiers;
+- directionality rules;
+- inverse mappings;
+- symmetry definitions;
+- lifecycle enums;
+- Validation states;
+- confidence scales;
+- probability structures;
+- uncertainty structures;
+- provenance structures;
+- Source Authority classifications;
+- Context vocabularies;
+- Learning structures;
+- Memory structures;
+- or persistence contracts.
+
+Where this doctrine conflicts with a more specific authoritative machine-readable contract, the more specific contract governs.
 
 ---
 
-## 3. Semantic Relationships
+## 3. Fundamental Principle
 
-A semantic relationship is a first-class assertion connecting two canonical A.R.I.A. entities.
+A Relationship is a semantic assertion connecting canonical subjects according to a defined meaning.
 
 Conceptually:
 
-    SOURCE ENTITY
-        |
-        | RELATIONSHIP TYPE
-        v
-    TARGET ENTITY
+**SOURCE**
 
-Example:
+→ **RELATIONSHIP**
 
-    Incorrect Flex Routing
-        |
-        | CAN_CAUSE
-        v
-    RSL Discrepancy
-
-A persisted semantic relationship uses:
-
-    rel_<UUID>
-
-A semantic relationship may participate in:
-
-- canonical technical knowledge;
-- diagnostic reasoning;
-- evidence reasoning;
-- experience;
-- learning;
-- source interpretation;
-- configuration reasoning;
-- procedural reasoning; or
-- other technical contexts.
-
-Not every semantic relationship belongs in the permanent Knowledge Graph.
-
----
-
-## 4. Knowledge Graph Edges
-
-A Knowledge Graph edge is a persisted graph structure representing reusable technical knowledge.
-
-A Knowledge Graph edge uses:
-
-    ke_<UUID>
-
-Conceptually:
-
-    KNOWLEDGE NODE
-          |
-          | KNOWLEDGE EDGE
-          v
-    KNOWLEDGE NODE
-
-Knowledge Graph edges support efficient traversal and reusable technical graph structure.
-
-They are distinct from semantic relationship records.
-
-A semantic relationship may reference a corresponding Knowledge Graph edge.
-
-A Knowledge Graph edge may embody a canonical semantic relationship.
-
-Neither identity replaces the other.
-
----
-
-## 5. Why `rel_` and `ke_` Are Separate
-
-Not every meaningful relationship belongs permanently in the reusable Knowledge Graph.
+→ **TARGET**
 
 For example:
 
-    evd_<UUID>
-        |
-        | SUPPORTS
-        v
-    hyp_<UUID>
+**Condition A**
 
-may be a legitimate first-class semantic relationship within a diagnostic case.
+→ **CAN_CAUSE**
 
-It does not necessarily belong in the permanent reusable technical Knowledge Graph.
+→ **Symptom B**
+
+The Relationship's meaning comes from the authoritative Relationship registry.
+
+The Relationship does not become more or less semantically causal merely because the current Case makes Condition A likely or unlikely.
+
+Canonical semantic meaning and current reasoning state shall remain separate.
+
+---
+
+## 4. Semantic Relationships and Knowledge Graph Edges
+
+A.R.I.A.'s architecture may distinguish between:
+
+1. **Semantic Relationship records**
+2. **Persisted Knowledge Graph edge records**
+
+Where the authoritative machine-readable contracts establish distinct identity classes such as:
+
+- `rel_<UUID>`
+- `ke_<UUID>`
+
+those distinctions shall remain authoritative.
+
+This doctrine does not independently redefine their exact machine structure.
+
+Conceptually:
+
+A **Semantic Relationship** represents a semantic assertion.
+
+A **Knowledge Graph Edge** represents persisted reusable graph structure.
+
+These concepts may correspond.
+
+They are not automatically interchangeable.
+
+---
+
+## 5. Why the Distinction Matters
+
+Not every meaningful semantic Relationship belongs permanently in reusable canonical technical Knowledge.
+
+For example, a current Case may contain a Relationship conceptually equivalent to:
+
+**Current Evidence**
+
+→ **SUPPORTS**
+
+→ **Current Hypothesis**
+
+That Relationship may be meaningful within current reasoning without becoming permanent universal technical Knowledge.
 
 By contrast:
 
-    Incorrect Flex Routing
-        |
-        | CAN_CAUSE
-        v
-    RSL Discrepancy
+**Incorrect Configuration**
 
-may represent reusable technical knowledge suitable for persistence in the Knowledge Graph.
+→ **CAN_CAUSE**
 
-Therefore:
+→ **Observed Technical Condition**
 
-    rel_<UUID>
+may represent reusable technical Knowledge suitable for the Canonical Knowledge Graph.
 
-represents a semantic relationship assertion.
-
-And:
-
-    ke_<UUID>
-
-represents persisted reusable graph structure.
-
-This separation prevents case-specific reasoning state from polluting canonical technical knowledge.
+This separation helps prevent transient Case reasoning from contaminating durable canonical Knowledge.
 
 ---
 
-## 6. Stable Relationship Identity
+## 6. Machine Contracts Own Relationship Identity
 
-Every persisted semantic relationship shall have a stable unique identifier:
+Where authoritative contracts define Relationship identifiers, prefixes, UUID requirements, or graph-edge identifiers, those contracts govern.
 
-    rel_<UUID>
+This doctrine shall not maintain a duplicate manual identity registry.
 
-UUIDv7 is preferred according to the canonical entity contract.
+Relationship identity should remain stable despite changes to:
 
-Example:
+- display wording;
+- source wording;
+- explanatory text;
+- repository location;
+- model terminology;
+- or ordinary metadata.
 
-    rel_018f3f3c-7f63-77f1-a9cc-61216e6f4179
-
-Relationship identifiers shall not encode mutable technical meaning.
-
-Do not create identifiers such as:
-
-    NOKIA-UBTT-FLEX-CAUSES-RSL
-
-The source entity, relationship type, target entity, context, and provenance contain the meaning.
-
-The relationship identifier provides permanent identity.
-
-Knowledge Graph edges independently use:
-
-    ke_<UUID>
-
-A `rel_<UUID>` identifier shall never be converted into or treated as a `ke_<UUID>` identifier.
+Identifiers shall not encode mutable technical meaning unless explicitly required by an authoritative contract.
 
 ---
 
-## 7. Canonical Relationship Structure
+## 7. Relationship Identity Is Not Relationship Type
 
-A semantic relationship contains, at minimum:
+A Relationship record's identity and its semantic Relationship type are different concepts.
 
-- relationship identifier;
-- relationship type;
-- source entity;
-- target entity; and
-- creation time.
+The identity distinguishes one persisted Relationship assertion from another.
 
-Additional properties may include:
+The Relationship type defines what the connection means.
 
-- directionality;
-- lifecycle status;
-- validation state;
-- confidence;
-- provenance;
-- context;
-- relationship strength;
-- deterministic status;
-- conditions;
-- supporting evidence;
-- contradicting evidence;
-- corresponding Knowledge Graph edge;
-- temporal applicability;
-- supersession;
-- creator;
-- updater; and
-- metadata.
+For example, multiple distinct assertions may all use the same canonical type:
 
-The machine-readable authority for this structure is:
+**CAN_CAUSE**
 
-    Core/Schemas/relationships.schema.json
+while connecting different Entities or applying under different Context.
 
-This document explains the semantics. The schema validates the persisted structure.
+A.R.I.A. shall not confuse type identity with assertion identity.
 
 ---
 
-## 8. Relationship Types
+## 8. Relationship Types Come From the Registry
 
-All relationship types shall come from:
+All canonical Relationship types shall come from:
 
-    Core/Registries/relationship_types.json
+`Core/Registries/relationship_types.json`
 
-The Registry owns:
+The registry owns, where defined:
 
-- canonical relationship names;
+- canonical names;
 - semantic definitions;
 - categories;
 - directionality;
 - symmetry;
-- inverse relationships; and
-- related relationship metadata.
+- inverse semantics;
+- and related metadata.
 
-No schema or knowledge document shall create a second independent relationship vocabulary.
+No documentation, model response, ingestion process, or application component shall silently create a competing Relationship vocabulary.
 
-If A.R.I.A. requires a relationship type that does not exist, the Registry shall be deliberately extended.
-
----
-
-## 9. Semantic Precision
-
-A.R.I.A. shall use the most precise valid Registry relationship available.
-
-A broad association should not be represented as causality unless causality is technically supported.
-
-For example, when supported:
-
-    Incorrect Flex Routing
-    CAN_CAUSE
-    RSL Discrepancy
-
-provides materially more diagnostic meaning than an unspecified association.
-
-Semantic precision allows relationships to support technical reasoning rather than merely connecting records.
-
-A.R.I.A. shall not select a more specific relationship merely because it produces a stronger diagnostic conclusion.
-
-The relationship must be supported by the underlying technical knowledge.
+If a genuinely necessary semantic is missing, the canonical registry should be deliberately extended.
 
 ---
 
-## 10. Directionality
+## 9. Examples Are Not Registry Values
 
-Relationship directionality is defined by the relationship-type Registry.
+Relationship names appearing in:
 
-Relationships may be:
+- documentation;
+- Cases;
+- prompts;
+- model outputs;
+- source material;
+- historical files;
+- or examples
 
-- directed;
-- symmetric; or
-- otherwise explicitly defined by the Registry.
+shall not automatically become canonical Relationship types.
 
-For a directed relationship:
+Only the authoritative registry establishes canonical vocabulary.
 
-    Entity A
-    CAN_CAUSE
-    Entity B
+This prevents prose from becoming a shadow Relationship schema.
+
+---
+
+## 10. Semantic Precision
+
+A.R.I.A. should use the most precise valid canonical Relationship supported by the underlying Knowledge.
+
+A vague association shall not be represented as causality merely because causality would make reasoning easier.
+
+Likewise, A.R.I.A. shall not represent:
+
+- possibility as requirement;
+- correlation as causation;
+- sequence as dependency;
+- compatibility as equivalence;
+- support as proof;
+- contradiction as negation;
+- or historical frequency as deterministic technical truth.
+
+Semantic precision is fundamental.
+
+---
+
+## 11. Stronger Semantics Require Stronger Support
+
+A.R.I.A. shall not choose a stronger Relationship merely because it produces a stronger conclusion.
+
+If the available information supports only:
+
+> **is associated with**
+
+she shall not silently upgrade it to:
+
+> **causes**
+
+unless the authoritative Knowledge supports causality.
+
+Relationship semantics must describe the Knowledge.
+
+They shall not be selected to manufacture certainty.
+
+---
+
+## 12. Directionality
+
+Relationship directionality is governed by the authoritative Relationship registry.
+
+For a directional Relationship:
+
+**A → R → B**
+
+does not automatically establish:
+
+**B → R → A**
+
+For example:
+
+**A CAN_CAUSE B**
 
 does not establish:
 
-    Entity B
-    CAN_CAUSE
-    Entity A
+**B CAN_CAUSE A**
 
-The reverse semantic traversal may use a Registry-defined inverse such as:
+A.R.I.A. shall respect canonical directionality during:
 
-    Entity B
-    CAN_BE_CAUSED_BY
-    Entity A
-
-A.R.I.A. shall never assume reverse semantics merely because a forward relationship exists.
+- graph traversal;
+- reasoning;
+- retrieval;
+- explanation;
+- and Learning.
 
 ---
 
-## 11. Inverse Relationships
+## 13. Inverse Semantics
 
-A relationship type may define an inverse relationship type.
+A Relationship type may have a canonical inverse defined by the registry.
+
+Where an inverse is defined, A.R.I.A. may reason or traverse using that inverse according to the authoritative semantics.
+
+Inverse traversal does not necessarily require storing a duplicate authoritative Relationship assertion.
+
+The machine-readable contracts determine persistence behavior.
+
+A.R.I.A. shall not invent inverse semantics that the registry does not establish.
+
+---
+
+## 14. Symmetry
+
+Some canonical Relationships may be symmetric.
+
+Symmetry exists only when established by the authoritative Relationship registry.
+
+A.R.I.A. shall not infer symmetry from:
+
+- natural-language wording;
+- graph shape;
+- co-occurrence;
+- model intuition;
+- historical frequency;
+- or convenience.
+
+A directional Relationship remains directional unless canonical authority states otherwise.
+
+---
+
+## 15. Relationship and Entity Are Distinct
+
+Entities represent canonical concepts or subjects.
+
+Relationships represent semantic connections between them.
+
+A.R.I.A. should not replace a Relationship with an artificial compound Entity merely to avoid structured semantics.
+
+Conceptually:
+
+**Condition A CAN_CAUSE Symptom B**
+
+should normally remain:
+
+- Entity A;
+- canonical Relationship;
+- Entity B
+
+rather than creating an Entity named:
+
+> "Condition-A-causes-Symptom-B"
+
+unless that compound concept independently deserves canonical Entity identity.
+
+---
+
+## 16. Relationship and Property Are Distinct
+
+Not every Entity property should become a Relationship.
+
+Not every Relationship should be hidden inside an Entity property.
+
+Where information describes a meaningful connection between independently identifiable concepts, a canonical Relationship may be appropriate.
+
+Where information merely describes one Entity and does not benefit from independent semantic connection, a property may be appropriate.
+
+Applicable schemas govern exact implementation.
+
+---
+
+## 17. Relationship and Free Text Are Distinct
+
+Free text may explain a Relationship.
+
+Free text shall not substitute for canonical Relationship semantics when machine-interpretable structure is required.
+
+For example, a note saying:
+
+> "This sometimes causes that."
+
+should not become the only persisted representation when the canonical registry provides an appropriate causal Relationship.
+
+Structured semantics and explanatory text may coexist.
+
+---
+
+## 18. Relationship Context
+
+A Relationship may apply only under particular Context.
+
+Applicability may depend upon dimensions such as:
+
+- manufacturer;
+- product;
+- product family;
+- product variant;
+- hardware;
+- firmware;
+- software;
+- configuration;
+- topology;
+- environment;
+- jurisdiction;
+- customer implementation;
+- operating mode;
+- date;
+- or another canonical Context dimension.
+
+Context Engine owns canonical Context semantics.
+
+Relationship Architecture may reference applicable Context.
+
+---
+
+## 19. Context Does Not Automatically Create New Relationship Types
+
+A Relationship does not become a new semantic type merely because it applies:
+
+- to another manufacturer;
+- under another configuration;
+- on another revision;
+- for another customer;
+- or during another time period.
+
+The same canonical semantic may exist under different Context.
+
+A.R.I.A. shall use Context and appropriately distinct Relationship assertions where necessary rather than multiplying Relationship-type vocabulary.
+
+---
+
+## 20. Separate Assertions May Still Be Appropriate
+
+Two Relationship assertions using the same canonical type may legitimately remain distinct when their:
+
+- source and target differ;
+- Context differs materially;
+- provenance differs materially;
+- effective period differs;
+- conditions differ;
+- technical meaning differs;
+- revision applicability differs;
+- or governance history differs.
+
+Canonical reuse does not require collapsing semantically distinct assertions.
+
+---
+
+## 21. Relationship Conditions
+
+Some Relationships apply only when defined conditions exist.
+
+Conceptually:
+
+**Condition X**
+
+must be present before:
+
+**Entity A CAN_CAUSE Entity B**
+
+is technically applicable.
+
+Conditions should reference canonical structure where authoritative schemas support doing so.
+
+A.R.I.A. shall not use a conditional Relationship as universally applicable.
+
+---
+
+## 22. Conditional Possibility Is Not Current Probability
+
+A canonical Relationship may establish:
+
+> Under Context X, A can cause B.
+
+This does not establish:
+
+> A is probably causing B in this Case.
+
+The first is canonical technical possibility.
+
+The second is current reasoning.
+
+Probability Engine owns current belief.
+
+Relationship Architecture shall not collapse the two.
+
+---
+
+## 23. Deterministic Technical Relationships
+
+Some canonical Relationships may represent deterministic or rule-like technical Knowledge where supported by authoritative sources.
+
+Such Knowledge may still be limited by:
+
+- Context;
+- revision;
+- configuration;
+- time;
+- implementation;
+- or source scope.
+
+Deterministic does not mean universal.
+
+Deterministic does not mean eternally valid.
+
+And deterministic does not mean current Case conditions have established that the Relationship is presently operative.
+
+---
+
+## 24. Deterministic Knowledge Does Not Need Diagnostic Probability
+
+If canonical technical Knowledge establishes a deterministic Relationship under defined Context, A.R.I.A. shall not invent diagnostic Probability merely to express the Relationship itself.
+
+Probability may still apply to whether:
+
+- the relevant Context is present;
+- the source condition exists;
+- the current observation is accurate;
+- or the Relationship explains the current Case.
+
+Canonical technical semantics and current belief remain separate.
+
+---
+
+## 25. Statistical Association Must Remain Distinguishable
+
+Some Relationships may represent statistical or empirical association rather than deterministic technical behavior.
+
+Where the canonical registry and applicable schemas support such semantics, the Relationship should preserve that distinction.
+
+A.R.I.A. shall not treat empirical frequency as though it were deterministic causality.
+
+Learning Engine owns qualification of historical patterns.
+
+---
+
+## 26. Relationship Strength Is Not Universal
+
+A numerical Relationship-strength field shall not be assumed to have universal meaning merely because a schema permits a number.
+
+Any such value must have an explicit methodology and semantic definition.
+
+A numerical association value shall not silently become:
+
+- diagnostic Probability;
+- Evidence confidence;
+- Source Authority;
+- Validation status;
+- uncertainty;
+- route priority;
+- or certainty.
+
+If no authoritative methodology defines a strength value, A.R.I.A. shall not invent one.
+
+---
+
+## 27. Relationship Confidence Is Not an Independent Cognitive Authority
+
+Earlier architecture allowed Relationship records to accumulate independent confidence values.
+
+That concept shall not become a competing universal confidence system.
+
+Trust in a Relationship may depend upon:
+
+- provenance;
+- Source Authority;
+- corroboration;
+- Context;
+- Validation;
+- contradiction;
+- Learning;
+- revision applicability;
+- and other authoritative reasoning structures.
+
+If machine-readable contracts retain a relationship-level confidence field for interoperability or legacy purposes, its interpretation must defer to the canonical confidence architecture and shall not independently govern reasoning.
+
+Relationship Architecture does not own a separate confidence scale.
+
+---
+
+## 28. Relationship and Evidence Are Distinct
+
+A canonical Relationship may describe reusable Knowledge.
+
+Evidence describes information relevant to the current Case.
 
 For example:
 
-    CAN_CAUSE
+Canonical Knowledge:
 
-may have the inverse:
+**Damaged Cable CAN_CAUSE Link Degradation**
 
-    CAN_BE_CAUSED_BY
+Current Evidence:
+
+> The cable currently shows physical damage.
+
+The Relationship establishes technical possibility.
+
+The Evidence establishes current observation.
+
+Evidence Engine owns current Evidence.
+
+---
+
+## 29. Evidence Relationships May Be Case-Specific
+
+A current Case may contain semantic Relationships involving Evidence, hypotheses, Actions, Observations, or other reasoning objects where authoritative contracts permit them.
+
+Those Relationships do not automatically become reusable canonical technical Knowledge.
+
+Case-specific semantic structure and canonical Knowledge Graph structure must remain distinguishable.
+
+---
+
+## 30. Relationship and Hypothesis Are Distinct
+
+A canonical Relationship may make a hypothesis technically plausible.
+
+It does not automatically create the hypothesis.
+
+Hypothesis Engine owns:
+
+- hypothesis creation;
+- hypothesis state;
+- hypothesis competition;
+- and hypothesis retirement
+
+according to its authoritative contract.
+
+Relationship Architecture provides semantic Knowledge that Hypothesis Engine may use.
+
+---
+
+## 31. Relationship and Probability Are Distinct
+
+A canonical Relationship does not own current diagnostic Probability.
+
+For example:
+
+**Condition A CAN_CAUSE Symptom B**
+
+does not establish:
+
+**P(Condition A | current Case) = any fixed value**
+
+Probability Engine determines current belief using current reasoning state.
+
+The canonical Relationship may inform Probability without becoming Probability.
+
+---
+
+## 32. Relationship and Uncertainty Are Distinct
+
+A Relationship may be:
+
+- incompletely sourced;
+- context-limited;
+- contradicted;
+- historical;
+- or unresolved.
+
+Formal current uncertainty remains owned by Uncertainty Engine.
+
+Relationship Architecture shall not create a competing uncertainty scale.
+
+The Relationship should preserve the information needed for Uncertainty to reason correctly.
+
+---
+
+## 33. Relationship and Validation Are Distinct
+
+Validation Engine determines what current results demonstrate.
+
+Relationship Architecture determines canonical semantic connections.
+
+A current Validation result may:
+
+- support;
+- challenge;
+- fail to establish;
+- or reveal a problem with
+
+a Relationship or its applicability.
+
+Validation shall not be redefined as a fixed Relationship lifecycle state inside this doctrine.
+
+---
+
+## 34. Relationship and Decision Are Distinct
+
+Canonical Relationships may establish information relevant to selecting an Action.
+
+For example:
+
+- a Tool tests a Measurement;
+- a Procedure requires a prerequisite;
+- an Action affects a component;
+- a configuration is incompatible with another configuration.
+
+Decision Engine owns current Action selection.
+
+Relationship Architecture does not independently decide what should happen next.
+
+---
+
+## 35. Relationship and Routing Are Distinct
+
+Routing Engine may traverse canonical Relationships to identify:
+
+- plausible causes;
+- tests;
+- dependencies;
+- prerequisites;
+- exclusions;
+- or next diagnostic branches.
+
+Relationship Architecture supplies semantic connectivity.
+
+Routing Engine owns current route progression.
+
+The graph shall not become a competing Routing state machine.
+
+---
+
+## 36. Relationship and Learning Are Distinct
+
+Learning Engine may discover recurring patterns involving canonical Entities and Relationships.
+
+Learning may propose:
+
+- new candidate Relationships;
+- revised applicability;
+- empirical associations;
+- Context restrictions;
+- or Knowledge gaps.
+
+Those proposals do not automatically become canonical technical Relationships.
+
+Learning owns qualification.
+
+Knowledge governance owns canonical promotion.
+
+---
+
+## 37. There Is No Independent Experience Ledger Authority
+
+Earlier architecture referenced a separate **Experience Ledger** and Experience overlays as though they were independent sources of Relationship authority.
+
+That model is obsolete.
+
+Historical experience now emerges through the coordinated canonical architecture involving, as applicable:
+
+- Case State;
+- Context;
+- Evidence;
+- Actions;
+- Observations;
+- Validation;
+- Learning;
+- Memory;
+- and persistent historical records.
+
+Relationship Architecture may consume qualified learned Knowledge.
+
+It shall not depend upon a competing Experience Ledger authority.
+
+---
+
+## 38. Historical Frequency Does Not Rewrite Relationship Semantics
+
+Suppose repeated historical Cases show that Condition A frequently accompanies Symptom B.
+
+That pattern may be useful Learning.
+
+It does not automatically establish:
+
+**Condition A CAUSES Symptom B**
+
+A.R.I.A. must preserve the distinction between:
+
+- co-occurrence;
+- statistical association;
+- technical possibility;
+- causality;
+- requirement;
+- and deterministic behavior.
+
+Learning shall not silently strengthen Relationship semantics.
+
+---
+
+## 39. Relationship and Memory Are Distinct
+
+Memory may retrieve relevant Relationships from:
+
+- canonical Knowledge;
+- prior Cases;
+- historical sources;
+- learned patterns;
+- or other authorized persistent structures.
+
+Retrieval does not alter the Relationship's canonical meaning.
+
+Frequently remembered Relationships do not become more authoritative merely because they are frequently retrieved.
+
+Memory Engine owns retrieval.
+
+---
+
+## 40. Provenance
+
+Material Relationships should preserve or reference sufficient provenance to establish their lineage.
+
+`Core/Knowledge/provenance_schema.md` owns provenance semantics.
+
+Relationship Architecture shall not create a competing provenance structure.
+
+Provenance may establish:
+
+- where the assertion originated;
+- whether it was directly stated or derived;
+- what transformation occurred;
+- what source supported it;
+- when it was acquired;
+- and what lineage connects it to upstream information.
+
+---
+
+## 41. Source Authority
+
+Source Authority remains distinct from Relationship persistence.
+
+`Core/Knowledge/source_authority.md` governs authority principles.
+
+A Relationship existing in the Knowledge Graph does not automatically mean every supporting source is equally authoritative.
+
+Authority may vary by:
+
+- source;
+- claim;
+- Context;
+- revision;
+- subject matter;
+- and other applicable factors.
+
+The Relationship preserves connectivity.
+
+Source Authority evaluates legitimate support.
+
+---
+
+## 42. Multiple Supporting Sources
+
+A technically identical Relationship should not automatically be duplicated merely because several sources support it.
+
+Where the semantic assertion, Context, effective period, and technical meaning are the same, provenance may preserve multiple supporting sources.
+
+However, separate assertions may remain appropriate where meaningful differences exist.
+
+The goal is neither forced duplication nor forced collapse.
+
+The goal is accurate semantic representation.
+
+---
+
+## 43. Independent Corroboration
+
+Multiple sources do not automatically equal multiple independent confirmations.
+
+Several downstream documents may originate from the same upstream source.
+
+A.R.I.A. should preserve common lineage where known.
+
+Source count alone shall not determine:
+
+- truth;
+- authority;
+- confidence;
+- Probability;
+- or Validation.
+
+Provenance and Source Authority provide the appropriate structure.
+
+---
+
+## 44. Contradictory Relationships
+
+A.R.I.A. shall permit contradictory Relationship assertions to coexist when the contradiction has not been legitimately resolved.
+
+For example, two sources may assert incompatible requirements concerning the same product.
+
+The system shall preserve enough information to investigate whether the difference arises from:
+
+- revision;
+- configuration;
+- product variant;
+- jurisdiction;
+- effective date;
+- source scope;
+- implementation;
+- source error;
+- or genuine unresolved disagreement.
+
+Contradiction is meaningful state.
+
+---
+
+## 45. Contradiction Does Not Automatically Mean One Relationship Is False
+
+Apparently contradictory Relationships may both be valid under different Context.
+
+A.R.I.A. should investigate Context before collapsing the conflict into a simple true/false decision.
+
+This is especially important for:
+
+- revision-specific Knowledge;
+- manufacturer-specific behavior;
+- customer-specific implementation;
+- regulatory differences;
+- and historical Knowledge.
+
+---
+
+## 46. Unresolved Contradiction Must Remain Visible
+
+When contradiction cannot yet be resolved, A.R.I.A. shall preserve it.
+
+She shall not:
+
+- silently delete one assertion;
+- invent consensus;
+- average incompatible semantics;
+- or choose whichever assertion supports the preferred diagnosis.
+
+Current reasoning may proceed with explicit uncertainty where permitted.
+
+---
+
+## 47. Negative Knowledge
+
+A.R.I.A. may represent explicit negative technical Knowledge when the canonical Relationship registry supports the required semantic.
+
+Absence of a positive Relationship does not establish its negation.
 
 Likewise:
 
-    TESTED_BY
+> no known Relationship
 
-may have the inverse:
+does not mean:
 
-    TESTS_FOR
+> impossible Relationship.
 
-And:
-
-    RESOLVED_BY
-
-may have the inverse:
-
-    RESOLVES
-
-A.R.I.A. may support inverse traversal without storing duplicate authoritative assertions when the Registry explicitly defines the inverse.
-
-Inverse traversal is a semantic operation.
-
-It does not automatically create a second persisted relationship.
+Negative Knowledge must be explicitly supported.
 
 ---
 
-## 12. Symmetric Relationships
+## 48. Absence Is Not Negation
 
-Some Registry relationships may be symmetric.
+If the Knowledge Graph does not contain:
 
-For a symmetric relationship, traversal from either entity may preserve the same semantic meaning.
+**A → R → B**
 
-Symmetry shall exist only when explicitly defined by the relationship-type Registry.
+A.R.I.A. shall not automatically conclude:
 
-A.R.I.A. shall never infer symmetry from:
+**A NOT-R B**
 
-- wording;
-- common usage;
-- graph shape;
-- historical co-occurrence; or
-- model inference alone.
+unless authoritative Knowledge explicitly establishes that negative semantic.
+
+The graph may simply be incomplete.
+
+Knowledge gaps must remain possible.
 
 ---
 
-## 13. Relationship Context
+## 49. Temporal Applicability
 
-Technical relationships may apply only within specific contexts.
+Relationships may change over time.
 
-Context may include:
+The authoritative schemas may represent temporal applicability through structures such as:
 
-- manufacturer;
-- product family;
-- product;
-- product variant;
-- hardware revision;
+- effective dates;
+- valid-from;
+- valid-to;
+- revision Context;
+- supersession;
+- or other canonical mechanisms.
+
+This doctrine shall not duplicate the exact fields.
+
+A.R.I.A. shall distinguish current applicability from historical validity.
+
+---
+
+## 50. Historical Relationships May Remain Valid Historically
+
+A Relationship may no longer govern current systems while remaining correct for an earlier:
+
 - firmware;
-- software version;
-- frequency band;
-- configuration;
-- topology;
-- scope of work;
-- environment;
-- customer technical requirements;
-- geographic domain;
-- regulatory domain; and
-- time.
-
-For example, a technical relationship between two components may only be valid for a particular product variant or hardware revision.
-
-A.R.I.A. shall not automatically apply a relationship outside its supported context.
-
----
-
-## 14. Context Is Not Canonical Duplication
-
-A.R.I.A. shall avoid duplicating canonical technical concepts merely because they appear in different contexts.
-
-The same failure mode does not become a new failure mode merely because it occurs:
-
-- on another manufacturer;
-- in another product;
-- under another scope;
-- for another technician;
-- for another customer; or
-- in another case.
-
-Applicability should normally be expressed through:
-
-- relationships;
-- context;
-- provenance;
-- experience overlays; and
-- temporal applicability.
-
-Separate relationship assertions may nevertheless be appropriate when:
-
-- provenance differs materially;
-- technical behavior differs;
-- confidence differs;
-- applicable conditions differ;
-- relationship strength differs;
-- revisions differ; or
-- effective periods differ.
-
-The objective is technical accuracy, not artificial deduplication.
-
----
-
-## 15. Deterministic Relationships
-
-Some relationships represent established technical facts.
-
-Such relationships do not require hypothesis probability.
-
-They may still require:
-
-- provenance;
-- context;
-- validation;
-- temporal applicability; and
-- revision awareness.
-
-A.R.I.A. shall not force probabilistic semantics onto deterministic technical facts.
-
-The relationship record may identify such assertions as deterministic.
-
-Deterministic does not mean context-free or eternally valid.
-
-A deterministic relationship can still be limited by revision, product, configuration, or time.
-
----
-
-## 16. Probabilistic and Conditional Relationships
-
-Other relationships represent technical possibilities or conditional associations.
-
-Example:
-
-    Incorrect Flex Routing
-    CAN_CAUSE
-    RSL Discrepancy
-
-This means the source condition is technically capable of producing the target condition.
-
-It does not mean:
-
-    P(Incorrect Flex Routing | current case) = 1.0
-
-Current-case probability is calculated separately.
-
-The relevance of the relationship to an active case may depend on:
-
-- current evidence;
 - product;
-- configuration;
-- topology;
-- scope;
-- historical experience;
-- technician-specific validated experience;
-- environmental conditions; and
-- contextual similarity.
-
-Canonical possibility and current-case probability must remain separate.
-
----
-
-## 17. Relationship Strength
-
-A relationship may contain a normalized strength value when meaningful.
-
-Relationship strength represents the strength of the technical or statistical association under applicable conditions.
-
-It shall not automatically represent:
-
-- hypothesis probability;
-- evidence confidence;
-- relationship confidence;
-- source authority;
-- route priority; or
-- diagnostic certainty.
-
-For example:
-
-    Relationship strength: 0.82
-    Current hypothesis probability: 0.46
-    Relationship confidence: 0.93
-
-These values answer different questions and shall remain distinct.
-
-Relationship strength shall only be used when the underlying methodology gives the value meaningful technical interpretation.
-
----
-
-## 18. Confidence
-
-Relationship confidence represents how strongly A.R.I.A. trusts the validity or support of the relationship assertion.
-
-Confidence follows the canonical confidence contract.
-
-Example structure:
-
-    {
-      "value": 0.93,
-      "basis": "Supported by manufacturer documentation and validated field observations."
-    }
-
-Confidence may depend upon:
-
-- source authority;
-- provenance quality;
-- independent corroboration;
-- validation;
-- contextual consistency;
-- revision applicability;
-- historical support;
-- expert review; and
-- contradictory information.
-
-Confidence is not probability.
-
-A high-confidence relationship can still represent an uncommon cause.
-
-A common cause can also have poor evidentiary support in a particular case.
-
----
-
-## 19. Provenance
-
-Material technical relationships should retain provenance.
-
-Possible sources include:
-
-- manufacturer documentation;
-- manufacturer technical support;
-- engineering documentation;
-- standards;
-- approved design documents;
-- configuration exports;
-- direct measurements;
-- validated field observations;
-- validated Experience Ledger records;
-- approved human technical contributions;
-- structured imports; and
-- A.R.I.A.-derived candidate knowledge.
-
-Provenance shall follow the canonical provenance contract.
-
-A.R.I.A. should be capable of explaining:
-
-- where the relationship came from;
-- whether it was directly sourced or derived;
-- what information supported it;
-- whether transformation occurred;
-- when it was acquired; and
-- whether its integrity has been verified.
-
----
-
-## 20. Multiple Supporting Sources
-
-A technically identical relationship should not be duplicated merely because several sources support it.
-
-For example, one assertion may be supported by:
-
-- a manufacturer manual;
-- an engineering document;
-- a validated field discovery; and
-- historical experience.
-
-The relationship should exist once when the semantic assertion, context, temporal applicability, and technical meaning are the same.
-
-Its provenance and supporting information should preserve the supporting lineage.
-
----
-
-## 21. Independent Corroboration
-
-Multiple sources do not necessarily represent independent confirmation.
-
-For example:
-
-    Manufacturer Bulletin
-            |
-            +--> Internal Procedure
-            |
-            +--> Training Document
-
-If both downstream documents derive from the same manufacturer bulletin, they are not three independent confirmations.
-
-A.R.I.A. shall preserve common lineage where known.
-
-Source count alone shall not determine relationship confidence.
-
-This principle is especially important when learned technical knowledge is derived from evidence or Experience Ledger records.
-
----
-
-## 22. Contradictory Technical Assertions
-
-A.R.I.A. shall permit contradictory technical assertions to coexist while unresolved.
-
-Conceptually:
-
-    Source A:
-    Product X
-    REQUIRES
-    Configuration Y
-
-    Source B:
-    Product X
-    REQUIRES
-    Configuration Z
-
-Where `REQUIRES` is an approved Registry relationship, both assertions may temporarily coexist when their technical applicability has not yet been resolved.
-
-A.R.I.A. shall preserve relevant:
-
-- provenance;
-- authority;
 - revision;
-- context;
-- effective date;
-- validation state; and
-- contradiction information.
+- configuration;
+- standard;
+- or time period.
 
-The system shall not silently discard inconvenient technical information.
+Historical reasoning should use Knowledge applicable to the historical Context.
 
-Contradiction resolution is a reasoning and validation process.
-
----
-
-## 23. Relationship Conditions
-
-Some relationships apply only when specific conditions exist.
-
-Conceptually:
-
-    Condition:
-    2+0 diversity configuration active
-
-    Relationship:
-    Incorrect Diversity Flex Routing
-    CAN_CAUSE
-    Diversity RSL Discrepancy
-
-Conditional requirements should reference canonical entities whenever practical.
-
-A.R.I.A. shall evaluate applicable conditions before using a conditional relationship in diagnostic reasoning.
+Superseded does not automatically mean historically false.
 
 ---
 
-## 24. Negative Knowledge
+## 51. Relationship Lifecycle Must Be Canonically Defined
 
-A.R.I.A. may represent explicit negative technical knowledge when an appropriate relationship type exists in the canonical Registry.
-
-Absence of a positive relationship does not imply a negative relationship.
-
-Likewise, inability to establish a relationship does not prove that the opposite relationship exists.
-
-Negative technical knowledge must be explicitly supported.
-
-If A.R.I.A. requires a negative relationship semantic not currently represented by the Registry, the Registry must be deliberately extended.
-
----
-
-## 25. Temporal Relationships
-
-Technical truth may change over time.
-
-Relationships may therefore have:
-
-- `valid_from`;
-- `valid_to`;
-- supersession information; and
-- revision-specific context.
-
-A relationship valid for one firmware or hardware revision may not apply to another.
-
-Historical reasoning shall use technical relationships applicable to the relevant historical context rather than blindly applying current knowledge.
-
----
-
-## 26. Relationship Lifecycle
-
-Relationship lifecycle status and validation state are distinct.
-
-Lifecycle status may include:
+Earlier versions of this doctrine established lifecycle enums such as:
 
 - `PROPOSED`;
 - `ACTIVE`;
 - `DEPRECATED`;
-- `SUPERSEDED`; and
+- `SUPERSEDED`;
 - `REJECTED`.
 
-Validation state may include:
+This doctrine no longer establishes those values as universal architecture.
+
+If Relationship lifecycle states are required, they shall be defined by an explicit authoritative machine-readable schema or registry.
+
+Descriptive lifecycle terminology may be used without becoming an implicit enum.
+
+---
+
+## 52. Validation State Must Be Canonically Defined
+
+Earlier versions of this doctrine separately established Validation states such as:
 
 - `UNREVIEWED`;
 - `REVIEWED`;
 - `VALIDATED`;
-- `DISPUTED`; and
+- `DISPUTED`;
 - `REJECTED`.
 
-A relationship may therefore be active while still awaiting validation.
+Those values shall not be treated as canonical merely because they appeared in prose.
 
-Likewise, a historically valid relationship may be superseded without being considered false for its original period of applicability.
+Validation Engine and applicable machine-readable schemas own Validation semantics.
+
+Relationship Architecture shall not create a competing Validation state machine.
 
 ---
 
-## 27. Candidate Knowledge
+## 53. Candidate Relationships
 
-Relationships extracted or inferred by an automated system shall not automatically become authoritative technical knowledge.
-
-A candidate relationship may originate from:
+A Relationship may be proposed through:
 
 - document extraction;
-- model inference;
-- repeated Experience Ledger observations;
+- language-model inference;
+- human contribution;
+- structured import;
+- qualified Learning;
+- source comparison;
 - pattern detection;
-- technical comparison; or
-- human contribution.
+- or another authorized process.
 
-Such relationships should enter an appropriate validation process.
+Candidate status does not automatically establish canonical Knowledge.
 
-A.R.I.A. may discover candidate knowledge.
-
-A.R.I.A. shall not silently promote candidate knowledge into validated technical truth.
+Candidate Relationships must remain distinguishable from governed canonical Relationships.
 
 ---
 
-## 28. Human Review
+## 54. Model-Proposed Relationships Are Not Automatically Canonical
 
-During development and where technical authority requires it, candidate relationships may enter human review.
+A language model may infer:
 
-Review should support:
+> A appears related to B.
 
-- approval;
-- rejection;
-- editing;
-- merging;
-- contextualization;
-- relationship-type correction;
-- provenance attachment;
-- contradiction identification; and
-- requests for additional validation.
+That inference may be useful.
 
-Review actions should remain auditable.
+It is not automatically canonical technical Knowledge.
 
-Human review does not remove the requirement for provenance or technical support.
+The model shall not manufacture:
+
+- provenance;
+- Source Authority;
+- Validation;
+- deterministic semantics;
+- causality;
+- or canonical status
+
+merely because the generated Relationship sounds plausible.
 
 ---
 
-## 29. Supersession
+## 55. Candidate Causality Requires Special Care
 
-A relationship may be superseded without deletion.
+Causal Relationships have strong reasoning consequences.
+
+A.R.I.A. shall not promote repeated co-occurrence into causality without legitimate technical support.
+
+For example:
+
+> A often appeared when B occurred
+
+does not alone establish:
+
+> A causes B.
+
+The architecture must preserve the difference.
+
+---
+
+## 56. Canonical Promotion Must Be Governed
+
+Promotion of candidate Relationships into canonical Knowledge shall follow the applicable Knowledge governance architecture.
+
+This doctrine does not define a competing promotion workflow.
+
+Orchestration may coordinate:
+
+- extraction;
+- review;
+- source comparison;
+- provenance capture;
+- Entity resolution;
+- Context resolution;
+- Validation;
+- dependency analysis;
+- and persistence
+
+according to authoritative contracts.
+
+---
+
+## 57. Relationship Correction
+
+A canonical Relationship may later require correction because:
+
+- its semantic type was wrong;
+- its source Entity was wrong;
+- its target Entity was wrong;
+- its Context was incomplete;
+- its provenance was incorrect;
+- its applicability changed;
+- its source was corrected;
+- or new Knowledge revealed a modeling error.
+
+Correction should preserve sufficient history and lineage.
+
+---
+
+## 58. Relationship Correction May Require Reprocessing
+
+Material Relationship changes may affect:
+
+- Knowledge Graph traversal;
+- hypotheses;
+- Routing Knowledge;
+- learned patterns;
+- historical interpretations;
+- source mappings;
+- application behavior;
+- and derived Knowledge.
+
+The architecture should support dependency review and reprocessing where necessary.
+
+Orchestration owns coordinated execution.
+
+---
+
+## 59. Relationship Supersession
+
+A Relationship may be superseded without being erased.
+
+Supersession may be appropriate where newer Knowledge replaces an earlier assertion for current applicability.
+
+Historical lineage should remain available when useful.
+
+Exact supersession structure belongs to authoritative schemas.
+
+---
+
+## 60. Relationship Deletion Should Be Exceptional
+
+Relationships with historical dependencies should not ordinarily disappear merely because they are no longer current.
+
+Historical preservation may be necessary for:
+
+- legacy systems;
+- old Cases;
+- previous decisions;
+- historical configurations;
+- prior procedures;
+- or auditability.
+
+Where removal is required, applicable governance should preserve appropriate lineage.
+
+---
+
+## 61. Relationship Merge
+
+Two Relationship assertions may be candidates for merge when they represent the same:
+
+- source;
+- semantic;
+- target;
+- Context;
+- effective applicability;
+- and technical meaning.
+
+Merge should preserve:
+
+- provenance;
+- source lineage;
+- historical references;
+- and downstream dependencies.
+
+A.R.I.A. shall not merge merely because Relationship text looks similar.
+
+---
+
+## 62. Relationship Split
+
+A previously unified Relationship may need to be split when new Knowledge reveals materially different:
+
+- Context;
+- revision applicability;
+- technical behavior;
+- provenance;
+- conditions;
+- or semantics.
+
+Relationship architecture must support correction rather than freezing early modeling assumptions.
+
+---
+
+## 63. Multi-Hop Traversal
+
+A.R.I.A. should support multi-hop traversal through canonical Relationships.
 
 Conceptually:
 
-    Earlier technical state:
-    Procedure A
-    REQUIRES
-    Step X
+**Symptom**
 
-    Later technical state:
-    Procedure A
-    REQUIRES
-    Step Y
+→ **CAN_BE_CAUSED_BY**
 
-If the original relationship was valid for an earlier revision or period, it should remain available for historical reasoning.
+→ **Condition**
 
-Supersession preserves knowledge evolution.
+→ **INVOLVES**
 
----
+→ **Component**
 
-## 30. Deprecation
+→ **TESTED_BY**
 
-Deprecated relationships may remain useful for:
+→ **Procedure**
 
-- historical cases;
-- older products;
-- older hardware;
-- older firmware;
-- previous engineering standards;
-- audits; and
-- revision comparisons.
+The actual Relationship types must come from the canonical registry.
 
-Deprecated does not automatically mean false.
-
-It means the relationship should not normally govern current reasoning outside its valid context.
+Multi-hop traversal allows structured reasoning beyond keyword retrieval.
 
 ---
 
-## 31. Relationships in Diagnostic Reasoning
+## 64. Multi-Hop Traversal Is Not Proof
 
-The Diagnostic Routing Engine may traverse reusable technical relationships to construct candidate hypotheses.
+A path through the graph establishes connectivity according to canonical semantics.
 
-Example current symptom:
+It does not automatically establish that the entire path explains the current Case.
 
-    Diversity RSL Discrepancy
+Current reasoning must still consider:
 
-Reusable technical relationships may identify possibilities such as:
+- Evidence;
+- Context;
+- Probability;
+- Uncertainty;
+- Validation;
+- contradictions;
+- and other applicable state.
 
-    Incorrect Flex Routing
-    CAN_CAUSE
-    Diversity RSL Discrepancy
-
-    Incorrect Radio Configuration
-    CAN_CAUSE
-    Diversity RSL Discrepancy
-
-    Cross Polarization
-    CAN_CAUSE
-    RSL Discrepancy
-
-    Radio Failure
-    CAN_CAUSE
-    RSL Discrepancy
-
-These relationships establish technical possibilities.
-
-They do not establish current-case probability.
-
-The Probability Engine evaluates current likelihood.
-
-The Diagnostic Routing Engine determines what information or action is most useful next.
+A technically possible path may still be irrelevant now.
 
 ---
 
-## 32. Relationships in Evidence Reasoning
+## 65. Traversal Must Preserve Semantics
 
-Case evidence may create case-specific semantic relationships.
+A.R.I.A. shall not treat every Relationship as an interchangeable graph edge.
 
-Conceptually:
+Traversal must preserve distinctions between semantics such as:
 
-    evd_<UUID>
-    SUPPORTS
-    hyp_<UUID>
+- causality;
+- hierarchy;
+- requirement;
+- compatibility;
+- support;
+- contradiction;
+- procedure;
+- configuration;
+- and other registered meanings.
 
-or:
-
-    evd_<UUID>
-    CONTRADICTS
-    hyp_<UUID>
-
-where those semantics are defined by the canonical relationship Registry.
-
-These are `rel_<UUID>` relationships.
-
-They generally do not belong in the reusable Knowledge Graph because they describe the reasoning state of a particular case.
-
-Evidence may also alter the relevance of reusable technical relationships without changing the underlying canonical knowledge.
-
-For example:
-
-    Main RSL normal
-    Diversity RSL low
-
-may:
-
-- strengthen diversity-specific diagnostic routes;
-- weaken common-path hypotheses;
-- reduce environmental-route priority; and
-- increase relevance of Diversity RF Chain relationships.
-
-The canonical technical relationship does not necessarily change.
-
-Its current-case relevance changes.
+Graph reachability alone is not semantic reasoning.
 
 ---
 
-## 33. Relationships and Hypotheses
+## 66. Traversal Must Preserve Directionality
 
-A hypothesis is a case-specific evaluation of a possible technical explanation.
+A.R.I.A. shall respect canonical directionality during traversal.
 
-Reusable relationships may generate or inform hypotheses.
+She shall not reverse a directional Relationship unless:
 
-Case-specific relationships may then connect:
+- an authoritative inverse exists;
+- or another canonical semantic explicitly supports the reverse traversal.
 
-- evidence to hypotheses;
-- hypotheses to evidence;
-- actions to hypotheses;
-- outcomes to hypotheses; and
-- hypotheses to relevant canonical entities.
-
-A.R.I.A. shall not convert every hypothesis into permanent technical knowledge.
-
-Hypotheses remain case-specific reasoning objects unless validated learning produces a separate reusable technical assertion.
+Convenient traversal shall not rewrite technical meaning.
 
 ---
 
-## 34. Relationships and Actions
+## 67. Traversal Must Preserve Context
 
-Actions may participate in semantic relationships.
+A Relationship applicable to one:
 
-For example:
-
-    Failure Mode
-    TESTED_BY
-    Diagnostic Action
-
-The Registry-defined inverse may permit traversal as:
-
-    Diagnostic Action
-    TESTS_FOR
-    Failure Mode
-
-Likewise:
-
-    Failure Mode
-    RESOLVED_BY
-    Corrective Action
-
-may permit inverse traversal as:
-
-    Corrective Action
-    RESOLVES
-    Failure Mode
-
-A case-specific action result may also produce evidence.
-
-The relationship architecture therefore connects technical knowledge to executable diagnostic reasoning without conflating actions with evidence or outcomes.
-
----
-
-## 35. Relationships and Measurements
-
-Measurement relationships may connect technical quantities, observations, tools, or procedures where the Registry defines those semantics.
-
-For example:
-
-    Technical Quantity
-    MEASURED_BY
-    Measurement Method
-
-may permit inverse traversal as:
-
-    Measurement Method
-    MEASURES
-    Technical Quantity
-
-Measurement semantics must remain distinct from the actual evidence record generated by a measurement.
-
-A method describing how something is measured is reusable knowledge.
-
-A measurement taken during a particular case is case evidence.
-
----
-
-## 36. Relationships and Experience
-
-Validated Experience Ledger records use:
-
-    exp_<UUID>
-
-An Experience Ledger record is not a diagnostic case.
-
-Diagnostic cases use:
-
-    case_<UUID>
-
-Validated experience may support or challenge reusable technical relationships.
-
-For example, repeated validated experience may support the technical assertion:
-
-    Incorrect Radio Configuration
-    CAN_CAUSE
-    RSL Discrepancy
-
-under a particular technical context.
-
-Experience may influence:
-
-- relationship confidence;
-- relationship strength;
-- diagnostic priors;
-- route selection; and
-- candidate knowledge generation.
-
-The Experience Ledger does not require creation of duplicate technical relationships.
-
----
-
-## 37. Learned Relationships
-
-Repeated validated experience may reveal an association not currently represented in canonical technical knowledge.
-
-A.R.I.A. may identify such an association as candidate knowledge.
-
-The proposed relationship shall retain, where applicable:
-
-- experience lineage;
-- sample size;
-- context;
-- confidence;
-- validation state; and
-- supporting provenance.
-
-If the correct semantic relationship type does not exist in the Registry, A.R.I.A. shall not invent one inside the learned relationship record.
-
-The relationship vocabulary must be extended deliberately.
-
-Candidate learned relationships remain candidate knowledge until appropriately validated.
-
----
-
-## 38. Correlation Is Not Causation
-
-A.R.I.A. shall distinguish association from causality.
-
-Historical co-occurrence alone does not establish:
-
-    CAN_CAUSE
-
-A non-causal association must use an appropriate relationship type from the Registry.
-
-If the required semantic relationship does not exist in the Registry, the correct action is to evaluate and extend the Registry deliberately—not misuse a causal relationship.
-
-Causal assertions require sufficient technical or evidentiary support.
-
-A.R.I.A. shall not infer causality merely because:
-
-- two conditions frequently occur together;
-- an action preceded a resolution;
-- a technician believes a cause was present;
-- several cases contain similar language; or
-- a model predicts the relationship.
-
----
-
-## 39. Relationship Traversal Constraints
-
-A.R.I.A. shall not blindly traverse every relationship connected to an entity.
-
-Traversal may be constrained by:
-
-- relationship type;
-- active context;
-- product applicability;
-- manufacturer;
-- product family;
-- product variant;
+- product;
+- revision;
 - firmware;
 - configuration;
 - topology;
-- scope;
-- current evidence;
-- hypothesis state;
-- validation state;
-- source authority;
-- temporal applicability;
-- graph depth; and
-- computational budget.
+- jurisdiction;
+- or environment
 
-This prevents irrelevant graph expansion during reasoning.
+shall not automatically participate in reasoning for another.
+
+Context should constrain graph traversal where materially relevant.
 
 ---
 
-## 40. Multi-Hop Reasoning
+## 68. Traversal Must Preserve Temporal Applicability
 
-Some diagnostic reasoning requires multiple semantic hops.
+Current reasoning should not silently traverse superseded historical Relationships as though they were current.
 
-Conceptually:
+Historical Cases may intentionally require historical Relationships.
 
-    Current Symptom
-          ^
-          |
-    Possible Failure Mode
-          |
-          v
-    Relevant Component
-          |
-          v
-    Connected Technical Element
-
-Multi-hop traversal may expose useful diagnostic routes that are not represented by one direct relationship.
-
-Every hop must use an approved Registry relationship type.
-
-A.R.I.A. shall not treat every reachable node as equally relevant.
-
-Context and reasoning constraints remain applicable at each hop.
+Temporal Context determines applicability.
 
 ---
 
-## 41. Graph Explosion Control
+## 69. Traversal Must Preserve Negative Semantics
 
-Uncontrolled relationship traversal can produce large amounts of irrelevant technical information.
+Where canonical negative Relationships exist, A.R.I.A. shall preserve their actual meaning.
 
-A.R.I.A. should therefore prioritize traversal based on:
+She shall not treat:
 
-1. current symptoms;
-2. current evidence;
-3. active hypotheses;
-4. technical context;
-5. manufacturer/product applicability;
-6. relationship semantics;
-7. validation;
-8. probability;
-9. expected information gain; and
-10. diagnostic cost.
+> incompatible with
 
-The objective is not maximum traversal.
+as equivalent to:
 
-The objective is useful technical reasoning.
+> unrelated to.
 
----
+Nor shall she treat:
 
-## 42. Manufacturer-Specific Knowledge
+> does not require
 
-Manufacturer-specific technical relationships shall reuse canonical entities wherever appropriate.
+as equivalent to:
 
-Manufacturer, product, product-family, and technical-concept entities may be connected using relationship types defined by the Registry.
+> prohibits.
 
-A.R.I.A. shall not create a second copy of a generic technical concept merely because another manufacturer uses it.
-
-Manufacturer specificity should be represented through:
-
-- canonical manufacturer entities;
-- product relationships;
-- context;
-- provenance; and
-- applicable technical relationships.
-
-The manufacturer technical corpus remains a source of technical knowledge, not an alternative entity architecture.
+Semantic precision remains necessary even for negative Knowledge.
 
 ---
 
-## 43. Product and Variant Relationships
+## 70. Cycles Are Not Automatically Errors
 
-Product hierarchy should be expressed explicitly using Registry-approved relationships.
+A graph may contain legitimate cycles.
 
-Relationships may connect, where supported:
+For example, hierarchical or dependency structures may produce traversable loops depending upon canonical semantics and inverse representation.
 
-- manufacturer;
-- product family;
-- product;
-- product variant;
-- hardware revision;
-- firmware;
-- component; and
-- configuration.
+A.R.I.A. shall not assume every cycle indicates corrupt Knowledge.
 
-For example, the Registry may express hierarchy using relationships such as:
-
-    MEMBER_OF
-
-and its defined inverse:
-
-    HAS_MEMBER
-
-A.R.I.A. shall use the precise Registry semantics appropriate to the entities being connected.
-
-This allows A.R.I.A. to determine whether technical knowledge applies broadly or only to a particular implementation.
+Traversal systems should prevent uncontrolled recursion while preserving valid graph structure.
 
 ---
 
-## 44. Scope Relationships
+## 71. Relationship Architecture Must Avoid Graph Noise
 
-Scope is a contextual filter.
+As Knowledge grows, indiscriminate Relationship creation can reduce reasoning quality.
 
-Scope shall not create duplicate technical truth.
+A.R.I.A. should avoid creating permanent Relationships for every:
 
-A failure mode remains the same canonical failure mode even when its relevance differs between:
+- word co-occurrence;
+- conversational association;
+- incidental sequence;
+- weak model inference;
+- temporary observation;
+- or one-time correlation.
 
-- installation;
-- commissioning;
-- troubleshooting;
-- maintenance;
-- migration; or
-- acceptance.
-
-Where scope must be explicitly connected to another canonical entity, A.R.I.A. shall use an appropriate relationship type defined by the Registry.
+Relationships should provide durable semantic value.
 
 ---
 
-## 45. User-Specific Experience
+## 72. Avoid Overly Generic Relationships
 
-User-specific experience shall not duplicate canonical technical relationships.
+A graph dominated by generic Relationships such as:
 
-Instead, validated Experience Ledger records may associate:
+> RELATED_TO
 
-- a user;
-- technical context;
-- canonical technical entities;
-- outcomes; and
-- observed relationships.
+may become connected but cognitively weak.
 
-The Probability Engine may use this experience to alter priors or diagnostic strategy.
+Where authoritative Knowledge supports a more precise canonical semantic, A.R.I.A. should use it.
 
-For example, the canonical technical relationship may remain:
-
-    Incorrect Flex Routing
-    CAN_CAUSE
-    RSL Discrepancy
-
-while validated historical experience shows that a particular technician encounters that condition more or less frequently than the broader population.
-
-The technical relationship remains canonical.
-
-The user's validated history affects the prior—not the technical truth.
+Generic association remains appropriate only when the underlying Knowledge does not justify greater specificity.
 
 ---
 
-## 46. Evidence Does Not Rewrite Knowledge Automatically
+## 73. Avoid Unsupported Precision
 
-A single case observation shall not automatically modify canonical technical knowledge.
+The opposite error is equally dangerous.
 
-Case evidence affects:
+A.R.I.A. shall not choose:
 
-- case hypotheses;
-- current probability;
-- diagnostic routing;
-- action selection; and
-- case-specific relationships.
+- causal;
+- deterministic;
+- required;
+- incompatible;
+- resolves;
+- or similarly strong semantics
 
-Only appropriately validated learning may propose changes to reusable technical knowledge.
+when the source only establishes a weaker association.
 
-This prevents transient, incomplete, or erroneous field observations from corrupting the Knowledge Graph.
+The graph should be as precise as the Knowledge supports—not more.
 
 ---
 
-## 47. Relationship Promotion to the Knowledge Graph
+## 74. Relationship Granularity Must Serve Reasoning
 
-A semantic relationship may be eligible for persistence as reusable Knowledge Graph knowledge when it represents a sufficiently validated, reusable technical assertion.
+Relationship assertions should be neither unnecessarily fragmented nor overly broad.
 
-Promotion should consider:
+Granularity should support:
 
-- technical generalizability;
-- validation;
+- technical reasoning;
+- Context;
 - provenance;
-- contextual scope;
-- contradiction status;
-- temporal applicability;
-- source authority; and
-- whether the assertion is genuinely reusable beyond one case.
+- revision awareness;
+- Learning;
+- retrieval;
+- auditability;
+- and explanation.
 
-When represented as persisted graph structure, the Knowledge Graph edge receives:
+The goal is useful semantic structure.
 
-    ke_<UUID>
-
-The semantic relationship retains:
-
-    rel_<UUID>
-
-where the semantic relationship record itself is persisted.
-
-Promotion does not mutate one identifier type into the other.
-
-A.R.I.A. shall preserve lineage between the semantic assertion and corresponding Knowledge Graph structure where appropriate.
+Not maximum edge count.
 
 ---
 
-## 48. Knowledge Graph Edge Semantics
+## 75. Domain Expansion Should Reuse Relationship Semantics
 
-Knowledge Graph edges shall use the approved relationship vocabulary where applicable.
+New technical domains should reuse existing canonical Relationship types where those semantics genuinely apply.
 
-The edge stores graph structure.
+A new domain does not automatically require an entirely new Relationship vocabulary.
 
-The Registry defines semantic meaning.
+For example, concepts such as:
 
-The underlying canonical entities define the technical concepts.
+- dependency;
+- hierarchy;
+- requirement;
+- causality;
+- compatibility;
+- support;
+- contradiction
 
-This keeps:
+may apply across many domains.
 
-- identity;
-- semantics;
-- graph storage; and
-- technical meaning
-
-separate and composable.
-
-Knowledge Graph storage shall not become a second source of relationship vocabulary.
+The registry should expand only when genuinely new semantics are necessary.
 
 ---
 
-## 49. No Silent Reverse Inference
+## 76. New Relationship Types Must Be Deliberate
 
-A.R.I.A. shall never infer a reverse technical claim unless:
+Before adding a new canonical Relationship type, governance should determine whether:
 
-- the relationship is explicitly symmetric; or
-- the Registry defines an inverse relationship.
+- an existing semantic already fits;
+- the proposed distinction materially improves reasoning;
+- the distinction is stable;
+- directionality is understood;
+- inverse semantics are understood;
+- symmetry is understood;
+- and the type has broad enough utility to justify canonical vocabulary.
+
+Registry growth should be deliberate.
+
+---
+
+## 77. Product-Specific Semantics Do Not Automatically Require Universal Relationship Types
+
+A product may use proprietary terminology describing a relationship between its components.
+
+That does not automatically require adding the vendor's wording as a universal Relationship type.
+
+A.R.I.A. should determine whether the concept maps to:
+
+- an existing canonical semantic;
+- product-specific Knowledge;
+- an alias;
+- or a genuinely new universal Relationship semantic.
+
+---
+
+## 78. Relationship Architecture Must Remain Domain-Independent
+
+The universal Relationship architecture shall not hardcode itself around:
+
+- microwave backhaul;
+- RF;
+- Ethernet;
+- telecommunications;
+- one manufacturer;
+- one product;
+- one customer;
+- one organization;
+- or one participant.
+
+Those domains populate the graph.
+
+They do not define the limits of Relationship Architecture.
+
+---
+
+## 79. Telecommunications Is Graph Content, Not Universal Relationship Doctrine
+
+Telecommunications-specific causal and structural Knowledge belongs in canonical Knowledge.
+
+The universal Relationship doctrine defines how such connections behave.
+
+This distinction allows A.R.I.A. to expand into additional technical and operational domains without rebuilding her Relationship architecture.
+
+---
+
+## 80. Relationship Architecture Must Support Explanation
+
+Where useful, A.R.I.A. should be capable of explaining:
+
+- what concepts are connected;
+- what the Relationship means;
+- what Context applies;
+- what source supports it;
+- whether contradictory Relationships exist;
+- whether the Relationship is historical;
+- and how it influenced current reasoning.
+
+Explanation should reflect actual canonical state.
+
+---
+
+## 81. Explanation Must Not Overstate Semantics
+
+A.R.I.A.'s user-facing language should preserve the strength of the underlying Relationship.
+
+If the graph establishes:
+
+> can cause
+
+she should not explain:
+
+> definitely causes.
+
+If the graph establishes:
+
+> is associated with
+
+she should not explain:
+
+> causes.
+
+Natural language may be simplified.
+
+Semantic strength shall not be inflated.
+
+---
+
+## 82. Internal IDs Need Not Be Exposed
+
+Stable internal Relationship identifiers are important for architecture.
+
+Users ordinarily do not need to see:
+
+- `rel_<UUID>`;
+- `ke_<UUID>`;
+- internal registry keys;
+- or graph implementation details.
+
+A.R.I.A. may explain the technical Relationship naturally while preserving canonical identity internally.
+
+---
+
+## 83. Relationship Architecture Must Support Auditability
+
+Authorized review should be capable of determining, where applicable:
+
+- what Relationship existed;
+- what canonical semantic it used;
+- what Entities it connected;
+- what Context applied;
+- what provenance supported it;
+- when it applied;
+- whether it changed;
+- whether it was superseded;
+- and what downstream Knowledge depended upon it.
+
+Auditability supports trustworthy evolution.
+
+---
+
+## 84. Relationship Architecture Must Support Reproducibility
+
+Where practical, A.R.I.A. should preserve enough information to reproduce why a material Relationship exists.
+
+This may require:
+
+- source lineage;
+- Entity resolution;
+- Relationship-type selection;
+- Context;
+- transformation history;
+- governance history;
+- and supporting Knowledge.
+
+The exact persistence structure belongs to authoritative schemas.
+
+---
+
+## 85. Relationship Architecture Must Survive Conversation Length
+
+Canonical Relationships shall not depend upon remaining in temporary model context.
+
+A.R.I.A. shall not forget technical Relationships merely because:
+
+- a conversation becomes long;
+- a session ends;
+- context is summarized;
+- or another model handles the next interaction.
+
+Persistent Knowledge architecture owns canonical Relationships.
+
+---
+
+## 86. Relationship Architecture Must Survive Model Replacement
+
+Canonical Relationships shall not belong to one language model.
+
+Changing:
+
+- model provider;
+- model version;
+- inference implementation;
+- prompt architecture;
+- or reasoning model
+
+shall not destroy canonical Relationship identity or semantics.
+
+The model may help interpret Relationships.
+
+It does not own them.
+
+---
+
+## 87. Relationship Architecture Must Survive Repository Reorganization
+
+Moving files or documents shall not inherently change canonical Relationship identity.
+
+Repository location is storage organization.
+
+It is not Relationship semantics.
+
+Source provenance may reference storage locations without allowing those locations to define canonical meaning.
+
+---
+
+## 88. Relationship Architecture Must Support Schema Evolution
+
+Machine-readable schemas and registries may evolve.
+
+The architecture should permit:
+
+- new Relationship types;
+- improved validation;
+- improved inverse semantics;
+- improved Context support;
+- improved temporal representation;
+- and improved interoperability
+
+without requiring wholesale replacement of canonical Knowledge.
+
+Schema evolution should be deliberate and migration-aware.
+
+---
+
+## 89. Early Relationship Assumptions Must Remain Correctable
+
+Early A.R.I.A. development may contain:
+
+- overly broad semantics;
+- duplicate Relationship types;
+- incorrect directionality;
+- unnecessary lifecycle states;
+- weak Context modeling;
+- or assumptions tied too closely to the first technical domain.
+
+The architecture shall permit deliberate correction.
+
+Early implementation shall not become permanent doctrine merely because it existed first.
+
+---
+
+## 90. Machine-Readable Contracts Are Authoritative
+
+Where prose and machine-readable contracts differ concerning:
+
+- valid Relationship types;
+- identifiers;
+- required fields;
+- field types;
+- directionality;
+- symmetry;
+- inverse mappings;
+- canonical enums;
+- or persisted structure,
+
+the applicable authoritative machine-readable contract governs unless constitutional authority requires otherwise.
+
+This doctrine explains architecture.
+
+It does not replace validation contracts.
+
+---
+
+## 91. Prose Shall Not Become a Shadow Schema
+
+This document shall not manually duplicate every:
+
+- Relationship enum;
+- field;
+- prefix;
+- validation rule;
+- lifecycle state;
+- inverse mapping;
+- or schema requirement.
+
+Doing so creates drift.
+
+The prose defines:
+
+- principles;
+- boundaries;
+- responsibilities;
+- invariants;
+- and interpretation.
+
+Machine-readable contracts define exact implementation.
+
+---
+
+## 92. Canonical Registries Must Remain Canonical
+
+A.R.I.A. shall not silently introduce new Relationship types through:
+
+- application code;
+- language-model output;
+- source ingestion;
+- documentation;
+- Learning;
+- or domain-specific modules.
+
+If a new canonical semantic is required, the authoritative registry should be deliberately extended.
+
+---
+
+## 93. Relationship Architecture and Knowledge Graph
+
+Relationship Architecture owns:
+
+> **the semantic connections between canonical subjects.**
+
+Entity Architecture owns:
+
+> **the canonical identity of those subjects.**
+
+Knowledge Graph doctrine owns:
+
+> **the durable connected Knowledge system formed from those structures.**
+
+These responsibilities shall remain distinct.
+
+---
+
+## 94. Relationship Architecture and Current Reasoning
+
+Current reasoning may traverse, rank, select, or ignore canonical Relationships depending upon:
+
+- current Context;
+- Evidence;
+- hypotheses;
+- Probability;
+- Uncertainty;
+- Routing;
+- Decision;
+- and Validation.
+
+Current reasoning relevance shall not rewrite permanent Relationship semantics.
+
+A Relationship does not become more causal because it is currently diagnostically useful.
+
+---
+
+## 95. Relationship Architecture and Learning
+
+Stable Relationship semantics allow Learning to compare historical Cases meaningfully.
+
+If the same technical semantic is represented inconsistently across Cases, Learning becomes fragmented.
+
+If weak associations are mislabeled as causality, Learning becomes corrupted.
+
+Relationship quality therefore directly affects Learning quality.
+
+---
+
+## 96. Relationship Architecture and Memory
+
+Memory may use canonical Relationships to retrieve connected Knowledge.
+
+For example, retrieval may begin from a symptom Entity and traverse toward:
+
+- causes;
+- components;
+- tests;
+- procedures;
+- or historical Cases.
+
+Memory shall respect canonical semantics and Context.
+
+Retrieval frequency shall not redefine Relationship authority.
+
+---
+
+## 97. Relationship Architecture and Source Evolution
+
+When an upstream source changes, Relationships derived from that source may require review.
+
+The architecture should support tracing:
+
+**SOURCE**
+
+→ **CLAIM**
+
+→ **RELATIONSHIP**
+
+→ **DEPENDENT KNOWLEDGE**
+
+where authoritative schemas support those structures.
+
+Source correction should not leave downstream Knowledge silently stale.
+
+---
+
+## 98. Relationship Architecture and Knowledge Gaps
+
+Failure to find an applicable Relationship is a valid outcome.
+
+A.R.I.A. may determine:
+
+> "I do not currently have canonical Knowledge connecting these concepts."
+
+That is preferable to inventing a Relationship.
+
+Knowledge gaps may later trigger:
+
+- source research;
+- human review;
+- candidate generation;
+- qualified Learning;
+- or registry extension.
+
+Unknown is valid.
+
+---
+
+## 99. Relationship Architecture and Human Language
+
+Users may describe Relationships informally.
 
 For example:
 
-    Failure Mode
-    RESOLVED_BY
-    Action
+> "That cable is killing the link."
 
-may permit inverse traversal as:
+A.R.I.A. may interpret the intended technical meaning while preserving canonical semantics internally.
 
-    Action
-    RESOLVES
-    Failure Mode
+She should not require users to know Relationship registry vocabulary.
 
-only because the Registry defines the applicable inverse semantics.
+Natural language is the interface.
 
-This rule prevents accidental semantic corruption.
+Canonical semantics are the internal structure.
 
 ---
 
-## 50. No Silent Causal Promotion
+## 100. Ambiguous Relationship Language Must Not Be Overinterpreted
 
-A.R.I.A. shall never automatically promote an association into causality because:
+Informal language may be ambiguous.
 
-- two entities frequently co-occur;
-- an action preceded a resolution;
-- a technician believes a cause was present;
-- several cases contain similar language; or
-- a model predicts the relationship.
+For example:
 
-Causal knowledge requires appropriate validation.
+> "A affects B."
 
-Historical frequency may affect investigation priority without establishing technical causation.
+may mean:
 
----
+- causes;
+- changes;
+- correlates with;
+- interferes with;
+- depends upon;
+- or merely relates to.
 
-## 51. No Relationship Duplication for Source Count
-
-If three sources support the same assertion, A.R.I.A. should normally have:
-
-    1 canonical semantic relationship
-    multiple supporting provenance paths
-
-rather than:
-
-    multiple duplicate semantic relationships
-
-Separate relationships remain appropriate when the assertions materially differ in:
-
-- context;
-- conditions;
-- temporal validity;
-- technical meaning;
-- confidence;
-- relationship strength; or
-- provenance-dependent applicability.
+Where the distinction materially affects reasoning and Context does not resolve it, A.R.I.A. shall not silently choose the strongest semantic.
 
 ---
 
-## 52. Relationship Auditability
+## 101. Core Relationship Invariants
 
-A.R.I.A. should be able to answer, where the underlying records support it:
+The following principles shall remain true throughout A.R.I.A.'s architecture:
 
-- What relationship is being used?
-- What does that relationship type mean?
-- What entities does it connect?
-- Is it directed or symmetric?
-- What is its inverse?
-- What context applies?
-- Where did it come from?
-- How confident are we in it?
-- Is it validated?
-- What evidence supports it?
-- What evidence contradicts it?
-- When was it valid?
-- Has it been superseded?
-- Is it reusable knowledge or case-specific reasoning?
-- Does a corresponding Knowledge Graph edge exist?
-
-This auditability is necessary for trustworthy technical reasoning.
-
----
-
-## 53. Example: Reusable Technical Relationship
-
-The following illustrates the structure of a reusable semantic relationship:
-
-    {
-      "relationship_id": "rel_018f3f3c-7f63-77f1-a9cc-61216e6f4179",
-      "relationship_type": "CAN_CAUSE",
-      "source_entity_id": "fm_018f3f50-87c1-74d0-901f-58bbbf938921",
-      "target_entity_id": "sym_018f3f54-9235-7461-8bd5-50fc3bd2e58e",
-      "directed": true,
-      "status": "ACTIVE",
-      "validation_state": "VALIDATED",
-      "confidence": {
-        "value": 0.94,
-        "basis": "Supported by authoritative technical documentation and validated field experience."
-      },
-      "relationship_strength": 0.82,
-      "deterministic": false,
-      "knowledge_edge_id": "ke_018f3f58-1828-7c93-aef2-12eb311429c0",
-      "created_at": "2026-08-25T20:00:00Z"
-    }
-
-The `rel_<UUID>` represents the semantic assertion.
-
-The corresponding `ke_<UUID>` represents reusable persisted graph structure.
-
----
-
-## 54. Example: Case-Specific Evidence Relationship
-
-The following illustrates a case-specific semantic relationship:
-
-    {
-      "relationship_id": "rel_018f3f60-2771-7241-82a2-35d5b6eb3813",
-      "relationship_type": "SUPPORTS",
-      "source_entity_id": "evd_018f3f63-7a33-7741-80fb-21396fcd9422",
-      "target_entity_id": "hyp_018f3f66-a112-7461-86ef-85b88961a7c4",
-      "directed": true,
-      "status": "ACTIVE",
-      "validation_state": "REVIEWED",
-      "confidence": {
-        "value": 0.91,
-        "basis": "Direct instrument measurement with verified context."
-      },
-      "knowledge_edge_id": null,
-      "created_at": "2026-08-25T20:05:00Z"
-    }
-
-This relationship belongs to diagnostic reasoning.
-
-It does not need to become permanent reusable graph knowledge.
-
----
-
-## 55. Example: Deterministic Technical Relationship
-
-A deterministic relationship may use the same semantic relationship structure while explicitly identifying that its technical assertion is deterministic.
-
-Conceptually:
-
-    {
-      "relationship_id": "rel_018f3f70-c8e4-7772-81b2-b3f428f38a42",
-      "relationship_type": "<REGISTRY_DEFINED_RELATIONSHIP_TYPE>",
-      "source_entity_id": "prod_018f3f73-83d0-7160-bdb0-40e2b610be2a",
-      "target_entity_id": "mfr_018f3f76-3231-7612-9870-49ab16fdff61",
-      "directed": true,
-      "status": "ACTIVE",
-      "validation_state": "VALIDATED",
-      "confidence": {
-        "value": 1.0,
-        "basis": "Authoritative technical source."
-      },
-      "deterministic": true,
-      "created_at": "2026-08-25T20:10:00Z"
-    }
-
-The placeholder relationship type is intentional in this example.
-
-The actual persisted relationship must use a relationship type that exists in `Core/Registries/relationship_types.json`.
-
-This prevents documentation examples from silently creating new vocabulary.
+1. Relationships are first-class semantic objects.
+2. Relationship Architecture is subordinate to authoritative machine-readable contracts and registries.
+3. Canonical Relationship types come from the authoritative registry.
+4. Prose examples do not create canonical Relationship types.
+5. Semantic Relationship identity and Relationship type are distinct.
+6. Semantic Relationships and Knowledge Graph edges may remain distinct where authoritative contracts establish that distinction.
+7. Stable Relationship identity shall not depend upon mutable wording.
+8. Relationship semantics shall be as precise as the underlying Knowledge supports.
+9. Stronger semantic meaning requires legitimate support.
+10. Directionality shall be respected.
+11. Inverse semantics shall be canonical rather than invented.
+12. Symmetry shall exist only when canonically defined.
+13. Entities and Relationships are distinct.
+14. Properties and Relationships are distinct.
+15. Free text shall not replace canonical Relationship semantics where structure is required.
+16. Relationships may be Context-specific.
+17. Context does not automatically create new Relationship types.
+18. Separate Relationship assertions may remain appropriate where applicability materially differs.
+19. Conditional Relationships shall not be generalized beyond their conditions.
+20. Canonical possibility is distinct from current Probability.
+21. Deterministic technical Knowledge may remain Context-limited.
+22. Deterministic Relationships do not require invented diagnostic Probability.
+23. Statistical association shall remain distinguishable from deterministic causality.
+24. Numerical Relationship strength shall not have invented universal meaning.
+25. Relationship Architecture does not own an independent confidence scale.
+26. Relationships are distinct from current Evidence.
+27. Case-specific Evidence Relationships do not automatically become canonical Knowledge.
+28. Relationships are distinct from hypotheses.
+29. Relationships are distinct from Probability.
+30. Relationships are distinct from formal Uncertainty.
+31. Relationships are distinct from Validation.
+32. Relationships inform Decision but do not own Action selection.
+33. Relationships inform Routing but do not own route progression.
+34. Relationships are distinct from Learning.
+35. There is no independent Experience Ledger authority.
+36. Historical frequency shall not silently strengthen Relationship semantics.
+37. Relationships are distinct from Memory.
+38. Material Relationships should preserve provenance.
+39. Source Authority remains distinct from Relationship persistence.
+40. Multiple supporting sources do not automatically require duplicate Relationships.
+41. Source count does not equal independent corroboration.
+42. Contradictory Relationships may coexist.
+43. Contradiction does not automatically mean one Relationship is false.
+44. Unresolved contradiction shall remain visible.
+45. Negative Knowledge requires explicit support.
+46. Absence of a Relationship is not automatic negation.
+47. Relationships may have temporal applicability.
+48. Historical Relationships may remain historically valid after supersession.
+49. Relationship lifecycle enums require explicit canonical authority.
+50. Validation states require explicit canonical authority.
+51. Candidate Relationships shall remain distinguishable from canonical Relationships.
+52. Model-proposed Relationships are not automatically canonical.
+53. Co-occurrence shall not automatically become causality.
+54. Canonical promotion must be governed.
+55. Relationship correction should preserve lineage.
+56. Material Relationship correction may require downstream reprocessing.
+57. Superseded Relationships may remain historically important.
+58. Deletion of historically referenced Relationships should be exceptional.
+59. Relationship merge must preserve semantic equivalence and lineage.
+60. Relationship split must remain possible when prior modeling was too broad.
+61. Multi-hop traversal is required.
+62. Multi-hop traversal does not itself prove a current conclusion.
+63. Traversal shall preserve semantic meaning.
+64. Traversal shall preserve directionality.
+65. Traversal shall preserve Context.
+66. Traversal shall preserve temporal applicability.
+67. Traversal shall preserve negative semantics.
+68. Graph cycles are not automatically errors.
+69. Relationship creation shall avoid graph noise.
+70. Overly generic semantics should be avoided where precise semantics are supported.
+71. Unsupported precision shall also be avoided.
+72. Relationship granularity shall serve reasoning.
+73. New domains should reuse canonical Relationship semantics where appropriate.
+74. New Relationship types shall be added deliberately.
+75. Product-specific terminology does not automatically require universal Relationship types.
+76. Universal Relationship architecture shall remain domain-independent.
+77. Domain-specific Relationships belong in Knowledge rather than universal doctrine.
+78. Relationship influence should remain explainable.
+79. Explanation shall not inflate semantic strength.
+80. Internal Relationship IDs need not be exposed during ordinary interaction.
+81. Relationship Architecture should support auditability.
+82. Relationship Architecture should support reproducibility.
+83. Canonical Relationships shall survive conversation length.
+84. Canonical Relationships shall survive model replacement.
+85. Canonical Relationships shall survive repository reorganization.
+86. Relationship Architecture shall support schema evolution.
+87. Early semantic assumptions shall remain correctable.
+88. Machine-readable contracts govern exact persisted structure.
+89. Prose shall not become a shadow schema.
+90. Canonical registries shall remain authoritative.
+91. Entity, Relationship, and Knowledge Graph responsibilities shall remain distinct.
+92. Current reasoning relevance shall not rewrite canonical Relationship semantics.
+93. Stable Relationship semantics support reliable Learning.
+94. Memory retrieval shall respect Relationship semantics and Context.
+95. Upstream source changes may require downstream Relationship review.
+96. Missing Relationships are valid Knowledge gaps.
+97. Natural user language may map to canonical Relationship semantics.
+98. Ambiguous user language shall not be silently upgraded to stronger semantics.
 
 ---
 
-## 56. Relationship Integrity Rules
+## 102. Prohibited Cognitive Behaviors
 
-A.R.I.A. shall preserve the following invariants:
+A.R.I.A. shall not:
 
-1. Every persisted semantic relationship has stable `rel_<UUID>` identity.
-2. Every persisted Knowledge Graph edge has stable `ke_<UUID>` identity.
-3. Relationship semantics come from the canonical Registry.
-4. Schemas do not independently redefine relationship vocabulary.
-5. Knowledge documents do not independently redefine relationship vocabulary.
-6. Reverse relationships are not assumed.
-7. Symmetry exists only when explicitly defined.
-8. Confidence is not probability.
-9. Relationship strength is not current-case probability.
-10. Historical frequency is not causality.
-11. Context does not justify unnecessary entity duplication.
-12. Multiple sources do not automatically mean independent corroboration.
-13. Case-specific reasoning does not automatically become canonical knowledge.
-14. Experience must be validated before materially influencing learned technical knowledge.
-15. Superseded knowledge remains available where historically applicable.
-16. Provenance remains attached to material technical assertions.
-17. Contradictory information is preserved until resolved.
-18. Knowledge Graph promotion requires reusable technical applicability.
-19. `rel_` and `ke_` identities are never treated as interchangeable.
-20. A relationship type not present in the Registry shall not be invented by another layer.
+- create canonical Relationship types outside the authoritative registry;
+- treat prose examples as canonical Relationship vocabulary;
+- invent Relationship identifier formats outside authoritative contracts;
+- confuse Relationship identity with Relationship type;
+- collapse Semantic Relationship records and Knowledge Graph edges when authoritative contracts distinguish them;
+- encode mutable technical meaning unnecessarily into stable identifiers;
+- represent vague association as causality without support;
+- strengthen Relationship semantics to support a preferred conclusion;
+- reverse directional Relationships without canonical inverse semantics;
+- invent inverse Relationships;
+- infer symmetry without canonical authority;
+- replace canonical Relationships with artificial compound Entities;
+- hide meaningful canonical Relationships inside arbitrary properties;
+- use free text as the sole semantic representation where canonical structure is required;
+- create new Relationship types merely because Context changes;
+- generalize conditional Relationships beyond supported conditions;
+- convert technical possibility into current diagnostic Probability;
+- force probabilistic semantics onto deterministic technical facts;
+- treat historical frequency as deterministic causality;
+- invent numerical Relationship-strength meaning without methodology;
+- create an independent Relationship confidence authority;
+- treat canonical Relationships as current Evidence;
+- persist every Case-specific Evidence Relationship as reusable canonical technical Knowledge;
+- allow Relationship Architecture to own hypothesis state;
+- allow Relationship Architecture to own diagnostic Probability;
+- create a competing Relationship-level Uncertainty system;
+- create a competing Relationship Validation state machine;
+- allow Relationship Architecture to independently select Actions;
+- allow Relationship Architecture to independently control Routing;
+- allow Relationship Architecture to redefine Learning;
+- recreate an independent Experience Ledger;
+- allow historical co-occurrence to silently strengthen canonical semantics;
+- allow Memory retrieval frequency to determine Relationship truth;
+- create competing provenance structures;
+- treat graph persistence as Source Authority;
+- count dependent sources as independent corroboration;
+- erase contradictory Relationships merely to simplify reasoning;
+- invent consensus when contradiction remains unresolved;
+- treat absence from the graph as explicit negation;
+- invent negative Knowledge without support;
+- ignore temporal applicability;
+- treat superseded historical Relationships as automatically false;
+- create lifecycle enums through prose;
+- create Validation enums through prose;
+- promote model-inferred Relationships directly into canonical Knowledge without governance;
+- infer causality from repeated co-occurrence alone;
+- modify material Relationships without preserving lineage;
+- ignore downstream dependencies after Relationship correction;
+- delete historically important Relationships merely because they are obsolete;
+- merge Relationships based solely on similar wording;
+- prevent Relationship splits when prior modeling is discovered to be overly broad;
+- treat multi-hop graph connectivity as proof of diagnosis;
+- ignore semantic differences during traversal;
+- ignore directionality during traversal;
+- ignore Context during traversal;
+- ignore temporal applicability during traversal;
+- collapse distinct negative semantics;
+- treat every graph cycle as corrupt Knowledge;
+- create permanent Relationships for every incidental association;
+- use generic Relationships when more precise supported semantics exist;
+- use stronger semantics than the Knowledge supports;
+- create universal Relationship types for every product-specific phrase;
+- rebuild Relationship architecture for every new technical domain;
+- hardcode telecommunications as the limit of universal Relationship architecture;
+- inflate user-facing explanations beyond canonical semantic strength;
+- make canonical Relationships dependent upon one language model;
+- store canonical Relationships only in temporary conversation context;
+- bind Relationship semantics permanently to repository location;
+- freeze early Relationship assumptions merely because they were implemented first;
+- allow prose documentation to become a competing machine-readable schema;
+- silently introduce unregistered Relationship types through application code, Learning, ingestion, or model output;
+- allow current diagnostic importance to rewrite canonical Relationship meaning;
+- fabricate a Relationship to fill a Knowledge gap;
+- force users to speak canonical Relationship vocabulary;
+- or interpret ambiguous user wording as the strongest possible Relationship merely because doing so produces a cleaner answer.
 
 ---
 
-## 57. Relationship Architecture Summary
+## 103. Final Principle
 
-The relationship system preserves the following separation:
+A.R.I.A.'s Relationship Architecture gives structure to how the things she understands connect.
 
-    CANONICAL ENTITIES
-          |
-          | semantic meaning
-          v
-    rel_<UUID>
-    SEMANTIC RELATIONSHIP
-          |
-          | when reusable and appropriate for graph persistence
-          v
-    ke_<UUID>
-    KNOWLEDGE GRAPH EDGE
+A Relationship is not merely a line between two database records.
 
-Meanwhile, active diagnostic reasoning may use:
+It carries semantic meaning.
 
-    evd_<UUID>
-          |
-          | SUPPORTS / CONTRADICTS
-          v
-    hyp_<UUID>
+That meaning may express causality, dependency, hierarchy, compatibility, requirement, support, contradiction, procedure, configuration, or another canonical relationship defined by the authoritative registry.
 
-through case-specific:
+Those semantics must remain stable enough to support durable Knowledge while flexible enough to evolve as A.R.I.A.'s understanding improves.
 
-    rel_<UUID>
+Canonical Relationships must remain distinct from current Evidence, hypotheses, Probability, Uncertainty, Validation, Decision, Routing, Learning, and Memory.
 
-without polluting the reusable Knowledge Graph.
+Historical experience may inform Relationship discovery through Learning, but it shall not operate through a competing Experience Ledger or silently transform frequency into deterministic truth.
 
-Historical validated outcomes may enter:
+Context must determine applicability without multiplying unnecessary Relationship vocabularies.
 
-    exp_<UUID>
+Provenance must preserve lineage without becoming Relationship meaning.
 
-and influence future:
+Source Authority must evaluate legitimate support without being confused with graph persistence.
 
-- priors;
-- relationship confidence;
-- relationship strength;
-- routing strategy; and
-- candidate knowledge generation.
+Contradictions must remain visible until legitimately resolved.
 
-They do not silently rewrite technical truth.
+Historical Relationships must remain available when necessary without being mistaken for current Knowledge.
 
----
+Language models may help extract, interpret, and propose Relationships, but they shall not own canonical semantics or grant themselves authority to create technical truth.
 
-## 58. Final Principle
-
-A.R.I.A.'s relationship architecture exists to make technical knowledge usable for reasoning.
-
-A relationship is not merely a line between two nodes.
-
-It is a traceable technical assertion with:
-
-- precise semantics;
-- stable identity;
-- direction;
-- context;
-- provenance;
-- validation;
-- confidence;
-- temporal applicability; and
-- appropriate separation between current-case reasoning and reusable knowledge.
-
-A.R.I.A. shall preserve those distinctions so that technical reasoning remains explainable, reusable, auditable, and capable of improving without corrupting canonical knowledge.
+And as A.R.I.A. expands across manufacturers, products, technologies, and eventually entirely different domains, the same canonical Relationship architecture should allow new Knowledge to connect naturally to what already exists — **without requiring the cognitive architecture to be rebuilt every time her understanding evolves.**
