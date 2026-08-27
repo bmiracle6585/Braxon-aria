@@ -1,0 +1,584 @@
+{
+  "engine": {
+    "id": "aria.operations.review_engine",
+    "name": "A.R.I.A. Operational Review Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_review",
+    "status": "active",
+    "purpose": "Determine when operational work, plans, portfolios, assumptions, and governed states require deliberate reassessment even when no external event has triggered change. The engine prevents stale assumptions, forgotten obligations, obsolete work, silent drift, and indefinitely deferred decisions while preserving the canonical authority of specialized operational engines.",
+    "principles": [
+      "No change observed is not proof that no change occurred.",
+      "Review is deliberate reassessment, not automatic escalation.",
+      "Review is not the same as follow-up.",
+      "Review is not the same as aging.",
+      "Review should be proportionate to consequence, uncertainty, volatility, and time.",
+      "Stable healthy work should not require constant reassessment.",
+      "High-consequence assumptions deserve stronger review discipline.",
+      "A review may confirm that nothing should change.",
+      "Review findings must be routed to the engine that owns the affected canonical state.",
+      "Review must not silently rewrite authoritative facts.",
+      "Obsolete work should be identified for Resolution rather than preserved indefinitely.",
+      "Review decisions and findings must remain explainable and traceable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "review_record",
+    "sources": [
+      "work_items",
+      "operational plans",
+      "portfolio evaluations",
+      "priority evaluations",
+      "commitments",
+      "delegations",
+      "dependencies",
+      "issues",
+      "risks",
+      "opportunities",
+      "decisions",
+      "capacity evaluations",
+      "schedules",
+      "follow_up evaluations",
+      "aging evaluations",
+      "conflicts",
+      "escalations",
+      "context",
+      "communications",
+      "resolution states",
+      "orchestration records",
+      "source activity",
+      "authorized review requirements"
+    ]
+  },
+
+  "review_scope": {
+    "supported_scopes": [
+      "work_item",
+      "plan",
+      "project",
+      "customer",
+      "person",
+      "team",
+      "portfolio",
+      "commitment",
+      "dependency",
+      "decision",
+      "issue",
+      "risk",
+      "opportunity",
+      "custom_operational_scope"
+    ],
+    "rules": [
+      "The review scope must be identifiable.",
+      "Review scope does not transfer canonical authority from the owning engines.",
+      "A broad review may generate multiple findings against different underlying objects.",
+      "Review should avoid expanding into unrelated operational areas without supported reason."
+    ]
+  },
+
+  "review_states": {
+    "not_due": {
+      "description": "No deliberate review is currently warranted."
+    },
+    "scheduled": {
+      "description": "A future review point has been established."
+    },
+    "due": {
+      "description": "The supported review point has arrived."
+    },
+    "in_progress": {
+      "description": "The operational state is actively being reassessed."
+    },
+    "confirmed": {
+      "description": "Review found the existing operational representation remains materially valid."
+    },
+    "change_detected": {
+      "description": "Review found supported information that may materially alter operational handling."
+    },
+    "information_required": {
+      "description": "Review cannot be completed without additional material information."
+    },
+    "authority_required": {
+      "description": "Review identified a consequential question requiring appropriate decision authority."
+    },
+    "superseded": {
+      "description": "The review is no longer necessary because newer supported evaluation replaced its purpose."
+    },
+    "cancelled": {
+      "description": "The review requirement was legitimately removed."
+    }
+  },
+
+  "review_record": {
+    "fields": [
+      "review_id",
+      "scope_type",
+      "scope_reference",
+      "review_reason",
+      "review_state",
+      "review_depth",
+      "review_due_at",
+      "last_reviewed_at",
+      "baseline_state",
+      "current_evidence",
+      "findings",
+      "material_changes",
+      "uncertainties",
+      "recommended_reevaluations",
+      "user_action_required",
+      "source_references",
+      "created_at",
+      "updated_at"
+    ],
+    "requirements": [
+      "Review findings must identify the underlying operational object.",
+      "Material findings must preserve source provenance.",
+      "Baseline state and newly observed evidence must remain distinguishable.",
+      "Unknown information must remain unknown.",
+      "Historical reviews should remain recoverable when materially useful."
+    ]
+  },
+
+  "review_reasons": {
+    "supported": [
+      "scheduled_periodic_review",
+      "stale_information",
+      "stale_assumption",
+      "long_running_work",
+      "long_running_plan",
+      "persistent_blocker",
+      "persistent_risk",
+      "persistent_issue",
+      "repeated_deferral",
+      "repeated_displacement",
+      "unresolved_decision",
+      "unconfirmed_dependency",
+      "delegated_work_without_recent_signal",
+      "commitment_approaching",
+      "opportunity_window_approaching",
+      "portfolio_instability",
+      "plan_fragility",
+      "material_uncertainty",
+      "user_requested_review",
+      "authorized_governance_requirement"
+    ],
+    "rules": [
+      "The existence of a review reason does not imply operational failure.",
+      "Review reason should explain why reassessment is useful now.",
+      "Routine age alone should not create unnecessary review when state remains sufficiently verified."
+    ]
+  },
+
+  "review_depth": {
+    "light": {
+      "description": "Confirm whether material state has changed and whether existing handling remains appropriate."
+    },
+    "standard": {
+      "description": "Reassess material assumptions, canonical outputs, dependencies, timing, and current handling."
+    },
+    "deep": {
+      "description": "Perform broad operational reassessment where consequence, uncertainty, instability, or accumulated change warrants it."
+    },
+    "rules": [
+      "Review depth should be proportionate to consequence and uncertainty.",
+      "Deep review should not be the default.",
+      "A light review may escalate to standard or deep when material inconsistency is discovered.",
+      "Review depth affects reassessment breadth, not authority."
+    ]
+  },
+
+  "review_timing": {
+    "factors": [
+      "consequence",
+      "uncertainty",
+      "state volatility",
+      "time until commitment",
+      "time until decision window",
+      "dependency volatility",
+      "risk exposure",
+      "issue severity",
+      "plan fragility",
+      "delegation visibility",
+      "information freshness",
+      "historical rate of change"
+    ],
+    "rules": [
+      "High-consequence volatile work should generally be reviewed more frequently than stable routine work.",
+      "Review cadence must not be manufactured when no useful cadence can be supported.",
+      "Event-driven reevaluation may supersede a scheduled review.",
+      "Review should occur early enough to permit useful intervention when foreseeable consequence exists.",
+      "A.R.I.A. should avoid reviewing unchanged low-consequence work merely because a generic timer expired."
+    ]
+  },
+
+  "freshness_assessment": {
+    "categories": {
+      "fresh": "Available operational information remains sufficiently current for its intended use.",
+      "aging": "Information is becoming less reliable due to elapsed time or changing circumstances.",
+      "stale": "Information should no longer be relied upon without reassessment.",
+      "unknown": "Freshness cannot be adequately determined."
+    },
+    "rules": [
+      "Freshness depends on the information type and operational environment.",
+      "Elapsed time alone does not establish staleness.",
+      "Volatile information may become stale quickly.",
+      "Stable authoritative facts may remain useful for long periods.",
+      "A recent timestamp does not guarantee underlying information is current."
+    ]
+  },
+
+  "assumption_review": {
+    "purpose": "Prevent plans and operational reasoning from continuing indefinitely on assumptions that were once reasonable but never confirmed.",
+    "questions": [
+      "Is the assumption still necessary?",
+      "Has it been confirmed?",
+      "Has evidence contradicted it?",
+      "Has the useful confirmation window passed?",
+      "What operational state depends on it?",
+      "What happens if it is wrong?"
+    ],
+    "rules": [
+      "Assumptions must remain distinguishable from facts.",
+      "Repeated use of an assumption does not convert it into fact.",
+      "A consequential stale assumption should trigger reevaluation of dependent reasoning.",
+      "An invalid assumption should be corrected through the engine owning the affected state."
+    ]
+  },
+
+  "silent_drift_detection": {
+    "signals": [
+      "work remains active without meaningful progress",
+      "delegated work has no recent execution evidence",
+      "plan milestones repeatedly pass without corresponding state change",
+      "dependency expected date passes without confirmation",
+      "decision remains open beyond useful decision window",
+      "commitment approaches while execution posture remains unchanged",
+      "risk remains accepted despite materially changed conditions",
+      "temporary workaround persists as normal operation",
+      "protected work repeatedly receives no progress",
+      "source activity contradicts stored operational state"
+    ],
+    "rules": [
+      "Silent drift is a review signal, not automatic proof of failure.",
+      "A.R.I.A. should seek supported evidence before changing canonical state.",
+      "Material drift findings should be routed to the relevant owning engines."
+    ]
+  },
+
+  "obsolete_work_review": {
+    "questions": [
+      "Does the obligation still exist?",
+      "Does the intended outcome still matter?",
+      "Has another action superseded this work?",
+      "Was the work completed elsewhere?",
+      "Has the opportunity expired?",
+      "Has the requirement been withdrawn?",
+      "Is the work duplicated by another active item?"
+    ],
+    "rules": [
+      "Old work should not remain active solely because nobody explicitly closed it.",
+      "Review Engine may recommend Resolution evaluation.",
+      "Review Engine must not independently mark work resolved.",
+      "Lack of recent activity is not sufficient evidence that an obligation disappeared."
+    ]
+  },
+
+  "delegated_work_review": {
+    "rules": [
+      "Delegated work should not require constant user supervision.",
+      "Review becomes useful when execution evidence is stale relative to consequence or expected progression.",
+      "A review may confirm that delegation remains healthy and no user involvement is required.",
+      "Review must not convert delegated work back into the user's personal execution merely because it was reviewed.",
+      "Material delegation concerns should route to Delegation, Follow-Up, Risk, Issue, Attention, or Escalation as appropriate."
+    ]
+  },
+
+  "plan_review": {
+    "questions": [
+      "Does the objective remain valid?",
+      "Are the dependencies still represented accurately?",
+      "Is required capacity still available?",
+      "Does the execution sequence remain practical?",
+      "Are schedule assumptions still valid?",
+      "Has plan fragility materially changed?",
+      "Have contingencies become necessary or obsolete?",
+      "Is actual execution materially diverging from plan?"
+    ],
+    "rules": [
+      "Review Engine evaluates whether replanning may be warranted.",
+      "Planning Engine owns construction and revision of the execution plan.",
+      "A review finding must not silently rewrite the active plan."
+    ]
+  },
+
+  "portfolio_review": {
+    "questions": [
+      "Is the current execution focus still appropriate?",
+      "Has reactive load materially changed?",
+      "Is protected work being starved?",
+      "Are commitments collectively feasible?",
+      "Has capacity posture materially changed?",
+      "Are lower-visibility obligations disappearing beneath urgent work?",
+      "Is the portfolio still healthy enough for the current plan?"
+    ],
+    "rules": [
+      "Portfolio Engine owns portfolio posture.",
+      "Review Engine may trigger Portfolio reevaluation.",
+      "A review should not rebalance the portfolio by silently changing individual priorities."
+    ]
+  },
+
+  "review_outcomes": {
+    "supported": [
+      "no_material_change",
+      "canonical_reevaluation_required",
+      "new_information_required",
+      "follow_up_required",
+      "decision_required",
+      "replanning_required",
+      "portfolio_review_required",
+      "resolution_review_required",
+      "escalation_review_required",
+      "attention_review_required",
+      "communication_review_required",
+      "next_review_required",
+      "review_requirement_removed"
+    ],
+    "rules": [
+      "Review outcomes are routing recommendations unless Review Engine owns the state involved.",
+      "No material change is a valid and useful review result.",
+      "A review should not generate downstream work merely to demonstrate activity."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine determines whether a response, confirmation, action, or expected event should be pursued.",
+      "Review Engine determines whether existing operational understanding itself should be reassessed.",
+      "A review may determine that follow-up is required.",
+      "A follow-up response may satisfy or supersede a review requirement.",
+      "Review must not create unnecessary interpersonal follow-up when internal reassessment is sufficient."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine evaluates time-based pressure, neglect, and starvation.",
+      "Review Engine determines whether elapsed time makes reassessment useful.",
+      "Age may trigger review without changing canonical priority.",
+      "Review findings may cause Aging, Priority, Planning, Resolution, or Portfolio reevaluation."
+    ]
+  },
+
+  "relationship_to_orchestration": {
+    "rules": [
+      "Orchestration Engine coordinates downstream reevaluation produced by material review findings.",
+      "Review Engine should route findings rather than directly overwrite specialized engine states.",
+      "Review results with no material change should not create unnecessary orchestration cycles."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine owns canonical priority.",
+      "Review Engine may determine that priority inputs are stale or materially changed.",
+      "Review Engine must not directly reprioritize work.",
+      "Confirmed unchanged priority should not be represented as a new priority event."
+    ]
+  },
+
+  "relationship_to_planning": {
+    "rules": [
+      "Planning Engine owns execution-plan construction and revision.",
+      "Review Engine evaluates whether the plan remains representative of current supported conditions.",
+      "Material plan drift should trigger Planning reevaluation.",
+      "Review Engine must not silently revise execution sequence."
+    ]
+  },
+
+  "relationship_to_portfolio": {
+    "rules": [
+      "Portfolio Engine owns cross-item operational posture.",
+      "Review Engine may determine that portfolio assumptions or inputs require reassessment.",
+      "Portfolio review findings should be routed to Portfolio Engine."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine owns commitment existence and terms.",
+      "Review Engine may reassess whether information supporting commitment handling remains current.",
+      "Review must not silently release or modify commitments."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine owns dependency existence and state.",
+      "Review Engine may identify stale, unconfirmed, or contradictory dependency information.",
+      "Review must not represent an expected dependency as satisfied."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine owns delegated execution responsibility.",
+      "Review Engine may reassess whether delegation remains operationally healthy.",
+      "Review must not silently reassign execution responsibility."
+    ]
+  },
+
+  "relationship_to_decision": {
+    "rules": [
+      "Decision Engine owns decision state and authorized choices.",
+      "Review Engine may identify stale open decisions or changed decision conditions.",
+      "Review must not assume an unresolved decision outcome."
+    ]
+  },
+
+  "relationship_to_risk": {
+    "rules": [
+      "Risk Engine owns future adverse exposure.",
+      "Review Engine may determine that risk evidence or assumptions require reassessment.",
+      "Review must not lower risk merely because no adverse event has occurred."
+    ]
+  },
+
+  "relationship_to_issue": {
+    "rules": [
+      "Issue Engine owns active problem state.",
+      "Review Engine may identify issues whose status, workaround, cause, or corrective posture requires reassessment.",
+      "Review must not treat lack of recent reporting as issue resolution."
+    ]
+  },
+
+  "relationship_to_opportunity": {
+    "rules": [
+      "Opportunity Engine owns opportunity qualification and state.",
+      "Review Engine may identify approaching windows, stale value assumptions, or opportunities that may have expired.",
+      "Review must not represent potential value as realized value."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine owns terminal disposition.",
+      "Review Engine may identify work that appears obsolete, duplicated, superseded, completed elsewhere, or no longer required.",
+      "Review must route those findings to Resolution Engine rather than closing work itself."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Attention Engine owns user-facing awareness and interruption.",
+      "Review Engine may identify findings that warrant attention reevaluation.",
+      "Routine successful review should normally remain quiet.",
+      "Review itself should not become a recurring source of unnecessary user notifications."
+    ]
+  },
+
+  "relationship_to_briefing": {
+    "rules": [
+      "Briefing Engine determines useful executive presentation.",
+      "Material review findings may appear in a briefing when they change operational posture or required action.",
+      "Routine confirmed reviews should normally be compressed or omitted."
+    ]
+  },
+
+  "relationship_to_context": {
+    "rules": [
+      "Context Engine owns operational circumstances.",
+      "Review Engine may identify context information that has become stale.",
+      "Expected context must not be treated as confirmed current context."
+    ]
+  },
+
+  "relationship_to_communication": {
+    "rules": [
+      "Communication Engine owns communication need and recommendation.",
+      "Review may identify that communication is now required or that a prior communication assumption is stale.",
+      "Review Engine does not independently send communication."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "scheduled review point arrives",
+      "information freshness threshold reached",
+      "material assumption remains unconfirmed",
+      "work remains unchanged beyond useful review interval",
+      "plan remains active beyond useful review interval",
+      "persistent blocker",
+      "persistent issue",
+      "persistent risk",
+      "repeated deferral",
+      "repeated displacement",
+      "decision remains unresolved",
+      "delegated execution lacks expected evidence",
+      "commitment approaches",
+      "opportunity window approaches",
+      "portfolio remains unstable",
+      "user requests review",
+      "authorized governance requirement"
+    ],
+    "rules": [
+      "A review trigger creates a reason to reassess, not a presumption that state changed.",
+      "Recent material reevaluation may satisfy an otherwise scheduled review.",
+      "Duplicate review triggers should be consolidated.",
+      "Review cadence should adapt when supported operational volatility changes."
+    ]
+  },
+
+  "output": {
+    "writes_to": "operational_review",
+    "review_evaluation": [
+      "review_id",
+      "scope",
+      "review_reason",
+      "review_state",
+      "review_depth",
+      "freshness_assessment",
+      "baseline_state",
+      "findings",
+      "material_changes",
+      "uncertainties",
+      "recommended_reevaluations",
+      "user_action_required",
+      "next_review",
+      "confidence",
+      "evaluated_at",
+      "source_references"
+    ],
+    "requirements": [
+      "Review output must distinguish observation from canonical state change.",
+      "Material findings must route to the engine owning the affected state.",
+      "No-material-change reviews must not create artificial operational churn.",
+      "Unknown information must remain unknown.",
+      "Review history must remain traceable where materially useful."
+    ]
+  },
+
+  "guardrails": [
+    "Do not treat review as automatic escalation.",
+    "Do not treat review as follow-up.",
+    "Do not treat review as aging.",
+    "Do not manufacture change because a review occurred.",
+    "Do not manufacture deadlines or review cadences.",
+    "Do not overwrite canonical priority.",
+    "Do not modify commitments.",
+    "Do not modify delegation.",
+    "Do not modify dependencies.",
+    "Do not make decisions.",
+    "Do not revise plans directly.",
+    "Do not rebalance portfolios directly.",
+    "Do not mark issues resolved because reporting stopped.",
+    "Do not lower risk because no adverse event occurred.",
+    "Do not mark work resolved merely because it is old.",
+    "Do not convert assumptions into facts through repetition.",
+    "Do not create unnecessary user attention for healthy confirmed work.",
+    "Do not independently send communication.",
+    "Do not independently execute external actions.",
+    "Do not modify Core reasoning architecture as part of operational review."
+  ]
+}
