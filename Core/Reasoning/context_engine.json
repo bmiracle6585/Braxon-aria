@@ -1,752 +1,994 @@
 {
   "specification": "ARIA_CONTEXT_ENGINE",
-  "version": "0.1.0",
-  "description": "Defines how A.R.I.A. identifies, resolves, represents, scores, inherits, changes, and applies technical context without depending on rigid directory hierarchies.",
+  "version": "2.0.0",
+  "description": "Canonical context-reasoning behavior for A.R.I.A. technical investigations. The Context Engine resolves, normalizes, compares, and maintains technical context for canonical subjects. It determines which contextual dimensions materially affect applicability, preserves unknown and conflicting context, evaluates context completeness and similarity, and creates or supersedes canonical ctx_<UUID> records through the authoritative Context schema. It does not define the context-dimension vocabulary, create a parallel technical ontology, establish technical truth, perform downstream reasoning, or directly invoke other reasoning engines.",
 
-  "core_principle": {
-    "statement": "Context is a multidimensional technical state, not a directory path. ARIA shall identify the combination of entities, relationships, conditions, scope, participants, and time required to determine which knowledge and experience apply to the current reasoning problem.",
-    "rules": [
-      "Context shall be represented as intersecting dimensions rather than one hierarchical folder path.",
-      "A technical entity may participate in many contexts simultaneously.",
-      "Missing context shall remain explicitly unknown.",
-      "Context shall not be invented merely to complete a structure.",
-      "Context may change during a case.",
-      "Context determines applicability but does not itself establish diagnosis.",
-      "Context resolution shall remain traceable to evidence or authoritative records."
-    ]
-  },
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "context_schema": "Core/Schemas/context.schema.json",
+    "context_registry": "Core/Registries/context_types.json",
 
-  "context_dimensions": [
-    {
-      "name": "ORGANIZATION",
-      "examples": [
-        "Braxon Industries"
-      ]
+    "reasoning_components": {
+      "orchestration": "Core/Reasoning/orchestration_engine.json",
+      "case_state": "Core/Reasoning/case_state_engine.json",
+      "evidence": "Core/Reasoning/evidence_engine.json",
+      "hypothesis": "Core/Reasoning/hypothesis_engine.json",
+      "probability": "Core/Reasoning/probability_engine.json",
+      "uncertainty": "Core/Reasoning/uncertainty_engine.json",
+      "decision": "Core/Reasoning/decision_engine.json",
+      "routing": "Core/Reasoning/routing_engine.json",
+      "memory": "Core/Reasoning/memory_engine.json"
     },
-    {
-      "name": "CUSTOMER",
-      "examples": [
-        "Verizon",
-        "AT&T",
-        "T-Mobile"
-      ]
-    },
-    {
-      "name": "MANUFACTURER",
-      "examples": [
-        "Nokia",
-        "Aviat",
-        "Ceragon",
-        "Ericsson"
-      ]
-    },
-    {
-      "name": "PRODUCT_FAMILY",
-      "examples": [
-        "Wavence"
-      ]
-    },
-    {
-      "name": "PRODUCT",
-      "examples": [
-        "UBT",
-        "UBT-T"
-      ]
-    },
-    {
-      "name": "PRODUCT_VARIANT",
-      "examples": [
-        "frequency-specific or hardware-specific variant"
-      ]
-    },
-    {
-      "name": "HARDWARE_REVISION",
-      "examples": [
-        "manufacturer-defined hardware revision"
-      ]
-    },
-    {
-      "name": "SOFTWARE",
-      "examples": [
-        "management software",
-        "embedded software"
-      ]
-    },
-    {
-      "name": "FIRMWARE",
-      "examples": [
-        "applicable equipment firmware release"
-      ]
-    },
-    {
-      "name": "FREQUENCY_BAND",
-      "examples": [
-        "6 GHz",
-        "11 GHz",
-        "18 GHz",
-        "23 GHz"
-      ]
-    },
-    {
-      "name": "TOPOLOGY",
-      "examples": [
-        "1+0",
-        "2+0",
-        "1+1",
-        "Space Diversity"
-      ]
-    },
-    {
-      "name": "DIVERSITY_MODE",
-      "examples": [
-        "No Diversity",
-        "Space Diversity",
-        "Frequency Diversity"
-      ]
-    },
-    {
-      "name": "POLARIZATION",
-      "examples": [
-        "Vertical",
-        "Horizontal",
-        "Dual Polarization"
-      ]
-    },
-    {
-      "name": "SCOPE_OF_WORK",
-      "examples": [
-        "Installation",
-        "Commissioning",
-        "Integration",
-        "Troubleshooting",
-        "Acceptance",
-        "Maintenance"
-      ]
-    },
-    {
-      "name": "PROJECT_PHASE",
-      "examples": [
-        "Preconstruction",
-        "Installation",
-        "Commissioning",
-        "Turn-up",
-        "Acceptance",
-        "In Service"
-      ]
-    },
-    {
-      "name": "PROJECT",
-      "examples": [
-        "specific project"
-      ]
-    },
-    {
-      "name": "SITE",
-      "examples": [
-        "Site A",
-        "Site B"
-      ]
-    },
-    {
-      "name": "PATH",
-      "examples": [
-        "microwave path between two endpoints"
-      ]
-    },
-    {
-      "name": "ENDPOINT",
-      "examples": [
-        "near end",
-        "far end"
-      ]
-    },
-    {
-      "name": "RADIO_ROLE",
-      "examples": [
-        "Radio A",
-        "Radio B",
-        "Main",
-        "Diversity"
-      ]
-    },
-    {
-      "name": "RF_CHAIN",
-      "examples": [
-        "Main RF chain",
-        "Diversity RF chain"
-      ]
-    },
-    {
-      "name": "COMPONENT",
-      "examples": [
-        "radio",
-        "antenna",
-        "flex twist",
-        "OCM",
-        "waveguide",
-        "coupler"
-      ]
-    },
-    {
-      "name": "USER",
-      "examples": [
-        "technician",
-        "engineer",
-        "project manager"
-      ]
-    },
-    {
-      "name": "TEAM",
-      "examples": [
-        "crew",
-        "engineering group"
-      ]
-    },
-    {
-      "name": "ENVIRONMENT",
-      "examples": [
-        "weather",
-        "temperature",
-        "terrain",
-        "obstruction state"
-      ]
-    },
-    {
-      "name": "TEMPORAL_STATE",
-      "examples": [
-        "before change",
-        "after change",
-        "during outage",
-        "after reboot"
-      ]
-    },
-    {
-      "name": "RECENT_CHANGE",
-      "examples": [
-        "configuration change",
-        "radio replacement",
-        "antenna adjustment",
-        "firmware upgrade",
-        "cable reroute"
-      ]
-    }
-  ],
 
-  "context_record": {
-    "required_fields": [
-      "context_id",
-      "case_id",
-      "generated_at",
-      "dimensions",
-      "resolved_entities",
-      "unresolved_dimensions",
-      "context_confidence",
-      "context_sources",
-      "context_version"
-    ]
-  },
+    "role": "TECHNICAL_CONTEXT_RESOLUTION_AND_APPLICABILITY",
 
-  "context_value": {
-    "required_fields": [
-      "dimension",
-      "entity_id",
-      "display_value",
-      "resolution_status",
-      "confidence",
-      "source_evidence_ids"
+    "owns": [
+      "candidate context extraction",
+      "context normalization",
+      "context-value resolution",
+      "canonical context-reference resolution",
+      "context conflict detection",
+      "unknown-context preservation",
+      "not-applicable context determination",
+      "context completeness assessment",
+      "context match assessment",
+      "context similarity reasoning",
+      "context applicability reasoning",
+      "material-context determination",
+      "critical-context identification",
+      "context supersession recommendation",
+      "context-change assessment",
+      "context-resolution explanation"
     ],
 
-    "resolution_statuses": [
-      "CONFIRMED",
-      "INFERRED",
-      "REPORTED",
-      "AMBIGUOUS",
-      "UNKNOWN",
-      "NOT_APPLICABLE"
+    "does_not_own": [
+      "context dimension vocabulary",
+      "context persistence schema",
+      "canonical entity identity",
+      "manufacturer identity",
+      "product identity",
+      "scope identity",
+      "technical ontology",
+      "relationship truth",
+      "source authority",
+      "evidence truth",
+      "evidence confidence",
+      "measurement truth",
+      "hypothesis generation",
+      "hypothesis probability",
+      "uncertainty ownership",
+      "candidate action selection",
+      "route progression",
+      "case lifecycle status",
+      "case reasoning state",
+      "engine invocation",
+      "downstream reevaluation",
+      "learning truth",
+      "manufacturer requirements"
     ]
   },
 
-  "multidimensional_model": {
-    "description": "Context shall be represented as a set of dimensions and graph relationships rather than a single path.",
+  "core_principle": {
+    "statement": "Context is a multidimensional description of the technical circumstances under which information, evidence, hypotheses, actions, experience, knowledge, and reasoning are applicable. Context is not a directory path, not a diagnosis, and not a substitute for canonical technical objects.",
 
-    "example": {
-      "manufacturer": "Nokia",
-      "product_family": "Wavence",
-      "product": "UBT-T",
-      "frequency_band": "18 GHz",
-      "topology": "2+0",
-      "diversity_mode": "Space Diversity",
-      "scope_of_work": "Commissioning",
-      "site": "Site A",
-      "radio_role": "Radio B",
-      "rf_chain": "Diversity"
-    },
+    "rules": [
+      "Context shall be represented through dimensions governed by Core/Registries/context_types.json.",
+      "Context values shall conform to Core/Schemas/context.schema.json.",
+      "A technical subject may participate in multiple contexts.",
+      "Context may apply to a case, source, claim, relationship, evidence item, hypothesis, action, experience, knowledge object, or reasoning operation.",
+      "Missing context shall remain explicitly unknown when materially applicable.",
+      "Unknown and not applicable are distinct.",
+      "Context shall not be invented merely to complete a structure.",
+      "Context may change over time.",
+      "Historical context shall remain preserved after change.",
+      "Context determines applicability and interpretation but does not itself establish diagnosis or causal truth.",
+      "Context resolution shall remain traceable to sources, evidence, measurements, canonical records, derived context, or explicitly identified inference.",
+      "Only context dimensions material to the technical question should normally influence reasoning.",
+      "A.R.I.A. shall not interrogate the user for irrelevant context.",
+      "Context inference shall remain distinguishable from observed, measured, retrieved, or user-supplied context.",
+      "Model-inferred context shall not silently become authoritative when acceptance is required.",
+      "The Context Engine shall remain technically domain-independent."
+    ]
+  },
 
-    "interpretation": "Each value references a reusable graph entity. The complete context exists as the intersection of those entities rather than as a directory named Nokia/Wavence/UBT-T/18GHz/2+0/Space-Diversity/Commissioning/Site-A/Radio-B/Diversity."
+  "canonical_identity_model": {
+    "context": "ctx_<UUID>",
+    "case": "case_<UUID>",
+    "source": "src_<UUID>",
+    "evidence": "evd_<UUID>",
+    "hypothesis": "hyp_<UUID>",
+    "action": "act_<UUID>",
+    "measurement": "meas_<UUID>",
+    "claim": "claim_<UUID>",
+    "relationship": "rel_<UUID>",
+    "experience": "exp_<UUID>",
+
+    "rules": [
+      "The Context Engine shall not create alternate context identity schemes.",
+      "A materially distinct persisted context shall use canonical ctx_<UUID> identity.",
+      "Canonical technical objects shall be referenced rather than recreated inside Context when canonical identity exists.",
+      "Registry codes shall not be substituted for runtime object identity when a canonical reference is required."
+    ]
+  },
+
+  "subject_model": {
+    "supported_subject_types": [
+      "CASE",
+      "SOURCE",
+      "CLAIM",
+      "RELATIONSHIP",
+      "EVIDENCE",
+      "HYPOTHESIS",
+      "ACTION",
+      "EXPERIENCE",
+      "KNOWLEDGE",
+      "REASONING_OPERATION"
+    ],
+
+    "rules": [
+      "Context shall always be interpreted relative to a subject.",
+      "The same contextual value may have different significance for different subjects.",
+      "Context attached to one subject shall not automatically be copied to another subject.",
+      "Context inheritance between subjects requires a defensible relationship.",
+      "Case context is one use of Context and shall not define the entire Context architecture."
+    ]
+  },
+
+  "context_dimension_boundary": {
+    "registry": "Core/Registries/context_types.json",
+
+    "rules": [
+      "The Context Engine shall consume the canonical dimension vocabulary from the Context Types Registry.",
+      "The Context Engine shall not maintain its own competing list of dimensions.",
+      "New technical dimensions shall be added through the Registry rather than embedded inside Context Engine logic.",
+      "Dimension semantics, preferred value kinds, categories, and canonical-reference guidance shall come from the Registry.",
+      "The Context Engine may determine whether a registered dimension is material to a specific technical question."
+    ]
+  },
+
+  "value_model": {
+    "value_kinds": [
+      "CANONICAL_REFERENCE",
+      "STRUCTURED_VALUE",
+      "MEASUREMENT_REFERENCE",
+      "CONTROLLED_VALUE",
+      "TECHNICAL_VALUE",
+      "UNKNOWN",
+      "NOT_APPLICABLE"
+    ],
+
+    "origin_types": [
+      "USER_SUPPLIED",
+      "SYSTEM_OBSERVED",
+      "MEASURED",
+      "SOURCE_DERIVED",
+      "CANONICAL_RETRIEVAL",
+      "EXPERIENCE_DERIVED",
+      "MODEL_INFERRED",
+      "SYSTEM_DERIVED"
+    ],
+
+    "rules": [
+      "Value kinds shall conform to Core/Schemas/context.schema.json.",
+      "CANONICAL_REFERENCE shall be preferred when the contextual concept already has reusable canonical identity.",
+      "STRUCTURED_VALUE shall be used when the contextual state is structured but does not justify independent canonical identity.",
+      "MEASUREMENT_REFERENCE shall preserve canonical measurement identity.",
+      "CONTROLLED_VALUE shall defer to the applicable authoritative Registry or schema.",
+      "TECHNICAL_VALUE shall represent bounded technical values that do not warrant canonical identity.",
+      "UNKNOWN explicitly means the relevant value is not currently known.",
+      "NOT_APPLICABLE explicitly means the dimension does not apply to the subject or reasoning operation.",
+      "Absence of a dimension shall not automatically mean UNKNOWN or NOT_APPLICABLE.",
+      "Origin type shall preserve how the contextual value entered the system."
+    ]
   },
 
   "context_resolution_pipeline": [
     {
       "step": 1,
-      "name": "EXTRACT_CANDIDATE_CONTEXT",
-      "description": "Identify context stated or implied by user input, case records, artifacts, equipment data, and project information."
+      "name": "IDENTIFY_SUBJECT",
+      "description": "Identify the canonical subject for which context is being resolved."
     },
     {
       "step": 2,
-      "name": "NORMALIZE_TERMS",
-      "description": "Resolve aliases, abbreviations, informal names, and manufacturer terminology to canonical entities."
+      "name": "IDENTIFY_REASONING_PURPOSE",
+      "description": "Identify the technical question, reasoning operation, retrieval task, evidence interpretation, action evaluation, or other purpose for which context is needed."
     },
     {
       "step": 3,
-      "name": "RESOLVE_GRAPH_ENTITIES",
-      "description": "Map normalized terms to existing knowledge graph entities."
+      "name": "IDENTIFY_MATERIAL_DIMENSIONS",
+      "description": "Determine which registered context dimensions could materially affect the current technical purpose."
     },
     {
       "step": 4,
-      "name": "APPLY_RELATIONSHIP_CONSTRAINTS",
-      "description": "Check whether resolved context combinations are technically compatible."
+      "name": "EXTRACT_CANDIDATE_VALUES",
+      "description": "Extract candidate contextual values from current case state, canonical records, sources, evidence, measurements, technical artifacts, user input, system observations, experience, and permitted inference."
     },
     {
       "step": 5,
-      "name": "IDENTIFY_MISSING_CONTEXT",
-      "description": "Determine which unresolved dimensions could materially affect reasoning."
+      "name": "NORMALIZE_VALUES",
+      "description": "Normalize aliases, abbreviations, formatting, units, informal terminology, version expressions, and other representations without changing technical meaning."
     },
     {
       "step": 6,
-      "name": "CALCULATE_CONTEXT_CONFIDENCE",
-      "description": "Estimate confidence that the current context representation is correct."
+      "name": "RESOLVE_CANONICAL_REFERENCES",
+      "description": "Resolve contextual values to canonical runtime objects when applicable and supported."
     },
     {
       "step": 7,
-      "name": "PUBLISH_CONTEXT_STATE",
-      "description": "Provide the resolved context to memory, retrieval, hypothesis, probability, evidence, and routing engines."
+      "name": "VALIDATE_CONTEXT_RELATIONSHIPS",
+      "description": "Evaluate whether the resolved contextual combination is technically coherent using authoritative canonical relationships and knowledge."
+    },
+    {
+      "step": 8,
+      "name": "DETECT_CONFLICTS",
+      "description": "Identify materially conflicting contextual claims, records, observations, measurements, or inferred values."
+    },
+    {
+      "step": 9,
+      "name": "PRESERVE_UNKNOWNS",
+      "description": "Represent materially applicable unresolved dimensions as UNKNOWN rather than inventing values."
+    },
+    {
+      "step": 10,
+      "name": "ASSESS_COMPLETENESS",
+      "description": "Determine whether enough material context exists for the requested technical purpose."
+    },
+    {
+      "step": 11,
+      "name": "ASSESS_CONTEXT_MATCH",
+      "description": "When comparing another technical object, experience, knowledge item, action, or source, evaluate context similarity and applicability using only material dimensions."
+    },
+    {
+      "step": 12,
+      "name": "ASSESS_MATERIAL_CHANGE",
+      "description": "Determine whether newly resolved context materially differs from the currently applicable persisted context."
+    },
+    {
+      "step": 13,
+      "name": "PROPOSE_CONTEXT_PERSISTENCE",
+      "description": "Create or supersede a canonical ctx_<UUID> record when persistence is warranted."
+    },
+    {
+      "step": 14,
+      "name": "RETURN_CONTEXT_RESULT",
+      "description": "Return resolved context, completeness, conflicts, uncertainty, and material-change information to Orchestration."
     }
   ],
 
-  "alias_resolution": {
-    "enabled": true,
+  "material_dimension_selection": {
+    "principle": "Not every registered context dimension matters to every technical question.",
 
-    "examples": [
-      {
-        "input": "UBTT",
-        "canonical": "UBT-T"
-      },
-      {
-        "input": "div",
-        "canonical": "Diversity"
-      },
-      {
-        "input": "main",
-        "canonical": "Main"
-      }
+    "consider": [
+      "whether different values would change technical interpretation",
+      "whether different values would change applicable manufacturer or engineering requirements",
+      "whether different values would change evidence interpretation",
+      "whether different values would change hypothesis plausibility",
+      "whether different values would change action eligibility",
+      "whether different values would change expected action outcome",
+      "whether different values would change safety requirements",
+      "whether different values would change compatibility",
+      "whether different values would change retrieval scope",
+      "whether different values would change comparison validity"
     ],
 
     "rules": [
-      "Aliases shall map to canonical entities rather than create duplicate technical entities.",
-      "Ambiguous aliases shall not be silently resolved without sufficient context.",
-      "Manufacturer terminology may override generic terminology only within applicable scope.",
-      "Alias mappings shall preserve provenance."
+      "A dimension is material when a plausible alternative value could materially change the current technical reasoning result.",
+      "Missing immaterial context shall not reduce completeness.",
+      "A.R.I.A. shall request missing context only when obtaining it is expected to materially improve reasoning.",
+      "Context questions shall be proportional to the technical decision being made.",
+      "The Context Engine shall not require every registered dimension to be populated."
     ]
   },
 
-  "context_inheritance": {
-    "enabled": true,
+  "normalization": {
+    "principle": "Normalization resolves representation differences without changing technical identity or certainty.",
 
-    "description": "Applicable knowledge may inherit through graph relationships when the more specific entity does not override the broader rule.",
-
-    "example": {
-      "general": "RSL degradation may result from physical RF path loss.",
-      "manufacturer": "Nokia equipment uses applicable manufacturer-specific measurements and alarms.",
-      "product": "UBT-T adds product-specific ports and configuration relationships.",
-      "variant": "18 GHz variant adds frequency-specific hardware and engineering constraints."
-    },
-
-    "rules": [
-      "General technical knowledge remains available unless a more specific rule limits applicability.",
-      "Specific knowledge may refine broader knowledge.",
-      "Specific knowledge shall not duplicate broader knowledge unnecessarily.",
-      "Overrides shall be explicit.",
-      "Inheritance shall preserve the source level of each applicable rule."
-    ]
-  },
-
-  "applicability_model": {
-    "range": {
-      "minimum": 0.0,
-      "maximum": 1.0
-    },
-
-    "candidate_factors": [
-      "ENTITY_MATCH",
-      "RELATIONSHIP_MATCH",
-      "VERSION_MATCH",
-      "TOPOLOGY_MATCH",
-      "FREQUENCY_MATCH",
-      "SCOPE_MATCH",
-      "TEMPORAL_MATCH",
-      "USER_MATCH",
-      "ENVIRONMENT_MATCH"
+    "may_normalize": [
+      "capitalization",
+      "punctuation",
+      "abbreviations",
+      "recognized aliases",
+      "manufacturer naming variations",
+      "product naming variations",
+      "version formatting",
+      "unit representation",
+      "common technical shorthand"
     ],
 
     "rules": [
-      "Applicability shall be calculated relative to the knowledge, experience, evidence, hypothesis, or action being evaluated.",
-      "Not every context dimension matters equally to every technical concept.",
+      "Normalization shall not convert ambiguity into certainty.",
+      "Aliases shall map to canonical identity only when sufficiently supported.",
+      "Ambiguous aliases shall remain unresolved.",
+      "Manufacturer-specific terminology may be interpreted within applicable context but shall not redefine universal Core semantics.",
+      "Normalization shall preserve source provenance.",
+      "Normalization shall not merge technically distinct product variants, revisions, interfaces, configurations, or states."
+    ]
+  },
+
+  "canonical_resolution": {
+    "principle": "Context should reference canonical technical objects whenever those objects already exist and are appropriate contextual values.",
+
+    "rules": [
+      "Canonical resolution shall use existing technical identity rather than create duplicate entities.",
+      "Names alone shall not be assumed globally unique.",
+      "Manufacturer plus product name may still be insufficient when variant or revision matters.",
+      "Canonical resolution shall preserve ambiguity when multiple plausible objects remain.",
+      "A context value may reference multiple canonical objects when multiple objects legitimately apply.",
+      "Failure to resolve a canonical object shall not force creation of a new object inside Context."
+    ]
+  },
+
+  "relationship_validation": {
+    "principle": "Some context is meaningful only through relationships between technical objects.",
+
+    "examples_of_material_relationships": [
+      "installed_in",
+      "connected_to",
+      "configured_as",
+      "member_of",
+      "located_at",
+      "paired_with",
+      "operates_with",
+      "compatible_with",
+      "depends_on",
+      "upstream_of",
+      "downstream_of",
+      "before",
+      "after"
+    ],
+
+    "rules": [
+      "Relationship truth shall come from the authoritative relationship or knowledge layer.",
+      "The Context Engine may use known relationships to test whether a context combination is coherent.",
+      "The Context Engine shall not invent graph relationships merely to make a context combination valid.",
+      "A technically incompatible relationship shall reduce or invalidate applicability when the relationship is material.",
+      "Directionality shall be preserved when technically material."
+    ]
+  },
+
+  "provenance_and_origin": {
+    "principle": "Context meaning depends partly on how the value was established.",
+
+    "rules": [
+      "USER_SUPPLIED context is not automatically verified.",
+      "SYSTEM_OBSERVED context should remain tied to the system observation.",
+      "MEASURED context shall preserve measurement identity.",
+      "SOURCE_DERIVED context shall preserve supporting source references.",
+      "CANONICAL_RETRIEVAL context shall preserve the canonical record or relationship from which it was obtained.",
+      "EXPERIENCE_DERIVED context shall remain distinguishable from current-case observation.",
+      "MODEL_INFERRED context shall remain explicitly identified as inference.",
+      "SYSTEM_DERIVED context shall preserve its derivation basis when material.",
+      "Provenance shall not be discarded after context is accepted."
+    ]
+  },
+
+  "model_inference_policy": {
+    "principle": "A model may infer candidate context but inference shall not silently become authoritative technical state.",
+
+    "rules": [
+      "Model-inferred context shall use origin_type MODEL_INFERRED.",
+      "Model inference shall preserve the information from which it was inferred.",
+      "Model inference shall identify material ambiguity.",
+      "A model shall not infer a precise manufacturer, product, version, topology, configuration, location, or other material dimension when multiple plausible values remain.",
+      "Acceptance fields defined by context.schema.json shall be used when structured acceptance is required.",
+      "Unaccepted inferred context may assist questioning or hypothesis generation but shall not be represented as equivalent to observed or authoritative context.",
+      "Critical decisions shall not rely exclusively on unaccepted inferred context when the uncertainty could materially alter the result."
+    ]
+  },
+
+  "conflict_detection": {
+    "principle": "Conflicting contextual values shall remain explicit until resolved or bounded.",
+
+    "conflict_sources": [
+      "user statement versus authoritative inventory",
+      "source versus source",
+      "evidence versus source",
+      "measurement versus reported value",
+      "canonical relationship versus inferred relationship",
+      "current context versus historical context",
+      "version mismatch",
+      "product mismatch",
+      "topology mismatch",
+      "configuration mismatch",
+      "location mismatch",
+      "temporal mismatch",
+      "scope mismatch"
+    ],
+
+    "conflict_states": [
+      "NO_CONFLICT_IDENTIFIED",
+      "POTENTIAL_CONFLICT",
+      "MATERIAL_CONFLICT",
+      "RESOLVED_CONFLICT",
+      "UNRESOLVED_CONFLICT"
+    ],
+
+    "rules": [
+      "Context conflict does not automatically determine which source is wrong.",
+      "Material conflicts shall reduce context certainty or completeness when they affect the technical question.",
+      "A conflict shall not be silently resolved merely because one value matches historical expectation.",
+      "Current authoritative evidence may supersede older context when technically justified.",
+      "Historical context shall remain preserved even when superseded.",
+      "Material unresolved context conflict shall be surfaced to Orchestration and downstream reasoning."
+    ]
+  },
+
+  "unknown_context": {
+    "principle": "Unknown context is valid and often preferable to false precision.",
+
+    "rules": [
+      "UNKNOWN shall be used when the dimension is applicable but the value is not known.",
+      "NOT_APPLICABLE shall only be used when the dimension genuinely does not apply.",
+      "Unknown values shall not be filled using arbitrary defaults.",
+      "Historical frequency shall not be used as a substitute for current context unless explicitly represented as inference.",
+      "Unknown critical context may constrain knowledge retrieval, action eligibility, probability confidence, or decision confidence.",
+      "Unknown noncritical context shall not unnecessarily block reasoning."
+    ]
+  },
+
+  "context_completeness": {
+    "principle": "Completeness is relative to the technical purpose, not to the number of populated dimensions.",
+
+    "conceptual_states": [
+      "SUFFICIENT",
+      "PARTIALLY_SUFFICIENT",
+      "INSUFFICIENT",
+      "UNKNOWN"
+    ],
+
+    "consider": [
+      "material dimensions identified",
+      "material dimensions resolved",
+      "material dimensions explicitly unknown",
+      "unresolved conflicts",
+      "required canonical relationships",
+      "temporal applicability",
+      "technical decision sensitivity to missing values"
+    ],
+
+    "rules": [
+      "A context may be complete enough for one reasoning operation and insufficient for another.",
+      "Completeness shall not require irrelevant dimensions.",
+      "Insufficient context should identify which missing dimensions matter and why.",
+      "Completeness is not evidence confidence.",
+      "Completeness is not hypothesis probability.",
+      "The Context Engine shall not invent numerical completeness precision unless the calculation is defensible."
+    ]
+  },
+
+  "context_match": {
+    "principle": "Context match estimates applicability between one technical context and another object, source, experience, knowledge item, action, hypothesis, or reasoning operation.",
+
+    "comparison_modes": [
+      "EXACT",
+      "COMPATIBLE",
+      "PARTIAL",
+      "CONFLICTING",
+      "INSUFFICIENT_INFORMATION",
+      "NOT_APPLICABLE"
+    ],
+
+    "comparison_inputs": [
+      "material dimension overlap",
+      "canonical identity match",
+      "relationship compatibility",
+      "version compatibility",
+      "configuration compatibility",
+      "temporal overlap",
+      "scope compatibility",
+      "location compatibility",
+      "operating-state compatibility",
+      "environmental compatibility",
+      "unknown critical dimensions",
+      "material conflicting dimensions"
+    ],
+
+    "rules": [
+      "Only dimensions material to the technical item being evaluated should significantly affect applicability.",
+      "Exact equality across every context dimension is not required.",
       "Missing irrelevant context shall not reduce applicability.",
-      "Conflict in a critical context dimension may reduce applicability sharply."
+      "Conflict in one critical dimension may invalidate applicability even when many other dimensions match.",
+      "A broader context may remain applicable to a more specific subject when the broader technical rule legitimately generalizes.",
+      "A highly specific context may not generalize safely to a broader context.",
+      "Context match does not establish technical truth or causality."
     ]
   },
 
-  "critical_context": {
-    "description": "Different technical questions require different minimum context.",
+  "context_match_confidence": {
+    "principle": "Context-match confidence expresses confidence that the applicability assessment is correct.",
 
-    "examples": [
-      {
-        "technical_question": "What is the expected free-space path loss?",
-        "important_dimensions": [
-          "frequency",
-          "distance"
-        ]
-      },
-      {
-        "technical_question": "Which UBT-T port should the Diversity flex connect to?",
-        "important_dimensions": [
-          "manufacturer",
-          "product",
-          "topology",
-          "diversity_mode",
-          "radio_role",
-          "rf_chain"
-        ]
-      },
-      {
-        "technical_question": "How likely is this technician's configuration to contain an error?",
-        "important_dimensions": [
-          "user",
-          "manufacturer",
-          "product",
-          "scope_of_work",
-          "symptom_pattern"
-        ]
-      }
+    "consider": [
+      "source quality of contextual values",
+      "amount of material context resolved",
+      "unresolved conflicts",
+      "canonical identity certainty",
+      "temporal certainty",
+      "relationship certainty",
+      "model-inference dependence",
+      "critical unknown dimensions"
     ],
 
     "rules": [
-      "ARIA shall request missing context only when it materially affects the reasoning operation.",
-      "ARIA shall not interrogate the user for dimensions irrelevant to the current question."
+      "Context-match confidence shall remain distinct from evidence confidence.",
+      "Context-match confidence shall remain distinct from hypothesis probability.",
+      "High contextual similarity with uncertain identity may still have limited confidence.",
+      "Low context-match confidence shall be surfaced when materially relevant."
     ]
   },
 
-  "context_signature": {
-    "description": "A normalized context signature may be used for indexing and historical aggregation without becoming a directory path.",
+  "applicability_reasoning": {
+    "principle": "Applicability determines whether technical information can reasonably be used in the current context and with what limitations.",
 
-    "example": {
-      "manufacturer": "NOKIA",
-      "product": "UBT_T",
-      "frequency_band": "18_GHZ",
-      "topology": "2_PLUS_0",
-      "diversity_mode": "SPACE_DIVERSITY",
-      "scope": "COMMISSIONING"
-    },
-
-    "rules": [
-      "Signatures may contain only dimensions relevant to the indexed pattern.",
-      "Different learning aggregates may use different context signatures.",
-      "A signature shall reference canonical entity identifiers when implemented.",
-      "Signatures shall not require every possible context dimension."
-    ]
-  },
-
-  "context_specificity": {
-    "levels": [
-      "GENERAL",
-      "DOMAIN",
-      "MANUFACTURER",
-      "PRODUCT_FAMILY",
-      "PRODUCT",
-      "PRODUCT_VARIANT",
-      "CONFIGURATION",
-      "PROJECT",
-      "SITE",
-      "PATH",
-      "ENDPOINT",
-      "COMPONENT"
+    "applicable_to": [
+      "KNOWLEDGE",
+      "SOURCE",
+      "CLAIM",
+      "EVIDENCE",
+      "EXPERIENCE",
+      "HYPOTHESIS",
+      "ACTION",
+      "PROCEDURE",
+      "MEASUREMENT_INTERPRETATION",
+      "VALIDATION_CRITERIA",
+      "REASONING_OPERATION"
     ],
 
     "rules": [
-      "Greater specificity may improve applicability but may reduce available historical sample size.",
-      "Reasoning engines shall balance specificity against statistical support.",
-      "ARIA shall be capable of broadening context when specific historical data is sparse."
+      "Applicability shall be evaluated relative to the item being applied.",
+      "The same current context may make one knowledge item applicable and another inapplicable.",
+      "A manufacturer match alone does not guarantee product applicability.",
+      "A product match alone does not guarantee version applicability.",
+      "A historical case match does not make its outcome current-case evidence.",
+      "A procedure shall not be applied when a critical incompatibility exists.",
+      "Applicability shall preserve known limitations."
+    ]
+  },
+
+  "specificity_and_generalization": {
+    "principle": "Technical context may be broader or narrower without requiring a rigid hierarchy.",
+
+    "rules": [
+      "Greater specificity can improve applicability precision.",
+      "Greater specificity may reduce the amount of available historical experience.",
+      "Broader knowledge may remain applicable when its technical rule legitimately generalizes.",
+      "More-specific knowledge may refine or constrain broader knowledge.",
+      "Specific knowledge shall not be assumed to override broader knowledge unless an authoritative distinction exists.",
+      "The Context Engine shall use canonical entity and relationship knowledge to evaluate generalization.",
+      "The Context Engine shall not hardcode manufacturer-to-product inheritance structures."
     ]
   },
 
   "context_change_detection": {
-    "enabled": true,
-
-    "change_types": [
-      "CONFIGURATION_CHANGED",
-      "COMPONENT_CHANGED",
-      "FIRMWARE_CHANGED",
-      "TOPOLOGY_CHANGED",
-      "PATH_CHANGED",
-      "SITE_CHANGED",
-      "RADIO_ROLE_CHANGED",
-      "RF_CHAIN_CHANGED",
-      "PROJECT_PHASE_CHANGED",
-      "ENVIRONMENT_CHANGED",
-      "USER_CHANGED"
-    ],
-
-    "rules": [
-      "Material context changes shall create a new context version.",
-      "Previous context versions shall remain historical.",
-      "Probability and routing engines shall be notified when material context changes.",
-      "Previously applicable evidence or knowledge may require reevaluation after a context change."
-    ]
-  },
-
-  "context_versioning": {
-    "append_only": true,
-
-    "required_fields": [
-      "context_version",
-      "case_id",
-      "created_at",
-      "previous_context_version",
-      "changed_dimensions",
-      "change_reason",
-      "trigger_evidence_ids"
-    ]
-  },
-
-  "relationship_context": {
-    "description": "Some technical meaning exists in relationships rather than individual entities.",
+    "principle": "A material context change occurs when changed circumstances could materially alter technical interpretation, applicability, eligibility, or reasoning.",
 
     "examples": [
-      {
-        "subject": "UBT-T Radio B",
-        "relationship": "CONNECTED_TO",
-        "object": "Diversity OCM Port"
-      },
-      {
-        "subject": "Main Antenna",
-        "relationship": "ALIGNED_WITH",
-        "object": "Far-End Main Antenna"
-      },
-      {
-        "subject": "Clayton",
-        "relationship": "PERFORMED_ACTION",
-        "object": "Configuration"
-      }
+      "manufacturer changed",
+      "product changed",
+      "product variant changed",
+      "hardware revision changed",
+      "software version changed",
+      "firmware version changed",
+      "configuration changed",
+      "topology changed",
+      "interface changed",
+      "component changed",
+      "scope changed",
+      "site or location changed",
+      "frequency or channel changed",
+      "operating state changed",
+      "environment changed",
+      "power condition changed",
+      "transport condition changed",
+      "temporal applicability changed"
     ],
 
     "rules": [
-      "ARIA shall preserve relationship context when the technical fact depends on how entities interact.",
-      "A component shall not be interpreted only from its category.",
-      "Connection, direction, role, dependency, and temporal relationships may materially change technical meaning."
+      "The Context Engine shall not maintain a separate universal change-type Registry.",
+      "Context change shall be represented through changed registered dimensions.",
+      "Material change shall create or supersede canonical context state when persistence is warranted.",
+      "Previous ctx_<UUID> records shall remain historical.",
+      "A material context change may make previously applicable knowledge, evidence, hypotheses, actions, or historical experience less applicable.",
+      "Context Engine shall report material change to Orchestration rather than directly command downstream engines."
     ]
   },
 
-  "context_conflicts": {
-    "examples": [
-      "User reports UBT-T while project inventory identifies UBT.",
-      "Screenshot indicates Radio A while conversation refers to Radio B.",
-      "Historical case is 11 GHz while current case is 18 GHz.",
-      "Documentation applies to firmware version different from current equipment."
+  "context_persistence": {
+    "principle": "Persisted Context shall conform to Core/Schemas/context.schema.json.",
+
+    "create_new_context_when": [
+      "a new subject requires persisted technical context",
+      "material contextual state is first established",
+      "a materially distinct effective context period begins",
+      "a materially changed context should remain historically distinguishable",
+      "a reasoning operation requires independently persisted applicability context"
+    ],
+
+    "update_existing_context_when": [
+      "nonhistorical metadata changes",
+      "clarifying information does not materially change the represented contextual state",
+      "additional supporting provenance is added without changing technical meaning",
+      "acceptance metadata is added to an existing inferred dimension where schema semantics permit"
+    ],
+
+    "supersede_context_when": [
+      "a materially changed technical context replaces the prior effective context",
+      "previous contextual information is discovered to be materially incorrect",
+      "a more authoritative context record replaces a provisional context representation"
     ],
 
     "rules": [
-      "Material context conflicts shall not be silently resolved.",
-      "ARIA shall determine whether one source supersedes another or whether clarification is required.",
-      "Context conflict shall reduce applicability confidence.",
-      "Reasoning based on uncertain context shall communicate material uncertainty."
+      "Material historical context shall not be overwritten merely for convenience.",
+      "parent_context_ids may preserve derivation relationships.",
+      "supersedes_context_ids shall preserve replacement history.",
+      "effective_from and effective_to should be used when technical applicability is temporally bounded.",
+      "Context Engine shall not create its own context_version numbering contract.",
+      "Case State determines which ctx_<UUID> is currently projected for the case."
     ]
   },
 
-  "new_product_integration": {
-    "description": "New products shall integrate by adding entities and relationships rather than requiring redesign of the directory structure.",
-
-    "process": [
-      "CREATE_MANUFACTURER_IF_NEW",
-      "CREATE_PRODUCT_FAMILY_IF_APPLICABLE",
-      "CREATE_PRODUCT",
-      "CREATE_VARIANTS",
-      "CONNECT_PRODUCT_TO_EXISTING_CONCEPTS",
-      "ADD_PRODUCT_SPECIFIC_RELATIONSHIPS",
-      "ADD_PRODUCT_SPECIFIC_PROCEDURES",
-      "ADD_PRODUCT_SPECIFIC_FAILURE_MODES",
-      "ADD_ALIASES",
-      "ADD_PROVENANCE"
-    ],
-
-    "example": {
-      "new_product": "FutureRadio-X",
-      "existing_shared_concepts": [
-        "RSL",
-        "alignment",
-        "cross polarization",
-        "line of sight",
-        "configuration",
-        "RF chain",
-        "weather"
-      ],
-      "new_specific_concepts": [
-        "FutureRadio-X port mapping",
-        "FutureRadio-X alarms",
-        "FutureRadio-X configuration parameters"
-      ]
-    },
-
-    "rule": "A new product shall reuse existing applicable technical concepts and add only the relationships and concepts that are genuinely new."
-  },
-
-  "redundancy_prevention": {
-    "description": "Technical concepts shall be normalized into reusable graph entities rather than repeatedly rewritten under every applicable manufacturer, product, and procedure.",
-
-    "example": {
-      "incorrect_structure": [
-        "General/RSL_Degradation",
-        "Nokia/RSL_Degradation",
-        "UBT/RSL_Degradation",
-        "UBT-T/RSL_Degradation",
-        "Alignment/RSL_Degradation"
-      ],
-
-      "preferred_structure": {
-        "shared_entity": "RSL_DEGRADATION",
-        "relationships": [
-          "CAN_BE_CAUSED_BY -> ALIGNMENT_ERROR",
-          "CAN_BE_CAUSED_BY -> RF_COMPONENT_FAILURE",
-          "CAN_BE_CAUSED_BY -> WEATHER",
-          "CAN_BE_CAUSED_BY -> BLOCKED_LOS",
-          "APPLIES_TO -> NOKIA_UBT",
-          "APPLIES_TO -> NOKIA_UBT_T"
-        ]
-      }
-    },
+  "temporal_context": {
+    "principle": "Technical context may be valid only for a specific time or state interval.",
 
     "rules": [
-      "One canonical concept may have many relationships.",
-      "Manufacturer-specific behavior shall be represented as additional relationships or scoped properties.",
-      "Product-specific exceptions shall be explicit rather than implemented through duplicated general knowledge."
+      "Observed time, effective time, and record creation time shall remain distinguishable.",
+      "A context valid before a configuration change may not apply afterward.",
+      "Historical context shall not be silently projected as current context.",
+      "Evidence shall be interpreted against context applicable when the evidence was observed when temporal distinction matters.",
+      "Context comparison shall account for non-overlapping effective periods when material."
     ]
   },
 
-  "example_context_graph": {
-    "nodes": [
-      "NOKIA",
-      "WAVENCE",
-      "UBT_T",
-      "18_GHZ",
-      "SPACE_DIVERSITY",
-      "RADIO_A",
-      "RADIO_B",
-      "MAIN_RF_CHAIN",
-      "DIVERSITY_RF_CHAIN",
-      "RSL_DISCREPANCY",
-      "RF_ROUTING_ERROR"
+  "context_for_evidence": {
+    "principle": "Evidence may require contextual interpretation without allowing Context to redefine Evidence truth.",
+
+    "rules": [
+      "Context may determine whether an evidence item applies to a specific product, version, interface, state, location, or time.",
+      "Evidence Engine remains authoritative for evidence semantics and confidence.",
+      "Context mismatch may reduce evidence applicability without invalidating the evidence record itself.",
+      "An evidence item may remain valid but irrelevant to the current technical question.",
+      "Historical evidence shall be interpreted using the technical context applicable at the time it was observed."
+    ]
+  },
+
+  "context_for_hypotheses": {
+    "principle": "Context influences technical plausibility and applicability but does not itself determine hypothesis truth.",
+
+    "rules": [
+      "Hypothesis Engine may use Context to determine whether a failure mechanism is applicable.",
+      "Probability Engine may use Context to adjust priors or evidence interpretation where justified.",
+      "Context Engine shall not directly create, confirm, eliminate, or score hypotheses.",
+      "Context mismatch may make a hypothesis technically inapplicable.",
+      "Missing critical context may require preservation of multiple hypotheses."
+    ]
+  },
+
+  "context_for_actions": {
+    "principle": "Context influences action applicability and eligibility but does not select or execute Actions.",
+
+    "rules": [
+      "Decision may use Context to determine whether a candidate action is applicable.",
+      "Action procedures may require specific manufacturer, product, version, configuration, access, or operating-state context.",
+      "Context Engine shall not select the next action.",
+      "Context Engine shall not create route steps.",
+      "A material context change may make a previously selected but unexecuted action stale.",
+      "Orchestration shall determine whether Decision or Routing must be reevaluated after context change."
+    ]
+  },
+
+  "context_for_knowledge": {
+    "principle": "Context determines the applicability boundary of canonical technical knowledge.",
+
+    "rules": [
+      "General technical knowledge may apply broadly.",
+      "Manufacturer-specific knowledge shall be restricted to applicable manufacturer context.",
+      "Product-specific knowledge shall not automatically apply to sibling products.",
+      "Version-specific knowledge shall preserve version boundaries.",
+      "Procedure applicability shall preserve required configuration and topology distinctions.",
+      "Context Engine evaluates applicability but Knowledge remains authoritative for the technical claim itself."
+    ]
+  },
+
+  "context_for_experience": {
+    "principle": "Historical experience may influence reasoning only to the extent its context is genuinely comparable.",
+
+    "rules": [
+      "Experience similarity shall be multidimensional.",
+      "Historical outcome shall not become current-case evidence merely because context is similar.",
+      "Critical context mismatch shall reduce experience applicability.",
+      "Sparse highly specific experience may justify broadening context only when the broader technical relationship is legitimate.",
+      "Experience-derived context shall remain distinguishable from current observations.",
+      "Context Engine shall not determine learning eligibility."
+    ]
+  },
+
+  "critical_context_requests": {
+    "principle": "A.R.I.A. shall ask only for missing contextual information that can materially change the current reasoning result.",
+
+    "request_when": [
+      "the missing dimension could change technical applicability",
+      "the missing dimension could change product or version compatibility",
+      "the missing dimension could change evidence interpretation",
+      "the missing dimension could change action eligibility",
+      "the missing dimension could change safety requirements",
+      "the missing dimension could change expected behavior or thresholds",
+      "the missing dimension could distinguish materially competing hypotheses"
     ],
 
-    "relationships": [
-      "NOKIA MANUFACTURES UBT_T",
-      "UBT_T MEMBER_OF WAVENCE",
-      "UBT_T HAS_VARIANT 18_GHZ",
-      "CURRENT_PATH USES SPACE_DIVERSITY",
-      "RADIO_A SERVES MAIN_RF_CHAIN",
-      "RADIO_B SERVES DIVERSITY_RF_CHAIN",
-      "RSL_DISCREPANCY CAN_BE_CAUSED_BY RF_ROUTING_ERROR"
+    "do_not_request_when": [
+      "the dimension is irrelevant to the current technical question",
+      "the value is already available from authoritative records",
+      "the value can be safely resolved from canonical technical relationships",
+      "the difference would not materially alter the current reasoning",
+      "the dimension is legitimately not applicable"
+    ],
+
+    "rules": [
+      "Requests should identify why the missing context matters when useful.",
+      "A.R.I.A. shall not ask boilerplate context questions solely because the dimension exists in the Registry.",
+      "A.R.I.A. should retrieve known context before asking the user to re-enter it."
     ]
   },
 
-  "engine_interfaces": {
-    "knowledge_graph": "Uses context to determine which technical nodes and relationships apply.",
-    "memory_engine": "Uses context to retrieve relevant memory.",
-    "hypothesis_engine": "Uses context to generate technically compatible hypotheses.",
-    "probability_engine": "Uses context to select applicable historical populations and priors.",
-    "evidence_engine": "Uses context to determine evidence applicability.",
-    "routing_engine": "Uses context to determine valid and useful diagnostic actions.",
-    "learning_engine": "Uses context to preserve the scope of learned experience."
+  "context_result": {
+    "recommended_outputs": [
+      "subject_reference",
+      "resolved_context_id",
+      "proposed_context_record",
+      "material_dimensions",
+      "resolved_dimensions",
+      "unknown_material_dimensions",
+      "not_applicable_dimensions",
+      "context_conflicts",
+      "completeness_assessment",
+      "context_match_assessment",
+      "context_match_confidence",
+      "material_change_detected",
+      "superseded_context_ids",
+      "critical_context_requests",
+      "reasoning_summary"
+    ],
+
+    "rules": [
+      "The output shall distinguish persisted context from proposed context.",
+      "Context Engine shall not directly invoke downstream reasoning engines.",
+      "Orchestration consumes the Context result and determines downstream reevaluation.",
+      "Context result shall not claim technical diagnosis.",
+      "Context result shall preserve material uncertainty."
+    ]
   },
 
-  "semantic_rules": [
+  "orchestration_boundary": {
+    "principle": "Context Engine resolves context; Orchestration coordinates what happens because context changed.",
+
+    "rules": [
+      "Context Engine shall not directly call Hypothesis, Probability, Evidence, Decision, Routing, or Memory engines as an architectural requirement.",
+      "Context Engine shall report material context changes and affected applicability conditions.",
+      "Orchestration decides which downstream engines require reevaluation.",
+      "Context Engine may consume context packets supplied by Orchestration.",
+      "Context Engine shall not publish the complete Case State itself."
+    ]
+  },
+
+  "case_state_boundary": {
+    "principle": "Case State projects which canonical context currently applies to the case.",
+
+    "rules": [
+      "Context Engine owns context resolution reasoning.",
+      "Case State owns the assembled current-case projection.",
+      "Context Engine shall not redefine case lifecycle status.",
+      "Context Engine shall not redefine case reasoning state.",
+      "A new canonical context may cause Case State to update current_context_id after Orchestration validates the state transition."
+    ]
+  },
+
+  "memory_boundary": {
+    "principle": "Memory may supply candidate contextual information but does not automatically make historical or remembered context current truth.",
+
+    "rules": [
+      "Retrieved canonical knowledge may establish context when authoritative and applicable.",
+      "Retrieved historical experience supplies comparison context, not current-case observation.",
+      "User history may affect executor capability context when relevant but shall not alter physical technical facts.",
+      "Context Engine shall preserve the authority class of remembered information."
+    ]
+  },
+
+  "domain_independence": {
+    "principle": "The Context Engine is universal Core infrastructure and shall not hardcode a specific technical domain's context vocabulary or examples as governing logic.",
+
+    "prohibited_core_content": [
+      "hardcoded microwave-only dimension lists",
+      "hardcoded RF-only topology rules",
+      "vendor-specific alias lists as universal Context semantics",
+      "product-specific context pipelines",
+      "customer-specific context behavior",
+      "named-user technical context assumptions",
+      "protocol-specific applicability rules embedded as universal Context logic"
+    ],
+
+    "rules": [
+      "Domain-specific dimensions belong in the Context Types Registry only when they are intentionally part of the shared canonical vocabulary.",
+      "Domain-specific aliases, relationships, procedures, and applicability knowledge belong in technical knowledge sources.",
+      "Context Engine behavior shall remain reusable across technical domains."
+    ]
+  },
+
+  "failure_modes": [
     {
-      "rule_id": "CTX-RULE-001",
-      "rule": "Context is multidimensional and shall not be represented as one mandatory hierarchical directory."
+      "failure_mode": "SECOND_CONTEXT_REGISTRY",
+      "description": "Context Engine defines its own context-dimension vocabulary.",
+      "prevention": "Consume Core/Registries/context_types.json."
     },
     {
-      "rule_id": "CTX-RULE-002",
-      "rule": "Technical concepts shall be shared across contexts rather than duplicated merely because they apply to multiple products or manufacturers."
+      "failure_mode": "SECOND_CONTEXT_SCHEMA",
+      "description": "Context Engine defines a competing context_record or context_value persistence structure.",
+      "prevention": "Persist through Core/Schemas/context.schema.json."
     },
     {
-      "rule_id": "CTX-RULE-003",
-      "rule": "Manufacturer-specific and product-specific knowledge shall refine shared technical concepts through scoped relationships."
+      "failure_mode": "CASE_ONLY_CONTEXT",
+      "description": "Context is modeled as though it can only belong to a diagnostic case.",
+      "prevention": "Use the canonical subject model supporting case, evidence, hypothesis, action, knowledge, experience, and other subject types."
     },
     {
-      "rule_id": "CTX-RULE-004",
-      "rule": "Missing context shall remain unknown rather than being silently assumed."
+      "failure_mode": "ONTOLOGY_DUPLICATION",
+      "description": "Manufacturer, product, component, scope, site, or other canonical entities are recreated inside context.",
+      "prevention": "Reference canonical identities."
     },
     {
-      "rule_id": "CTX-RULE-005",
-      "rule": "ARIA shall request missing context only when obtaining it is expected to materially improve reasoning."
+      "failure_mode": "INFERENCE_AS_TRUTH",
+      "description": "Model-inferred context is silently treated as authoritative observed context.",
+      "prevention": "Preserve MODEL_INFERRED origin and acceptance semantics."
     },
     {
-      "rule_id": "CTX-RULE-006",
-      "rule": "Context resolution shall preserve provenance."
+      "failure_mode": "UNKNOWN_FILLED_BY_DEFAULT",
+      "description": "Missing context is populated using historical frequency or convenient assumptions.",
+      "prevention": "Represent UNKNOWN explicitly."
     },
     {
-      "rule_id": "CTX-RULE-007",
-      "rule": "A context value may be reported, inferred, or confirmed, and these states shall remain distinguishable."
+      "failure_mode": "IRRELEVANT_INTERROGATION",
+      "description": "A.R.I.A. asks the user for every possible context dimension.",
+      "prevention": "Request only dimensions whose values could materially change the reasoning result."
     },
     {
-      "rule_id": "CTX-RULE-008",
-      "rule": "Context applicability is relative to the technical question being evaluated."
+      "failure_mode": "CONTEXT_MATCH_EQUALS_TRUTH",
+      "description": "High context similarity is treated as proof that a historical outcome or knowledge claim is true in the current case.",
+      "prevention": "Keep applicability separate from evidence and causal truth."
     },
     {
-      "rule_id": "CTX-RULE-009",
-      "rule": "More specific context shall not automatically override broader knowledge when the specific evidence is weak or inapplicable."
+      "failure_mode": "HARD_CODED_INHERITANCE",
+      "description": "Context Engine invents manufacturer-product-variant hierarchy rather than using canonical relationships.",
+      "prevention": "Use authoritative entity and relationship knowledge."
     },
     {
-      "rule_id": "CTX-RULE-010",
-      "rule": "ARIA shall balance contextual specificity against available statistical support."
+      "failure_mode": "HISTORY_OVERWRITE",
+      "description": "New context replaces prior historical context without preservation.",
+      "prevention": "Use ctx_<UUID> supersession and temporal semantics."
     },
     {
-      "rule_id": "CTX-RULE-011",
-      "rule": "Material context changes shall trigger reevaluation of affected hypotheses, probabilities, evidence applicability, and routes."
+      "failure_mode": "DIRECT_DOWNSTREAM_CONTROL",
+      "description": "Context Engine directly commands Probability, Routing, Decision, or other downstream engines.",
+      "prevention": "Return material change to Orchestration."
     },
     {
-      "rule_id": "CTX-RULE-012",
-      "rule": "Historical context versions shall remain available for reconstruction."
+      "failure_mode": "FALSE_MATCH_PRECISION",
+      "description": "Context similarity is assigned precise numerical values unsupported by the available information.",
+      "prevention": "Use qualitative or uncertainty-aware comparison when precise scoring is not defensible."
     },
     {
-      "rule_id": "CTX-RULE-013",
-      "rule": "Relationships between entities may be as important as the entities themselves."
-    },
-    {
-      "rule_id": "CTX-RULE-014",
-      "rule": "New products shall extend the graph rather than require restructuring existing knowledge."
-    },
-    {
-      "rule_id": "CTX-RULE-015",
-      "rule": "Aliases shall resolve to canonical entities rather than create duplicate technical concepts."
-    },
-    {
-      "rule_id": "CTX-RULE-016",
-      "rule": "Context conflict shall reduce confidence and shall not be hidden."
-    },
-    {
-      "rule_id": "CTX-RULE-017",
-      "rule": "The same failure mode may apply across many contexts while having different probabilities or diagnostic routes within each."
-    },
-    {
-      "rule_id": "CTX-RULE-018",
-      "rule": "Context determines applicability; evidence determines the current technical state."
-    },
-    {
-      "rule_id": "CTX-RULE-019",
-      "rule": "The language model may assist in extracting candidate context, but authoritative context resolution shall be controlled by structured ARIA services."
-    },
-    {
-      "rule_id": "CTX-RULE-020",
-      "rule": "ARIA's context architecture shall support growth without requiring exponential duplication of technical knowledge."
+      "failure_mode": "DOMAIN_CONTAMINATION",
+      "description": "Universal Context Engine logic contains microwave, RF, optical, vendor, product, customer, or named-user assumptions.",
+      "prevention": "Keep Context Engine generic and technical specifics in canonical registries and domain knowledge."
     }
+  ],
+
+  "invariants": [
+    {
+      "invariant_id": "CTX-INV-001",
+      "statement": "Context dimension vocabulary is owned by Core/Registries/context_types.json."
+    },
+    {
+      "invariant_id": "CTX-INV-002",
+      "statement": "Persisted context structure is owned by Core/Schemas/context.schema.json."
+    },
+    {
+      "invariant_id": "CTX-INV-003",
+      "statement": "Every persisted context uses canonical ctx_<UUID> identity."
+    },
+    {
+      "invariant_id": "CTX-INV-004",
+      "statement": "Context may apply to subjects other than cases."
+    },
+    {
+      "invariant_id": "CTX-INV-005",
+      "statement": "Canonical technical objects are referenced rather than recreated as context-specific duplicates."
+    },
+    {
+      "invariant_id": "CTX-INV-006",
+      "statement": "Unknown context remains unknown when it cannot be responsibly resolved."
+    },
+    {
+      "invariant_id": "CTX-INV-007",
+      "statement": "UNKNOWN and NOT_APPLICABLE remain distinct."
+    },
+    {
+      "invariant_id": "CTX-INV-008",
+      "statement": "Model-inferred context remains distinguishable from observed, measured, retrieved, and user-supplied context."
+    },
+    {
+      "invariant_id": "CTX-INV-009",
+      "statement": "Context match does not establish technical truth or causal proof."
+    },
+    {
+      "invariant_id": "CTX-INV-010",
+      "statement": "Context completeness is relative to the technical reasoning purpose."
+    },
+    {
+      "invariant_id": "CTX-INV-011",
+      "statement": "Missing irrelevant context does not reduce technical completeness."
+    },
+    {
+      "invariant_id": "CTX-INV-012",
+      "statement": "Material contextual conflict remains explicit until resolved or bounded."
+    },
+    {
+      "invariant_id": "CTX-INV-013",
+      "statement": "Historical context remains preserved after material context change."
+    },
+    {
+      "invariant_id": "CTX-INV-014",
+      "statement": "Context Engine evaluates applicability but does not create technical truth."
+    },
+    {
+      "invariant_id": "CTX-INV-015",
+      "statement": "Context Engine does not select technical actions."
+    },
+    {
+      "invariant_id": "CTX-INV-016",
+      "statement": "Context Engine does not perform route progression."
+    },
+    {
+      "invariant_id": "CTX-INV-017",
+      "statement": "Context Engine reports material change to Orchestration rather than directly invoking downstream engines."
+    },
+    {
+      "invariant_id": "CTX-INV-018",
+      "statement": "A.R.I.A. requests missing context only when it can materially improve the current technical reasoning operation."
+    },
+    {
+      "invariant_id": "CTX-INV-019",
+      "statement": "Context shall preserve temporal applicability when technically material."
+    },
+    {
+      "invariant_id": "CTX-INV-020",
+      "statement": "Context Engine shall remain technically domain-independent."
+    }
+  ],
+
+  "prohibited_behaviors": [
+    "Defining a second context dimension vocabulary inside Context Engine.",
+    "Defining a competing context persistence model.",
+    "Assuming all Context belongs only to a case.",
+    "Recreating canonical manufacturer, product, component, interface, site, scope, or other entity identity inside Context.",
+    "Treating display names as canonical identity when canonical runtime identity exists.",
+    "Converting ambiguous aliases into canonical identity without sufficient support.",
+    "Inventing missing context to satisfy structural completeness.",
+    "Using historical frequency as current contextual fact without preserving inference provenance.",
+    "Treating MODEL_INFERRED context as equivalent to observed or measured context without required acceptance.",
+    "Treating context similarity as evidence confidence.",
+    "Treating context similarity as hypothesis probability.",
+    "Treating context applicability as causal proof.",
+    "Treating a manufacturer match as sufficient proof of product applicability.",
+    "Treating a product match as sufficient proof of version applicability.",
+    "Requiring every possible context dimension before reasoning can proceed.",
+    "Asking users for contextual values that are irrelevant to the technical decision.",
+    "Overwriting historically valid context when current context changes.",
+    "Creating internal context_version numbering as a competing identity/version contract.",
+    "Inventing canonical technical relationships inside Context Engine.",
+    "Directly changing hypothesis probability.",
+    "Directly selecting Actions.",
+    "Directly creating route steps.",
+    "Directly rerouting.",
+    "Directly changing case lifecycle status.",
+    "Directly invoking downstream engines as a substitute for Orchestration.",
+    "Hardcoding microwave-specific, RF-specific, optical-specific, vendor-specific, manufacturer-specific, product-specific, protocol-specific, customer-specific, or named-user context logic into universal Context Engine semantics."
   ]
 }
