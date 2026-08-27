@@ -1,0 +1,440 @@
+{
+  "engine": {
+    "id": "aria.operations.scheduling_engine",
+    "name": "A.R.I.A. Scheduling Engine",
+    "version": "1.0.0",
+    "domain": "operations",
+    "capability": "operational_scheduling",
+    "status": "active",
+    "purpose": "Determine realistic execution timing for operational work. The engine converts valid obligations, priorities, commitments, dependencies, capacity constraints, conflicts, and execution requirements into practical scheduling recommendations without confusing deadlines with start times or treating calendar placement as proof that work can be completed.",
+    "principles": [
+      "Priority determines importance; scheduling determines execution timing.",
+      "A deadline is not automatically the appropriate start time.",
+      "Calendar availability is not proof of execution capacity.",
+      "Work should be scheduled early enough to preserve a reasonable path to completion.",
+      "Scheduling must account for prerequisites, duration, travel, access, sequencing, and practical capacity when materially relevant.",
+      "Higher-priority work may displace lower-priority work, but displacement does not erase the displaced obligation.",
+      "Strategically important work may require protected execution time before it becomes urgent.",
+      "Waiting and blocked work should not consume executable schedule capacity when meaningful progress cannot occur.",
+      "Schedules should contain enough flexibility to survive reasonable operational disruption.",
+      "A.R.I.A. should distinguish planned timing from committed timing.",
+      "A.R.I.A. should distinguish recommended schedules from authorized calendar changes.",
+      "Scheduling decisions must remain explainable."
+    ]
+  },
+
+  "input": {
+    "primary_object": "work_item",
+    "schema": "aria://operations/priority/work_item.schema.json",
+    "applicable_conditions": [
+      "work becomes actionable",
+      "new work is captured",
+      "priority changes",
+      "commitment timing changes",
+      "capacity changes",
+      "dependency state changes",
+      "conflict state changes",
+      "work is delegated or reassigned",
+      "work is displaced",
+      "aging indicates starvation",
+      "execution timing requires reevaluation"
+    ],
+    "context": [
+      "current_time",
+      "work_item",
+      "priority",
+      "attention",
+      "timing",
+      "commitments",
+      "dependencies",
+      "capacity",
+      "conflicts",
+      "delegation",
+      "aging",
+      "escalation",
+      "follow_up",
+      "resolution",
+      "resources",
+      "locations",
+      "activity",
+      "calendar state",
+      "source history"
+    ]
+  },
+
+  "schedule_states": {
+    "unscheduled": {
+      "description": "The work has no current supported execution placement."
+    },
+    "candidate": {
+      "description": "One or more execution windows appear feasible but have not been selected."
+    },
+    "planned": {
+      "description": "A preferred execution window has been selected for operational planning."
+    },
+    "reserved": {
+      "description": "Capacity has been intentionally protected for the work."
+    },
+    "scheduled": {
+      "description": "Execution timing has been placed into an authoritative scheduling system or otherwise formally established."
+    },
+    "in_progress": {
+      "description": "Execution has begun."
+    },
+    "displaced": {
+      "description": "Previously planned or scheduled execution has been moved because another supported condition consumed or invalidated the execution opportunity."
+    },
+    "missed": {
+      "description": "A planned or scheduled execution opportunity passed without the intended work occurring."
+    },
+    "paused": {
+      "description": "Scheduling progression is intentionally suspended pending a supported condition."
+    },
+    "completed": {
+      "description": "The underlying scheduled execution has been completed."
+    },
+    "unresolved": {
+      "description": "Available information is insufficient to determine scheduling state."
+    }
+  },
+
+  "timing_types": {
+    "hard_deadline": "Externally or authoritatively fixed latest completion time.",
+    "soft_deadline": "Desired completion time that may permit adjustment.",
+    "commitment_time": "Timing governed by a supported promise or commitment.",
+    "execution_window": "Period during which work may practically be performed.",
+    "start_not_before": "Work must not begin before this point.",
+    "start_by": "Work should begin by this point to preserve a reasonable completion path.",
+    "target_start": "Preferred planned start.",
+    "target_completion": "Preferred planned completion.",
+    "appointment": "Execution tied to a specific scheduled interaction or access period.",
+    "recurring_window": "Repeated supported execution opportunity.",
+    "opportunity_window": "Temporary period in which execution is advantageous or possible.",
+    "no_fixed_time": "Valid work with no currently supported fixed execution time."
+  },
+
+  "schedule_record": {
+    "fields": [
+      "schedule_id",
+      "work_item_id",
+      "schedule_state",
+      "timing_type",
+      "planned_start",
+      "planned_completion",
+      "execution_window_start",
+      "execution_window_end",
+      "duration_estimate",
+      "schedule_source",
+      "constraints",
+      "reserved_resources",
+      "created_at",
+      "updated_at"
+    ],
+    "requirements": [
+      "Planned timing must remain distinguishable from authoritative committed timing.",
+      "Unknown dates or durations must remain unknown rather than invented.",
+      "Schedule constraints should remain traceable when materially relevant.",
+      "A schedule record must not imply calendar placement unless calendar placement actually occurred.",
+      "Material schedule history must remain recoverable."
+    ]
+  },
+
+  "execution_window_evaluation": {
+    "factors": [
+      "deadline",
+      "commitment time",
+      "estimated duration",
+      "required preparation",
+      "dependencies",
+      "required access",
+      "travel",
+      "mobilization",
+      "resource availability",
+      "owner availability",
+      "delegate availability",
+      "skill availability",
+      "sequencing requirements",
+      "conflicts",
+      "operational buffer",
+      "priority",
+      "aging pressure"
+    ],
+    "rules": [
+      "The latest permissible completion time should not automatically become the planned completion time.",
+      "The engine should work backward from supported completion constraints when useful.",
+      "Preparation, travel, mobilization, verification, and handoff time should be included when materially required.",
+      "Known dependencies should constrain executable windows.",
+      "Work should not be scheduled into a window where known prerequisites cannot be satisfied.",
+      "Schedule recommendations should avoid false precision when duration or constraints are uncertain."
+    ]
+  },
+
+  "start_by_evaluation": {
+    "purpose": "Determine when work must begin to retain a reasonable path to timely completion.",
+    "rules": [
+      "Start-by timing should consider expected duration and material prerequisites.",
+      "Start-by timing should preserve reasonable operational buffer where supported.",
+      "A start-by time is not automatically a hard deadline.",
+      "A.R.I.A. should identify when the start-by point has passed even if the final deadline has not.",
+      "Passing the start-by point may justify Priority, Attention, Capacity, Conflict, or Escalation reevaluation.",
+      "Unknown duration must not produce fabricated start-by precision."
+    ]
+  },
+
+  "schedule_selection": {
+    "rules": [
+      "Select execution windows that satisfy supported constraints while protecting higher-consequence obligations.",
+      "Priority should influence scarce schedule allocation but must not be the only scheduling factor.",
+      "Where multiple feasible windows exist, prefer timing that reduces foreseeable conflict and preserves future flexibility.",
+      "Avoid scheduling all work at the latest possible moment.",
+      "Avoid unnecessary fragmentation of work when concentrated execution is materially more effective.",
+      "Avoid creating unrealistic schedules merely to make all work appear accommodated.",
+      "When no feasible schedule exists, expose the constraint rather than manufacturing one."
+    ]
+  },
+
+  "protected_work": {
+    "purpose": "Preserve execution opportunities for valid work that is strategically important or repeatedly displaced but not yet urgent.",
+    "rules": [
+      "Protected execution time may be recommended when Aging Engine identifies starvation or when strategic value supports deliberate progress.",
+      "Protected work does not become higher canonical priority merely because time is reserved.",
+      "Protected time may still be displaced by sufficiently consequential new conditions.",
+      "Repeated displacement of protected work should trigger explicit reassessment.",
+      "A.R.I.A. should not create arbitrary protected blocks without a supported operational reason."
+    ]
+  },
+
+  "displacement": {
+    "rules": [
+      "Displacement must preserve the affected work item.",
+      "Displacement should identify the reason when materially relevant.",
+      "Displaced work should receive a new scheduling evaluation.",
+      "Displacement may trigger Aging Engine starvation signals.",
+      "Displacement affecting a commitment may require Commitment Engine reevaluation.",
+      "Displacement creating incompatible obligations may require Conflict Engine reevaluation.",
+      "Repeated displacement should not become the default treatment for lower-priority work."
+    ]
+  },
+
+  "schedule_failure": {
+    "conditions": [
+      "planned start passes without execution",
+      "scheduled appointment is missed",
+      "required resource becomes unavailable",
+      "dependency remains unresolved beyond the executable window",
+      "duration materially exceeds estimate",
+      "new conflict makes the schedule infeasible",
+      "capacity falls below required level"
+    ],
+    "rules": [
+      "Schedule failure does not automatically mean the underlying work failed.",
+      "A missed planned window should trigger reevaluation rather than silent rollover.",
+      "A.R.I.A. should identify why the schedule failed when reasonably determinable.",
+      "Repeated schedule failure may contribute to Aging, Capacity, Conflict, or Escalation findings.",
+      "A failed schedule should not erase the original commitment or deadline."
+    ]
+  },
+
+  "calendar_authority": {
+    "rules": [
+      "A.R.I.A. must distinguish schedule reasoning from calendar modification.",
+      "A recommended execution window is not a calendar event.",
+      "Calendar creation, modification, or cancellation requires appropriate authorization and tool capability.",
+      "A.R.I.A. must not represent proposed calendar changes as completed changes.",
+      "Existing authoritative calendar events should be treated as constraints when relevant.",
+      "Calendar events do not independently establish work completion."
+    ]
+  },
+
+  "uncertainty": {
+    "rules": [
+      "Unknown duration, travel, access, or resource information should remain explicit when materially relevant.",
+      "A.R.I.A. should use ranges when evidence supports a range better than a precise estimate.",
+      "Uncertainty should influence operational buffer when justified.",
+      "Uncertainty must not be used to make every schedule excessively conservative.",
+      "Material uncertainty that prevents a reliable schedule may justify clarification, follow-up, or dependency evaluation."
+    ]
+  },
+
+  "relationship_to_priority": {
+    "rules": [
+      "Priority Engine determines relative operational importance.",
+      "Scheduling Engine determines when work should practically execute.",
+      "High priority may justify earlier schedule placement but does not independently dictate an exact time.",
+      "Scheduling Engine must not overwrite canonical priority.",
+      "Schedule infeasibility may provide new information for Priority reevaluation."
+    ]
+  },
+
+  "relationship_to_capacity": {
+    "rules": [
+      "Capacity Engine determines practical available execution capacity.",
+      "Scheduling Engine allocates feasible execution opportunities within that capacity.",
+      "Calendar space must not override a Capacity Engine finding that usable capacity is unavailable.",
+      "When workload cannot fit, Scheduling Engine should expose the gap rather than manufacture a schedule."
+    ]
+  },
+
+  "relationship_to_conflict": {
+    "rules": [
+      "Conflict Engine determines when valid requirements are materially incompatible.",
+      "Scheduling Engine should avoid creating known conflicts.",
+      "Scheduling may resolve some conflicts through timing changes.",
+      "Scheduling Engine must not silently choose between unresolved consequential conflicts requiring authority."
+    ]
+  },
+
+  "relationship_to_commitment": {
+    "rules": [
+      "Commitment Engine governs promised timing.",
+      "Scheduling Engine should construct execution timing that protects valid commitments when reasonably possible.",
+      "Scheduling cannot modify a commitment.",
+      "An infeasible commitment should trigger Commitment, Conflict, Capacity, or Escalation reevaluation rather than a fabricated schedule."
+    ]
+  },
+
+  "relationship_to_dependency": {
+    "rules": [
+      "Dependency Engine governs prerequisites.",
+      "Scheduling Engine should only allocate executable work where prerequisite conditions permit meaningful progress.",
+      "Expected dependency satisfaction may inform candidate scheduling when sufficiently supported.",
+      "Scheduling does not satisfy dependencies."
+    ]
+  },
+
+  "relationship_to_delegation": {
+    "rules": [
+      "Delegation Engine governs execution responsibility.",
+      "Scheduling should account for the practical availability of the responsible party.",
+      "Reassignment resulting from schedule constraints must remain governed by Delegation Engine.",
+      "Scheduling work to a delegate does not prove that delegation was accepted."
+    ]
+  },
+
+  "relationship_to_aging": {
+    "rules": [
+      "Aging Engine governs unresolved duration, repeated deferral, and starvation.",
+      "Scheduling Engine may reserve protected execution opportunities for chronically displaced valid work.",
+      "Aging pressure should influence scheduling reconsideration without automatically overriding higher-consequence work."
+    ]
+  },
+
+  "relationship_to_attention": {
+    "rules": [
+      "Scheduling Engine determines practical execution timing.",
+      "Attention Engine determines what schedule conditions require user awareness.",
+      "Routine schedule adjustments should not unnecessarily interrupt the user.",
+      "Missed, infeasible, or consequential schedule conditions may justify direct attention."
+    ]
+  },
+
+  "relationship_to_follow_up": {
+    "rules": [
+      "Follow-Up Engine governs pursuit and verification timing.",
+      "Scheduling Engine governs execution timing.",
+      "Follow-up timing and execution timing should remain distinct even when they influence each other.",
+      "A follow-up event must not consume execution capacity as though it were the underlying work unless it requires meaningful effort."
+    ]
+  },
+
+  "relationship_to_escalation": {
+    "rules": [
+      "Escalation Engine determines when schedule infeasibility requires higher authority or intervention.",
+      "Not every schedule change requires escalation.",
+      "A closing decision window or unavoidable consequential miss may justify escalation."
+    ]
+  },
+
+  "relationship_to_resolution": {
+    "rules": [
+      "Resolution Engine governs terminal disposition.",
+      "Completing a scheduled execution event may provide resolution evidence but does not automatically resolve broader work.",
+      "Cancelled schedule placement does not cancel the underlying work item."
+    ]
+  },
+
+  "relationship_to_capture": {
+    "rules": [
+      "Capture Engine may create work with timing requirements.",
+      "Scheduling Engine converts supported timing requirements into practical execution planning.",
+      "Schedule changes may reveal new obligations requiring Capture Engine evaluation.",
+      "Scheduling Engine must not silently create unrelated work."
+    ]
+  },
+
+  "reevaluation": {
+    "triggers": [
+      "new work captured",
+      "work becomes actionable",
+      "priority changes",
+      "commitment changes",
+      "dependency changes",
+      "capacity changes",
+      "conflict changes",
+      "delegation changes",
+      "aging pressure changes",
+      "resource availability changes",
+      "duration estimate changes",
+      "calendar changes",
+      "planned start approaches",
+      "planned start is missed",
+      "deadline approaches",
+      "work is displaced",
+      "execution begins",
+      "execution completes",
+      "user requests scheduling review"
+    ],
+    "rules": [
+      "Reevaluation must preserve material schedule history.",
+      "Reevaluation should use current supported constraints rather than blindly preserve obsolete plans.",
+      "Schedule changes should remain distinguishable from commitment changes.",
+      "Material scheduling changes may trigger Priority, Attention, Capacity, Conflict, Commitment, Dependency, Delegation, Aging, Follow-Up, Escalation, or Resolution reevaluation."
+    ]
+  },
+
+  "output": {
+    "writes_to": "work_item.schedule",
+    "schedule_evaluation": [
+      "work_item_id",
+      "schedule_state",
+      "candidate_windows",
+      "recommended_start",
+      "recommended_completion",
+      "start_by",
+      "duration_estimate",
+      "constraints",
+      "protected_time_recommended",
+      "schedule_feasible",
+      "confidence",
+      "evaluated_at"
+    ],
+    "requirements": [
+      "Schedule output must reference the applicable work_item_id.",
+      "Recommended timing must remain distinguishable from committed or authoritative timing.",
+      "Unknown timing must not be fabricated.",
+      "Schedule feasibility must account for material capacity and dependency constraints.",
+      "Scheduling Engine must not directly modify canonical priority.",
+      "Material scheduling changes must be available to dependent operational engines."
+    ]
+  },
+
+  "guardrails": [
+    "Do not equate deadline with start time.",
+    "Do not equate calendar availability with usable capacity.",
+    "Do not schedule work through known unresolved prerequisites.",
+    "Do not manufacture a feasible schedule when workload cannot fit.",
+    "Do not place all work at the latest possible execution point.",
+    "Do not silently change commitments.",
+    "Do not silently cancel displaced work.",
+    "Do not repeatedly sacrifice lower-priority valid work without reevaluation.",
+    "Do not treat proposed scheduling as an authoritative calendar change.",
+    "Do not invent precise timing from weak evidence.",
+    "Do not assume travel, preparation, verification, or mobilization take zero time.",
+    "Do not overwrite canonical priority.",
+    "Do not bypass Capacity Engine when practical execution capacity is material.",
+    "Do not bypass Conflict Engine when schedule requirements are materially incompatible.",
+    "Do not bypass Attention Engine for user-facing presentation.",
+    "Do not bypass Resolution Engine for terminal disposition.",
+    "Do not modify Core reasoning architecture as part of scheduling management."
+  ]
+}
