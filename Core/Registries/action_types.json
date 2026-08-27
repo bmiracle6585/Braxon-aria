@@ -1,666 +1,780 @@
 {
   "registry": "ARIA_ACTION_TYPES",
-  "version": "0.1.0",
-  "description": "Controlled vocabulary defining canonical diagnostic, inspection, verification, measurement, testing, and corrective actions available to A.R.I.A. during microwave backhaul reasoning.",
+  "version": "2.0.0",
+  "description": "Canonical controlled vocabulary for universal technical action classes used by A.R.I.A. during diagnosis, inspection, measurement, testing, verification, validation, correction, monitoring, and escalation. This Registry defines what kind of technical operation an action represents. It does not define manufacturer-specific, product-specific, technology-specific, or procedure-specific actions.",
 
-  "action_types": [
+  "authority": {
+    "contract": "Core/Schemas/core_contracts.json",
+    "role": "CONTROLLED_ACTION_CLASS_VOCABULARY",
+    "schema_owner": "Core/Schemas/action.schema.json",
+
+    "owns": [
+      "universal technical action class vocabulary",
+      "action class semantics",
+      "high-level action intent",
+      "action category semantics",
+      "generic action handling rules"
+    ],
+
+    "does_not_own": [
+      "runtime action identity",
+      "persisted action object structure",
+      "manufacturer-specific procedures",
+      "product-specific procedures",
+      "technology-specific procedures",
+      "microwave-specific procedures",
+      "measurement type vocabulary",
+      "evidence type vocabulary",
+      "outcome vocabulary",
+      "case lifecycle status",
+      "case reasoning state",
+      "routing algorithms",
+      "decision utility",
+      "probability",
+      "confidence",
+      "source authority",
+      "knowledge graph truth"
+    ]
+  },
+
+  "action_contract": {
+    "field_concept": "action",
+    "runtime_identity": "act_<UUID>",
+    "schema_owner": "Core/Schemas/action.schema.json",
+
+    "principles": [
+      "An action class describes the generic technical nature of an operation.",
+      "A runtime action instance is identified by act_<UUID>.",
+      "A Registry action class is not a runtime action identifier.",
+      "Technology-specific and manufacturer-specific procedures shall reference an applicable universal action class rather than becoming universal Core action classes.",
+      "An action may produce evidence, outcomes, measurements, configuration changes, validation results, or other technical state changes.",
+      "Action completion and action success are distinct.",
+      "An action may be diagnostically useful even when it does not correct the underlying condition.",
+      "An action may be operationally successful while providing little diagnostic information.",
+      "Action selection is owned by Decision and Routing behavior, not by this Registry.",
+      "Safety, authorization, access, service impact, reversibility, and technical prerequisites may constrain execution.",
+      "Repeated equivalent actions require technical justification when valid evidence already exists.",
+      "A.R.I.A. shall preserve the distinction between requesting an action, executing an action, and evaluating the action result."
+    ]
+  },
+
+  "categories": [
     {
-      "id": "ACT-RF-001",
-      "name": "CHECK_RSL",
-      "canonical_name": "Check RSL",
+      "category": "INFORMATION_ACQUISITION",
+      "description": "Actions whose primary purpose is obtaining technical information."
+    },
+    {
+      "category": "OBSERVATION",
+      "description": "Actions that directly observe technical or physical state."
+    },
+    {
       "category": "MEASUREMENT",
-      "description": "Obtain the current received signal level for the applicable radio or RF path.",
-      "expected_outputs": ["RSL"],
-      "invasiveness": "NONE"
+      "description": "Actions that obtain quantitative technical measurements."
     },
-
     {
-      "id": "ACT-RF-002",
-      "name": "COMPARE_RSL_TO_EXPECTED",
-      "canonical_name": "Compare RSL to Expected",
-      "category": "COMPARISON",
-      "description": "Compare measured RSL against the applicable engineered, expected, historical, or reference RSL.",
-      "expected_outputs": ["RSL", "RSL_DELTA"],
-      "comparison_mode": "ACTUAL_VS_EXPECTED",
-      "invasiveness": "NONE"
+      "category": "ANALYSIS",
+      "description": "Actions that compare, calculate, correlate, or otherwise analyze technical information."
     },
-
     {
-      "id": "ACT-RF-003",
-      "name": "COMPARE_MAIN_DIVERSITY_RSL",
-      "canonical_name": "Compare Main and Diversity RSL",
-      "category": "COMPARISON",
-      "description": "Compare corresponding Main and Diversity receive levels.",
-      "expected_outputs": ["RSL", "RSL_DELTA"],
-      "comparison_mode": "MAIN_VS_DIVERSITY",
-      "invasiveness": "NONE"
+      "category": "TESTING",
+      "description": "Controlled actions intended to discriminate, isolate, reproduce, or validate technical conditions."
     },
-
     {
-      "id": "ACT-RF-004",
-      "name": "COMPARE_LOCAL_REMOTE_RSL",
-      "canonical_name": "Compare Local and Remote RSL",
-      "category": "COMPARISON",
-      "description": "Compare corresponding receive levels between opposite microwave endpoints.",
-      "expected_outputs": ["RSL", "RSL_DELTA"],
-      "comparison_mode": "LOCAL_VS_REMOTE",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-RF-005",
-      "name": "CHECK_TX_POWER",
-      "canonical_name": "Check Transmit Power",
-      "category": "MEASUREMENT",
-      "description": "Obtain current transmit power for the applicable radio or RF path.",
-      "expected_outputs": ["TX_POWER"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-RF-006",
-      "name": "COMPARE_TX_POWER",
-      "canonical_name": "Compare Transmit Power",
-      "category": "COMPARISON",
-      "description": "Compare actual transmit power against configured, expected, design, or opposite-end values.",
-      "expected_outputs": ["TX_POWER"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-RF-007",
-      "name": "CHECK_SNR",
-      "canonical_name": "Check SNR",
-      "category": "MEASUREMENT",
-      "description": "Obtain current signal-to-noise ratio.",
-      "expected_outputs": ["SNR"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-RF-008",
-      "name": "CHECK_SINR",
-      "canonical_name": "Check SINR",
-      "category": "MEASUREMENT",
-      "description": "Obtain current signal-to-interference-plus-noise ratio.",
-      "expected_outputs": ["SINR"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-RF-009",
-      "name": "CHECK_XPD",
-      "canonical_name": "Check Cross-Polarization Discrimination",
-      "category": "MEASUREMENT",
-      "description": "Obtain or calculate cross-polarization discrimination.",
-      "expected_outputs": ["XPD"],
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-RF-010",
-      "name": "CHECK_MODULATION",
-      "canonical_name": "Check Modulation",
-      "category": "MEASUREMENT",
-      "description": "Obtain current modulation or adaptive modulation state.",
-      "expected_outputs": ["MODULATION_ORDER", "ACM_STATE"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-RF-011",
-      "name": "CHECK_ERROR_PERFORMANCE",
-      "canonical_name": "Check Error Performance",
-      "category": "MEASUREMENT",
-      "description": "Review available BER, errored seconds, severely errored seconds, unavailable seconds, packet errors, or related performance metrics.",
-      "expected_outputs": ["BER", "PER", "ES", "SES", "UAS"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-CONFIG-001",
-      "name": "REVIEW_CONFIGURATION",
-      "canonical_name": "Review Configuration",
       "category": "VERIFICATION",
-      "description": "Review relevant equipment configuration against the applicable expected technical state.",
-      "invasiveness": "NONE"
+      "description": "Actions that determine whether technical state conforms to an expected or required condition."
     },
-
     {
-      "id": "ACT-CONFIG-002",
-      "name": "VERIFY_FREQUENCY",
-      "canonical_name": "Verify Frequency Configuration",
-      "category": "VERIFICATION",
-      "description": "Verify configured transmit and receive frequencies against the applicable design and corresponding endpoint.",
-      "expected_outputs": ["FREQUENCY"],
-      "invasiveness": "NONE"
+      "category": "CORRECTIVE",
+      "description": "Actions intended to modify technical state to correct or mitigate a condition."
     },
-
     {
-      "id": "ACT-CONFIG-003",
-      "name": "VERIFY_CHANNEL_BANDWIDTH",
-      "canonical_name": "Verify Channel Bandwidth",
-      "category": "VERIFICATION",
-      "description": "Verify channel bandwidth against design and corresponding endpoint configuration.",
-      "expected_outputs": ["CHANNEL_BANDWIDTH"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-CONFIG-004",
-      "name": "VERIFY_TX_POWER_CONFIGURATION",
-      "canonical_name": "Verify Transmit Power Configuration",
-      "category": "VERIFICATION",
-      "description": "Verify configured transmit power and applicable power limits.",
-      "expected_outputs": ["TX_POWER"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-CONFIG-005",
-      "name": "VERIFY_ATPC_CONFIGURATION",
-      "canonical_name": "Verify ATPC Configuration",
-      "category": "VERIFICATION",
-      "description": "Verify ATPC state, target, limits, and associated parameters.",
-      "expected_outputs": ["ATPC_POWER", "ATPC_TARGET"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-CONFIG-006",
-      "name": "VERIFY_MODULATION_CONFIGURATION",
-      "canonical_name": "Verify Modulation Configuration",
-      "category": "VERIFICATION",
-      "description": "Verify modulation, ACM, coding, and related capacity settings.",
-      "expected_outputs": ["MODULATION_ORDER", "ACM_STATE"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-CONFIG-007",
-      "name": "VERIFY_TOPOLOGY",
-      "canonical_name": "Verify Topology Configuration",
-      "category": "VERIFICATION",
-      "description": "Verify configured radio topology, protection arrangement, diversity arrangement, or aggregation architecture.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-CONFIG-008",
-      "name": "COMPARE_ENDPOINT_CONFIGURATIONS",
-      "canonical_name": "Compare Endpoint Configurations",
-      "category": "COMPARISON",
-      "description": "Compare corresponding configuration values between both microwave endpoints.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-CONFIG-009",
-      "name": "COMPARE_CONFIGURATION_TO_DESIGN",
-      "canonical_name": "Compare Configuration to Design",
-      "category": "COMPARISON",
-      "description": "Compare current equipment configuration with applicable engineering or commissioning design data.",
-      "comparison_mode": "ACTUAL_VS_DESIGN",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-001",
-      "name": "INSPECT_RF_CHAIN",
-      "canonical_name": "Inspect RF Chain",
-      "category": "INSPECTION",
-      "description": "Physically inspect the applicable RF path and its components from radio through antenna interface.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-002",
-      "name": "VERIFY_RF_ROUTING",
-      "canonical_name": "Verify RF Routing",
-      "category": "INSPECTION",
-      "description": "Verify that RF components and paths are routed to the correct ports and corresponding equipment.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-003",
-      "name": "VERIFY_MAIN_DIVERSITY_ROUTING",
-      "canonical_name": "Verify Main/Diversity Routing",
-      "category": "INSPECTION",
-      "description": "Verify physical Main and Diversity RF routing against the required architecture.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-004",
-      "name": "INSPECT_RF_CONNECTIONS",
-      "canonical_name": "Inspect RF Connections",
-      "category": "INSPECTION",
-      "description": "Inspect applicable RF connections for seating, engagement, torque, damage, contamination, moisture, and mechanical condition.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-005",
-      "name": "VERIFY_COMPONENT_MATING",
-      "canonical_name": "Verify Component Mating",
-      "category": "INSPECTION",
-      "description": "Verify that applicable RF components are correctly oriented, seated, engaged, and mated.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-006",
-      "name": "INSPECT_WAVEGUIDE",
-      "canonical_name": "Inspect Waveguide",
-      "category": "INSPECTION",
-      "description": "Inspect waveguide or equivalent RF transmission medium for damage, deformation, contamination, water ingress, and installation defects.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-007",
-      "name": "VERIFY_INSTALLED_HARDWARE",
-      "canonical_name": "Verify Installed Hardware",
-      "category": "INSPECTION",
-      "description": "Verify installed equipment and components against required design, bill of material, product, frequency band, and compatibility requirements.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PHYSICAL-008",
-      "name": "VERIFY_COMPONENT_ORIENTATION",
-      "canonical_name": "Verify Component Orientation",
-      "category": "INSPECTION",
-      "description": "Verify physical orientation of applicable components against installation requirements.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-ALIGN-001",
-      "name": "VERIFY_AZIMUTH",
-      "canonical_name": "Verify Antenna Azimuth",
-      "category": "ALIGNMENT",
-      "description": "Compare actual antenna azimuth with applicable path design.",
-      "expected_outputs": ["AZIMUTH"],
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-ALIGN-002",
-      "name": "VERIFY_ELEVATION",
-      "canonical_name": "Verify Antenna Elevation",
-      "category": "ALIGNMENT",
-      "description": "Compare actual antenna elevation with applicable path design.",
-      "expected_outputs": ["ELEVATION_ANGLE"],
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-ALIGN-003",
-      "name": "VERIFY_POLARIZATION",
-      "canonical_name": "Verify Antenna Polarization",
-      "category": "ALIGNMENT",
-      "description": "Verify installed polarization and polarization orientation against applicable design.",
-      "expected_outputs": ["POLARIZATION_ANGLE"],
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-ALIGN-004",
-      "name": "PERFORM_ANTENNA_ALIGNMENT",
-      "canonical_name": "Perform Antenna Alignment",
-      "category": "CORRECTIVE_ACTION",
-      "description": "Physically adjust antenna pointing to optimize the applicable microwave path according to approved procedure.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-PATH-001",
-      "name": "INSPECT_LINE_OF_SIGHT",
-      "canonical_name": "Inspect Line of Sight",
-      "category": "INSPECTION",
-      "description": "Inspect the physical microwave path for obstructions or changed path conditions.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-PATH-002",
-      "name": "VERIFY_FRESNEL_CLEARANCE",
-      "canonical_name": "Verify Fresnel Clearance",
-      "category": "CALCULATION",
-      "description": "Evaluate applicable Fresnel-zone clearance against path requirements.",
-      "expected_outputs": ["FRESNEL_CLEARANCE"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-PATH-003",
-      "name": "VERIFY_PATH_DESIGN",
-      "canonical_name": "Verify Path Design",
-      "category": "VERIFICATION",
-      "description": "Review path engineering data including endpoints, distance, antenna heights, frequencies, azimuths, elevations, and applicable propagation assumptions.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-PATH-004",
-      "name": "VERIFY_ANTENNA_HEIGHT",
-      "canonical_name": "Verify Antenna Height",
-      "category": "INSPECTION",
-      "description": "Compare installed antenna height against applicable path design.",
-      "expected_outputs": ["ANTENNA_HEIGHT"],
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-INTERFERENCE-001",
-      "name": "CHECK_FOR_INTERFERENCE",
-      "canonical_name": "Check for RF Interference",
-      "category": "TEST",
-      "description": "Evaluate available RF measurements, spectrum information, alarms, or other evidence for interference.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-ENV-001",
-      "name": "CHECK_WEATHER_CONDITIONS",
-      "canonical_name": "Check Weather Conditions",
-      "category": "CONTEXT",
-      "description": "Review relevant current or historical weather conditions for correlation with observed RF behavior.",
-      "expected_outputs": ["PRECIPITATION_RATE", "WIND_SPEED", "TEMPERATURE"],
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-POWER-001",
-      "name": "CHECK_INPUT_VOLTAGE",
-      "canonical_name": "Check Input Voltage",
-      "category": "MEASUREMENT",
-      "description": "Measure or obtain equipment input voltage.",
-      "expected_outputs": ["VOLTAGE"],
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-POWER-002",
-      "name": "INSPECT_POWER_CONNECTIONS",
-      "canonical_name": "Inspect Power Connections",
-      "category": "INSPECTION",
-      "description": "Inspect equipment power wiring, connectors, polarity, terminations, and associated physical connections.",
-      "invasiveness": "LOW"
-    },
-
-    {
-      "id": "ACT-SOFTWARE-001",
-      "name": "VERIFY_FIRMWARE_VERSION",
-      "canonical_name": "Verify Firmware Version",
-      "category": "VERIFICATION",
-      "description": "Identify installed firmware and compare it with applicable compatibility or release requirements.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-SOFTWARE-002",
-      "name": "REVIEW_ACTIVE_ALARMS",
-      "canonical_name": "Review Active Alarms",
-      "category": "INSPECTION",
-      "description": "Review current equipment alarms and relevant alarm history.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-TEST-001",
-      "name": "SWAP_RADIO",
-      "canonical_name": "Swap Radio",
-      "category": "ISOLATION_TEST",
-      "description": "Replace or exchange a suspected radio with a known-good or alternate unit to determine whether the fault follows the radio.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-TEST-002",
-      "name": "SWAP_RF_COMPONENT",
-      "canonical_name": "Swap RF Component",
-      "category": "ISOLATION_TEST",
-      "description": "Replace or exchange a suspected RF component with a known-good or alternate component to determine whether the fault follows the component.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-TEST-003",
-      "name": "SWAP_MAIN_DIVERSITY_PATH",
-      "canonical_name": "Swap Main/Diversity Path",
-      "category": "ISOLATION_TEST",
-      "description": "Perform an approved controlled swap of Main and Diversity path elements to determine whether a symptom follows a physical or logical path.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-TEST-004",
-      "name": "REBOOT_EQUIPMENT",
-      "canonical_name": "Reboot Equipment",
-      "category": "ISOLATION_TEST",
-      "description": "Perform an approved equipment restart when diagnostically justified.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-CORRECT-001",
-      "name": "CORRECT_CONFIGURATION",
-      "canonical_name": "Correct Configuration",
-      "category": "CORRECTIVE_ACTION",
-      "description": "Modify confirmed incorrect configuration to the validated required state.",
-      "invasiveness": "MEDIUM",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-CORRECT-002",
-      "name": "CORRECT_RF_ROUTING",
-      "canonical_name": "Correct RF Routing",
-      "category": "CORRECTIVE_ACTION",
-      "description": "Correct confirmed improper physical RF routing.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-CORRECT-003",
-      "name": "RESEAT_RF_CONNECTION",
-      "canonical_name": "Reseat RF Connection",
-      "category": "CORRECTIVE_ACTION",
-      "description": "Correctly reseat, secure, or remate a confirmed suspect RF connection according to applicable procedure.",
-      "invasiveness": "MEDIUM",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-CORRECT-004",
-      "name": "REPLACE_RADIO",
-      "canonical_name": "Replace Radio",
-      "category": "CORRECTIVE_ACTION",
-      "description": "Replace a confirmed failed or unsuitable radio.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-CORRECT-005",
-      "name": "REPLACE_RF_COMPONENT",
-      "canonical_name": "Replace RF Component",
-      "category": "CORRECTIVE_ACTION",
-      "description": "Replace a confirmed failed, damaged, incompatible, or unsuitable RF component.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-CORRECT-006",
-      "name": "CORRECT_POLARIZATION",
-      "canonical_name": "Correct Polarization",
-      "category": "CORRECTIVE_ACTION",
-      "description": "Correct confirmed antenna or RF-path polarization error according to applicable design.",
-      "invasiveness": "HIGH",
-      "service_impact_possible": true
-    },
-
-    {
-      "id": "ACT-VALIDATE-001",
-      "name": "RECHECK_RSL",
-      "canonical_name": "Recheck RSL",
       "category": "VALIDATION",
-      "description": "Obtain RSL after a test or corrective action and compare against the previous and expected condition.",
-      "expected_outputs": ["RSL", "RSL_DELTA"],
-      "comparison_mode": "BEFORE_VS_AFTER",
-      "invasiveness": "NONE"
+      "description": "Actions intended to establish whether defined technical acceptance or resolution criteria are satisfied."
     },
-
     {
-      "id": "ACT-VALIDATE-002",
-      "name": "RECHECK_ERROR_PERFORMANCE",
-      "canonical_name": "Recheck Error Performance",
-      "category": "VALIDATION",
-      "description": "Review error-performance measurements after a test or corrective action.",
-      "expected_outputs": ["BER", "PER", "ES", "SES", "UAS"],
-      "comparison_mode": "BEFORE_VS_AFTER",
-      "invasiveness": "NONE"
+      "category": "TEMPORAL",
+      "description": "Actions involving observation across time or deliberate waiting for a technically meaningful interval."
     },
-
     {
-      "id": "ACT-VALIDATE-003",
-      "name": "VERIFY_LINK_STABILITY",
-      "canonical_name": "Verify Link Stability",
-      "category": "VALIDATION",
-      "description": "Observe the link for sufficient time and evidence to establish that the corrected condition remains stable.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-VALIDATE-004",
-      "name": "VERIFY_RESOLUTION",
-      "canonical_name": "Verify Resolution",
-      "category": "VALIDATION",
-      "description": "Confirm that the original symptoms have been eliminated or returned to acceptable condition following corrective action.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-INFO-001",
-      "name": "REQUEST_SCREENSHOT",
-      "canonical_name": "Request Screenshot",
-      "category": "INFORMATION_GATHERING",
-      "description": "Request a screenshot containing technical information required to evaluate the current case.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-INFO-002",
-      "name": "REQUEST_PHOTO",
-      "canonical_name": "Request Photo",
-      "category": "INFORMATION_GATHERING",
-      "description": "Request a photograph of equipment, connections, installation, antenna, path, or another physical condition.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-INFO-003",
-      "name": "REQUEST_CONFIGURATION",
-      "canonical_name": "Request Configuration",
-      "category": "INFORMATION_GATHERING",
-      "description": "Request relevant configuration values, export, file, or screenshots.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-INFO-004",
-      "name": "REQUEST_MEASUREMENT",
-      "canonical_name": "Request Measurement",
-      "category": "INFORMATION_GATHERING",
-      "description": "Request a specific technical measurement required to advance diagnosis.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-INFO-005",
-      "name": "REQUEST_CLARIFICATION",
-      "canonical_name": "Request Clarification",
-      "category": "INFORMATION_GATHERING",
-      "description": "Request clarification when existing information is ambiguous, incomplete, contradictory, or insufficiently precise.",
-      "invasiveness": "NONE"
-    },
-
-    {
-      "id": "ACT-ESCALATE-001",
-      "name": "ESCALATE_FOR_SPECIALIST_REVIEW",
-      "canonical_name": "Escalate for Specialist Review",
       "category": "ESCALATION",
-      "description": "Escalate the case when available evidence, permissions, safety constraints, or ARIA confidence do not justify continued autonomous diagnostic direction.",
-      "invasiveness": "NONE"
+      "description": "Actions transferring technical handling when current authority, expertise, capability, access, or safety limits are insufficient."
     }
   ],
 
-  "invasiveness_levels": {
-    "NONE": "Read-only observation, calculation, comparison, or information gathering with no expected physical or service impact.",
-    "LOW": "Inspection or measurement with minimal expected system impact.",
-    "MEDIUM": "Action modifies system state or physical condition but is generally limited in scope.",
-    "HIGH": "Action can materially alter equipment state, RF path, configuration, service, or physical installation."
-  },
+  "action_types": [
+    {
+      "type": "OBSERVE",
+      "canonical_name": "Observe",
+      "category": "OBSERVATION",
+      "description": "Directly observe a physical, logical, operational, environmental, or technical condition without intentionally modifying it.",
+      "typical_outputs": [
+        "observation evidence",
+        "visual evidence",
+        "state evidence"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "observe equipment indicators",
+        "observe physical condition",
+        "observe system behavior"
+      ]
+    },
 
-  "semantic_rules": [
+    {
+      "type": "RETRIEVE",
+      "canonical_name": "Retrieve",
+      "category": "INFORMATION_ACQUISITION",
+      "description": "Obtain existing technical information from a system, source, artifact, database, interface, device, document, or repository without materially changing the subject system.",
+      "typical_outputs": [
+        "configuration evidence",
+        "log evidence",
+        "documentary evidence",
+        "system data"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "retrieve configuration",
+        "retrieve logs",
+        "retrieve alarm history",
+        "retrieve manufacturer documentation"
+      ]
+    },
+
+    {
+      "type": "INSPECT",
+      "canonical_name": "Inspect",
+      "category": "OBSERVATION",
+      "description": "Perform a deliberate technical inspection of physical or logical state to identify defects, inconsistencies, installation conditions, connectivity, orientation, damage, contamination, or other relevant conditions.",
+      "typical_outputs": [
+        "physical inspection evidence",
+        "visual evidence",
+        "observational evidence"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "inspect cable routing",
+        "inspect connector condition",
+        "inspect equipment installation"
+      ]
+    },
+
+    {
+      "type": "MEASURE",
+      "canonical_name": "Measure",
+      "category": "MEASUREMENT",
+      "description": "Obtain a quantitative technical value using an instrument, system, sensor, tester, measurement process, or defined measurement method.",
+      "typical_outputs": [
+        "measurement evidence",
+        "meas_<UUID>"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "measure voltage",
+        "measure received signal level",
+        "measure optical power",
+        "measure latency"
+      ]
+    },
+
+    {
+      "type": "COMPARE",
+      "canonical_name": "Compare",
+      "category": "ANALYSIS",
+      "description": "Compare two or more technically relevant values, states, systems, components, configurations, periods, sources, or reference conditions.",
+      "typical_outputs": [
+        "comparison evidence",
+        "difference calculation",
+        "match or mismatch assessment"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "compare actual versus expected",
+        "compare local versus remote",
+        "compare before versus after",
+        "compare configuration against design"
+      ]
+    },
+
+    {
+      "type": "CALCULATE",
+      "canonical_name": "Calculate",
+      "category": "ANALYSIS",
+      "description": "Produce a deterministic technical result from defined inputs using an identified calculation, formula, conversion, algorithm, or engineering method.",
+      "typical_outputs": [
+        "deterministic calculation evidence",
+        "derived measurement",
+        "engineering result"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "calculate path difference",
+        "calculate loss",
+        "calculate clearance",
+        "convert units"
+      ]
+    },
+
+    {
+      "type": "CORRELATE",
+      "canonical_name": "Correlate",
+      "category": "ANALYSIS",
+      "description": "Evaluate temporal, contextual, behavioral, or technical relationships among multiple evidence items or system conditions without asserting causality solely from correlation.",
+      "typical_outputs": [
+        "derived pattern evidence",
+        "temporal association",
+        "contextual association"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "correlate alarms with weather",
+        "correlate errors with load",
+        "correlate failures with configuration changes"
+      ],
+      "rules": [
+        "Correlation shall not be represented as causal proof without additional support."
+      ]
+    },
+
+    {
+      "type": "TEST",
+      "canonical_name": "Test",
+      "category": "TESTING",
+      "description": "Perform a controlled technical procedure intended to evaluate behavior, establish a condition, challenge a hypothesis, or produce discriminating evidence.",
+      "typical_outputs": [
+        "diagnostic test evidence",
+        "test result evidence"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "run diagnostic test",
+        "exercise interface",
+        "test failover behavior"
+      ]
+    },
+
+    {
+      "type": "ISOLATE",
+      "canonical_name": "Isolate",
+      "category": "TESTING",
+      "description": "Perform a controlled operation intended to separate a component, path, variable, configuration, interface, endpoint, environment, or failure domain from competing explanations.",
+      "typical_outputs": [
+        "isolation test evidence",
+        "discriminating evidence"
+      ],
+      "state_change_expected": "POSSIBLE",
+      "examples": [
+        "isolate a path",
+        "bypass a component",
+        "swap one controlled variable",
+        "remove one branch from consideration"
+      ],
+      "rules": [
+        "Isolation actions should identify which variables are intentionally changed or held constant.",
+        "Uncontrolled simultaneous changes reduce diagnostic value."
+      ]
+    },
+
+    {
+      "type": "VERIFY",
+      "canonical_name": "Verify",
+      "category": "VERIFICATION",
+      "description": "Determine whether a technical state, value, configuration, installation, relationship, compatibility condition, or requirement matches an expected or authoritative reference.",
+      "typical_outputs": [
+        "verification evidence",
+        "match or mismatch assessment"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "verify configuration",
+        "verify installed component",
+        "verify orientation",
+        "verify compatibility"
+      ]
+    },
+
+    {
+      "type": "VALIDATE",
+      "canonical_name": "Validate",
+      "category": "VALIDATION",
+      "description": "Perform or evaluate a defined technical validation intended to establish whether explicit acceptance, recovery, correction, diagnosis, or resolution criteria are satisfied.",
+      "typical_outputs": [
+        "validation test evidence",
+        "validation outcome",
+        "validation confidence",
+        "resolution confidence"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "validate restored service",
+        "validate corrected configuration",
+        "validate installation against acceptance criteria"
+      ],
+      "rules": [
+        "Validation success does not automatically prove exact causal mechanism.",
+        "Validation criteria shall be explicit when technically material."
+      ]
+    },
+
+    {
+      "type": "CONFIGURE",
+      "canonical_name": "Configure",
+      "category": "CORRECTIVE",
+      "description": "Create, modify, apply, or restore technical configuration intended to establish a desired technical state.",
+      "typical_outputs": [
+        "configuration change",
+        "change-result evidence",
+        "action outcome"
+      ],
+      "state_change_expected": true,
+      "examples": [
+        "modify parameter",
+        "restore configuration",
+        "apply approved settings"
+      ],
+      "rules": [
+        "Configuration actions may require rollback information.",
+        "Expected and actual resulting configuration should remain distinguishable."
+      ]
+    },
+
+    {
+      "type": "ADJUST",
+      "canonical_name": "Adjust",
+      "category": "CORRECTIVE",
+      "description": "Physically or logically adjust an existing technical element to improve alignment, calibration, tuning, positioning, level, timing, or other operating condition.",
+      "typical_outputs": [
+        "changed technical state",
+        "before-after evidence",
+        "action outcome"
+      ],
+      "state_change_expected": true,
+      "examples": [
+        "adjust antenna alignment",
+        "adjust timing",
+        "adjust level",
+        "tune parameter"
+      ]
+    },
+
+    {
+      "type": "REPAIR",
+      "canonical_name": "Repair",
+      "category": "CORRECTIVE",
+      "description": "Restore a defective technical component, connection, assembly, structure, circuit, interface, or installation without replacing the entire target object.",
+      "typical_outputs": [
+        "repair outcome",
+        "before-after evidence",
+        "validation requirement"
+      ],
+      "state_change_expected": true,
+      "examples": [
+        "repair damaged connection",
+        "repair cable termination",
+        "repair physical assembly"
+      ]
+    },
+
+    {
+      "type": "REPLACE",
+      "canonical_name": "Replace",
+      "category": "CORRECTIVE",
+      "description": "Remove an existing technical component, assembly, device, module, cable, interface, or other object and install a substitute.",
+      "typical_outputs": [
+        "replacement outcome",
+        "before-after evidence",
+        "validation requirement"
+      ],
+      "state_change_expected": true,
+      "examples": [
+        "replace radio",
+        "replace cable",
+        "replace power supply",
+        "replace optical module"
+      ]
+    },
+
+    {
+      "type": "RESEAT",
+      "canonical_name": "Reseat",
+      "category": "CORRECTIVE",
+      "description": "Disconnect and reconnect, remove and reinstall, or otherwise reseat a component or connection while preserving its intended identity and function.",
+      "typical_outputs": [
+        "change-result evidence",
+        "action outcome"
+      ],
+      "state_change_expected": true,
+      "examples": [
+        "reseat connector",
+        "reseat module",
+        "reseat cable"
+      ]
+    },
+
+    {
+      "type": "RESTART",
+      "canonical_name": "Restart",
+      "category": "CORRECTIVE",
+      "description": "Restart, reboot, reload, reset, power-cycle, or otherwise reinitialize a technical system or component.",
+      "typical_outputs": [
+        "restart outcome",
+        "post-restart evidence",
+        "validation requirement"
+      ],
+      "state_change_expected": true,
+      "examples": [
+        "restart process",
+        "reboot device",
+        "power-cycle equipment"
+      ],
+      "rules": [
+        "Restart may restore operation without identifying root cause.",
+        "Restart shall not be treated as causal proof."
+      ]
+    },
+
+    {
+      "type": "ENABLE",
+      "canonical_name": "Enable",
+      "category": "CORRECTIVE",
+      "description": "Enable, activate, bring into service, or restore an existing technical function, interface, feature, path, component, or configuration state.",
+      "typical_outputs": [
+        "state-change outcome",
+        "validation evidence"
+      ],
+      "state_change_expected": true
+    },
+
+    {
+      "type": "DISABLE",
+      "canonical_name": "Disable",
+      "category": "CORRECTIVE",
+      "description": "Disable, deactivate, remove from service, or administratively suppress a technical function, interface, feature, path, component, or configuration state.",
+      "typical_outputs": [
+        "state-change outcome",
+        "isolation evidence",
+        "validation evidence"
+      ],
+      "state_change_expected": true
+    },
+
+    {
+      "type": "ROLLBACK",
+      "canonical_name": "Rollback",
+      "category": "CORRECTIVE",
+      "description": "Restore a previously known or explicitly recorded technical state after a change, test, deployment, adjustment, or configuration operation.",
+      "typical_outputs": [
+        "restored state",
+        "change-result evidence",
+        "validation evidence"
+      ],
+      "state_change_expected": true,
+      "rules": [
+        "The rollback target state should be explicitly identified.",
+        "Rollback itself does not establish that the prior state was technically correct."
+      ]
+    },
+
+    {
+      "type": "MONITOR",
+      "canonical_name": "Monitor",
+      "category": "TEMPORAL",
+      "description": "Observe a technical condition repeatedly or continuously across a defined interval to assess recurrence, stability, intermittency, degradation, recovery, or temporal behavior.",
+      "typical_outputs": [
+        "time-series evidence",
+        "stability evidence",
+        "recurrence evidence"
+      ],
+      "state_change_expected": false,
+      "examples": [
+        "monitor error rate",
+        "monitor signal level",
+        "monitor temperature",
+        "monitor service stability"
+      ]
+    },
+
+    {
+      "type": "WAIT",
+      "canonical_name": "Wait",
+      "category": "TEMPORAL",
+      "description": "Deliberately allow a technically meaningful interval or external dependency to elapse before reassessment.",
+      "typical_outputs": [
+        "elapsed observation interval",
+        "subsequent evidence"
+      ],
+      "state_change_expected": false,
+      "rules": [
+        "WAIT is a technical action only when the passage of time or an expected external dependency has diagnostic or validation value.",
+        "WAIT shall not be used merely to represent case lifecycle WAITING."
+      ]
+    },
+
+    {
+      "type": "ESCALATE",
+      "canonical_name": "Escalate",
+      "category": "ESCALATION",
+      "description": "Transfer or elevate technical handling because current authority, expertise, access, capability, safety boundary, manufacturer support requirement, or engineering scope is insufficient.",
+      "typical_outputs": [
+        "escalation outcome",
+        "handoff record",
+        "updated technical responsibility"
+      ],
+      "state_change_expected": false,
+      "rules": [
+        "Escalation is a valid technical action and not necessarily a diagnostic failure.",
+        "Case lifecycle ESCALATED remains a separate state semantic."
+      ]
+    }
+  ],
+
+  "action_class_rules": [
     {
       "rule_id": "ACT-RULE-001",
-      "rule": "An action being registered means ARIA may reason about the action. It does not independently authorize ARIA or a user to perform the action."
+      "rule": "The Registry shall define universal action classes rather than product-specific or technology-specific procedures."
     },
-
     {
       "rule_id": "ACT-RULE-002",
-      "rule": "ARIA shall prefer evidence-gathering actions that efficiently discriminate between competing hypotheses before recommending invasive corrective actions when practical."
+      "rule": "A runtime action instance shall use act_<UUID> identity."
     },
-
     {
       "rule_id": "ACT-RULE-003",
-      "rule": "Corrective actions should follow sufficient evidence supporting the suspected failure unless immediate action is required by an applicable safety, operational, or restoration procedure."
+      "rule": "Technology-specific procedures shall reference one applicable Core action class."
     },
-
     {
       "rule_id": "ACT-RULE-004",
-      "rule": "After a corrective action, ARIA shall seek validation evidence demonstrating whether the original symptom changed as predicted."
+      "rule": "A specific technical procedure may include multiple ordered Core action classes when the procedure legitimately contains multiple operations."
     },
-
     {
       "rule_id": "ACT-RULE-005",
-      "rule": "Failure of an action to produce its predicted result constitutes new evidence and shall trigger probability recalculation rather than automatic repetition or backtracking."
+      "rule": "Action classification shall describe what operation is performed, not why the action was selected."
     },
-
     {
       "rule_id": "ACT-RULE-006",
-      "rule": "ARIA shall preserve the distinction between diagnostic actions, isolation tests, corrective actions, and validation actions."
+      "rule": "Why an action was selected belongs to Decision and Routing reasoning."
     },
-
     {
       "rule_id": "ACT-RULE-007",
-      "rule": "Manufacturer-specific procedures shall attach to canonical actions through the Knowledge Graph rather than creating duplicate action types unless the action is technically distinct."
+      "rule": "Action completion shall remain distinct from successful technical outcome."
     },
-
     {
       "rule_id": "ACT-RULE-008",
-      "rule": "Routing priority shall not be based solely on failure probability. Expected information gain, action cost, execution time, invasiveness, service impact, safety, available evidence, user history, and context may alter the preferred next action."
+      "rule": "Corrective action success shall remain distinct from causal proof."
     },
-
     {
       "rule_id": "ACT-RULE-009",
-      "rule": "ARIA shall not treat completion of an action as proof of diagnosis. The result produced by the action is the evidence used for subsequent reasoning."
+      "rule": "A successful action may generate evidence supporting a hypothesis without independently confirming exclusivity of cause."
     },
-
     {
       "rule_id": "ACT-RULE-010",
-      "rule": "When a requested action cannot be performed, ARIA should seek an alternate evidence path rather than simply restarting the previous diagnostic route."
+      "rule": "An unsuccessful action may still produce diagnostically useful evidence."
+    },
+    {
+      "rule_id": "ACT-RULE-011",
+      "rule": "An action may be prevented from execution by safety, authorization, access, operational, service-impact, prerequisite, or tooling constraints."
+    },
+    {
+      "rule_id": "ACT-RULE-012",
+      "rule": "Equivalent completed actions should not be repeated without a material technical justification."
+    },
+    {
+      "rule_id": "ACT-RULE-013",
+      "rule": "A material state change, poor-quality prior execution, insufficient evidence quality, or changed technical scope may justify repetition."
+    },
+    {
+      "rule_id": "ACT-RULE-014",
+      "rule": "Action risk and action invasiveness shall be evaluated independently from action class."
+    },
+    {
+      "rule_id": "ACT-RULE-015",
+      "rule": "Action reversibility shall be evaluated independently from action class."
+    },
+    {
+      "rule_id": "ACT-RULE-016",
+      "rule": "Action class shall not encode hypothesis probability, evidence confidence, diagnostic confidence, or route utility."
+    },
+    {
+      "rule_id": "ACT-RULE-017",
+      "rule": "Action class shall not encode case lifecycle status or reasoning state."
+    },
+    {
+      "rule_id": "ACT-RULE-018",
+      "rule": "The same Core action class may apply across multiple technical domains."
+    },
+    {
+      "rule_id": "ACT-RULE-019",
+      "rule": "Manufacturer-specific action names remain domain knowledge and shall not be added to Core merely because they are frequently used."
+    },
+    {
+      "rule_id": "ACT-RULE-020",
+      "rule": "Action instructions, expected evidence, prerequisites, compatible products, required tools, safety requirements, and execution methods belong to runtime action records or domain procedure knowledge rather than the Core action-class vocabulary."
     }
+  ],
+
+  "risk_semantics": {
+    "principle": "Risk is evaluated for an action instance or procedure, not inferred solely from action class.",
+
+    "risk_classes": [
+      "PASSIVE",
+      "LOW",
+      "MODERATE",
+      "HIGH",
+      "CRITICAL",
+      "UNKNOWN"
+    ],
+
+    "rules": [
+      "The same action class may carry different risk in different contexts.",
+      "A measurement may be passive in one system and hazardous in another.",
+      "A restart may be low-impact in a lab system and high-impact in a live production system.",
+      "Safety constraints may prohibit execution regardless of diagnostic utility."
+    ]
+  },
+
+  "reversibility_semantics": {
+    "levels": [
+      "FULLY_REVERSIBLE",
+      "EASILY_REVERSIBLE",
+      "REVERSIBLE_WITH_EFFORT",
+      "DIFFICULT_TO_REVERSE",
+      "IRREVERSIBLE",
+      "NOT_APPLICABLE",
+      "UNKNOWN"
+    ],
+
+    "rules": [
+      "Reversibility is an action-instance or procedure characteristic.",
+      "Reversible diagnostic experiments may be preferred when they provide comparable information value.",
+      "Irreversible actions require stronger justification and applicable authorization.",
+      "Original state required for rollback should be preserved when technically practical."
+    ]
+  },
+
+  "execution_semantics": {
+    "statuses": [
+      "PROPOSED",
+      "AUTHORIZED",
+      "READY",
+      "IN_PROGRESS",
+      "COMPLETED",
+      "FAILED",
+      "BLOCKED",
+      "SKIPPED",
+      "CANCELLED",
+      "SUPERSEDED"
+    ],
+
+    "rules": [
+      "Execution status is not lifecycle status.",
+      "COMPLETED means execution ended; it does not mean the technical objective was achieved.",
+      "FAILED describes execution failure and does not necessarily mean the diagnostic hypothesis was false.",
+      "BLOCKED requires preservation of the blocking condition.",
+      "SKIPPED should preserve the reason an otherwise relevant action was not performed."
+    ]
+  },
+
+  "domain_mapping_examples": [
+    {
+      "domain_action": "CHECK_RSL",
+      "core_action_type": "MEASURE",
+      "description": "A microwave-domain procedure for obtaining received signal level."
+    },
+    {
+      "domain_action": "COMPARE_MAIN_DIVERSITY_RSL",
+      "core_action_type": "COMPARE",
+      "description": "A microwave-domain comparison procedure."
+    },
+    {
+      "domain_action": "VERIFY_ATPC_CONFIGURATION",
+      "core_action_type": "VERIFY",
+      "description": "A microwave-domain configuration verification procedure."
+    },
+    {
+      "domain_action": "INSPECT_WAVEGUIDE",
+      "core_action_type": "INSPECT",
+      "description": "A microwave-domain physical inspection procedure."
+    },
+    {
+      "domain_action": "VERIFY_FRESNEL_CLEARANCE",
+      "core_action_type": "CALCULATE",
+      "description": "A microwave-domain engineering calculation and verification procedure."
+    },
+    {
+      "domain_action": "PERFORM_ANTENNA_ALIGNMENT",
+      "core_action_type": "ADJUST",
+      "description": "A microwave-domain corrective adjustment procedure."
+    },
+    {
+      "domain_action": "VERIFY_FIRMWARE_VERSION",
+      "core_action_type": "VERIFY",
+      "description": "A product or technology-domain version verification procedure."
+    },
+    {
+      "domain_action": "REBOOT_RADIO",
+      "core_action_type": "RESTART",
+      "description": "A technology-specific restart procedure."
+    }
+  ],
+
+  "decision_routing_boundary": {
+    "decision_engine": [
+      "generates and scores candidate runtime actions",
+      "evaluates expected information gain",
+      "evaluates discrimination power",
+      "evaluates cost, time, safety, service impact, user effort, reversibility, and expected utility"
+    ],
+
+    "routing_engine": [
+      "selects and records route progression from eligible candidate actions",
+      "maintains route history",
+      "applies routing dependencies and repetition penalties",
+      "records why an action was selected or bypassed"
+    ],
+
+    "registry": [
+      "defines the universal technical action class",
+      "does not score actions",
+      "does not select actions",
+      "does not maintain route history"
+    ]
+  },
+
+  "technical_corpus_boundary": {
+    "principle": "Specific technical procedures belong to technical knowledge rather than the universal Core action vocabulary.",
+
+    "appropriate_domain_content": [
+      "manufacturer-specific commands",
+      "product-specific troubleshooting procedures",
+      "microwave-specific checks",
+      "RF alignment procedures",
+      "optical testing procedures",
+      "network protocol diagnostics",
+      "power-system procedures",
+      "software-specific remediation",
+      "tool-specific execution instructions"
+    ],
+
+    "rules": [
+      "Domain procedure knowledge may reference Core action classes.",
+      "Domain procedure knowledge may define expected evidence, measurements, tools, prerequisites, hazards, context requirements, and expected outcomes.",
+      "Domain procedures shall not redefine Core action semantics."
+    ]
+  },
+
+  "prohibited_uses": [
+    "Using ACT-RF-* or similar technology-specific procedure codes as universal Core action classes.",
+    "Using Registry action class names as runtime action identifiers.",
+    "Treating action completion as successful correction.",
+    "Treating successful correction as automatic causal proof.",
+    "Using action class to encode probability.",
+    "Using action class to encode confidence.",
+    "Using action class to encode route utility.",
+    "Using action class to encode case lifecycle status.",
+    "Using action class to encode reasoning state.",
+    "Using WAIT as a substitute for lifecycle WAITING.",
+    "Using ESCALATE as a substitute for lifecycle ESCALATED.",
+    "Allowing product-specific procedures to expand the Core Registry without a genuinely universal semantic need.",
+    "Repeating semantically equivalent actions merely because they use different wording.",
+    "Allowing action risk to be inferred solely from the generic action class.",
+    "Allowing action reversibility to be inferred solely from the generic action class."
   ]
 }
