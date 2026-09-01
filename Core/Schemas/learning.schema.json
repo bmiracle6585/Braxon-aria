@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "learning.schema.json",
+  "title": "A.R.I.A. Learning Result",
+  "description": "Authoritative contract for a qualified learning result produced by A.R.I.A.'s Learning Engine and submitted to Memory for retention consideration.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "content",
+    "learning_class",
+    "eligibility",
+    "source",
+    "confidence",
+    "context",
+    "generalization_scope",
+    "causal_state",
+    "restrictions",
+    "reasoning_summary"
+  ],
+
+  "properties": {
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The specific learned claim or experience being proposed for retention."
+    },
+
+    "learning_class": {
+      "type": "string",
+      "enum": [
+        "CASE_EXPERIENCE",
+        "FREQUENCY_LEARNING",
+        "PATTERN_LEARNING",
+        "ROUTE_LEARNING",
+        "ACTION_LEARNING",
+        "SEQUENCE_LEARNING",
+        "CAUSAL_LEARNING",
+        "RECURRENCE_LEARNING",
+        "PARTICIPANT_CONTEXT_LEARNING",
+        "TECHNICAL_CONTEXT_LEARNING",
+        "CANDIDATE_KNOWLEDGE"
+      ]
+    },
+
+    "eligibility": {
+      "type": "string",
+      "enum": [
+        "ELIGIBLE",
+        "RESTRICTED",
+        "INSUFFICIENT",
+        "EXCLUDED",
+        "NOT_APPLICABLE"
+      ]
+    },
+
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifies the originating conversation, event, case, evidence, system, document, application, or other source."
+    },
+
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "confidence": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Learning confidence when a numeric confidence value is available under the canonical confidence architecture."
+    },
+
+    "context": {
+      "type": "object",
+      "description": "Applicable contextual information necessary to interpret the learning correctly.",
+      "additionalProperties": true
+    },
+
+    "generalization_scope": {
+      "type": "string",
+      "enum": [
+        "CASE_SPECIFIC",
+        "PARTICIPANT_SPECIFIC",
+        "TEAM_SPECIFIC",
+        "ORGANIZATION_SPECIFIC",
+        "CONFIGURATION_SPECIFIC",
+        "VARIANT_SPECIFIC",
+        "PRODUCT_SPECIFIC",
+        "PRODUCT_FAMILY_SPECIFIC",
+        "MANUFACTURER_SPECIFIC",
+        "ARCHITECTURE_SPECIFIC",
+        "DOMAIN_SPECIFIC",
+        "CROSS_DOMAIN"
+      ]
+    },
+
+    "causal_state": {
+      "type": "string",
+      "enum": [
+        "DEMONSTRATED",
+        "SUPPORTED",
+        "ASSOCIATED",
+        "UNRESOLVED",
+        "NOT_APPLICABLE"
+      ]
+    },
+
+    "supporting_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "supporting_case_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "contradicting_case_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+
+    "independence_assessment": {
+      "type": ["string", "null"]
+    },
+
+    "duplicate_assessment": {
+      "type": ["string", "null"]
+    },
+
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+
+    "residual_uncertainty": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+
+    "candidate_knowledge_claim": {
+      "type": ["string", "null"]
+    },
+
+    "reasoning_summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Concise explanation of what was learned, why the learning is justified, and the material limitations."
+    }
+  }
+}
