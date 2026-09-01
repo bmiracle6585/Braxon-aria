@@ -44,10 +44,7 @@ def retain_experience(learning_result):
         "learning_class": learning_result["learning_class"],
         "source": learning_result["source"],
         "source_ids": learning_result.get("source_ids", []),
-        "confidence": {
-            "value": learning_result["confidence"],
-            "basis": learning_result["reasoning_summary"],
-        } if learning_result["confidence"] is not None else None,
+        "confidence": learning_result["confidence"],
         "context": learning_result["context"],
         "generalization_scope": learning_result["generalization_scope"],
         "causal_state": learning_result["causal_state"],

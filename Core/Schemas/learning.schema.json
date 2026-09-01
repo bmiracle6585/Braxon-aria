@@ -70,11 +70,31 @@
     },
 
     "confidence": {
-      "type": ["number", "null"],
+  "type": ["object", "null"],
+  "properties": {
+    "value": {
+      "type": "number",
       "minimum": 0,
-      "maximum": 1,
-      "description": "Learning confidence when a numeric confidence value is available under the canonical confidence architecture."
+      "maximum": 1
     },
+    "basis": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dimension": {
+      "type": ["string", "null"]
+    },
+    "calculated_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "value",
+    "basis"
+  ],
+  "additionalProperties": false
+},
 
     "context": {
       "type": "object",
