@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "experience.schema.json",
+  "title": "A.R.I.A. Experience Ledger Record",
+  "description": "Canonical persisted record for validated historical learning accepted into A.R.I.A.'s Experience Ledger.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "experience_id",
+    "content",
+    "learning_class",
+    "source",
+    "confidence",
+    "context",
+    "generalization_scope",
+    "causal_state",
+    "restrictions",
+    "reasoning_summary",
+    "created_at",
+    "updated_at"
+  ],
+
+  "properties": {
+    "experience_id": {
+      "type": "string",
+      "pattern": "^exp_[0-9a-fA-F-]{36}$",
+      "description": "Canonical typed UUID identity for the Experience Ledger record."
+    },
+
+    "content": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "learning_class": {
+      "type": "string"
+    },
+
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+
+    "confidence": {
+      "type": ["object", "null"],
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dimension": {
+          "type": ["string", "null"]
+        },
+        "calculated_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "value",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+
+    "context": {
+      "type": "object",
+      "additionalProperties": true
+    },
+
+    "generalization_scope": {
+      "type": "string"
+    },
+
+    "causal_state": {
+      "type": "string"
+    },
+
+    "supporting_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+
+    "supporting_case_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+
+    "contradicting_case_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "residual_uncertainty": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "candidate_knowledge_claim": {
+      "type": ["string", "null"]
+    },
+
+    "reasoning_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "provenance": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
